@@ -466,6 +466,7 @@ if (!class_exists("BMLTMeetingList")) {
 			array_multisort($keys, $sortType, $array);
 		}
 		function bmlt_meeting_list($atts = null, $content = null) {
+			ini_set('max_execution_time', 600); // sandwich server can take a long time to generate a schedule, override the server setting
 			if ( isset( $_GET['export-meeting-list'] ) && $_GET['export-meeting-list'] == '1' ) {
 				$this->pwsix_process_settings_export();
 			}
@@ -530,12 +531,15 @@ if (!class_exists("BMLTMeetingList")) {
 					$services .= '&services[]='.$service_body_id;
 				}
 			}
+			if ( false === ( $this->options['custom_query'] == '' ) ) {
+				$services = $this->options['custom_query'];
+			}
 			if ( $root_server == '' ) {
-				echo '<p><strong>BMLT Meeting List Error: BMLT Server missing.<br/><br/>Please go to Settings -> BMLT_Meetng_List and verify BMLT Server</strong></p>';
+				echo '<p><strong>BMLT Meeting List Error: BMLT Server missing.<br/><br/>Please go to Settings -> BMLT_Meeting_List and verify BMLT Server</strong></p>';
 				exit;
 			}
-			if ( $this->options['service_body_1'] == 'Not Used' ) {
-				echo '<p><strong>BMLT Meeting List Error: Service Body 1 missing from configuration.<br/><br/>Please go to Settings -> BMLT_Meetng_List and verify Service Body</strong><br/><br/>Contact the BMLT Meeting List Generator administrator and report this problem!</p>';
+			if ( $this->options['service_body_1'] == 'Not Used' && true === ($this->options['custom_query'] == '' ) ) {
+				echo '<p><strong>BMLT Meeting List Error: Service Body 1 missing from configuration.<br/><br/>Please go to Settings -> BMLT_Meeting_List and verify Service Body</strong><br/><br/>Contact the BMLT Meeting List Generator administrator and report this problem!</p>';
 				exit;
 			}
 			//define('_MPDF_URI',plugin_dir_url(__FILE__).'mpdf/');
@@ -572,6 +576,7 @@ if (!class_exists("BMLTMeetingList")) {
 			if ( !isset($this->options['protection_password']) ) {$this->options['protection_password'] = '';}
 			if ( !isset($this->options['cache_time']) ) {$this->options['cache_time'] = '0';}
 			if ( !isset($this->options['extra_meetings']) ) {$this->options['extra_meetings'] = '';}
+			if ( !isset($this->options['custom_query']) ) {$this->options['custom_query'] = '';}
 			if ( !isset($this->options['used_format_1']) ) {$this->options['used_format_1'] = '';}
 			if ( !isset($this->options['used_format_2']) ) {$this->options['used_format_2'] = '';}
 			if ( intval($this->options['cache_time']) > 0 && ! isset($_GET['nocache']) ) {
@@ -935,7 +940,7 @@ if (!class_exists("BMLTMeetingList")) {
 			}
 			//$result_meetings = $result_meetings_temp;
 			$unique_states = array_unique($unique_states);
-			asort($unique_data);
+			asort($unique_data, SORT_NATURAL | SORT_FLAG_CASE);
 			$unique_data = array_unique($unique_data);
 			if ( $this->options['page_fold'] === 'full' || $this->options['page_fold'] === 'half' ) {
 				$num_columns = 0;
@@ -1767,6 +1772,7 @@ if (!class_exists("BMLTMeetingList")) {
 				$this->options['service_body_4'] = $_POST['service_body_4'];   
 				$this->options['service_body_5'] = $_POST['service_body_5'];
 				$this->options['cache_time'] = $_POST['cache_time'];
+				$this->options['custom_query'] = $_POST['custom_query'];
 				$this->options['extra_meetings'] = $_POST['extra_meetings'];
 				$this->save_admin_options();
 				set_transient( 'admin_notice', 'Please put down your weapon. You have 20 seconds to comply.' );
@@ -1913,6 +1919,9 @@ if (!class_exists("BMLTMeetingList")) {
 			}			
 			if ( !isset($this->options['protection_password']) || strlen(trim($this->options['protection_password'])) == 0 ) {
 				$this->options['protection_password'] = '';
+			}
+			if ( !isset($this->options['custom_query']) || strlen(trim($this->options['custom_query'])) == 0 ) {
+				$this->options['custom_query'] = '';
 			}			
 			if ( !isset($this->options['cache_time']) || strlen(trim($this->options['cache_time'])) == 0 ) {
 				$this->options['cache_time'] = '0';
@@ -2203,8 +2212,15 @@ if (!class_exists("BMLTMeetingList")) {
 											</ul>
 										</div>
 									</div>
+									<div id="customquery" class="postbox">
+										<h3 class="hndle">Custom Query<span title='<p>This will be executed as part of the meeting search query.  This will override any setting in the Service Body dropdowns.' class="tooltip"></span></h3>
+										<div class="inside">
+											<label for="custom_query">Custom Query: </label>
+											<input type="text" id="custom_query" name="custom_query" size="100" value="<?php echo $this->options['custom_query']?>" />
+										</div>
+									</div>
 									<div id="extrameetingsdiv" class="postbox">
-										<h3 class="hndle">Include Extra Meetings<span title='<p>Inlcude Extra Meetings from Another Service Body.</p><p>All Meetings from your BMLT Server are shown in the list.</p><p>The Meetings you select will be merged into your meeting list.</p><p><em>Note: Be sure to select all meetings for each group.</em>' class="tooltip"></span></h3>
+										<h3 class="hndle">Include Extra Meetings<span title='<p>Include Extra Meetings from Another Service Body.</p><p>All Meetings from your BMLT Server are shown in the list.</p><p>The Meetings you select will be merged into your meeting list.</p><p><em>Note: Be sure to select all meetings for each group.</em>' class="tooltip"></span></h3>
 										<div class="inside">
 											<?php if ($this_connected) { ?>
 												<?php $extra_meetings_array = $this->get_all_meetings($this->options['root_server']); ?>
