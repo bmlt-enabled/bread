@@ -122,7 +122,7 @@ if (!class_exists("BMLTMeetingList")) {
 			if ( $screen->id == $my_admin_page ) {
 				$root_server = $this->options['root_server'];
 				if ( $root_server == '' ) {
-					echo '<div id="message" class="error"><p>Missing BMLT Server in settings for BMLT Meeting List.</p>';
+					echo '<div id="message" class="error"><p>Missing BMLT Server in settings for breadt.</p>';
 					$url = admin_url( 'options-general.php?page=bmlt-meeting-list.php' );
 					echo "<p><a href='$url'>BMLT_Meetng_List Settings</a></p>";
 					echo '</div>';
@@ -539,7 +539,7 @@ if (!class_exists("BMLTMeetingList")) {
 				exit;
 			}
 			if ( $this->options['service_body_1'] == 'Not Used' && true === ($this->options['custom_query'] == '' ) ) {
-				echo '<p><strong>BMLT Meeting List Error: Service Body 1 missing from configuration.<br/><br/>Please go to Settings -> BMLT_Meeting_List and verify Service Body</strong><br/><br/>Contact the BMLT Meeting List Generator administrator and report this problem!</p>';
+				echo '<p><strong>BMLT Meeting List Error: Service Body 1 missing from configuration.<br/><br/>Please go to Settings -> BMLT_Meeting_List and verify Service Body</strong><br/><br/>Contact the bread administrator and report this problem!</p>';
 				exit;
 			}
 			//define('_MPDF_URI',plugin_dir_url(__FILE__).'mpdf/');
@@ -1954,7 +1954,7 @@ if (!class_exists("BMLTMeetingList")) {
 				</video>
 			</div>
 			<div class="hide wrap" id="meeting-list-tabs-wrapper">
-				<h2>BMLT Meeting List Generator</h2>
+				<h2>bread</h2>
 				<div id="meeting-list-tabs">
 					<ul class="nav">
 						<li><a href="#setup"><?php _e('Meeting List Setup', 'root-server'); ?></a></li>
@@ -2041,7 +2041,7 @@ if (!class_exists("BMLTMeetingList")) {
 										<li>area3.region.org</li>
 										</ul>
 										<li>Install Wordpress on each sub-domain.</li>
-										<li>Install the BMLT Meeting List Generator plugin on each sub-domain.</li>
+										<li>Install the bread plugin on each sub-domain.</li>
 										<li>Provide the login to each Wordpress installation to each local web-servant.</li>
 										</ol>
 										<p>Method 3. Create a Wordpress multi-site installation.  This is how nameetinglist.org is setup.</p>
