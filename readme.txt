@@ -1,17 +1,17 @@
-=== BMLT Meeting List Generator ===
+=== bread ===
 
 Contributors: Jack S, Danny G
 Tags: meeting list, bmlt, narcotics anonymous, na
 Requires at least: 4.0
 Tested up to: 4.9.1
-Stable tag: 1.4.0beta
+Stable tag: 2.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 A web-based tool that creates, maintains and generates a PDF meeting list from BMLT.
 
 == Description ==
 
-The BMLT Meeting List Generator is a complete web-based tool which provides the capability to create, maintain and generate a current PDF meeting list. The Meeting List Generator works hand in hand with the Basic Meeting List Toolbox (BMLT).
+"bread" is a fork of the BMLT meeting list generator.  
 
 FEATURES
 
