@@ -1,9 +1,9 @@
 <?php
 /**
-Plugin Name: BMLT Meeting List Generator
-Plugin URI: http://wordpress.org/extend/plugins/bmlt-meeting-list/
-Description: Maintains and generates a PDF Meeting List from BMLT.
-Version: 1.3.4
+Plugin Name: bread
+Plugin URI: http://wordpress.org/extend/plugins/breadd/
+Description: Maintains and generates a PDF Meeting List from BMLT. 
+Version: 2.0.0
 */
 /* Disallow direct access to the plugin file */
 if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
@@ -14,7 +14,7 @@ if (!class_exists("BMLTMeetingList")) {
 	{
 		var $lang = '';
 		
-		var $version = '1.3.4';
+		var $version = '2.0.0';
 		var $mpdf = '';
 		var $meeting_count = 0;
 		var $formats_used = '';
@@ -221,9 +221,9 @@ if (!class_exists("BMLTMeetingList")) {
 				} elseif ( $language == 'fr' ) {
 					$data = ($abbreviate ? 'Mar' : "Mardi");
 				} elseif ( $language == 'both_po' ) {
-					$data = ($abbreviate ? 'Tue / Mar / Ter' : "Tuesday / Martes / Terça-feira");
+					$data = ($abbreviate ? 'Tue / Mar / Ter' : "Tuesday / Martes / Terï¿½a-feira");
 				} elseif ( $language == 'po' ) {
-					$data = ($abbreviate ? 'Ter' : "Terça-feira");
+					$data = ($abbreviate ? 'Ter' : "Terï¿½a-feira");
 				} elseif ( $language == 'both' ) {
 					$data = ($abbreviate ? 'Tue / Mar' : "Tuesday / Martes");
 				} elseif ( $language == 'fr_en' ) {
@@ -233,16 +233,16 @@ if (!class_exists("BMLTMeetingList")) {
 				if ( $language == 'en' || $language == 'en' ) {
 					$data = ($abbreviate ? 'Wed' : "Wednesday");
 				} elseif ( $language == 'es' ) {
-					$data = ($abbreviate ? 'Mié' : "Miércoles");
-					$data = "Miércoles";
+					$data = ($abbreviate ? 'Miï¿½' : "Miï¿½rcoles");
+					$data = "Miï¿½rcoles";
 				} elseif ( $language == 'fr' ) {
 					$data = ($abbreviate ? 'Mer' : "Mercredi");
 				} elseif ( $language == 'both_po' ) {
-					$data = ($abbreviate ? 'Wed / Mié / Qua' : "Wednesday / Miércoles / Quarta-feira");
+					$data = ($abbreviate ? 'Wed / Miï¿½ / Qua' : "Wednesday / Miï¿½rcoles / Quarta-feira");
 				} elseif ( $language == 'po' ) {
 					$data = ($abbreviate ? 'Qua' : "Quarta-feira");
 				} elseif ( $language == 'both' ) {
-					$data = ($abbreviate ? 'Wed / Mié' : "Wednesday / Miércoles");
+					$data = ($abbreviate ? 'Wed / Miï¿½' : "Wednesday / Miï¿½rcoles");
 				} elseif ( $language == 'fr_en' ) {
 					$data = ($abbreviate ? 'Mer / Wed' : "Mercredi / Wednesday");
 				}				
@@ -282,15 +282,15 @@ if (!class_exists("BMLTMeetingList")) {
 				if ( $language == 'en' || $language == 'en' ) {
 					$data = ($abbreviate ? 'Sat' : "Saturday");
 				} elseif ( $language == 'es' ) {
-					$data = ($abbreviate ? 'Sáb' : "Sábado");
+					$data = ($abbreviate ? 'Sï¿½b' : "Sï¿½bado");
 				} elseif ( $language == 'fr' ) {
 					$data = ($abbreviate ? 'Sam' : "Samedi");
 				} elseif ( $language == 'both_po' ) {
-					$data = ($abbreviate ? 'Sat / Sáb' : "Saturday / Sábado");
+					$data = ($abbreviate ? 'Sat / Sï¿½b' : "Saturday / Sï¿½bado");
 				} elseif ( $language == 'po' ) {
-					$data = ($abbreviate ? 'Sáb' : "Sábado");
+					$data = ($abbreviate ? 'Sï¿½b' : "Sï¿½bado");
 				} elseif ( $language == 'both' ) {
-					$data = ($abbreviate ? 'Sat / Sáb' : "Saturday / Sábado");
+					$data = ($abbreviate ? 'Sat / Sï¿½b' : "Saturday / Sï¿½bado");
 				} elseif ( $language == 'fr_en' ) {
 					$data = ($abbreviate ? 'Sam / Sat' : "Samedi / Saturday");
 				}				
