@@ -1,20 +1,19 @@
 <?php
 /**
 Plugin Name: bread
-Plugin URI: http://wordpress.org/extend/plugins/breadd/
+Plugin URI: http://wordpress.org/extend/plugins/bread/
 Description: Maintains and generates a PDF Meeting List from BMLT. 
-Version: 2.0.1
+Version: 1.0.0
 */
 /* Disallow direct access to the plugin file */
 if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 	die('Sorry, but you cannot access this page directly.');
 }
-if (!class_exists("BMLTMeetingList")) {
-	class BMLTMeetingList
-	{
+if (!class_exists("Bread")) {
+	class Bread {
 		var $lang = '';
 		
-		var $version = '2.0.0';
+		var $version = '1.0.0';
 		var $mpdf = '';
 		var $meeting_count = 0;
 		var $formats_used = '';
@@ -24,8 +23,7 @@ if (!class_exists("BMLTMeetingList")) {
 		var $service_meeting_result ='';
 		var $optionsName = 'bmlt_meeting_list_options';
 		var $options = array();
-		function __construct()
-		{
+		function __construct() {
 			$this->getMLOptions();
 			
 			$this->lang = $this->get_bmlt_server_lang();
@@ -122,7 +120,7 @@ if (!class_exists("BMLTMeetingList")) {
 			if ( $screen->id == $my_admin_page ) {
 				$root_server = $this->options['root_server'];
 				if ( $root_server == '' ) {
-					echo '<div id="message" class="error"><p>Missing BMLT Server in settings for breadt.</p>';
+					echo '<div id="message" class="error"><p>Missing BMLT Server in settings for bread.</p>';
 					$url = admin_url( 'options-general.php?page=bmlt-meeting-list.php' );
 					echo "<p><a href='$url'>BMLT_Meetng_List Settings</a></p>";
 					echo '</div>';
@@ -142,8 +140,7 @@ if (!class_exists("BMLTMeetingList")) {
 		function clear_admin_message2() {
 			echo '<div id="message" class="error"><p>what</p></div>';
 		}
-		function BMLTMeetingList()
-		{
+		function Bread() {
 			$this->__construct();
 		}
 		/**
@@ -175,9 +172,9 @@ if (!class_exists("BMLTMeetingList")) {
 			$screen = get_current_screen();
 			if ( $screen->id == $my_admin_page ) {
 				add_editor_style( plugin_dir_url(__FILE__) . "css/editor-style.css" );
-				
 			}
 		}
+
 		function getday( $day, $abbreviate = false, $language = '' ) {
 			
 			$data = '';
@@ -298,20 +295,32 @@ if (!class_exists("BMLTMeetingList")) {
 			
 			Return utf8_encode($data);
 		}
-		function get_all_meetings ( $root_server ) {
-			$ch = curl_init();
-			curl_setopt( $ch, CURLOPT_URL, "$root_server/client_interface/json/?switcher=GetSearchResults&data_field_key=weekday_tinyint,start_time,service_body_bigint,id_bigint,meeting_name,location_text&sort_keys=meeting_name,service_body_bigint,weekday_tinyint,start_time" );
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
-			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
-			curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)"); 
-			$results = curl_exec ( $ch );
-			curl_close ( $ch );
-			$result = json_decode($results,true);
+
+		function get_root_server_request($url) {
+			$args = array(
+				'timeout' => '30',
+				'headers' => array(
+					'User-Agent' => 'Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)'
+				)
+			);
+			$response = wp_remote_get($url, $args);
+			error_log("url:".$url);
+			error_log("http code:".wp_remote_retrieve_response_code($response));
+			return $response;
+			//return wp_remote_retrieve_body($response);
+		}
+
+		function get_configured_root_server_request($url) {
+			return $this->get_root_server_request($this->options['root_server']."/".$url);
+		}
+
+		function get_all_meetings ( ) {
+			$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults&data_field_key=weekday_tinyint,start_time,service_body_bigint,id_bigint,meeting_name,location_text&sort_keys=meeting_name,service_body_bigint,weekday_tinyint,start_time");
+			$result = json_decode(wp_remote_retrieve_body($results),true);
 			
 			$unique_areas = $this->get_areas($this->options['root_server']);			
 			$all_meetings = array();
 			foreach ($result as $value) {
-				
 				foreach($unique_areas as $unique_area){
 					$area_data = explode(',',$unique_area);
 					$area_id = $area_data[1];
@@ -327,15 +336,8 @@ if (!class_exists("BMLTMeetingList")) {
 			return $all_meetings;
 		}
 		function get_areas ( $root_server ) {
-			$ch = curl_init();
-			curl_setopt( $ch, CURLOPT_URL, "$root_server/client_interface/json/?switcher=GetServiceBodies" );			
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
-			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
-			curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)"); 
-			$results = curl_exec ( $ch );
-			curl_close ( $ch );
-			$result = json_decode($results,true);
-			
+			$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetServiceBodies");
+			$result = json_decode(wp_remote_retrieve_body($results), true);
 			$unique_areas = array();
 			
 			foreach ($result as $value) {
@@ -354,15 +356,8 @@ if (!class_exists("BMLTMeetingList")) {
 			return $unique_areas;
 		}
 		function get_bmlt_server_lang () {
-			$ch = curl_init();
-			curl_setopt( $ch, CURLOPT_URL, $this->options['root_server']."/client_interface/json/?switcher=GetServerInfo" );			
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
-			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
-			curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)"); 
-			$results = curl_exec ( $ch );
-			curl_close ( $ch );
-			$result = json_decode($results,true);
-			
+			$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetServerInfo");
+			$result = json_decode(wp_remote_retrieve_body($results), true);
 			$result = $result["0"]["nativeLang"];
 			
 			return $result;
@@ -384,48 +379,23 @@ if (!class_exists("BMLTMeetingList")) {
 			return $results;
 		}
 		
-		function testRootServer($root_server) {
-			$ch = curl_init();
-			curl_setopt($ch, CURLOPT_URL, "$root_server/client_interface/serverInfo.xml");
-			curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)");
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-			curl_setopt($ch, CURLOPT_VERBOSE, false);
-			curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-			$results  = curl_exec($ch);
-			$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-			$c_error  = curl_error($ch);
-			$c_errno  = curl_errno($ch);
-			curl_close($ch);
+		function testRootServer($override_root_server = null) {
+			if ($override_root_server == null) {
+				$results = $this->get_configured_root_server_request("client_interface/serverInfo.xml");
+			} else {
+				$results = $this->get_root_server_request($override_root_server."/client_interface/serverInfo.xml");
+			}
+			$httpcode = wp_remote_retrieve_response_code($results);
 			if ($httpcode != 200 && $httpcode != 302 && $httpcode != 304) {
 				return false;
 			}
-			$results = simplexml_load_string($results);
+			$results = simplexml_load_string(wp_remote_retrieve_body($results));
 			$results = json_encode($results);
 			$results = json_decode($results,TRUE);
 			$results = $results["serverVersion"]["readableString"];
 			return $results;
 		}
-		function newyorknaRootServer() {
-			$ch = curl_init();
-			curl_setopt($ch, CURLOPT_URL, "http://bmlt.newyorkna.org/main_server/client_interface/serverInfo.xml");
-			curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)");
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-			curl_setopt($ch, CURLOPT_VERBOSE, false);
-			curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-			$results  = curl_exec($ch);
-			$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-			$c_error  = curl_error($ch);
-			$c_errno  = curl_errno($ch);
-			curl_close($ch);
-			if ($httpcode != 200 && $httpcode != 302 && $httpcode != 304) {
-				return "Unknown";
-			}
-			$results = simplexml_load_string($results);
-			$results = json_encode($results);
-			$results = json_decode($results,TRUE);
-			$results = $results["serverVersion"]["readableString"];
-			return $results;
-		}
+
 		function getUsedFormats() {
 			$root_server = $this->options['root_server'];
 			$area_data = explode(',',$this->options['service_body_1']);
@@ -445,15 +415,9 @@ if (!class_exists("BMLTMeetingList")) {
 			} else {
 				$services = '&services[]='.$service_body_id;
 			}
-			$ch = curl_init();
-			curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)"); 
-			curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-			curl_setopt($ch, CURLOPT_COOKIESESSION, TRUE);
-			curl_setopt($ch, CURLOPT_URL,"$root_server/client_interface/json/?switcher=GetSearchResults$services&get_formats_only" );
-			$results = curl_exec($ch);
-			curl_close($ch);
-			$results = json_decode($results,true);
+
+			$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&get_formats_only");
+			$results = json_decode(wp_remote_retrieve_body($results), true);
 			$results = $results['formats'];
 			$this->sortBySubkey($results, 'key_string');
 			return $results;
@@ -690,48 +654,29 @@ if (!class_exists("BMLTMeetingList")) {
 				$sort_keys = 'weekday_tinyint,start_time,meeting_name';
 			}
 			if ( $this->options['service_body_1'] == 'Florida Region' && $services == '&recursive=1&services[]=1&recursive=1&services[]=20' ) {
-				$ch = curl_init();
-				curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)");
-				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-				curl_setopt($ch, CURLOPT_VERBOSE, false);
-				curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-				curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 				if ( $this->options['used_format_1'] == '' ) {
-					curl_setopt($ch, CURLOPT_URL,$root_server."/client_interface/json/?switcher=GetSearchResults$services&get_used_formats&sort_keys=$sort_keys" );
+					$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&get_used_formats&sort_keys=$sort_keys" );
 				} else {
-					curl_setopt($ch, CURLOPT_URL,$root_server."/client_interface/json/?switcher=GetSearchResults$services&sort_keys=$sort_keys&get_used_formats&formats[]=".$this->options['used_format_1'] );
+					$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=$sort_keys&get_used_formats&formats[]=".$this->options['used_format_1'] );
 				}
-				$results = curl_exec($ch);
-				curl_close($ch);
-				$florida = json_decode($results,true);
-				$ch = curl_init();
-				curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)");
-				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-				curl_setopt($ch, CURLOPT_VERBOSE, false);
-				curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-				curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+
+				$florida = json_decode(wp_remote_retrieve_body($results), true);
+
 				if ( $this->options['used_format_1'] == '' ) {
-					curl_setopt($ch, CURLOPT_URL, "http://www.alnwfl.org/main_server/client_interface/json/?switcher=GetSearchResults&sort_keys=$sort_keys&meeting_key=location_province&meeting_key_value=florida&get_used_formats&meeting_key_contains=1");
+					$results1 = $this->get_root_server_request("http://www.alnwfl.org/main_server/client_interface/json/?switcher=GetSearchResults&sort_keys=$sort_keys&meeting_key=location_province&meeting_key_value=florida&get_used_formats&meeting_key_contains=1");
 				} else {
-					curl_setopt($ch, CURLOPT_URL, "http://www.alnwfl.org/main_server/client_interface/json/?switcher=GetSearchResults&sort_keys=$sort_keys&meeting_key=location_province&meeting_key_value=florida&get_used_formats&meeting_key_contains=1&formats[]=".$this->options['used_format_1']);
+					$results1 = $this->get_root_server_request("http://www.alnwfl.org/main_server/client_interface/json/?switcher=GetSearchResults&sort_keys=$sort_keys&meeting_key=location_province&meeting_key_value=florida&get_used_formats&meeting_key_contains=1&formats[]=".$this->options['used_format_1']);
 				}
-				$results1 = curl_exec($ch);
-				curl_close($ch);
-				$alnwfl1 = json_decode($results1,true);
-				$ch = curl_init();
-				curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)");
-				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-				curl_setopt($ch, CURLOPT_VERBOSE, false);
-				curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-				curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+
+				$alnwfl1 = json_decode($wp_remote_retrieve_body($results1), true);
+
 				if ( $this->options['used_format_1'] == '' ) {
-					curl_setopt($ch, CURLOPT_URL, "http://www.alnwfl.org/main_server/client_interface/json/?switcher=GetSearchResults&sort_keys=$sort_keys&meeting_key=location_province&meeting_key_value=fl&get_used_formats&meeting_key_contains=1");
+					$results2 = $this->get_root_server_request("http://www.alnwfl.org/main_server/client_interface/json/?switcher=GetSearchResults&sort_keys=$sort_keys&meeting_key=location_province&meeting_key_value=fl&get_used_formats&meeting_key_contains=1");
 				} else {
-					curl_setopt($ch, CURLOPT_URL, "http://www.alnwfl.org/main_server/client_interface/json/?switcher=GetSearchResults&sort_keys=$sort_keys&meeting_key=location_province&meeting_key_value=fl&get_used_formats&meeting_key_contains=1&formats[]=".$this->options['used_format_1']);
+					$results2 = $this->get_root_server_request("http://www.alnwfl.org/main_server/client_interface/json/?switcher=GetSearchResults&sort_keys=$sort_keys&meeting_key=location_province&meeting_key_value=fl&get_used_formats&meeting_key_contains=1&formats[]=".$this->options['used_format_1']);
 				}
-				$results2 = curl_exec($ch);
-				curl_close($ch);
-				$alnwfl2 = json_decode($results2,true);
+
+				$alnwfl2 = json_decode(wp_remote_retrieve_body($results2), true);
 				//$result_meetings = array_merge($florida['meetings'], $alnwfl1['meetings'], $alnwfl2['meetings']);
 				if ( isset($alnwfl1['meetings']) && isset($alnwfl2['meetings']) ) {
 					$result_meetings = array_merge($florida['meetings'], $alnwfl1['meetings'], $alnwfl2['meetings']);
@@ -767,46 +712,41 @@ if (!class_exists("BMLTMeetingList")) {
 					$get_used_formats = '';
 				}
 				if ( $this->options['used_format_1'] == '' && $this->options['used_format_2'] == '' ) {
-					curl_setopt($ch, CURLOPT_URL,$root_server."/client_interface/json/?switcher=GetSearchResults$services&sort_keys=$sort_keys$get_used_formats" );
+					$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=$sort_keys$get_used_formats");
 				} elseif ( $this->options['used_format_1'] != '' ) {
-					curl_setopt($ch, CURLOPT_URL,$root_server."/client_interface/json/?switcher=GetSearchResults$services&sort_keys=$sort_keys&get_used_formats&formats[]=".$this->options['used_format_1'] );
+					$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=$sort_keys&get_used_formats&formats[]=".$this->options['used_format_1'] );
 				} elseif ( $this->options['used_format_2'] != '' ) {
-					curl_setopt($ch, CURLOPT_URL,$root_server."/client_interface/json/?switcher=GetSearchResults$services&sort_keys=$sort_keys&get_used_formats&formats[]=".$this->options['used_format_2'] );
+					$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=$sort_keys&get_used_formats&formats[]=".$this->options['used_format_2'] );
 				}
-				$results = curl_exec($ch);
 				
-				$result = json_decode($results,true);
+				$result = json_decode(wp_remote_retrieve_body($results), true);
 				if ( $this->options['extra_meetings'] ) {
 					
-						foreach ($this->options['extra_meetings'] as $value) {
-							
-							$data = array(" [", "]");
-							$value = str_replace($data, "", $value);
-							$extras .= "&meeting_ids[]=".$value;
-						}
-						$ch2 = curl_copy_handle($ch);
+					foreach ($this->options['extra_meetings'] as $value) {
 						
-						curl_setopt($ch2, CURLOPT_URL,$root_server."/client_interface/json/?switcher=GetSearchResults&sort_keys=".$sort_keys."".$extras."".$get_used_formats );
-						$extra_results = curl_exec($ch2);
-				
-						curl_close($ch2);
-						$extra_result = json_decode($extra_results,true);
-						if ( $extra_result <> Null ) {
-							
-							$result_meetings = array_merge($result['meetings'], $extra_result['meetings']);
-							foreach ($result_meetings as $key => $row) {
-								$weekday[$key] = $row['weekday_tinyint']; 
-								$start_time[$key] = $row['start_time'];
-							}
-							
-							array_multisort($weekday, SORT_ASC, $start_time, SORT_ASC, $result_meetings);
-							$this->formats_used = array_merge($result['formats'], $extra_result['formats']);
-							
-						} else {
-							$this->formats_used = $result['formats'];	
-							$result_meetings = $result['meetings'];
-							
+						$data = array(" [", "]");
+						$value = str_replace($data, "", $value);
+						$extras .= "&meeting_ids[]=".$value;
+					}
+					
+					$extra_results = get_configured_root_server_request("/client_interface/json/?switcher=GetSearchResults&sort_keys=".$sort_keys."".$extras."".$get_used_formats );
+					$extra_result = json_decode(wp_remote_retrieve_body($extra_results), true);
+					if ( $extra_result <> Null ) {
+						
+						$result_meetings = array_merge($result['meetings'], $extra_result['meetings']);
+						foreach ($result_meetings as $key => $row) {
+							$weekday[$key] = $row['weekday_tinyint']; 
+							$start_time[$key] = $row['start_time'];
 						}
+						
+						array_multisort($weekday, SORT_ASC, $start_time, SORT_ASC, $result_meetings);
+						$this->formats_used = array_merge($result['formats'], $extra_result['formats']);
+						
+					} else {
+						$this->formats_used = $result['formats'];	
+						$result_meetings = $result['meetings'];
+						
+					}
 				
 				} else {
 					$this->formats_used = $result['formats'];	
@@ -817,7 +757,6 @@ if (!class_exists("BMLTMeetingList")) {
 					$result_meetings = $result;
 				}
 				
-				curl_close($ch);
 				if ( $this->options['include_meeting_email'] == '1' ) { 
 					unlink($cookie);
 				}
@@ -844,37 +783,23 @@ if (!class_exists("BMLTMeetingList")) {
 					curl_exec($ch);
 				}
 				
-				curl_setopt($ch, CURLOPT_URL,"$root_server/client_interface/json/?switcher=GetSearchResults$services_service_body_1&sort_keys=meeting_name" );
-				$results = curl_exec($ch);
-				curl_close($ch);
+				$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services_service_body_1&sort_keys=meeting_name" );
 				if ( $this->options['include_meeting_email'] == '1' ) { 
 					unlink($cookie);
 				}
-				$this->service_meeting_result = json_decode($results,true);
+				$this->service_meeting_result = json_decode(wp_remote_retrieve_body($results), true);
 			}
-			$ch = curl_init();
-			curl_setopt($ch, CURLOPT_URL, "$root_server/client_interface/json/?switcher=GetFormats");
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
-			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
-			curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)"); 
-			$results = curl_exec($ch);
-			curl_close($ch);
-			$this->formats_all = json_decode($results,true);
+			$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetFormats");
+			$this->formats_all = json_decode(wp_remote_retrieve_body($results), true);
 			if ( strpos($this->options['custom_section_content'].$this->options['front_page_content'].$this->options['last_page_content'], '[format_codes_used_basic_es') !== false ) {
-				$ch = curl_init();
 				if ( $this->options['used_format_1'] == '' && $this->options['used_format_2'] == '' ) {
-					curl_setopt($ch, CURLOPT_URL,$root_server."/client_interface/json/?switcher=GetSearchResults$services&sort_keys=time$get_used_formats&lang_enum=es" );
+					$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=time$get_used_formats&lang_enum=es" );
 				} elseif ( $this->options['used_format_1'] != '' ) {
-					curl_setopt($ch, CURLOPT_URL,$root_server."/client_interface/json/?switcher=GetSearchResults$services&sort_keys=time&get_used_formats&lang_enum=es&formats[]=".$this->options['used_format_1'] );
+					$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=time&get_used_formats&lang_enum=es&formats[]=".$this->options['used_format_1'] );
 				} elseif ( $this->options['used_format_2'] != '' ) {
-					curl_setopt($ch, CURLOPT_URL,$root_server."/client_interface/json/?switcher=GetSearchResults$services&sort_keys=time&get_used_formats&lang_enum=es&formats[]=".$this->options['used_format_2'] );
+					$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=time&get_used_formats&lang_enum=es&formats[]=".$this->options['used_format_2'] );
 				}
-				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
-				curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
-				curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)"); 
-				$results = curl_exec($ch);
-				curl_close($ch);
-				$result_es = json_decode($results,true);
+				$result_es = json_decode(wp_remote_retrieve_body($results), true);
 				$this->formats_spanish = $result_es['formats'];
 				$this->sortBySubkey($this->formats_spanish, 'key_string');
 			}
@@ -1971,98 +1896,23 @@ if (!class_exists("BMLTMeetingList")) {
 					<?php wp_nonce_field('meta-box-order', 'meta-box-order-nonce', false ); ?>
 					<?php
 					wp_nonce_field('bmltmeetinglistupdate-options');
-					$this_connected = $this->testRootServer($this->options['root_server']);
+					$this_connected = $this->testRootServer();
 					$bmlt_version = $this_connected;
 					$this_version = intval(str_replace(".", "", $this_connected));
-					$newyorkna = $this->newyorknaRootServer();
-					$newyorkna_version = intval(str_replace(".", "", $newyorkna));
+					$source_of_truth = $this->testRootServer("http://bmlt.newyorkna.org");
+					$source_of_truth_version = intval(str_replace(".", "", $source_of_truth));
 					$connect = "<p><div style='color: #f00;font-size: 16px;vertical-align: middle;' class='dashicons dashicons-no'></div><span style='color: #f00;'>Connection to BMLT Server Failed.  Check spelling or try again.  If you are certain spelling is correct, BMLT Server could be down.</span></p>";
 					if ( $this_connected ) {
 						$ThisVersion = "<span style='color: #00AD00;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-smiley'></div>Your BMLT Server is running the latest Version ".$bmlt_version."</span>";
-						if ( $this_version !== $newyorkna_version ) {
+						if ( $this_version !== $source_of_truth_version ) {
 							$ThisVersion = "<span style='color: #f00;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-dismiss'></div>Notice: BMLT Server Update Available! Your Version = ".$bmlt_version.". </span>";
-							$ThisVersion .= "<span style='color: #7AD03A;'><i>Updated version = " . $newyorkna . "</i></span><br />";
+							$ThisVersion .= "<span style='color: #7AD03A;'><i>Updated version = " . $source_of_truth . "</i></span><br />";
 							//$ThisVersion .= "<span style='color: #f00;'>Install the current version of BMLT Server for the latest features, optimal security and bug fixes.</span>";
 						}
 					}
 					?>
 					<div id="setup">						
-						<div id="poststuff">
-							<div id="postbox-container" class="postbox-container">
-								<div id="accordion">
-									<h3 class="help-accordian"><strong>Read This Section First</strong></h3>
-									<div>
-										<h2>Getting Started</h2>
-										<p>The Meeting List Generator plugin is first activated using a "Tri Fold - Landscape - Letter Size" layout. This is a "starter" meeting list that uses an Area with about 100 meetings.  The starter meeting list will contain standard content for a basic meeting list that can be printed on a home computer.  A basic NA logo will be added to your media libray.  The starter meeting list uses a logo being hosted on <a target="_blank" href="http://nameetinglist.org">http://nameetinglist.org</a>.</p>
-										<h2>Step 1.</h2>
-										<p>Click on the BMLT Server tab to the left.  Change the BMLT Server and click the Save Changes button.</p>
-										<p><em>To find your BMLT Server click on the red question (?) mark.</em></p>
-										<h2>Step 2.</h2>
-										<p>From the Service Body 1 dropdown select your Area or Region.  Then click Save Changes.</p>
-										<h2>Step 3.</h2>
-										<p>Click Generate Meeting List.  Your meeting list will open in a new tab or window.</p>
-										<h2>Step 4.</h2>
-										<p>See the "Meeting List Setup" section below for additional defaults.</p>
-										<p><em>Repeat steps 1, 2 and 3 after changing to new Default Settings.</em></p>
-										<h2>What Now?</h2>
-										<p>From here you will move forward with setting up your meeting list by exploring the Page Layout, Front Page, Custom Section, Meetings, etc tabs.  There are countless ways to setup a meeting list.</p>
-										<p>Please allow yourself to experiment with mixing and matching different settings and content.  There is a good chance you can find a way to match or at least come very close to your current meeting list.</p>
-										<p>When setting up the meeting list it is helpful to have some knowledge of HTML when using the editors.  Very little or no knowledge of HTML is required to maintain the meeting list after the setup.  If you get stuck or would like some help with the setup, read the Support section below.</p>
-									</div>
-									<h3 class="help-accordian">Meeting List Setup</h3>
-									<div>
-										<h2>Default Settings and Content</h2>
-										<p>Changing the Default Settings and Content should only be considered when first using the Meeting List Generator or when you decide to completely start over with setting up your meeting list.</p>
-										<p><i>The buttons below will completely reset your meeting list settings (and content) to whichever layout you choose. There is no Undo.</i></p>
-										<p style="color: #f00; margin-bottom: 15px;">Consider backing up settings by using the Backup/Restore Tab before changing your Meeting List Settings.</p>
-										<input type="submit" value="Tri Fold - Letter Size" id="submit_three_column" class="button-primary" />
-										<input type="submit" value="Quad Fold - Legal Size" id="submit_four_column" class="button-primary" />
-										<input type="submit" value="Half Fold - Booklet" id="submit_booklet" class="button-primary" />
-										<h2>Small or Medium Size Areas</h2>
-										<p>Areas with up to about 100 meetings would benefit from using the tri-fold layout on letter sized paper.  Areas larger than 100 meetings would typically use a quad fold meeting list on legal sized paper.  These are just basic guidelines and are by no means set in stone.  For example, an Area with over 100 meetings could use the tri-fold on letter sized paper using smaller fonts to allow the content to fit.  The meeting list configuration is extremely flexible.</p>
-										<p></i>The Custom Content section is used to add information like helplines, service meetings, meeting format legend, etc.</i></p>
-										<h2>Large Areas, Metro Areas or Regions</h2>
-										<p>Larger service bodies would benefit from using a booklet meeting list.</p>
-										<p></i>The booklet uses the Front and Last pages for custom content.  There is no Custom Content section on a booklet meeting list.</i></p>
-										<h2>Support</h2>
-										<p>Assistance is available with setting up a meeting list.  Visit the support forum at <a href="http://nameetinglist.org/forums/forum/support/" target="_blank">nameetinglist.org</a> or send an email to webservant@nameetinglist.org.</p>
-									</div>
-									<h3 class="help-accordian">Multiple Meeting Lists</h3>
-									<div>
-										<p>Currently, this tool supports one meeting list per site.</p>
-										<p>The following methods could be used to get additional meeting lists.</p>
-										<p>Method 1. Host additional meeting lists on <a target="_blank" href="http://nameetinglist.org/get-a-meeting-list/">nameetinglist.org</a>.</p>
-										<p>Method 2. Install additional Wordpress installations on your server.  For example:</p>
-										<ol>
-										<li>Add a sub-domain for each meeting list. For example:</li>
-										<ul>
-										<li>area1.region.org</li>
-										<li>area2.region.org</li>
-										<li>area3.region.org</li>
-										</ul>
-										<li>Install Wordpress on each sub-domain.</li>
-										<li>Install the bread plugin on each sub-domain.</li>
-										<li>Provide the login to each Wordpress installation to each local web-servant.</li>
-										</ol>
-										<p>Method 3. Create a Wordpress multi-site installation.  This is how nameetinglist.org is setup.</p>
-									</div>
-									<h3 class="help-accordian">Support and Help</h3>
-									<div>
-										<p>Visit the <a target="_blank" href="http://nameetinglist.org/forums/">Support Forum</a> or email <a target="_blank" href="http://nameetinglist.org/contact/">webservant@nameetinglist.org</a></p>
-									</div>
-									<!--
-									<h3 class="help-accordian">Video Overview</h3>
-									<div class="tutorial-video" style="overflow: hidden !important;height:496px !important;">
-										<video preload="metadata" id="myVideo" height="496" controls="controls">
-											<source src="http://nameetinglist.org/videos/overview-good.mp4" type="video/mp4">
-											Your browser does not support HTML5 video.
-										</video>
-									</div>
-									-->
-								</div>
-							</div>
-							<br class="clear">
-						</div>
+						<?php include 'partials/_meeting_list_setup.php'; ?>
 					</div>
 					<div id="tabs-first">						
 						<div id="poststuff">
@@ -2388,15 +2238,6 @@ if (!class_exists("BMLTMeetingList")) {
 												<input class="protection_pass" id="protection_password" type="password" name="protection_password" value="<?php echo $this->options['protection_password'] ;?>" />
 												</p>
 											</div>
-											<!--
-											<div id="progressbardiv">
-												<h3 class="hndle">Progress Bar</h3>
-												<div class="inside">
-													<input class="mlg" name="show_status" value="0" type="hidden">
-													<p><input class="mlg" type="checkbox" name="show_status" value="1" <?//= ($this->options['show_status'] == '1' ? 'checked' : '') ?>>Show Progress Bar during Meeting List Generation</p>
-												</div>
-											</div>
-											-->
 										</div>
 									</div>
 								</div>
@@ -3090,10 +2931,10 @@ if (!class_exists("BMLTMeetingList")) {
 			update_option($this->optionsName, $this->options);
 			return;
 		}
-	} //End Class bmltmeetinglist
+	} //End Class bread
 } // end if
 //instantiate the class
-if (class_exists("BMLTMeetinglist")) {
-	$BMLTMeetinglist_instance = new BMLTMeetinglist();
+if (class_exists("Bread")) {
+	$BMLTMeetinglist_instance = new Bread();
 }
 ?>
