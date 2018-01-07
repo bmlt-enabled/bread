@@ -43,7 +43,6 @@ if (!class_exists("Bread")) {
 				add_action("admin_init", array(&$this, "my_theme_add_editor_styles"));
 				add_action("admin_enqueue_scripts", array(&$this, "enqueue_backend_files"));
 				add_action("wp_default_editor", array(&$this, "ml_default_editor"));
-				//add_filter('show_admin_bar', '__return_false');
 				add_filter('tiny_mce_version', array( __CLASS__, 'force_mce_refresh' ) );
 			} else {
 				// Front end
@@ -148,10 +147,7 @@ if (!class_exists("Bread")) {
 		*/
 		function enqueue_backend_files($hook) {
 			if( $hook == 'toplevel_page_bmlt-meeting-list' ) {
-				//wp_enqueue_script('post');
 				wp_enqueue_script('common');
-				//wp_enqueue_script('wp-lists');
-				//wp_enqueue_script('postbox');
 				wp_enqueue_script('jquery-ui-tabs');
 				wp_enqueue_script('jquery-ui-accordion');
 				wp_enqueue_script('jquery-ui-dialog');
@@ -159,12 +155,10 @@ if (!class_exists("Bread")) {
 				wp_enqueue_style("spectrum", plugin_dir_url(__FILE__) . "css/spectrum.css", false, "1.2", 'all');
 				wp_enqueue_style("admin", plugin_dir_url(__FILE__) . "css/admin.css", false, "1.2", 'all');
 				wp_enqueue_style("chosen", plugin_dir_url(__FILE__) . "css/chosen.min.css", false, "1.2", 'all');
-				
 				wp_enqueue_script("bmlt_meeting_list", plugin_dir_url(__FILE__) . "js/bmlt_meeting_list.js", array('jquery'), "1.2", true);
 				wp_enqueue_script("tooltipster", plugin_dir_url(__FILE__) . "js/jquery.tooltipster.min.js", array('jquery'), "1.2", true);
 				wp_enqueue_script("spectrum", plugin_dir_url(__FILE__) . "js/spectrum.js", array('jquery'), "1.2", true);
 				wp_enqueue_script("chosen", plugin_dir_url(__FILE__) . "js/chosen.jquery.min.js", array('jquery'), "1.2", true);
-				
 			}
 		}
 		function my_theme_add_editor_styles() {
@@ -506,8 +500,6 @@ if (!class_exists("Bread")) {
 				echo '<p><strong>BMLT Meeting List Error: Service Body 1 missing from configuration.<br/><br/>Please go to Settings -> BMLT_Meeting_List and verify Service Body</strong><br/><br/>Contact the bread administrator and report this problem!</p>';
 				exit;
 			}
-			//define('_MPDF_URI',plugin_dir_url(__FILE__).'mpdf/');
-			//include(plugin_dir_path( __FILE__ ).'mpdf/mpdf.php');
 			require_once plugin_dir_path(__FILE__).'mpdf/vendor/autoload.php';
 			$num_columns = 0;
 			if ( !isset($this->options['header_font_size']) ) {$this->options['header_font_size'] = $this->options['content_font_size'];}
@@ -582,15 +574,11 @@ if (!class_exists("Bread")) {
 			$this->mpdf->progressBar = 0;				// Shows progress-bars whilst generating file 0 off, 1 simple, 2 advanced
 			$this->mpdf->progbar_heading = 'Generating Meeting List from BMLT';
 			$blog = get_bloginfo( "name" );
-			//$this->mpdf->progbar_altHTML = '<html><body><div style="font-family: arial;text-align:center;width: 100%;position: absolute;top:0;bottom: 0;left: 0;right: 0;margin: 0 auto;margin-top: 50px;"><h2>'.$blog.'</h2><img src='.plugin_dir_url(__FILE__) . 'css/googleballs-animated.gif /><h2>Generating Meeting List</h2></div>';
 			$this->mpdf->progbar_altHTML = '<html><body><div style="font-family: arial;text-align:center;width: 100%;position: absolute;top:0;bottom: 0;left: 0;right: 0;margin: 0 auto;margin-top: 50px;"><h2>'.$blog.'</h2><h2>Generating Meeting List</h2><h2>Please Wait...</h2></div>';
 			if ( $this->options['show_status'] == '99' ) {			
 				$this->mpdf->StartProgressBarOutput(1);
 			}
 			$this->mpdf->mirrorMargins = false;
-			//$this->mpdf->showStats = false;
-			//$this->mpdf->shrink_tables_to_fit=0;			
-			//$this->mpdf->keep_table_proportions = TRUE;
 			$this->mpdf->list_indent_first_level = 1; // 1 or 0 - whether to indent the first level of a list
 			// LOAD a stylesheet
 			$header_stylesheet = file_get_contents(plugin_dir_path( __FILE__ ).'css/mpdfstyletables.css');
@@ -677,7 +665,7 @@ if (!class_exists("Bread")) {
 				}
 
 				$alnwfl2 = json_decode(wp_remote_retrieve_body($results2), true);
-				//$result_meetings = array_merge($florida['meetings'], $alnwfl1['meetings'], $alnwfl2['meetings']);
+
 				if ( isset($alnwfl1['meetings']) && isset($alnwfl2['meetings']) ) {
 					$result_meetings = array_merge($florida['meetings'], $alnwfl1['meetings'], $alnwfl2['meetings']);
 					$this->formats_used = array_merge($florida['formats'], $alnwfl1['formats'], $alnwfl2['formats']);
@@ -863,7 +851,7 @@ if (!class_exists("Bread")) {
 					$unique_data[] = $value['weekday_tinyint'];
 				}
 			}
-			//$result_meetings = $result_meetings_temp;
+
 			$unique_states = array_unique($unique_states);
 			asort($unique_data, SORT_NATURAL | SORT_FLAG_CASE);
 			$unique_data = array_unique($unique_data);
@@ -882,7 +870,7 @@ if (!class_exists("Bread")) {
 			$header_style .= "background-color:".$this->options['header_background_color'].";";
 			$header_style .= "font-size:".$this->options['header_font_size']."pt;";
 			$header_style .= "line-height:".$this->options['content_line_height'].";";
-			//$header_style .= "font-weight: bold;";
+
 			if ( $this->options['header_uppercase'] === '1' ) { 
 				$header_style .= 'text-transform: uppercase;';
 			}
@@ -916,7 +904,7 @@ if (!class_exists("Bread")) {
 			$this->options['meeting_template_content'] = preg_replace('/[[:^print:]]/', ' ', $this->options['meeting_template_content']);
 			foreach ($unique_states as $this_state) {
 				$x++;
-				//if ( $this->options['meeting_sort'] == 'state' ) { $this->mpdf->WriteHTML('<tocentry content="'.$this_state.'" Level=1 />'); }
+
 				if ( $this->options['meeting_sort'] === 'weekday_area' || $this->options['meeting_sort'] === 'weekday_city' ) {
 					$current_weekday = 1;
 					$show_first_weekday = true;
@@ -932,14 +920,13 @@ if (!class_exists("Bread")) {
 					}
 					$newVal = true;
 					if ( $this->options['meeting_sort'] === 'state' && strpos($this_unique_value, $this_state) === false ) { continue; }
-					foreach ($result_meetings as $meeting_value) {
-						//if ( strpos($root_server, 'naflorida') !== false ) { $meeting_value['location_province'] = ( substr(strtolower($meeting_value['location_province']), 0, 1) == 'f' ? 'Florida' : $meeting_value['location_province'] ); }						
+					foreach ($result_meetings as $meeting_value) {			
 						if ( $this->options['meeting_sort'] === 'weekday_area' || $this->options['meeting_sort'] === 'weekday_city' ) {
 							$area_data = explode(',',$this_unique_value);
 							$weekday_tinyint = $area_data[0];
 							$area_name = $area_data[1];
 							$service_body_bigint = $area_data[2];
-//var_dump($meeting_value['weekday_tinyint'] . ',' . $meeting_value['location_municipality']);exit;
+
 							if ( $this->options['meeting_sort'] === 'weekday_city' ) {
 								if ( $meeting_value['weekday_tinyint'] . ',' . $meeting_value['location_municipality'] !== $weekday_tinyint . ',' . $area_name ) { continue; }
 								
@@ -1048,10 +1035,8 @@ if (!class_exists("Bread")) {
 									
 								}
 								if ( $newVal ) {
-									//$header .= "<h2 style='".$header_style."'>".$meeting_value['location_municipality'] . ', '.$meeting_value['location_province']."</h2>";
 									$header .= "<h2 style='".$header_style."'>".$meeting_value['location_municipality']."</h2>";
 								} elseif ( $newCol ) {
-									//$header .= "<h2 style='".$header_style."'>".$meeting_value['location_municipality'] . ', '.$meeting_value['location_province']." " . $cont . "</h2>";
 									$header .= "<h2 style='".$header_style."'>".$meeting_value['location_municipality']." " . $cont . "</h2>";
 								}
 							}
@@ -1174,14 +1159,8 @@ if (!class_exists("Bread")) {
 							$data = str_replace('location_text', $meeting_value['location_text'], $data);
 							$data = str_replace('location_info', $meeting_value['location_info'], $data);
 							$data = str_replace('location_street', $meeting_value['location_street'], $data);
-							$data = str_replace('bus_line', $meeting_value['bus_line'], $data);
-							//$data = str_replace('[state]', $meeting_value['location_province'], $data, $count);
-							
-							//if ( $count = 0 ) {
-								
-								$data = str_replace('state', $meeting_value['location_province'], $data);
-								
-							//}
+							$data = str_replace('bus_line', $meeting_value['bus_line'], $data);						
+							$data = str_replace('state', $meeting_value['location_province'], $data);							
 							$data = str_replace('street', $meeting_value['location_street'], $data);
 							$data = str_replace('neighborhood', $meeting_value['location_neighborhood'], $data);
 							$data = str_replace('location_municipality', $meeting_value['location_municipality'], $data);
@@ -1216,20 +1195,13 @@ if (!class_exists("Bread")) {
 							$data = str_replace('<br />,', '<br />', $data);
 							$data = str_replace(', <br />', '<br />', $data);
 							$data = str_replace(',<br />', '<br />', $data);
-							$data = str_replace(", , ,", ",", $data);
-							
-							$data = str_replace(", *,", ",", $data);
-							
+							$data = str_replace(", , ,", ",", $data);					
+							$data = str_replace(", *,", ",", $data);							
 							$data = str_replace(", ,", ",", $data);
 							$data = str_replace(" , ", " ", $data);
 							$data = str_replace(", (", " (", $data);
 							$data = str_replace(',</', '</', $data);
-							//$data = str_replace('>, ', '>', $data);
 							$data = str_replace(', </', '</', $data);							
-							
-						//if ( strpos($data, 'A Conscious Contact') !== false ) {
-							//var_export($data);exit;
-						//}
 						} else {
 							$data = '<tr>';
 							if ( $this->options['meeting_sort'] == 'group' ) {
@@ -1312,7 +1284,6 @@ if (!class_exists("Bread")) {
 				$this->mpdf->Output($FilePath,'F');
 				if ( $this->options['page_size'] == '5inch' ) {
 					$this->mpdftmp=new mPDF('',array(203.2,279.4),'','',0,0,0,0,6,6,'L');
-					//$this->mpdftmp=new mPDF('utf-8','Letter-L','7','',0,0,0,0,0,0);
 				} else {
 					$this->mpdftmp=new mPDF('utf-8','A4-L','7','',0,0,0,0,0,0);
 				}
@@ -1393,8 +1364,6 @@ if (!class_exists("Bread")) {
 			$this->options['front_page_content'] = str_replace('<p>[page_break]</p>', '<pagebreak />', $this->options['front_page_content']);
 			$this->options['front_page_content'] = str_replace('[page_break]', '<pagebreak />', $this->options['front_page_content']);
 			$this->options['front_page_content'] = str_replace('<!--nextpage-->', '<pagebreak />', $this->options['front_page_content']);
-			//$this->options['front_page_content'] = str_replace('[toc_entry]', '<tocentry content="', $this->options['front_page_content']);
-			//$this->options['front_page_content'] = str_replace('[/toc_entry]', '" />', $this->options['front_page_content']);
 			$this->options['front_page_content'] = str_replace("[date]", strtoupper( date ( "F Y" ) ), $this->options['front_page_content']);
 			if ( strpos($this->options['front_page_content'], '[month_lower_fr') !== false ) {
 				setlocale( LC_TIME, 'fr_FR' );
@@ -1437,8 +1406,6 @@ if (!class_exists("Bread")) {
 			$this->options['front_page_content'] = str_replace("[area]", strtoupper($this->options['service_body_1']), $this->options['front_page_content']);
 			$this->options['front_page_content'] = str_replace('[page_break no_page_number]', '<sethtmlpagefooter name="" value="0" /><pagebreak />', $this->options['front_page_content']);
 			$this->options['front_page_content'] = str_replace('[start_page_numbers]', '<sethtmlpagefooter name="MyFooter" page="ALL" value="1" />', $this->options['front_page_content']);
-			//$this->options['front_page_content'] = str_replace('[start_toc]', '<sethtmlpagefooter name="" value="0" /><pagebreak resetpagenum="3" /><tocpagebreak paging="on" links="on" toc-margin-top="40px" toc-margin-header="5mm" toc-odd-header-name="html_MyTOCHeader" toc-odd-header-value="1" toc-odd-footer-name="html_MyTOCFooter" toc-odd-footer-value="1" toc-even-footer-name="html_MyTOCFooter" toc-even-footer-value="1" />', $this->options['front_page_content']);
-			
 			$this->options['front_page_content'] = mb_convert_encoding($this->options['front_page_content'], 'HTML-ENTITIES');
 			$this->mpdf->WriteHTML(utf8_encode(wpautop(stripslashes($this->options['front_page_content']))));
 			
@@ -1459,8 +1426,6 @@ if (!class_exists("Bread")) {
 			$this->options['last_page_content'] = str_replace('<p>[page_break]</p>', '<pagebreak />', $this->options['last_page_content']);
 			$this->options['last_page_content'] = str_replace('[page_break]', '<pagebreak />', $this->options['last_page_content']);
 			$this->options['last_page_content'] = str_replace('<!--nextpage-->', '<pagebreak />', $this->options['last_page_content']);
-			//$this->options['last_page_content'] = str_replace('[toc_entry]', '<tocentry content="', $this->options['last_page_content']);
-			//$this->options['last_page_content'] = str_replace('[/toc_entry]', '" />', $this->options['last_page_content']);
 			$this->options['last_page_content'] = mb_convert_encoding($this->options['last_page_content'], 'HTML-ENTITIES');
 			$this->mpdf->WriteHTML(utf8_encode(wpautop(stripslashes($this->options['last_page_content']))));
 		}
@@ -1540,18 +1505,7 @@ if (!class_exists("Bread")) {
 				if ( !strstr($value['comments'],'Open Position') ) {
 					$display_string .= '<strong> - ' . date ('g:i A',strtotime($value['start_time'])) . '</strong>';
 				}
-/*
-				$desc = '';
-				if ( trim ( $value['comments'] ) ) {
-					$desc .= trim ( $value['comments'] );
-				}
-				$desc = preg_replace ( "/[\n|\r]/", ", ", $desc );
-				$desc = preg_replace ( "/,\s*,/", ",", $desc );
-				$desc = stripslashes ( stripslashes ( $desc ) );
-				if ( $desc ) {
-					$display_string .= ' - ' . $desc;
-				}
-*/
+
 				if ( trim ( $value['location_text'] ) ) {
 					$display_string .= ' - '.trim ( $value['location_text'] );
 				}
@@ -1887,7 +1841,6 @@ if (!class_exists("Bread")) {
 						if ( $this_version !== $source_of_truth_version ) {
 							$ThisVersion = "<span style='color: #f00;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-dismiss'></div>Notice: BMLT Server Update Available! Your Version = ".$bmlt_version.". </span>";
 							$ThisVersion .= "<span style='color: #7AD03A;'><i>Updated version = " . $source_of_truth . "</i></span><br />";
-							//$ThisVersion .= "<span style='color: #f00;'>Install the current version of BMLT Server for the latest features, optimal security and bug fixes.</span>";
 						}
 					}
 					?>
@@ -1973,7 +1926,6 @@ if (!class_exists("Bread")) {
 			}
 			$json_file = json_encode($need_options); // Encode data into json data
 			ignore_user_abort( true );
-//			nocache_headers();
 			header( 'Content-Type: application/json; charset=utf-8' );
 			header("Content-Disposition: attachment; filename=$json_name");
 			header( "Expires: 0" );
