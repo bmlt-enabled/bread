@@ -729,7 +729,7 @@ if (!class_exists("Bread")) {
 						$extras .= "&meeting_ids[]=".$value;
 					}
 					
-					$extra_results = get_configured_root_server_request("/client_interface/json/?switcher=GetSearchResults&sort_keys=".$sort_keys."".$extras."".$get_used_formats );
+					$extra_results = get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults&sort_keys=".$sort_keys."".$extras."".$get_used_formats );
 					$extra_result = json_decode(wp_remote_retrieve_body($extra_results), true);
 					if ( $extra_result <> Null ) {
 						

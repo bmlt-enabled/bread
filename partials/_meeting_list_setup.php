@@ -1,7 +1,7 @@
 <?php
-if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
-    die('Sorry, but you cannot access this page directly.');
-} ?>
+//if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
+//    die('Sorry, but you cannot access this page directly.');
+//} ?>
 <div id="poststuff">
     <div id="postbox-container" class="postbox-container">
         <div id="accordion">
@@ -68,3 +68,4 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
         </div>
     </div>
     <br class="clear">
+</div>
