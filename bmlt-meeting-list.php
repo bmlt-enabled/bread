@@ -51,22 +51,23 @@ if (!class_exists("Bread")) {
 				}
 			}
 		}
+
 		function ml_default_editor() {
 			global $my_admin_page;
 			$screen = get_current_screen();
 			if ( $screen->id == $my_admin_page ) {
-				return "tinymce";
-				
+				return "tinymce";	
 			}
 		}
+
 		function force_mce_refresh( $ver ) {
 			global $my_admin_page;
 			$screen = get_current_screen();
 			if ( $screen->id == $my_admin_page ) {
-				return $ver + 99;
-				
+				return $ver + 99;	
 			}
 		}
+
 		function my_sideload_image() {
 			global $my_admin_page;
 			$screen = get_current_screen();
@@ -77,6 +78,7 @@ if (!class_exists("Bread")) {
 				}
 			}
 		}
+
 		// Register new button in the editor
 		function my_register_mce_button( $buttons ) {
 			global $my_admin_page;
@@ -86,6 +88,7 @@ if (!class_exists("Bread")) {
 			}
 			return $buttons;
 		}
+
 		function my_custom_plugins () {
 			global $my_admin_page;
 			$screen = get_current_screen();
@@ -98,7 +101,8 @@ if (!class_exists("Bread")) {
 				}
 			}
 			return $plugins_array;
-		}			
+		}	
+
 		// Enable font size & font family selects in the editor
 		function tiny_tweaks( $initArray ){
 			global $my_admin_page;
@@ -113,6 +117,7 @@ if (!class_exists("Bread")) {
 			}
 			return $initArray;
 		}
+
 		function is_root_server_missing() {
 			global $my_admin_page;
 			$screen = get_current_screen();
@@ -130,18 +135,22 @@ if (!class_exists("Bread")) {
 				));
 			}
 		}
+
 		function clear_admin_message() {
 			remove_action("admin_notices", array(
 				&$this,
 				"is_root_server_missing"
 			));
 		}
+
 		function clear_admin_message2() {
 			echo '<div id="message" class="error"><p>what</p></div>';
 		}
+
 		function Bread() {
 			$this->__construct();
 		}
+
 		/**
 		* @desc Adds JS/CSS to the header
 		*/
@@ -161,6 +170,7 @@ if (!class_exists("Bread")) {
 				wp_enqueue_script("chosen", plugin_dir_url(__FILE__) . "js/chosen.jquery.min.js", array('jquery'), "1.2", true);
 			}
 		}
+
 		function my_theme_add_editor_styles() {
 			global $my_admin_page;
 			$screen = get_current_screen();
@@ -329,6 +339,7 @@ if (!class_exists("Bread")) {
 			
 			return $all_meetings;
 		}
+
 		function get_areas ( $root_server ) {
 			$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetServiceBodies");
 			$result = json_decode(wp_remote_retrieve_body($results), true);
@@ -349,6 +360,7 @@ if (!class_exists("Bread")) {
 						
 			return $unique_areas;
 		}
+
 		function get_bmlt_server_lang () {
 			$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetServerInfo");
 			$result = json_decode(wp_remote_retrieve_body($results), true);
@@ -356,6 +368,7 @@ if (!class_exists("Bread")) {
 			
 			return $result;
 		}
+
 		function testEmailPassword($root_server,$login,$password) {
 			$ch = curl_init();
 			$cookie = ABSPATH . "cookie.txt";
@@ -391,7 +404,6 @@ if (!class_exists("Bread")) {
 		}
 
 		function getUsedFormats() {
-			$root_server = $this->options['root_server'];
 			$area_data = explode(',',$this->options['service_body_1']);
 			$service_body_id = $area_data[1];
 			$parent_body_id = $area_data[2];
@@ -400,7 +412,6 @@ if (!class_exists("Bread")) {
 			} else {
 				$services = '&services[]='.$service_body_id;
 			}
-			$root_server = $this->options['root_server'];
 			$area_data = explode(',',$this->options['service_body_1']);
 			$service_body_id = $area_data[1];
 			$parent_body_id = $area_data[2];
@@ -416,6 +427,7 @@ if (!class_exists("Bread")) {
 			$this->sortBySubkey($results, 'key_string');
 			return $results;
 		}
+
 		function sortBySubkey(&$array, $subkey, $sortType = SORT_ASC) {
 			if ( empty( $array ) ) { return; }
 			foreach ($array as $subarray) {
@@ -423,12 +435,12 @@ if (!class_exists("Bread")) {
 			}
 			array_multisort($keys, $sortType, $array);
 		}
+
 		function bmlt_meeting_list($atts = null, $content = null) {
 			ini_set('max_execution_time', 600); // sandwich server can take a long time to generate a schedule, override the server setting
 			if ( isset( $_GET['export-meeting-list'] ) && $_GET['export-meeting-list'] == '1' ) {
 				$this->pwsix_process_settings_export();
 			}
-			$root_server = $this->options['root_server'];
 			$area_data = explode(',',$this->options['service_body_1']);
 			$area = $area_data[0];
 			$this->options['service_body_1'] = $area;
@@ -1299,7 +1311,7 @@ if (!class_exists("Bread")) {
 				$pw = $this->mpdftmp->w / 2;
 				$ph = $this->mpdftmp->h;
 				$pagecount = $this->mpdftmp->SetSourceFile($FilePath);
-				$pp = $this->GetBookletPages($pagecount);
+				$pp = $this->get_booklet_pages($pagecount);
 				foreach($pp AS $v) {
 					$this->mpdftmp->AddPage(); 
 					if ($v[0]>0 & $v[0]<=$pagecount) {
@@ -1326,7 +1338,8 @@ if (!class_exists("Bread")) {
 			$this->mpdf->Output($FilePath,'I');
 			exit;
 		}
-		function GetBookletPages($np, $backcover=true) {
+
+		function get_booklet_pages($np, $backcover=true) {
 			$lastpage = $np;
 			$np = 4*ceil($np/4);
 			$pp = array();
@@ -1345,12 +1358,12 @@ if (!class_exists("Bread")) {
 			}
 			return $pp;
 		}
+
 		function write_front_page() {
 			$this->mpdf->WriteHTML('td{font-size: '.$this->options['front_page_font_size']."pt;line-height:".$this->options['front_page_line_height'].';}',1);
 			$this->mpdf->SetDefaultBodyCSS('line-height', $this->options['front_page_line_height']);
 			$this->mpdf->SetDefaultBodyCSS('font-size', $this->options['front_page_font_size'] . 'pt');
 			$this->options['front_page_content'] = str_replace('[format_codes_used_basic]', $this->write_formats($this->formats_used, 'front_page'), $this->options['front_page_content']);
-			
 			$this->options['front_page_content'] = str_replace('[format_codes_used_detailed]', $this->write_detailed_formats($this->formats_used, 'front_page'), $this->options['front_page_content']);
 			$this->options['front_page_content'] = str_replace('[format_codes_used_basic_es]', $this->write_formats($this->formats_spanish, 'front_page'), $this->options['front_page_content']);
 			$this->options['front_page_content'] = str_replace('[format_codes_used_detailed_es]', $this->write_detailed_formats($this->formats_spanish, 'front_page'), $this->options['front_page_content']);
@@ -1410,6 +1423,7 @@ if (!class_exists("Bread")) {
 			$this->mpdf->WriteHTML(utf8_encode(wpautop(stripslashes($this->options['front_page_content']))));
 			
 		}
+
 		function write_last_page() {
 			$this->mpdf->WriteHTML('td{font-size: '.$this->options['last_page_font_size']."pt;line-height:".$this->options['last_page_line_height'].';}',1);
 			$this->mpdf->SetDefaultBodyCSS('font-size', $this->options['last_page_font_size'] . 'pt');
@@ -1429,6 +1443,7 @@ if (!class_exists("Bread")) {
 			$this->options['last_page_content'] = mb_convert_encoding($this->options['last_page_content'], 'HTML-ENTITIES');
 			$this->mpdf->WriteHTML(utf8_encode(wpautop(stripslashes($this->options['last_page_content']))));
 		}
+
 		function write_custom_section() {
 			$this->mpdf->SetDefaultBodyCSS('line-height', $this->options['custom_section_line_height']);
 			$this->mpdf->SetDefaultBodyCSS('font-size', $this->options['custom_section_font_size'] . 'pt');
@@ -1448,6 +1463,7 @@ if (!class_exists("Bread")) {
 			$this->options['custom_section_content'] = mb_convert_encoding($this->options['custom_section_content'], 'HTML-ENTITIES');
 			$this->mpdf->WriteHTML(utf8_encode(wpautop(stripslashes($this->options['custom_section_content']))));
 		}
+
 		function write_formats($formats, $page) {
 			if ( $formats == Null ) { return ''; }
 			$this->mpdf->WriteHTML('td{font-size: '.$this->options[$page.'_font_size']."pt;line-height:".$this->options[$page.'_line_height'].';}',1);
@@ -1465,6 +1481,7 @@ if (!class_exists("Bread")) {
 			$data .= "</table>";
 			return $data;
 		}
+
 		function write_detailed_formats($formats, $page) {
 			if ( $formats == Null ) { return ''; }
 			$this->mpdf->WriteHTML('td{font-size: '.$this->options[$page.'_font_size']."pt;line-height:".$this->options[$page.'_line_height'].';}',1);
@@ -1479,6 +1496,7 @@ if (!class_exists("Bread")) {
 			$data .= "</table>";
 			return $data;
 		}
+
 		function write_service_meetings($font_size, $line_height) {
 			if ( $this->service_meeting_result == Null ) {
 				return '';
@@ -1543,6 +1561,7 @@ if (!class_exists("Bread")) {
 			$data .= "</table>";
 			return $data;
 		}
+
 		/**
 		* @desc Adds the options sub-panel
 		*/
@@ -1550,6 +1569,7 @@ if (!class_exists("Bread")) {
 			global $my_admin_page;
 			$my_admin_page = add_menu_page( 'Meeting List', 'Meeting List', 'edit_posts', basename(__FILE__), array(&$this, 'admin_options_page'),'', 3 );
 		}
+
 		function bmltrootserverurl_meta_box() {
 			global $connect;
 			?>
@@ -1558,6 +1578,7 @@ if (!class_exists("Bread")) {
 			<p><a target="_blank" href="http://bmlt.magshare.net/what-is-the-bmlt/hit-parade/#bmlt-server">BMLT Server Implementations</a></p>
 			<?php			   
 		}
+
 		/**
 		* Adds settings/options page
 		*/
@@ -1876,6 +1897,7 @@ if (!class_exists("Bread")) {
 			</div>
 <?php
 		}
+
 		/**
 		 * Deletes transient cache
 		 */
@@ -1887,6 +1909,7 @@ if (!class_exists("Bread")) {
 			wp_cache_flush();
 			return $num1 + $num2;
 		}
+
 		/**
 		 * count transient cache
 		 */
@@ -1898,6 +1921,7 @@ if (!class_exists("Bread")) {
 			wp_cache_flush();
 			return $num1 + $num2;
 		}
+
 		/**
 		 * Process a settings export that generates a .json file of the shop settings
 		 */
@@ -1932,6 +1956,7 @@ if (!class_exists("Bread")) {
 			echo json_encode( $settings );
 			exit;
 		}
+
 		/**
 		 * Process a settings import from a json file
 		 */
@@ -1962,6 +1987,7 @@ if (!class_exists("Bread")) {
 			setcookie('pwsix_action', "import_settings", time()+10); 
 			wp_safe_redirect( admin_url( '?page=bmlt-meeting-list.php' ) );
 		}
+
 		/**
 		 * Process a default settings
 		 */
@@ -1991,6 +2017,7 @@ if (!class_exists("Bread")) {
 			setcookie('pwsix_action', "default_settings_success", time()+10); 
 			wp_safe_redirect( admin_url( '?page=bmlt-meeting-list.php' ) );
 		}
+
 		/**
 		* @desc Adds the Settings link to the plugin activate/deactivate page
 		*/
@@ -1999,6 +2026,7 @@ if (!class_exists("Bread")) {
 			array_unshift($links, $settings_link); // before other links
 			return $links;
 		}
+
 		/**
 		* Retrieves the plugin options from the database.
 		* @return array
@@ -2013,6 +2041,7 @@ if (!class_exists("Bread")) {
 			}
 			$this->options = $theOptions;
 		}
+
 		/**
 		* Saves the admin options to the database.
 		*/
