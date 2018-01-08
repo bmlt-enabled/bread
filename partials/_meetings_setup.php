@@ -36,24 +36,24 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     </td>
                     <td style="padding-right: 10px;">
                         <input name="header_uppercase" value="0" type="hidden">
-                    <td><label for="header_uppercase">Uppercase: </label><input type="checkbox" name="header_uppercase" value="1" <?= ($this->options['header_uppercase'] == '1' ? 'checked' : '') ?>></td>
+                    <td><label for="header_uppercase">Uppercase: </label><input type="checkbox" name="header_uppercase" value="1" <?php echo ($this->options['header_uppercase'] == '1' ? 'checked' : '') ?>></td>
                     <td style="padding-right: 10px;">
                         <input name="header_bold" value="0" type="hidden">
-                    <td><label for="header_bold">Bold: </label><input type="checkbox" name="header_bold" value="1" <?= ($this->options['header_bold'] == '1' ? 'checked' : '') ?>></td>
+                    <td><label for="header_bold">Bold: </label><input type="checkbox" name="header_bold" value="1" <?php echo ($this->options['header_bold'] == '1' ? 'checked' : '') ?>></td>
                     </tr></table>
                     <p>
                         <div class="group_by" style="margin-right: 10px; display: inline;">
                             <label for="meeting_sort">Group Meetings By: </label>
                             <select id="meeting_sort" name="meeting_sort">					
-                                <option <?= ($this->options['meeting_sort'] == 'day' ? 'selected="selected"' : '') ?> value="day">Weekday</option>
-                                <option <?= ($this->options['meeting_sort'] == 'city' ? 'selected="selected"' : '') ?> value="city">City</option>
-                                <option <?= ($this->options['meeting_sort'] == 'group' ? 'selected="selected"' : '') ?> value="group">Group</option>
-                                <option <?= ($this->options['meeting_sort'] == 'county' ? 'selected="selected"' : '') ?> value="county">County</option>
-                                <option <?= ($this->options['meeting_sort'] == 'borough' ? 'selected="selected"' : '') ?> value="borough">Borough</option>
-                                <option <?= ($this->options['meeting_sort'] == 'borough_county' ? 'selected="selected"' : '') ?> value="borough_county">Borough+County</option>
-                                <option <?= ($this->options['meeting_sort'] == 'state' ? 'selected="selected"' : '') ?> value="state">State+City</option>
-                                <option <?= ($this->options['meeting_sort'] == 'weekday_area' ? 'selected="selected"' : '') ?> value="weekday_area">Weekday+Area</option>
-                                <option <?= ($this->options['meeting_sort'] == 'weekday_city' ? 'selected="selected"' : '') ?> value="weekday_city">Weekday+City</option>
+                                <option <?php echo ($this->options['meeting_sort'] == 'day' ? 'selected="selected"' : '') ?> value="day">Weekday</option>
+                                <option <?php echo ($this->options['meeting_sort'] == 'city' ? 'selected="selected"' : '') ?> value="city">City</option>
+                                <option <?php echo ($this->options['meeting_sort'] == 'group' ? 'selected="selected"' : '') ?> value="group">Group</option>
+                                <option <?php echo ($this->options['meeting_sort'] == 'county' ? 'selected="selected"' : '') ?> value="county">County</option>
+                                <option <?php echo ($this->options['meeting_sort'] == 'borough' ? 'selected="selected"' : '') ?> value="borough">Borough</option>
+                                <option <?php echo ($this->options['meeting_sort'] == 'borough_county' ? 'selected="selected"' : '') ?> value="borough_county">Borough+County</option>
+                                <option <?php echo ($this->options['meeting_sort'] == 'state' ? 'selected="selected"' : '') ?> value="state">State+City</option>
+                                <option <?php echo ($this->options['meeting_sort'] == 'weekday_area' ? 'selected="selected"' : '') ?> value="weekday_area">Weekday+Area</option>
+                                <option <?php echo ($this->options['meeting_sort'] == 'weekday_city' ? 'selected="selected"' : '') ?> value="weekday_city">Weekday+City</option>
                             </select>
                         </div>
                         <div class="borough_by_suffix">
@@ -222,10 +222,10 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     <table>
                     <tr>
                     <td style="padding-right: 30px;">
-                        <div><input class="mlg" id="time_clock12" type="radio" name="time_clock" value="12" <?= ($this->options['time_clock'] == '12' || $this->options['time_clock'] == '' ? 'checked' : '') ?>><label for="time_clock">12 Hour</label></div>
+                        <div><input class="mlg" id="time_clock12" type="radio" name="time_clock" value="12" <?php echo ($this->options['time_clock'] == '12' || $this->options['time_clock'] == '' ? 'checked' : '') ?>><label for="time_clock">12 Hour</label></div>
                     </td>
                     <td style="padding-right: 30px;">
-                        <div><input class="mlg" id="option1" type="radio" name="time_option" value="1" <?= ($this->options['time_option'] == '1' || $this->options['time_option'] == '' ? 'checked' : '') ?>><label for="option1"><?= $start_time ?></label></div>
+                        <div><input class="mlg" id="option1" type="radio" name="time_option" value="1" <?php echo ($this->options['time_option'] == '1' || $this->options['time_option'] == '' ? 'checked' : '') ?>><label for="option1"><?php echo $start_time ?></label></div>
                     </td>
                     <td style="padding-right: 30px;">
                     <?php if ( $this->options['remove_space'] == '0' || $this->options['remove_space'] == '' ) { ?>
@@ -237,10 +237,10 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     </tr>
                     <tr>
                     <td style="padding-right: 30px;">
-                        <div><input class="mlg" id="time_clock24" type="radio" name="time_clock" value="24" <?= ($this->options['time_clock'] == '24' ? 'checked' : '') ?>><label for="time_clock">24 Hour</label></div>
+                        <div><input class="mlg" id="time_clock24" type="radio" name="time_clock" value="24" <?php echo ($this->options['time_clock'] == '24' ? 'checked' : '') ?>><label for="time_clock">24 Hour</label></div>
                     </td>
                     <td style="padding-right: 30px;">
-                        <div><input class="mlg" id="option2" type="radio" name="time_option" value="2" <?= ($this->options['time_option'] == '2' ? 'checked' : '') ?>><label for="option2"><?= $start_time ?><?= $space ?>-<?= $space ?><?= $end_time ?></label></div>
+                        <div><input class="mlg" id="option2" type="radio" name="time_option" value="2" <?php echo ($this->options['time_option'] == '2' ? 'checked' : '') ?>><label for="option2"><?php echo $start_time ?><?php echo $space ?>-<?php echo $space ?><?php echo $end_time ?></label></div>
                     </td>
                     <td style="padding-right: 30px;">								
                     <?php if ( $this->options['remove_space'] == '1' ) { ?>
@@ -253,10 +253,10 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     </tr>
                     <tr>
                     <td style="padding-right: 30px;">
-                        <div><input class="mlg" id="time_clock24fr" type="radio" name="time_clock" value="24fr" <?= ($this->options['time_clock'] == '24fr' ? 'checked' : '') ?>><label for="time_clock">24 Hour French</label></div>
+                        <div><input class="mlg" id="time_clock24fr" type="radio" name="time_clock" value="24fr" <?php echo ($this->options['time_clock'] == '24fr' ? 'checked' : '') ?>><label for="time_clock">24 Hour French</label></div>
                     </td>
                     <td style="padding-right: 30px;">
-                        <div><input class="mlg" id="option3" type="radio" name="time_option" value="3" <?= ($this->options['time_option'] == '3' ? 'checked' : '') ?>><label for="option3"><?= $start_time_2 ?><?= $space ?>-<?= $space ?><?= $end_time_2 ?></label></div>
+                        <div><input class="mlg" id="option3" type="radio" name="time_option" value="3" <?php echo ($this->options['time_option'] == '3' ? 'checked' : '') ?>><label for="option3"><?php echo $start_time_2 ?><?php echo $space ?>-<?php echo $space ?><?php echo $end_time_2 ?></label></div>
                     </td>
                     <td style="padding-right: 30px;">								
                     </td>
@@ -281,9 +281,9 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         <?php $countmax = count ( $used_formats ); ?>
                         <?php for ( $count = 0; $count < $countmax; $count++ ) { ?>
                             <?php if ( $used_formats[$count]['id'] == $this->options['used_format_1'] ) { ?>
-                                <option selected="selected" value="<?= $used_formats[$count]['id'] ?>"><?= $used_formats[$count]['name_string'] ?></option>
+                                <option selected="selected" value="<?php echo $used_formats[$count]['id'] ?>"><?php echo $used_formats[$count]['name_string'] ?></option>
                             <?php } else { ?>
-                                <option value="<?= $used_formats[$count]['id'] ?>"><?= $used_formats[$count]['name_string'] ?></option>
+                                <option value="<?php echo $used_formats[$count]['id'] ?>"><?php echo $used_formats[$count]['name_string'] ?></option>
                             <?php } ?>
                         <?php } ?>
                     <?php } else { ?>
@@ -312,7 +312,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                 <h3 class="hndle">Meeting Email Contact<span title='<?PHP echo $title; ?>' class="top-tooltip"></span></h3>
                 <div class="inside">
                     <input name="include_meeting_email" value="0" type="hidden">
-                    <p><input type="checkbox" name="include_meeting_email" value="1" <?= ($this->options['include_meeting_email'] == '1' ? 'checked' : '') ?>>Enable</p>
+                    <p><input type="checkbox" name="include_meeting_email" value="1" <?php echo ($this->options['include_meeting_email'] == '1' ? 'checked' : '') ?>>Enable</p>
                     <p>
                     <label for="bmlt_login_id">Login ID: </label>
                     <input class="bmlt-login" id="bmlt_login_id" type="text" name="bmlt_login_id" value="<?php echo $this->options['bmlt_login_id'] ;?>" />&nbsp;&nbsp;&nbsp;&nbsp;
@@ -342,13 +342,13 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         </div>
                     </div>
                     <input name="include_asm" value="0" type="hidden">
-                    <p><input type="checkbox" name="include_asm" value="1" <?= ($this->options['include_asm'] == '1' ? 'checked' : '') ?>>Enable</p>
+                    <p><input type="checkbox" name="include_asm" value="1" <?php echo ($this->options['include_asm'] == '1' ? 'checked' : '') ?>>Enable</p>
                 </div>
             </div>
         </div>
     </div>
+    <input type="submit" value="Save Changes" id="bmltmeetinglistsave4" name="bmltmeetinglistsave" class="button-primary" />
+    <?php echo '<p style="display: inline; margin-top:.5em;margin-bottom:1.0em;margin-left:.2em;"><a target="_blank" class="button-primary" href="'.home_url() . '/?current-meeting-list=1">Generate Meeting List</a></p>'; ?>
+    <div style="display:inline;"><i>&nbsp;&nbsp;Save Changes before Generate Meeting List.</i></div>
     <br class="clear">
 </div>
-<input type="submit" value="Save Changes" id="bmltmeetinglistsave4" name="bmltmeetinglistsave" class="button-primary" />
-<?= '<p style="display: inline; margin-top:.5em;margin-bottom:1.0em;margin-left:.2em;"><a target="_blank" class="button-primary" href="'.home_url() . '/?current-meeting-list=1">Generate Meeting List</a></p>'; ?>
-<div style="display:inline;"><i>&nbsp;&nbsp;Save Changes before Generate Meeting List.</i></div>

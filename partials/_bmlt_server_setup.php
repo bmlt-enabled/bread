@@ -12,7 +12,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     <label for="root_server">BMLT Server URL: </label>
                     <input class="bmlt-input" id="root_server" type="text" name="root_server" value="<?php echo $this->options['root_server']; ?>" />
                     </p>
-                    <?
+                    <?php
                     if ( $this_connected ) {
                         echo $ThisVersion;
                     } elseif ( empty($this->options['root_server']) ) {
@@ -40,9 +40,9 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                                     <?php $option_description = $area_name . " (" . $area_id . ") " . $area_parent_name . " (" . $area_parent . ")" ?></option>
                                     <?php $is_data = explode(',',$this->options['service_body_1']); ?>
                                     <?php if ( $area_id == $is_data[1] ) { ?>
-                                        <option selected="selected" value="<?= $unique_area ?>"><?= $option_description ?></option>
+                                        <option selected="selected" value="<?php echo $unique_area ?>"><?php echo $option_description ?></option>
                                     <?php } else { ?>
-                                        <option value="<?= $unique_area ?>"><?= $option_description ?></option>
+                                        <option value="<?php echo $unique_area ?>"><?php echo $option_description ?></option>
                                     <?php } ?>
                                 <?php } ?>
                             <?php } else { ?>
@@ -64,9 +64,9 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                                     <?php $option_description = $area_name . " (" . $area_id . ") " . $area_parent_name . " (" . $area_parent . ")" ?></option>
                                     <?php $is_data = explode(',',$this->options['service_body_2']); ?>
                                     <?php if ( $area_id == $is_data[1] ) { ?>
-                                        <option selected="selected" value="<?= $unique_area ?>"><?= $option_description ?></option>
+                                        <option selected="selected" value="<?php echo $unique_area ?>"><?php echo $option_description ?></option>
                                     <?php } else { ?>
-                                        <option value="<?= $unique_area ?>"><?= $option_description ?></option>
+                                        <option value="<?php echo $unique_area ?>"><?php echo $option_description ?></option>
                                     <?php } ?>
                                 <?php } ?>
                             <?php } else { ?>
@@ -88,9 +88,9 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                                     <?php $option_description = $area_name . " (" . $area_id . ") " . $area_parent_name . " (" . $area_parent . ")" ?></option>
                                     <?php $is_data = explode(',',$this->options['service_body_3']); ?>
                                     <?php if ( $area_id == $is_data[1] ) { ?>
-                                        <option selected="selected" value="<?= $unique_area ?>"><?= $option_description ?></option>
+                                        <option selected="selected" value="<?php echo $unique_area ?>"><?php echo $option_description ?></option>
                                     <?php } else { ?>
-                                        <option value="<?= $unique_area ?>"><?= $option_description ?></option>
+                                        <option value="<?php echo $unique_area ?>"><?php echo $option_description ?></option>
                                     <?php } ?>
                                 <?php } ?>
                             <?php } else { ?>
@@ -112,9 +112,9 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                                     <?php $option_description = $area_name . " (" . $area_id . ") " . $area_parent_name . " (" . $area_parent . ")" ?></option>
                                     <?php $is_data = explode(',',$this->options['service_body_4']); ?>
                                     <?php if ( $area_id == $is_data[1] ) { ?>
-                                        <option selected="selected" value="<?= $unique_area ?>"><?= $option_description ?></option>
+                                        <option selected="selected" value="<?php echo $unique_area ?>"><?php echo $option_description ?></option>
                                     <?php } else { ?>
-                                        <option value="<?= $unique_area ?>"><?= $option_description ?></option>
+                                        <option value="<?php echo $unique_area ?>"><?php echo $option_description ?></option>
                                     <?php } ?>
                                 <?php } ?>
                             <?php } else { ?>
@@ -136,9 +136,9 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                                     <?php $option_description = $area_name . " (" . $area_id . ") " . $area_parent_name . " (" . $area_parent . ")" ?></option>
                                     <?php $is_data = explode(',',$this->options['service_body_5']); ?>
                                     <?php if ( $area_id == $is_data[1] ) { ?>
-                                        <option selected="selected" value="<?= $unique_area ?>"><?= $option_description ?></option>
+                                        <option selected="selected" value="<?php echo $unique_area ?>"><?php echo $option_description ?></option>
                                     <?php } else { ?>
-                                        <option value="<?= $unique_area ?>"><?= $option_description ?></option>
+                                        <option value="<?php echo $unique_area ?>"><?php echo $option_description ?></option>
                                     <?php } ?>
                                 <?php } ?>
                             <?php } else { ?>
@@ -169,7 +169,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                             <?php $extra_meeting_x = explode('|||',$extra_meeting); ?>
                             <?php $extra_meeting_id = $extra_meeting_x[3]; ?>									
                             <?php $extra_meeting_display = substr($extra_meeting_x[0], 0, 30) . ';' . $extra_meeting_x[1] . ';' . $extra_meeting_x[2]; ?>
-                            <option <?= (in_array($extra_meeting_id, $this->options['extra_meetings']) ? 'selected="selected"' : '') ?> value="<?= $extra_meeting_id ?>"><?= $extra_meeting_display ?></option>
+                            <option <?php echo (in_array($extra_meeting_id, $this->options['extra_meetings']) ? 'selected="selected"' : '') ?> value="<?php echo $extra_meeting_id ?>"><?php echo $extra_meeting_display ?></option>
                         <?php } ?>
                     <?php } else { ?>
                         <option selected="selected" value="none"><?php echo 'Not Connected - Can not get Extra Meetings'; ?></option>
@@ -183,11 +183,11 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
             <div id="currentmeetinglistlinkdiv" class="postbox">
                 <h3 class="hndle">Current Meeting List Link<span title='<p>Share the "Current Meeting List Link" on your website, email, etc to generate this meeting list.</p>' class="tooltip"></span></h3>
                 <div class="inside">
-                    <p><a target="_blank" href='<?= home_url() ?>/?current-meeting-list=1'><?= home_url() ?>/?current-meeting-list=1</a></p>
+                    <p><a target="_blank" href='<?php echo home_url() ?>/?current-meeting-list=1'><?php echo home_url() ?>/?current-meeting-list=1</a></p>
                 </div>
             </div>
             <div id="meetinglistcachediv" class="postbox">
-                <h3 class="hndle">Meeting List Cache (<?= $this->count_transient_cache(); ?> Cached Entries)<span title='<p>Meeting List data is cached (as database transient) to generate a Meeting List faster.</p><p><i>CACHE is DELETED when you Save Changes.</i></p><p><b>The meeting list will not reflect changes to BMLT until the cache expires or is deleted.</b></p>' class="tooltip"></span></h3>
+                <h3 class="hndle">Meeting List Cache (<?php echo $this->count_transient_cache(); ?> Cached Entries)<span title='<p>Meeting List data is cached (as database transient) to generate a Meeting List faster.</p><p><i>CACHE is DELETED when you Save Changes.</i></p><p><b>The meeting list will not reflect changes to BMLT until the cache expires or is deleted.</b></p>' class="tooltip"></span></h3>
                 <div class="inside">
                     <?php global $_wp_using_ext_object_cache; ?>
                     <?php if ( $_wp_using_ext_object_cache ) { ?>
@@ -204,7 +204,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
             </div>
         </div>
     <input type="submit" value="Save Changes" id="bmltmeetinglistsave1" name="bmltmeetinglistsave" class="button-primary" />
-    <?= '<p style="display: inline; margin-top:.5em;margin-bottom:1.0em;margin-left:.2em;"><a target="_blank" class="button-primary" href="'.home_url() . '/?current-meeting-list=1">Generate Meeting List</a></p>'; ?>
+    <?php echo '<p style="display: inline; margin-top:.5em;margin-bottom:1.0em;margin-left:.2em;"><a target="_blank" class="button-primary" href="'.home_url() . '/?current-meeting-list=1">Generate Meeting List</a></p>'; ?>
     <div style="display:inline;"><i>&nbsp;&nbsp;Save Changes before Generate Meeting List.</i></div>
     <br class="clear">
     </div>

@@ -53,21 +53,21 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                 <h3 class="hndle">Page Layout<span title='<?PHP echo $title; ?>' class="bottom-tooltip"></span></h3>
                 <div class="inside">
                     <p>
-                    <input class="mlg" id="tri" type="radio" name="page_fold" value="tri" <?= ($this->options['page_fold'] == 'tri' ? 'checked' : '') ?>><label for="tri">Tri-Fold&nbsp;&nbsp;&nbsp;</label>
-                    <input class="mlg" id="quad" type="radio" name="page_fold" value="quad" <?= ($this->options['page_fold'] == 'quad' ? 'checked' : '') ?>><label for="quad">Quad-Fold&nbsp;&nbsp;&nbsp;</label>
-                    <input class="mlg" id="half" type="radio" name="page_fold" value="half" <?= ($this->options['page_fold'] == 'half' ? 'checked' : '') ?>><label for="half">Half-Fold&nbsp;&nbsp;&nbsp;</label>
-                    <input class="mlg" id="full" type="radio" name="page_fold" value="full" <?= ($this->options['page_fold'] == 'full' ? 'checked' : '') ?>><label for="full">Full Page</label>
+                    <input class="mlg" id="tri" type="radio" name="page_fold" value="tri" <?php echo ($this->options['page_fold'] == 'tri' ? 'checked' : '') ?>><label for="tri">Tri-Fold&nbsp;&nbsp;&nbsp;</label>
+                    <input class="mlg" id="quad" type="radio" name="page_fold" value="quad" <?php echo ($this->options['page_fold'] == 'quad' ? 'checked' : '') ?>><label for="quad">Quad-Fold&nbsp;&nbsp;&nbsp;</label>
+                    <input class="mlg" id="half" type="radio" name="page_fold" value="half" <?php echo ($this->options['page_fold'] == 'half' ? 'checked' : '') ?>><label for="half">Half-Fold&nbsp;&nbsp;&nbsp;</label>
+                    <input class="mlg" id="full" type="radio" name="page_fold" value="full" <?php echo ($this->options['page_fold'] == 'full' ? 'checked' : '') ?>><label for="full">Full Page</label>
                     </p>
                     <p>
-                    <input class="mlg" id="portrait" type="radio" name="page_orientation" value="P" <?= ($this->options['page_orientation'] == 'P' ? 'checked' : '') ?>><label for="portrait">Portrait&nbsp;&nbsp;&nbsp;</label>
-                    <input class="mlg" id="landscape" type="radio" name="page_orientation" value="L" <?= ($this->options['page_orientation'] == 'L' ? 'checked' : '') ?>><label for="landscape">Landscape</label>
+                    <input class="mlg" id="portrait" type="radio" name="page_orientation" value="P" <?php echo ($this->options['page_orientation'] == 'P' ? 'checked' : '') ?>><label for="portrait">Portrait&nbsp;&nbsp;&nbsp;</label>
+                    <input class="mlg" id="landscape" type="radio" name="page_orientation" value="L" <?php echo ($this->options['page_orientation'] == 'L' ? 'checked' : '') ?>><label for="landscape">Landscape</label>
                     <p>
-                    <input class="mlg" id="5inch" type="radio" name="page_size" value="5inch" <?= ($this->options['page_size'] == '5inch' ? 'checked' : '') ?>><label for="5inch">Booklet (11" X 8.5")&nbsp;&nbsp;&nbsp;</label>
-                    <input class="mlg" id="A5" type="radio" name="page_size" value="A5" <?= ($this->options['page_size'] == 'A5' ? 'checked' : '') ?>><label for="A5">Booklet-A5 (297mm X 210mm)&nbsp;&nbsp;&nbsp;</label>
-                    <input class="mlg" id="letter" type="radio" name="page_size" value="letter" <?= ($this->options['page_size'] == 'letter' ? 'checked' : '') ?>><label for="letter">Letter (8.5" X 11")&nbsp;&nbsp;&nbsp;</label>
-                    <input class="mlg" id="legal" type="radio" name="page_size" value="legal" <?= ($this->options['page_size'] == 'legal' ? 'checked' : '') ?>><label for="legal">Legal (8.5" X 14")&nbsp;&nbsp;&nbsp;</label>
-                    <input class="mlg" id="ledger" type="radio" name="page_size" value="ledger" <?= ($this->options['page_size'] == 'ledger' ? 'checked' : '') ?>><label for="ledger">Ledger (17" X 11")&nbsp;&nbsp;&nbsp;</label>
-                    <input class="mlg" id="A4" type="radio" name="page_size" value="A4" <?= ($this->options['page_size'] == 'A4' ? 'checked' : '') ?>><label for="A4">A4 (210mm X 297mm)</label>
+                    <input class="mlg" id="5inch" type="radio" name="page_size" value="5inch" <?php echo ($this->options['page_size'] == '5inch' ? 'checked' : '') ?>><label for="5inch">Booklet (11" X 8.5")&nbsp;&nbsp;&nbsp;</label>
+                    <input class="mlg" id="A5" type="radio" name="page_size" value="A5" <?php echo ($this->options['page_size'] == 'A5' ? 'checked' : '') ?>><label for="A5">Booklet-A5 (297mm X 210mm)&nbsp;&nbsp;&nbsp;</label>
+                    <input class="mlg" id="letter" type="radio" name="page_size" value="letter" <?php echo ($this->options['page_size'] == 'letter' ? 'checked' : '') ?>><label for="letter">Letter (8.5" X 11")&nbsp;&nbsp;&nbsp;</label>
+                    <input class="mlg" id="legal" type="radio" name="page_size" value="legal" <?php echo ($this->options['page_size'] == 'legal' ? 'checked' : '') ?>><label for="legal">Legal (8.5" X 14")&nbsp;&nbsp;&nbsp;</label>
+                    <input class="mlg" id="ledger" type="radio" name="page_size" value="ledger" <?php echo ($this->options['page_size'] == 'ledger' ? 'checked' : '') ?>><label for="ledger">Ledger (17" X 11")&nbsp;&nbsp;&nbsp;</label>
+                    <input class="mlg" id="A4" type="radio" name="page_size" value="A4" <?php echo ($this->options['page_size'] == 'A4' ? 'checked' : '') ?>><label for="A4">A4 (210mm X 297mm)</label>
                     </p>
                     </p>
                     <div id="marginsdiv" style="border-top: 1px solid #EEE;">
@@ -88,7 +88,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         <p>
                         <table><tr>
                         <input class="mlg" name="column_line" value="0" type="hidden">
-                        <td style="">Separator: <input type="checkbox" name="column_line" value="1" <?= ($this->options['column_line'] == '1' ? 'checked' : '') ?> /></td>
+                        <td style="">Separator: <input type="checkbox" name="column_line" value="1" <?php echo ($this->options['column_line'] == '1' ? 'checked' : '') ?> /></td>
                         <td style="">
                             <div class="theme" id="sp-light">
                                 <label for="col_color">Color:</label>  <input style="display: inline-block !important; width: 70px; margin-right: 5px;" type='text' id="col_color" name="col_color" value="<?php echo $this->options['col_color'] ;?>" />
@@ -110,7 +110,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         ';
                         ?>
                         <input name="include_protection" value="0" type="hidden">
-                        <p><input type="checkbox" name="include_protection" value="1" <?= ($this->options['include_protection'] == '1' ? 'checked' : '') ?>>Enable PDF Protection<span title='<?PHP echo $title; ?>' class="top-tooltip"></span></p>
+                        <p><input type="checkbox" name="include_protection" value="1" <?php echo ($this->options['include_protection'] == '1' ? 'checked' : '') ?>>Enable PDF Protection<span title='<?PHP echo $title; ?>' class="top-tooltip"></span></p>
                         <p>
                         <label for="protection_password">Password: </label>
                         <input class="protection_pass" id="protection_password" type="password" name="protection_password" value="<?php echo $this->options['protection_password'] ;?>" />
@@ -120,8 +120,8 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
             </div>
         </div>
     </div>
+    <input type="submit" value="Save Changes" id="bmltmeetinglistsave2" name="bmltmeetinglistsave" class="button-primary" />
+    <?php echo '<p style="display: inline; margin-top:.5em;margin-bottom:1.0em;margin-left:.2em;"><a target="_blank" class="button-primary" href="'.home_url() . '/?current-meeting-list=1">Generate Meeting List</a></p>'; ?>
+    <div style="display:inline;"><i>&nbsp;&nbsp;Save Changes before Generate Meeting List.</i></div>
     <br class="clear">
 </div>
-<input type="submit" value="Save Changes" id="bmltmeetinglistsave2" name="bmltmeetinglistsave" class="button-primary" />
-<?= '<p style="display: inline; margin-top:.5em;margin-bottom:1.0em;margin-left:.2em;"><a target="_blank" class="button-primary" href="'.home_url() . '/?current-meeting-list=1">Generate Meeting List</a></p>'; ?>
-<div style="display:inline;"><i>&nbsp;&nbsp;Save Changes before Generate Meeting List.</i></div>
