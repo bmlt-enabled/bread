@@ -294,7 +294,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
             </div>
             <?php $connected = ''; ?>
             <?php if ( $this->options['include_meeting_email'] == '1' ) { ?>
-                <?php $logged_in = $this->testEmailPassword($this->options['root_server'],$this->options['bmlt_login_id'],$this->options['bmlt_login_password']); ?>
+                <?php $logged_in = wp_remote_retrieve_body($this->authenticate_root_server()); ?>
                 <?php $connected = "<p><div style='color: #f00;font-size: 16px;vertical-align: middle;' class='dashicons dashicons-no'></div><span style='color: #f00;'>Login ID or Password Incorrect</span></p>"; ?>
                 <?php if ( $logged_in == 'OK') { ?>
                     <?php $connected = "<p><div style='color: #00AD00;font-size: 16px;vertical-align: middle;' class='dashicons dashicons-smiley'></div><span style='color: #00AD00;'>Login OK</span></p>"; ?>

@@ -22,7 +22,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     }
                     ?>
                     <?php if ($this_connected) { ?>
-                        <?php $unique_areas = $this->get_areas($this->options['root_server']); ?>
+                        <?php $unique_areas = $this->get_areas(); ?>
                         <?php asort($unique_areas); ?>
                     <?php } ?>
                     <ul>
@@ -160,7 +160,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                 <h3 class="hndle">Include Extra Meetings<span title='<p>Include Extra Meetings from Another Service Body.</p><p>All Meetings from your BMLT Server are shown in the list.</p><p>The Meetings you select will be merged into your meeting list.</p><p><em>Note: Be sure to select all meetings for each group.</em>' class="tooltip"></span></h3>
                 <div class="inside">
                     <?php if ($this_connected) { ?>
-                        <?php $extra_meetings_array = $this->get_all_meetings($this->options['root_server']); ?>
+                        <?php $extra_meetings_array = $this->get_all_meetings(); ?>
                     <?php } ?>
                     <p class="ctrl_key" style="display:none; color: #00AD00;">Hold CTRL Key down to select multiple meetings.</p>
                     <select class="chosen-select" style="width: 100%;" data-placeholder="Select Extra Meetings" id="extra_meetings" name="extra_meetings[]" multiple="multiple">

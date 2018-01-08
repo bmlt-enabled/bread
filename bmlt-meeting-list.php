@@ -300,29 +300,42 @@ if (!class_exists("Bread")) {
 			Return utf8_encode($data);
 		}
 
+		function authenticate_root_server() {
+			$query_string = http_build_query(array(
+				'admin_action' => 'login', 
+				'c_comdef_admin_login' => $this->options['bmlt_login_id'], 
+				'c_comdef_admin_password' => $this->options['bmlt_login_password'], '&'));
+			return $this->get($this->options['root_server']."/local_server/server_admin/xml.php?" . $query_string);				
+		} 
+
 		function get_root_server_request($url) {
-			$args = array(
-				'timeout' => '30',
-				'headers' => array(
-					'User-Agent' => 'Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)'
-				)
-			);
-			$response = wp_remote_get($url, $args);
-			error_log("url:".$url);
-			error_log("http code:".wp_remote_retrieve_response_code($response));
-			return $response;
-			//return wp_remote_retrieve_body($response);
+			//if ($this->options['include_meeting_email'] == '1') {
+			//	
+			//}
+			return $this->get($url);
 		}
 
 		function get_configured_root_server_request($url) {
 			return $this->get_root_server_request($this->options['root_server']."/".$url);
 		}
 
+		function get($url) {
+			$args = array(
+				'timeout' => '30',
+				'headers' => array(
+					'User-Agent' => 'Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)'
+				)
+			);
+
+			error_log("url:".$url);
+			return wp_remote_get($url, $args);
+		}
+
 		function get_all_meetings ( ) {
-			$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults&data_field_key=weekday_tinyint,start_time,service_body_bigint,id_bigint,meeting_name,location_text&sort_keys=meeting_name,service_body_bigint,weekday_tinyint,start_time");
+			$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults&data_field_key=weekday_tinyint,start_time,service_body_bigint,id_bigint,meeting_name,location_text,email_contact&sort_keys=meeting_name,service_body_bigint,weekday_tinyint,start_time");
 			$result = json_decode(wp_remote_retrieve_body($results),true);
 			
-			$unique_areas = $this->get_areas($this->options['root_server']);			
+			$unique_areas = $this->get_areas();			
 			$all_meetings = array();
 			foreach ($result as $value) {
 				foreach($unique_areas as $unique_area){
@@ -340,7 +353,7 @@ if (!class_exists("Bread")) {
 			return $all_meetings;
 		}
 
-		function get_areas ( $root_server ) {
+		function get_areas () {
 			$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetServiceBodies");
 			$result = json_decode(wp_remote_retrieve_body($results), true);
 			$unique_areas = array();
@@ -367,23 +380,6 @@ if (!class_exists("Bread")) {
 			$result = $result["0"]["nativeLang"];
 			
 			return $result;
-		}
-
-		function testEmailPassword($root_server,$login,$password) {
-			$ch = curl_init();
-			$cookie = ABSPATH . "cookie.txt";
-			curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)"); 
-			curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-			curl_setopt($ch, CURLOPT_COOKIESESSION, TRUE);
-			curl_setopt($ch, CURLOPT_COOKIEFILE, $cookie);
-			curl_setopt($ch, CURLOPT_COOKIEJAR, $cookie);
-			$data = http_build_query(array('admin_action' => 'login', 'c_comdef_admin_login' => $login, 'c_comdef_admin_password' => $password, '&'));
-			curl_setopt($ch, CURLOPT_URL, "$root_server/local_server/server_admin/xml.php?".$data); 
-			$results = curl_exec($ch);
-			curl_close($ch);
-			unlink($cookie);
-			return $results;
 		}
 		
 		function testRootServer($override_root_server = null) {
@@ -504,7 +500,7 @@ if (!class_exists("Bread")) {
 			if ( false === ( $this->options['custom_query'] == '' ) ) {
 				$services = $this->options['custom_query'];
 			}
-			if ( $root_server == '' ) {
+			if ( $this->options['root_server'] == '' ) {
 				echo '<p><strong>BMLT Meeting List Error: BMLT Server missing.<br/><br/>Please go to Settings -> BMLT_Meeting_List and verify BMLT Server</strong></p>';
 				exit;
 			}
@@ -548,7 +544,7 @@ if (!class_exists("Bread")) {
 			if ( !isset($this->options['used_format_1']) ) {$this->options['used_format_1'] = '';}
 			if ( !isset($this->options['used_format_2']) ) {$this->options['used_format_2'] = '';}
 			if ( intval($this->options['cache_time']) > 0 && ! isset($_GET['nocache']) ) {
-				$transient_key = 'bmlt_ml_'.md5($root_server.$services);
+				$transient_key = 'bmlt_ml_'.md5($this->options['root_server'].$services);
 				if ( false !== ( $content = get_transient( $transient_key ) ) ) {
 					$content = pack("H*" , $content );
 					$name = "current_meeting_list_".strtolower( date ( "njYghis" ) ).".pdf";
@@ -654,6 +650,7 @@ if (!class_exists("Bread")) {
 				$sort_keys = 'weekday_tinyint,start_time,meeting_name';
 			}
 			if ( $this->options['service_body_1'] == 'Florida Region' && $services == '&recursive=1&services[]=1&recursive=1&services[]=20' ) {
+				// HARDCODED: Florida Region + Alabama Northwest Florida aggregate for statewide schedule
 				if ( $this->options['used_format_1'] == '' ) {
 					$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&get_used_formats&sort_keys=$sort_keys" );
 				} else {
@@ -692,7 +689,7 @@ if (!class_exists("Bread")) {
 					$this->formats_used = $florida['formats'];
 				}
 			} else {
-				$ch = curl_init();
+				/*$ch = curl_init();
 				$cookie = ABSPATH . "cookie.txt";
 				curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)");
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -706,9 +703,11 @@ if (!class_exists("Bread")) {
 					$data = http_build_query(array('admin_action' => 'login', 'c_comdef_admin_login' => $this->options['bmlt_login_id'], 'c_comdef_admin_password' => $this->options['bmlt_login_password'], '&'));
 					curl_setopt($ch, CURLOPT_URL, "$root_server/local_server/server_admin/xml.php?".$data); 
 					curl_exec($ch);
-				}
+				}*/
+
 				$get_used_formats = '&get_used_formats';
-				if ( $root_server == "http://naminnesota.org/bmlt/main_server/" ) {
+				// HARDCODED: Minnesota
+				if ( $this->options['root_server'] == "http://naminnesota.org/bmlt/main_server/" ) {
 					$get_used_formats = '';
 				}
 				if ( $this->options['used_format_1'] == '' && $this->options['used_format_2'] == '' ) {
@@ -720,8 +719,7 @@ if (!class_exists("Bread")) {
 				}
 				
 				$result = json_decode(wp_remote_retrieve_body($results), true);
-				if ( $this->options['extra_meetings'] ) {
-					
+				if ( $this->options['extra_meetings'] ) {					
 					foreach ($this->options['extra_meetings'] as $value) {
 						
 						$data = array(" [", "]");
@@ -731,8 +729,7 @@ if (!class_exists("Bread")) {
 					
 					$extra_results = get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults&sort_keys=".$sort_keys."".$extras."".$get_used_formats );
 					$extra_result = json_decode(wp_remote_retrieve_body($extra_results), true);
-					if ( $extra_result <> Null ) {
-						
+					if ( $extra_result <> Null ) {						
 						$result_meetings = array_merge($result['meetings'], $extra_result['meetings']);
 						foreach ($result_meetings as $key => $row) {
 							$weekday[$key] = $row['weekday_tinyint']; 
@@ -753,23 +750,24 @@ if (!class_exists("Bread")) {
 					$result_meetings = $result['meetings'];
 					
 				}
-				if ( $root_server == "http://naminnesota.org/bmlt/main_server/" ) {
+				// HARCODED: Minnesota
+				if ( $this->options['root_server'] == "http://naminnesota.org/bmlt/main_server/" ) {
 					$result_meetings = $result;
 				}
 				
 				if ( $this->options['include_meeting_email'] == '1' ) { 
-					unlink($cookie);
+					//unlink($cookie);
 				}
 			}
 			if ( $result_meetings == Null ) {
 				echo "<script type='text/javascript'>\n";
 				echo "document.body.innerHTML = ''";
 				echo "</script>";
-				echo '<div style="font-size: 20px;text-align:center;font-weight:normal;color:#F00;margin:0 auto;margin-top: 30px;"><p>No Meetings Found</p><p>Or</p><p>Internet or Server Problem</p><p>'.$root_server.'</p><p>Please try again or contact your BMLT Administrator</p></div>';
+				echo '<div style="font-size: 20px;text-align:center;font-weight:normal;color:#F00;margin:0 auto;margin-top: 30px;"><p>No Meetings Found</p><p>Or</p><p>Internet or Server Problem</p><p>'.$this->options['root_server'].'</p><p>Please try again or contact your BMLT Administrator</p></div>';
 				exit;
 			}
 			if ( strpos($this->options['custom_section_content'].$this->options['front_page_content'].$this->options['last_page_content'], "[service_meetings]") !== false ) {
-				$ch = curl_init();
+				/* = curl_init();
 				$cookie = ABSPATH . "cookie.txt";
 				curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)"); 
 				curl_setopt($ch, CURLOPT_TIMEOUT, 30);
@@ -781,11 +779,11 @@ if (!class_exists("Bread")) {
 					$data = http_build_query(array('admin_action' => 'login', 'c_comdef_admin_login' => $this->options['bmlt_login_id'], 'c_comdef_admin_password' => $this->options['bmlt_login_password'], '&'));
 					curl_setopt($ch, CURLOPT_URL, "$root_server/local_server/server_admin/xml.php?".$data); 
 					curl_exec($ch);
-				}
+				}*/
 				
 				$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services_service_body_1&sort_keys=meeting_name" );
 				if ( $this->options['include_meeting_email'] == '1' ) { 
-					unlink($cookie);
+					//unlink($cookie);
 				}
 				$this->service_meeting_result = json_decode(wp_remote_retrieve_body($results), true);
 			}
@@ -816,17 +814,17 @@ if (!class_exists("Bread")) {
 			$this->sortBySubkey($this->formats_used, 'key_string');
 			$this->sortBySubkey($this->formats_all, 'key_string');
 			$this->meeting_count = count($result_meetings);
-			$unique_areas = $this->get_areas($this->options['root_server']);			
+			$unique_areas = $this->get_areas();			
 			$unique_states = array();
 			$unique_data = array();
 			
-			$seperate_nc = false;
-			
-			if ( (strpos($services, '&services[]=8') !== false || strpos($services, '&services[]=11') !== false) && ($this->options['service_body_1'] == 'Tidewater Area Service' || $this->options['service_body_2'] == 'Tidewater Area Service') ) {
-				
+			// HARCODED: North Carolina
+			$seperate_nc = false;						
+			if ( (strpos($services, '&services[]=8') !== false || strpos($services, '&services[]=11') !== false) && ($this->options['service_body_1'] == 'Tidewater Area Service' || $this->options['service_body_2'] == 'Tidewater Area Service') ) {				
 				$seperate_nc = true;
 			}
 			foreach ($result_meetings as $value) {
+				// HARDCODED: Florida
 				if ( $this->options['service_body_1'] == 'Florida Region' && $services == '&recursive=1&services[]=1&recursive=1&services[]=20' && strtolower($value['location_province'][0]) === 'f' ) {
 					$value['location_province'] = 'Florida';
 				}
@@ -973,15 +971,12 @@ if (!class_exists("Bread")) {
 						if ( $this->options['include_asm'] === '0' && in_array ( "ASM", $enFormats ) ) { continue; }
 						$header = '';
 						
-						if ( $this->lang == 'fr' ) {
-							
-							$cont = '(suite)';
-							
-						} else {
-							
-							$cont = '(cont)';
-							
+						if ( $this->lang == 'fr' ) {							
+							$cont = '(suite)';							
+						} else {							
+							$cont = '(cont)';							
 						}
+
 						if ( $this->options['page_fold'] !== 'full' ) {
 							if ( $this->options['meeting_sort'] === 'county' || $this->options['meeting_sort'] === 'borough' ) {
 								if ( $this->options['borough_suffix'] ) {$this->options['borough_suffix'] = ' ' . $this->options['borough_suffix'];}
@@ -1141,6 +1136,7 @@ if (!class_exists("Bread")) {
 							$meeting_value[start_time] = $start_time.$space.'-'.$space.$end_time;
 						}
 						if ( $this->options['page_fold'] !== 'full' ) {
+							//error_log("email contact:".$meeting_value['email_contact']);
 							if ( isset($meeting_value['email_contact']) && $meeting_value['email_contact'] !== '' && $this->options['include_meeting_email'] == '1' ) { 
 								$str = explode("#@-@#",$meeting_value['email_contact']);
 								$meeting_value['email_contact'] = $str['2'];
@@ -1155,6 +1151,7 @@ if (!class_exists("Bread")) {
 							$data = str_replace('day', $this->getday($meeting_value['weekday_tinyint'], false, $this->lang), $data);
 							$data = str_replace('weekday_tinyint', $this->getday($meeting_value['weekday_tinyint'], false, $this->lang), $data);
 							$data = str_replace('start_time', $meeting_value['start_time'], $data);
+							// HARDCODED: North Carolina
 							if ( ($seperate_nc) && (strtolower($meeting_value['location_province']) === 'nc' || strtolower($meeting_value['location_province']) === 'n.c.') ) {
 								$data = str_replace('time', $this->getday($meeting_value['weekday_tinyint'], false, $this->lang).': '.$meeting_value['start_time'], $data);
 							} else {
@@ -1237,12 +1234,11 @@ if (!class_exists("Bread")) {
 							}
 							$data .= '</tr>';
 						}
-						if ( ($seperate_nc) && (strtolower($meeting_value['location_province']) === 'nc' || strtolower($meeting_value['location_province']) === 'n.c.') ) {
-							
-							$data_nc .= $data;
-							
-							continue;
-							
+
+						// HARCODED: North Carolina
+						if ( ($seperate_nc) && (strtolower($meeting_value['location_province']) === 'nc' || strtolower($meeting_value['location_province']) === 'n.c.') ) {							
+							$data_nc .= $data;							
+							continue;							
 						}
 						
 						$data = $header . $data;
@@ -1267,14 +1263,13 @@ if (!class_exists("Bread")) {
 				}
 				if ( $this->options['meeting_sort'] !== 'state' ) { break; }
 			}
-			if ( $seperate_nc ) {
-				
+			// HARCODED: North Carolina
+			if ( $seperate_nc ) {				
 				$header .= "<h2 style='".$header_style."'>North Carolina Meetings</h2>";
 				$data_nc = $header . $data_nc;
 				$data_nc = mb_convert_encoding($data_nc, 'HTML-ENTITIES');
 				$data_nc = utf8_encode($data_nc);
-				$this->mpdf->WriteHTML($data_nc);
-				
+				$this->mpdf->WriteHTML($data_nc);				
 			}
 			
 			if ( $this->options['page_fold'] == 'full' ) {
@@ -1330,7 +1325,7 @@ if (!class_exists("Bread")) {
 			if ( intval($this->options['cache_time']) > 0 && ! isset($_GET['nocache']) ) {
 				$content = $this->mpdf->Output('', 'S');
 				$content = bin2hex($content);
-				$transient_key = 'bmlt_ml_'.md5($root_server.$services);
+				$transient_key = 'bmlt_ml_'.md5($this->options['root_server'].$services);
 				set_transient( $transient_key, $content, intval($this->options['cache_time']) * HOUR_IN_SECONDS );
 			}			
 			$FilePath = "current_meeting_list_".strtolower( date ( "njYghis" ) ).".pdf";
@@ -1548,6 +1543,7 @@ if (!class_exists("Bread")) {
 				if ( trim ( $value['location_info'] ) ) {
 					$display_string .= " (".trim ( $value['location_info'] ).")";
 				}
+
 				if ( isset($value['email_contact']) && $value['email_contact'] != '' && $this->options['include_meeting_email'] == '1' ) { 
 					$str = explode("#@-@#",$value['email_contact']);
 					$value['email_contact'] = $str['2'];
@@ -1935,8 +1931,7 @@ if (!class_exists("Bread")) {
 				if( ! wp_verify_nonce( $_POST['pwsix_export_nonce'], 'pwsix_export_nonce' ) )
 					return;
 				if( ! current_user_can( 'manage_options' ) )
-					return;
-					
+					return;					
 			}
 			$blogname = str_replace(" - ", " ", get_option('blogname'));
 			$blogname = str_replace(" ", "-", $blogname);
