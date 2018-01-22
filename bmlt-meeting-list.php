@@ -222,9 +222,9 @@ if (!class_exists("Bread")) {
 				} elseif ( $language == 'fr' ) {
 					$data = ($abbreviate ? 'Mar' : "Mardi");
 				} elseif ( $language == 'both_po' ) {
-					$data = ($abbreviate ? 'Tue / Mar / Ter' : "Tuesday / Martes / Ter�a-feira");
+					$data = ($abbreviate ? 'Tue / Mar / Ter' : "Tuesday / Martes / Terça-feira");
 				} elseif ( $language == 'po' ) {
-					$data = ($abbreviate ? 'Ter' : "Ter�a-feira");
+					$data = ($abbreviate ? 'Ter' : "Terça-feira");
 				} elseif ( $language == 'both' ) {
 					$data = ($abbreviate ? 'Tue / Mar' : "Tuesday / Martes");
 				} elseif ( $language == 'fr_en' ) {
@@ -234,16 +234,16 @@ if (!class_exists("Bread")) {
 				if ( $language == 'en' || $language == 'en' ) {
 					$data = ($abbreviate ? 'Wed' : "Wednesday");
 				} elseif ( $language == 'es' ) {
-					$data = ($abbreviate ? 'Mi�' : "Mi�rcoles");
-					$data = "Mi�rcoles";
+					$data = ($abbreviate ? 'Mié' : "Miércoles");
+					$data = "Miércoles";
 				} elseif ( $language == 'fr' ) {
 					$data = ($abbreviate ? 'Mer' : "Mercredi");
 				} elseif ( $language == 'both_po' ) {
-					$data = ($abbreviate ? 'Wed / Mi� / Qua' : "Wednesday / Mi�rcoles / Quarta-feira");
+					$data = ($abbreviate ? 'Wed / Mié / Qua' : "Wednesday / Miércoles / Quarta-feira");
 				} elseif ( $language == 'po' ) {
 					$data = ($abbreviate ? 'Qua' : "Quarta-feira");
 				} elseif ( $language == 'both' ) {
-					$data = ($abbreviate ? 'Wed / Mi�' : "Wednesday / Mi�rcoles");
+					$data = ($abbreviate ? 'Wed / Mié' : "Wednesday / Miércoles");
 				} elseif ( $language == 'fr_en' ) {
 					$data = ($abbreviate ? 'Mer / Wed' : "Mercredi / Wednesday");
 				}				
@@ -283,15 +283,15 @@ if (!class_exists("Bread")) {
 				if ( $language == 'en' || $language == 'en' ) {
 					$data = ($abbreviate ? 'Sat' : "Saturday");
 				} elseif ( $language == 'es' ) {
-					$data = ($abbreviate ? 'S�b' : "S�bado");
+					$data = ($abbreviate ? 'Sáb' : "SSábado");
 				} elseif ( $language == 'fr' ) {
 					$data = ($abbreviate ? 'Sam' : "Samedi");
 				} elseif ( $language == 'both_po' ) {
-					$data = ($abbreviate ? 'Sat / S�b' : "Saturday / S�bado");
+					$data = ($abbreviate ? 'Sat / Sáb' : "Saturday / Sábado");
 				} elseif ( $language == 'po' ) {
-					$data = ($abbreviate ? 'S�b' : "S�bado");
+					$data = ($abbreviate ? 'Sáb' : "Sábado");
 				} elseif ( $language == 'both' ) {
-					$data = ($abbreviate ? 'Sat / S�b' : "Saturday / S�bado");
+					$data = ($abbreviate ? 'Sat / Sáb' : "Saturday / Sábado");
 				} elseif ( $language == 'fr_en' ) {
 					$data = ($abbreviate ? 'Sam / Sat' : "Samedi / Saturday");
 				}				
