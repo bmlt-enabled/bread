@@ -41,3 +41,4 @@ This section describes how to install the plugin and get it working.
 = 1.0.0 =
 
 * Allow for custom queries
+* Tons of refactoring to make code more readable

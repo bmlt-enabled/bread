@@ -309,26 +309,30 @@ if (!class_exists("Bread")) {
 		} 
 
 		function get_root_server_request($url) {
-			//if ($this->options['include_meeting_email'] == '1') {
-			//	
-			//}
-			return $this->get($url);
+		    $cookies = null;
+
+			if ($this->options['include_meeting_email'] == '1') {
+				$auth_response = $this->authenticate_root_server();
+                $cookies = wp_remote_retrieve_cookies($auth_response);
+			}
+
+			return $this->get($url, $cookies);
 		}
 
 		function get_configured_root_server_request($url) {
 			return $this->get_root_server_request($this->options['root_server']."/".$url);
 		}
 
-		function get($url) {
+		function get($url, $cookies = null) {
 			$args = array(
 				'timeout' => '30',
 				'headers' => array(
 					'User-Agent' => 'Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)'
-				)
+				),
+                'cookies' => isset($cookies) ? $cookies : null
 			);
 
-			error_log("url:".$url);
-			return wp_remote_get($url, $args);
+            return wp_remote_get($url, $args);
 		}
 
 		function get_all_meetings ( ) {
@@ -689,22 +693,6 @@ if (!class_exists("Bread")) {
 					$this->formats_used = $florida['formats'];
 				}
 			} else {
-				/*$ch = curl_init();
-				$cookie = ABSPATH . "cookie.txt";
-				curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)");
-				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-				curl_setopt($ch, CURLOPT_VERBOSE, false);
-				curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-				curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-				if ( $this->options['include_meeting_email'] == '1' ) { 
-					curl_setopt($ch, CURLOPT_COOKIESESSION, TRUE);
-					curl_setopt($ch, CURLOPT_COOKIEFILE, $cookie);
-					curl_setopt($ch, CURLOPT_COOKIEJAR, $cookie);
-					$data = http_build_query(array('admin_action' => 'login', 'c_comdef_admin_login' => $this->options['bmlt_login_id'], 'c_comdef_admin_password' => $this->options['bmlt_login_password'], '&'));
-					curl_setopt($ch, CURLOPT_URL, "$root_server/local_server/server_admin/xml.php?".$data); 
-					curl_exec($ch);
-				}*/
-
 				$get_used_formats = '&get_used_formats';
 				// HARDCODED: Minnesota
 				if ( $this->options['root_server'] == "http://naminnesota.org/bmlt/main_server/" ) {
@@ -719,7 +707,8 @@ if (!class_exists("Bread")) {
 				}
 				
 				$result = json_decode(wp_remote_retrieve_body($results), true);
-				if ( $this->options['extra_meetings'] ) {					
+				if ( $this->options['extra_meetings'] ) {
+				    $extras = "";
 					foreach ($this->options['extra_meetings'] as $value) {
 						
 						$data = array(" [", "]");
@@ -767,20 +756,6 @@ if (!class_exists("Bread")) {
 				exit;
 			}
 			if ( strpos($this->options['custom_section_content'].$this->options['front_page_content'].$this->options['last_page_content'], "[service_meetings]") !== false ) {
-				/* = curl_init();
-				$cookie = ABSPATH . "cookie.txt";
-				curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)"); 
-				curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-				curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-				curl_setopt($ch, CURLOPT_COOKIESESSION, TRUE);
-				if ( $this->options['include_meeting_email'] == '1' ) { 
-					curl_setopt($ch, CURLOPT_COOKIEFILE, $cookie);
-					curl_setopt($ch, CURLOPT_COOKIEJAR, $cookie);
-					$data = http_build_query(array('admin_action' => 'login', 'c_comdef_admin_login' => $this->options['bmlt_login_id'], 'c_comdef_admin_password' => $this->options['bmlt_login_password'], '&'));
-					curl_setopt($ch, CURLOPT_URL, "$root_server/local_server/server_admin/xml.php?".$data); 
-					curl_exec($ch);
-				}*/
-				
 				$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services_service_body_1&sort_keys=meeting_name" );
 				if ( $this->options['include_meeting_email'] == '1' ) { 
 					//unlink($cookie);
