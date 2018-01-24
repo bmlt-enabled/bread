@@ -169,7 +169,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                             <?php $extra_meeting_x = explode('|||',$extra_meeting); ?>
                             <?php $extra_meeting_id = $extra_meeting_x[3]; ?>									
                             <?php $extra_meeting_display = substr($extra_meeting_x[0], 0, 30) . ';' . $extra_meeting_x[1] . ';' . $extra_meeting_x[2]; ?>
-                            <option <?php echo (in_array($extra_meeting_id, $this->options['extra_meetings']) ? 'selected="selected"' : '') ?> value="<?php echo $extra_meeting_id ?>"><?php echo $extra_meeting_display ?></option>
+                            <option <?php echo ($this->options['extra_meetings'] != '' && in_array($extra_meeting_id, $this->options['extra_meetings']) ? 'selected="selected"' : '') ?> value="<?php echo $extra_meeting_id ?>"><?php echo $extra_meeting_display ?></option>
                         <?php } ?>
                     <?php } else { ?>
                         <option selected="selected" value="none"><?php echo 'Not Connected - Can not get Extra Meetings'; ?></option>
