@@ -743,10 +743,6 @@ if (!class_exists("Bread")) {
 				if ( $this->options['root_server'] == "http://naminnesota.org/bmlt/main_server/" ) {
 					$result_meetings = $result;
 				}
-				
-				if ( $this->options['include_meeting_email'] == '1' ) { 
-					//unlink($cookie);
-				}
 			}
 			if ( $result_meetings == Null ) {
 				echo "<script type='text/javascript'>\n";
@@ -757,9 +753,6 @@ if (!class_exists("Bread")) {
 			}
 			if ( strpos($this->options['custom_section_content'].$this->options['front_page_content'].$this->options['last_page_content'], "[service_meetings]") !== false ) {
 				$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services_service_body_1&sort_keys=meeting_name" );
-				if ( $this->options['include_meeting_email'] == '1' ) { 
-					//unlink($cookie);
-				}
 				$this->service_meeting_result = json_decode(wp_remote_retrieve_body($results), true);
 			}
 			$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetFormats");
