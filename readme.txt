@@ -3,7 +3,7 @@
 Contributors: Jack S, Danny G
 Tags: meeting list, bmlt, narcotics anonymous, na
 Requires at least: 4.0
-Tested up to: 4.9.1
+Tested up to: 4.9.2
 Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -11,7 +11,7 @@ A web-based tool that creates, maintains and generates a PDF meeting list from B
 
 == Description ==
 
-"bread" is a fork of the BMLT meeting list generator
+"bread" is a fork of the BMLT meeting list generator.
 
 == Installation ==
 
@@ -42,3 +42,5 @@ This section describes how to install the plugin and get it working.
 
 * Allow for custom queries
 * Tons of refactoring to make code more readable
+* Implemented the Wordpress HTTP API instead of curl
+* Fixed an issue with empty extra meetings arrays
