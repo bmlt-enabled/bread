@@ -8,14 +8,15 @@ If you are the maintainer of this code you will have to squash the commits to ma
 
 ```shell
 git checkout master
+git rebase origin/master
 git merge --squash unstable
 git commit -m "version x.x.x"
 git push -u origin master
 git svn dcommit --username=radius314
 
 git checkout unstable
-git merge master
-git push origin unstable
+git rebase master
+git push -f origin unstable
 ```
 
 To get things going in your local environment.
