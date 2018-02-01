@@ -5,14 +5,14 @@ Tags: meeting list, bmlt, narcotics anonymous, na
 Requires at least: 4.0
 Requires PHP: 5.6
 Tested up to: 4.9.2
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 A web-based tool that creates, maintains and generates a PDF meeting list from BMLT.
 
 == Description ==
 
-"bread" is a fork of the BMLT meeting list generator.
+"bread" is a fork of the BMLT meeting list generator.  It allows for the creation of a meeting schedule from a BMLT server.
 
 == Installation ==
 
@@ -22,6 +22,18 @@ This section describes how to install the plugin and get it working.
 2. Activate the plugin through the Plugins menu in WordPress
 3. Go to the Meeting List menu option.
 4. Click on Read This Section First.
+
+Upgrade Information from BMLT Meeting List Generator (original)
+
+Follow all these steps, keep in mind that once you start using bread, it's not going to be easy to back to the original plugin.
+
+1. Ensure that bread is de-activated.
+2. Go to your existing "Meeting List", and export the configuration.  (This is in-case something goes bad and you need to undo something).
+3. If you have a multi-site installation, be sure to export each one of the configurations within your Network.
+4. De-activate the BMLT Meeting List Generator plugin from your site or network (for multisites).
+5. Activate bread.  Bread is intended to be fully compatible with BMLT meeting list generator settings.
+6. If there is an issue, you can always de-activate bread and go back to the original plugin.
+7. You can always restore any files if something got damaged or corrupted assuming that you followed steps 2 & 3.
 
 == Frequently Asked Questions ==
 
@@ -37,7 +49,20 @@ This section describes how to install the plugin and get it working.
 - Has its very own current meeting list link which can be shared across the web
 - Can use custom queries to a BMLT root server semantic interface
 
+= How do I contribute?
+- Read here for more information: https://github.com/radius314/bread/blob/unstable/contribute.md
+
 == Changelog ==
+
+= 1.0.1 =
+
+* Fixed a bug with encoding Spanish characters.
+* Fixed a bug where Upper casing was not working on titles.
+* Cleaned up boolean settings.
+* Better documentation on how to contribute + release details with Github.
+* Upgraded docker container to WP 4.9.2.
+* Updated description.
+* Added upgrade information.
 
 = 1.0.0 =
 
