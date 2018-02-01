@@ -646,7 +646,7 @@ if (!class_exists("Bread")) {
 			} elseif ( $this->options['meeting_sort'] == 'weekday_city' ) {
 				$sort_keys = 'weekday_tinyint,location_municipality,start_time';
             } elseif ( $this->options['meeting_sort'] == 'weekday_county' ) {
-                $sort_keys = 'weekday_tinyint,location_sub_province,start_time';
+                $sort_keys = 'weekday_tinyint,location_sub_province,location_municipality,start_time';
 			} else {
 				$this->options['meeting_sort'] = 'day';
 				$sort_keys = 'weekday_tinyint,start_time,meeting_name';
