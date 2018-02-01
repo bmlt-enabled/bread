@@ -12,9 +12,11 @@ git merge --squash unstable
 git commit -m "version x.x.x"
 git push -u origin master
 git svn dcommit --username=radius314
-```
 
-Once done make a new version branch which is branched off master.
+git checkout unstable
+git merge master
+git push origin unstable
+```
 
 To get things going in your local environment.
 
