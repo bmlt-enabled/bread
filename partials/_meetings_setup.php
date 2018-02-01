@@ -54,6 +54,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                                 <option <?php echo ($this->options['meeting_sort'] == 'state' ? 'selected="selected"' : '') ?> value="state">State+City</option>
                                 <option <?php echo ($this->options['meeting_sort'] == 'weekday_area' ? 'selected="selected"' : '') ?> value="weekday_area">Weekday+Area</option>
                                 <option <?php echo ($this->options['meeting_sort'] == 'weekday_city' ? 'selected="selected"' : '') ?> value="weekday_city">Weekday+City</option>
+                                <option <?php echo ($this->options['meeting_sort'] == 'weekday_county' ? 'selected="selected"' : '') ?> value="weekday_county">Weekday+County</option>
                             </select>
                         </div>
                         <div class="borough_by_suffix">

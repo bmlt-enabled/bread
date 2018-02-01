@@ -3,7 +3,7 @@
 Plugin Name: bread
 Plugin URI: http://wordpress.org/extend/plugins/bread/
 Description: Maintains and generates a PDF Meeting List from BMLT. 
-Version: 1.0.2
+Version: 1.0.3
 */
 /* Disallow direct access to the plugin file */
 if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
@@ -14,7 +14,7 @@ if (!class_exists("Bread")) {
 	class Bread {
 		var $lang = '';
 		
-		var $version = '1.0.2';
+		var $version = '1.0.3';
 		var $mpdf = '';
 		var $meeting_count = 0;
 		var $formats_used = '';
@@ -645,6 +645,8 @@ if (!class_exists("Bread")) {
 				$sort_keys = 'weekday_tinyint,service_body_bigint,start_time';
 			} elseif ( $this->options['meeting_sort'] == 'weekday_city' ) {
 				$sort_keys = 'weekday_tinyint,location_municipality,start_time';
+            } elseif ( $this->options['meeting_sort'] == 'weekday_county' ) {
+                $sort_keys = 'weekday_tinyint,location_sub_province,start_time';
 			} else {
 				$this->options['meeting_sort'] = 'day';
 				$sort_keys = 'weekday_tinyint,start_time,meeting_name';
@@ -821,6 +823,8 @@ if (!class_exists("Bread")) {
 					}
 				} elseif ( $this->options['meeting_sort'] === 'weekday_city' ) {
 					$unique_data[] = $value['weekday_tinyint'] . ',' . $value['location_municipality'];
+                } elseif ( $this->options['meeting_sort'] === 'weekday_county' ) {
+                    $unique_data[] = $value['weekday_tinyint'] . ',' . $value['location_sub_province'];
 				} else {
 					$unique_data[] = $value['weekday_tinyint'];
 				}
@@ -879,12 +883,12 @@ if (!class_exists("Bread")) {
 			foreach ($unique_states as $this_state) {
 				$x++;
 
-				if ( $this->options['meeting_sort'] === 'weekday_area' || $this->options['meeting_sort'] === 'weekday_city' ) {
+				if ( $this->options['meeting_sort'] === 'weekday_area' || $this->options['meeting_sort'] === 'weekday_city' || $this->options['meeting_sort'] === 'weekday_county' ) {
 					$current_weekday = 1;
 					$show_first_weekday = true;
 				}
 				foreach ($unique_data as $this_unique_value) {
-					if ( $this->options['meeting_sort'] === 'weekday_area' || $this->options['meeting_sort'] === 'weekday_city' ) {
+					if ( $this->options['meeting_sort'] === 'weekday_area' || $this->options['meeting_sort'] === 'weekday_city' || $this->options['meeting_sort'] === 'weekday_county' ) {
 						$area_data = explode(',',$this_unique_value);
 						$weekday_tinyint = intval($area_data[0]);
 						if ( $weekday_tinyint !== $current_weekday ) {
@@ -895,7 +899,7 @@ if (!class_exists("Bread")) {
 					$newVal = true;
 					if ( $this->options['meeting_sort'] === 'state' && strpos($this_unique_value, $this_state) === false ) { continue; }
 					foreach ($result_meetings as $meeting_value) {			
-						if ( $this->options['meeting_sort'] === 'weekday_area' || $this->options['meeting_sort'] === 'weekday_city' ) {
+						if ( $this->options['meeting_sort'] === 'weekday_area' || $this->options['meeting_sort'] === 'weekday_city' || $this->options['meeting_sort'] === 'weekday_county' ) {
 							$area_data = explode(',',$this_unique_value);
 							$weekday_tinyint = $area_data[0];
 							$area_name = $area_data[1];
@@ -903,12 +907,11 @@ if (!class_exists("Bread")) {
 
 							if ( $this->options['meeting_sort'] === 'weekday_city' ) {
 								if ( $meeting_value['weekday_tinyint'] . ',' . $meeting_value['location_municipality'] !== $weekday_tinyint . ',' . $area_name ) { continue; }
-								
+							} elseif ( $this->options['meeting_sort'] === 'weekday_county' ) {
+                                if ( $meeting_value['weekday_tinyint'] . ',' . $meeting_value['location_sub_province'] !== $weekday_tinyint . ',' . $area_name ) { continue; }
 							} else {
 								if ( $meeting_value['weekday_tinyint'] . ',' . $meeting_value['service_body_bigint'] !== $weekday_tinyint . ',' . $service_body_bigint ) { continue; }
-							
 							}
-								
 						} else {
 							foreach($unique_areas as $unique_area){
 								$area_data = explode(',',$unique_area);
@@ -979,7 +982,7 @@ if (!class_exists("Bread")) {
 									$header .= "<h2 style='".$header_style."'>".$this_unique_data.''.$header_suffix." " . $cont . "</h2>";
 								}
 							}
-							if ( $this->options['meeting_sort'] === 'weekday_area' || $this->options['meeting_sort'] === 'weekday_city' ) {
+							if ( $this->options['meeting_sort'] === 'weekday_area' || $this->options['meeting_sort'] === 'weekday_city' || $this->options['meeting_sort'] === 'weekday_county' ) {
 								if ( $newVal ) {
 									if ( $show_first_weekday === true ) {
 										if ( $current_weekday === 1 ) {
