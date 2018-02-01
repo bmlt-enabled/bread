@@ -2,7 +2,7 @@ version: '3.1'
 
 services:
   wordpress:
-    image: wordpress:4.9.1-php5.6-apache
+    image: wordpress:4.9.2-php5.6-apache
     restart: always
     ports:
       - 8080:80

@@ -3,7 +3,7 @@
 Plugin Name: bread
 Plugin URI: http://wordpress.org/extend/plugins/bread/
 Description: Maintains and generates a PDF Meeting List from BMLT. 
-Version: 1.0.0
+Version: 1.0.1
 */
 /* Disallow direct access to the plugin file */
 if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
@@ -14,7 +14,7 @@ if (!class_exists("Bread")) {
 	class Bread {
 		var $lang = '';
 		
-		var $version = '1.0.0';
+		var $version = '1.0.1';
 		var $mpdf = '';
 		var $meeting_count = 0;
 		var $formats_used = '';
@@ -235,16 +235,15 @@ if (!class_exists("Bread")) {
 				if ( $language == 'en' || $language == 'en' ) {
 					$data = ($abbreviate ? 'Wed' : "Wednesday");
 				} elseif ( $language == 'es' ) {
-					$data = ($abbreviate ? 'Mié' : "Miércoles");
-					$data = "Miércoles";
+					$data = ($abbreviate ? 'Mi&eacute;' : "Mi&eacute;rcoles");
 				} elseif ( $language == 'fr' ) {
 					$data = ($abbreviate ? 'Mer' : "Mercredi");
 				} elseif ( $language == 'both_po' ) {
-					$data = ($abbreviate ? 'Wed / Mié / Qua' : "Wednesday / Miércoles / Quarta-feira");
+					$data = ($abbreviate ? 'Wed / Mi&eacute; / Qua' : "Wednesday / Mi&eacute;rcoles / Quarta-feira");
 				} elseif ( $language == 'po' ) {
 					$data = ($abbreviate ? 'Qua' : "Quarta-feira");
 				} elseif ( $language == 'both' ) {
-					$data = ($abbreviate ? 'Wed / Mié' : "Wednesday / Miércoles");
+					$data = ($abbreviate ? 'Wed / Mi&eacute;' : "Wednesday / Mi&eacute;rcoles");
 				} elseif ( $language == 'fr_en' ) {
 					$data = ($abbreviate ? 'Mer / Wed' : "Mercredi / Wednesday");
 				}				
@@ -284,15 +283,15 @@ if (!class_exists("Bread")) {
 				if ( $language == 'en' || $language == 'en' ) {
 					$data = ($abbreviate ? 'Sat' : "Saturday");
 				} elseif ( $language == 'es' ) {
-					$data = ($abbreviate ? 'Sáb' : "SSábado");
+					$data = ($abbreviate ? 'S&aacute;b' : "S&aacute;bado");
 				} elseif ( $language == 'fr' ) {
 					$data = ($abbreviate ? 'Sam' : "Samedi");
 				} elseif ( $language == 'both_po' ) {
-					$data = ($abbreviate ? 'Sat / Sáb' : "Saturday / Sábado");
+					$data = ($abbreviate ? 'Sat / S&aacute;b' : "Saturday / S&aacute;bado");
 				} elseif ( $language == 'po' ) {
-					$data = ($abbreviate ? 'Sáb' : "Sábado");
+					$data = ($abbreviate ? 'S&aacute;b' : "S&aacute;bado");
 				} elseif ( $language == 'both' ) {
-					$data = ($abbreviate ? 'Sat / Sáb' : "Saturday / Sábado");
+					$data = ($abbreviate ? 'Sat / S&aacute;b' : "Saturday / S&aacute;bado");
 				} elseif ( $language == 'fr_en' ) {
 					$data = ($abbreviate ? 'Sam / Sat' : "Samedi / Saturday");
 				}				
@@ -312,7 +311,7 @@ if (!class_exists("Bread")) {
 		function get_root_server_request($url) {
 		    $cookies = null;
 
-			if ($this->options['include_meeting_email'] == '1') {
+			if ($this->options['include_meeting_email'] == 1) {
 				$auth_response = $this->authenticate_root_server();
                 $cookies = wp_remote_retrieve_cookies($auth_response);
 			}
@@ -527,14 +526,14 @@ if (!class_exists("Bread")) {
 			if ( !isset($this->options['meeting_sort']) ) {$this->options['meeting_sort'] = 'day';}
 			if ( !isset($this->options['borough_suffix']) ) {$this->options['borough_suffix'] = 'Borough';}
 			if ( !isset($this->options['county_suffix']) ) {$this->options['county_suffix'] = 'County';}
-			if ( !isset($this->options['column_line']) ) {$this->options['column_line'] = '0';}
+			if ( !isset($this->options['column_line']) ) {$this->options['column_line'] = 0;}
 			if ( !isset($this->options['col_color']) ) {$this->options['col_color'] = '#bfbfbf';}
 			if ( !isset($this->options['custom_section_content']) ) {$this->options['custom_section_content'] = '';}
 			if ( !isset($this->options['custom_section_line_height']) ) {$this->options['custom_section_line_height'] = '1';}
 			if ( !isset($this->options['custom_section_font_size']) ) {$this->options['custom_section_font_size'] = '9';}
-			if ( !isset($this->options['include_zip']) ) {$this->options['include_zip'] = '0';}
-			if ( !isset($this->options['include_meeting_email']) ) {$this->options['include_meeting_email'] = '0';}
-			if ( !isset($this->options['include_protection']) ) {$this->options['include_protection'] = '0';}
+			if ( !isset($this->options['include_zip']) ) {$this->options['include_zip'] = 0;}
+			if ( !isset($this->options['include_meeting_email']) ) {$this->options['include_meeting_email'] = 0;}
+			if ( !isset($this->options['include_protection']) ) {$this->options['include_protection'] = 0;}
 			if ( !isset($this->options['weekday_language']) ) {$this->options['weekday_language'] = 'en';}
 			if ( !isset($this->options['include_asm']) ) {$this->options['include_asm'] = '0';}
 			if ( !isset($this->options['header_uppercase']) ) {$this->options['header_uppercase'] = '0';}
@@ -576,7 +575,7 @@ if (!class_exists("Bread")) {
 			} else {
 				$this->mpdf=new mPDF('utf-8',$this->options['page_size']."-".$this->options['page_orientation'], 7, '', $this->options['margin_left'], $this->options['margin_right'], $this->options['margin_top'], $this->options['margin_bottom'], 0, 0);
 			}					
-			if ( $this->options['include_protection'] == '1' ) {
+			if ( $this->options['include_protection'] == 1 ) {
 				// 'copy','print','modify','annot-forms','fill-forms','extract','assemble','print-highres'
 				$this->mpdf->SetProtection(array('copy','print','print-highres'), '', $this->options['protection_password']);
 				
@@ -594,7 +593,7 @@ if (!class_exists("Bread")) {
 			$this->mpdf->WriteHTML($header_stylesheet,1); // The parameter 1 tells that this is css/style only and no body/html/text
 			$this->mpdf->SetDefaultBodyCSS('line-height', $this->options['content_line_height']);
 			$this->mpdf->SetDefaultBodyCSS('background-color', 'transparent');
-			if ( $this->options['column_line'] == '1' ) {
+			if ( $this->options['column_line'] == 1 ) {
 				$html = '<body style="background-color:#fff;">';
 				if ( $this->options['page_fold'] == 'tri' ) {
 					$html .= '<table style="background-color: #fff;width: 100%; border-collapse: collapse;">
@@ -846,13 +845,13 @@ if (!class_exists("Bread")) {
 			$header_style .= "font-size:".$this->options['header_font_size']."pt;";
 			$header_style .= "line-height:".$this->options['content_line_height'].";";
 
-			if ( $this->options['header_uppercase'] === '1' ) { 
+			if ( $this->options['header_uppercase'] == 1 ) {
 				$header_style .= 'text-transform: uppercase;';
 			}
-			if ( $this->options['header_bold'] === '0' ) { 
+			if ( $this->options['header_bold'] == 0 ) {
 				$header_style .= 'font-weight: normal;';
 			}
-			if ( $this->options['header_bold'] === '1' ) { 
+			if ( $this->options['header_bold'] == 1 ) {
 				$header_style .= 'font-weight: bold;';
 			}
 			if ( $this->options['page_fold'] == 'half' ) {
@@ -933,7 +932,7 @@ if (!class_exists("Bread")) {
 						}				
 						if ( $this->options['meeting_sort'] === 'day' && $meeting_value['weekday_tinyint'] !== $this_unique_value ) { continue; }
 						$enFormats = explode ( ",", $meeting_value['formats'] );
-						if ( $this->options['include_asm'] === '0' && in_array ( "ASM", $enFormats ) ) { continue; }
+						if ( $this->options['include_asm'] == 0 && in_array ( "ASM", $enFormats ) ) { continue; }
 						$header = '';
 						
 						if ( $this->lang == 'fr' ) {							
@@ -1056,7 +1055,7 @@ if (!class_exists("Bread")) {
 						$duration_m = $minutes;
 						$duration_h = number_format($duration_m/60,1);
 						$space = ' ';
-						if ( $this->options['remove_space'] == '1' ) {
+						if ( $this->options['remove_space'] == 1 ) {
 							$space = '';
 						}
 						if ( $this->options['time_clock'] == Null || $this->options['time_clock'] == '12' || $this->options['time_option'] == '' ) {
@@ -1067,7 +1066,7 @@ if (!class_exists("Bread")) {
 						} else {
 							$time_format = "H:i";
 						}
-						if ( $this->options['time_option'] == '1' || $this->options['time_option'] == '' ) {
+						if ( $this->options['time_option'] == 1 || $this->options['time_option'] == '' ) {
 							$meeting_value[start_time] = date($time_format,strtotime($meeting_value[start_time]));
 							if ( $meeting_value[start_time] == '12:00PM' || $meeting_value[start_time] == '12:00 PM' ) {
 								$meeting_value[start_time] = 'NOON';
@@ -1101,7 +1100,7 @@ if (!class_exists("Bread")) {
 							$meeting_value[start_time] = $start_time.$space.'-'.$space.$end_time;
 						}
 						if ( $this->options['page_fold'] !== 'full' ) {
-							if ( isset($meeting_value['email_contact']) && $meeting_value['email_contact'] !== '' && $this->options['include_meeting_email'] == '1' ) { 
+							if ( isset($meeting_value['email_contact']) && $meeting_value['email_contact'] !== '' && $this->options['include_meeting_email'] == 1 ) {
 								$str = explode("#@-@#",$meeting_value['email_contact']);
 								$meeting_value['email_contact'] = $str['2'];
 							} else {
@@ -1502,7 +1501,7 @@ if (!class_exists("Bread")) {
 					$display_string .= " (".trim ( $value['location_info'] ).")";
 				}
 
-				if ( isset($value['email_contact']) && $value['email_contact'] != '' && $this->options['include_meeting_email'] == '1' ) { 
+				if ( isset($value['email_contact']) && $value['email_contact'] != '' && $this->options['include_meeting_email'] == 1 ) {
 					$str = explode("#@-@#",$value['email_contact']);
 					$value['email_contact'] = $str['2'];
 					$value['email_contact'] = ' (<i>'.$value['email_contact'].'</i>)';
@@ -1726,7 +1725,7 @@ if (!class_exists("Bread")) {
 				$this->options['meeting_template_content'] = '';
 			}
 			if ( !isset($this->options['column_line']) || strlen(trim($this->options['column_line'])) == 0 ) {
-				$this->options['column_line'] = '0';
+				$this->options['column_line'] = 0;
 			}
 			if ( !isset($this->options['col_color']) || strlen(trim($this->options['col_color'])) == 0 ) {
 				$this->options['col_color'] = '#bfbfbf';
@@ -1741,7 +1740,7 @@ if (!class_exists("Bread")) {
 				$this->options['custom_section_font_size'] = '9';
 			}			
 			if ( !isset($this->options['include_zip']) || strlen(trim($this->options['include_zip'])) == 0 ) {
-				$this->options['include_zip'] = '0';
+				$this->options['include_zip'] = 0;
 			}			
 			if ( !isset($this->options['used_format_1']) || strlen(trim($this->options['used_format_1'])) == 0 ) {
 				$this->options['used_format_1'] = '';
@@ -1750,10 +1749,10 @@ if (!class_exists("Bread")) {
 				$this->options['used_format_2'] = '';
 			}			
 			if ( !isset($this->options['include_meeting_email']) || strlen(trim($this->options['include_meeting_email'])) == 0 ) {
-				$this->options['include_meeting_email'] = '0';
+				$this->options['include_meeting_email'] = 0;
 			}			
 			if ( !isset($this->options['include_protection']) || strlen(trim($this->options['include_protection'])) == 0 ) {
-				$this->options['include_protection'] = '0';
+				$this->options['include_protection'] = 0;
 			}			
 			if ( !isset($this->options['weekday_language']) || strlen(trim($this->options['weekday_language'])) == 0 ) {
 				$this->options['weekday_language'] = 'en';

@@ -1,4 +1,22 @@
-To get things going run
+To contribute to bread, fork, make your changes and send a pull request to the unstable branch.
+
+Take a look at the issues for bugs that you might be able to help fix.
+
+Once your pull request is merged it will be released in the next version.
+
+If you are the maintainer of this code you will have to squash the commits to master from unstable as follows.
+
+```shell
+git checkout master
+git merge --squash unstable
+git commit -m "version x.x.x"
+git push -u origin master
+git svn dcommit --username=radius314
+```
+
+Once done make a new version branch which is branched off master.
+
+To get things going in your local environment.
 
 `docker-compose up`
 
