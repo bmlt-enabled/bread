@@ -15,8 +15,8 @@ git push -u origin master
 git svn dcommit --username=radius314
 
 git checkout unstable
-git rebase master
-git push -f origin unstable
+git merge master
+git push origin unstable
 ```
 
 To get things going in your local environment.
