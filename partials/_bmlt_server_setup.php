@@ -15,7 +15,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     <?php
                     if ( $this_connected ) {
                         echo $ThisVersion;
-                    } elseif ( empty(esc_html($this->options['root_server'])) ) {
+                    } elseif ( !isset($this->options['root_server']) ) {
                         echo "<span style='color: #f00;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-dismiss'></div>ERROR: Please enter a BMLT Server</span>";
                     } else {
                         echo "<span style='color: #f00;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-dismiss'></div>ERROR: Problem Connecting to BMLT Server</span>";
