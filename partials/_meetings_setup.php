@@ -177,7 +177,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     </p>
                     <div><i>Decrease Page Height Adjust if <strong>MEETING GROUP HEADER</strong> is missing.</i></div>
                     <div style="margin-top:0px; margin-bottom:20px; max-width:100%; width:100%;">
-                        <?
+                        <?php
                         $editor_id = "meeting_template_content";
                         $settings    = array (
                             'tabindex'      => FALSE,
