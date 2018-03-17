@@ -3,7 +3,7 @@
 Plugin Name: bread
 Plugin URI: http://wordpress.org/extend/plugins/bread/
 Description: Maintains and generates a PDF Meeting List from BMLT. 
-Version: 1.0.5
+Version: 1.0.6
 */
 /* Disallow direct access to the plugin file */
 if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
@@ -14,7 +14,7 @@ if (!class_exists("Bread")) {
 	class Bread {
 		var $lang = '';
 		
-		var $version = '1.0.5';
+		var $version = '1.0.6';
 		var $mpdf = '';
 		var $meeting_count = 0;
 		var $formats_used = '';
@@ -667,7 +667,7 @@ if (!class_exists("Bread")) {
 					$results1 = $this->get_root_server_request("http://www.alnwfl.org/main_server/client_interface/json/?switcher=GetSearchResults&sort_keys=$sort_keys&meeting_key=location_province&meeting_key_value=florida&get_used_formats&meeting_key_contains=1&formats[]=".$this->options['used_format_1']);
 				}
 
-				$alnwfl1 = json_decode($wp_remote_retrieve_body($results1), true);
+				$alnwfl1 = json_decode(wp_remote_retrieve_body($results1), true);
 
 				if ( $this->options['used_format_1'] == '' ) {
 					$results2 = $this->get_root_server_request("http://www.alnwfl.org/main_server/client_interface/json/?switcher=GetSearchResults&sort_keys=$sort_keys&meeting_key=location_province&meeting_key_value=fl&get_used_formats&meeting_key_contains=1");
@@ -1805,16 +1805,20 @@ if (!class_exists("Bread")) {
 					wp_nonce_field('bmltmeetinglistupdate-options');
 					$this_connected = $this->testRootServer();
 					$bmlt_version = $this_connected;
-					$this_version = intval(str_replace(".", "", $this_connected));
-					$source_of_truth = $this->testRootServer("http://bmlt.newyorkna.org");
-					$source_of_truth_version = intval(str_replace(".", "", $source_of_truth));
-					$connect = "<p><div style='color: #f00;font-size: 16px;vertical-align: middle;' class='dashicons dashicons-no'></div><span style='color: #f00;'>Connection to BMLT Server Failed.  Check spelling or try again.  If you are certain spelling is correct, BMLT Server could be down.</span></p>";
-					if ( $this_connected ) {
-						$ThisVersion = "<span style='color: #00AD00;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-smiley'></div>Your BMLT Server is running the latest Version ".$bmlt_version."</span>";
-						if ( $this_version !== $source_of_truth_version ) {
-							$ThisVersion = "<span style='color: #f00;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-dismiss'></div>Notice: BMLT Server Update Available! Your Version = ".$bmlt_version.". </span>";
-							$ThisVersion .= "<span style='color: #7AD03A;'><i>Updated version = " . $source_of_truth . "</i></span><br />";
-						}
+					if ($bmlt_version == "5.0.0") {
+						$ThisVersion = "<span style='color: #00AD00;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-admin-site'></div>Using Tomato Server</span>";
+                    } else {
+                        $this_version = intval(str_replace(".", "", $this_connected));
+                        $source_of_truth = $this->testRootServer("http://bmlt.newyorkna.org");
+                        $source_of_truth_version = intval(str_replace(".", "", $source_of_truth));
+                        $connect = "<p><div style='color: #f00;font-size: 16px;vertical-align: middle;' class='dashicons dashicons-no'></div><span style='color: #f00;'>Connection to BMLT Server Failed.  Check spelling or try again.  If you are certain spelling is correct, BMLT Server could be down.</span></p>";
+                        if ( $this_connected ) {
+                            $ThisVersion = "<span style='color: #00AD00;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-smiley'></div>Your BMLT Server is running the latest Version ".$bmlt_version."</span>";
+                            if ( $this_version !== $source_of_truth_version ) {
+                                $ThisVersion = "<span style='color: #f00;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-dismiss'></div>Notice: BMLT Server Update Available! Your Version = ".$bmlt_version.". </span>";
+                                $ThisVersion .= "<span style='color: #7AD03A;'><i>Updated version = " . $source_of_truth . "</i></span><br />";
+                            }
+                        }
 					}
 					?>
 					<div id="setup">						
