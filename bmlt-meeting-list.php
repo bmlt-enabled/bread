@@ -538,6 +538,7 @@ if (!class_exists("Bread")) {
 			if ( !isset($this->options['include_asm']) ) {$this->options['include_asm'] = '0';}
 			if ( !isset($this->options['header_uppercase']) ) {$this->options['header_uppercase'] = '0';}
 			if ( !isset($this->options['header_bold']) ) {$this->options['header_bold'] = '1';}
+			if ( !isset($this->options['header_remove']) ) {$this->options['header_remove'] = '1';}
 			if ( !isset($this->options['bmlt_login_id']) ) {$this->options['bmlt_login_id'] = '';}
 			if ( !isset($this->options['bmlt_login_password']) ) {$this->options['bmlt_login_password'] = '';}
 			if ( !isset($this->options['protection_password']) ) {$this->options['protection_password'] = '';}
@@ -994,12 +995,21 @@ if (!class_exists("Bread")) {
 									} elseif ( utf8_encode($this->mpdf->y) === $this->options['margin_top'] ) {
 										$header .= "<h2 style='".$header_style."'>".$this->getday($meeting_value['weekday_tinyint'], false, $this->options['weekday_language'])." " . $cont . "</h2>";
 									}
-									$header .= "<p style='margin-top:1pt; padding-top:1pt; font-weight:bold;'>".$area_name."</p>";
 									
-								} elseif ( utf8_encode($this->mpdf->y) === $this->options['margin_top'] ) {
-								
+									if ( $this->options['header_remove'] == 0 ) {
+										$header .= "";
+									}
+									if ( $this->options['header_remove'] == 1 ) {
+										$header .= "<p style='margin-top:1pt; padding-top:1pt; font-weight:bold;'>".$area_name."</p>";
+									}
+									} elseif ( utf8_encode($this->mpdf->y) === $this->options['margin_top'] ) {
 									$header .= "<h2 style='".$header_style."'>".$this->getday($meeting_value['weekday_tinyint'], false, $this->options['weekday_language'])." " . $cont . "</h2>";
-									$header .= "<p style='margin-top:1pt; padding-top:1pt; font-weight:bold;'>".$area_name."</p>";
+									if ( $this->options['header_remove'] == 0 ) {
+										$header .= "";
+									}
+									if ( $this->options['header_remove'] == 1 ) {
+										$header .= "<p style='margin-top:1pt; padding-top:1pt; font-weight:bold;'>".$area_name."</p>";
+									}
 								}
 							}
 							if ( $this->options['meeting_sort'] === 'city' || $this->options['meeting_sort'] === 'state' ) {
@@ -1588,6 +1598,7 @@ if (!class_exists("Bread")) {
 				$this->options['header_background_color'] = validate_hex_color($_POST['header_background_color']);
 				$this->options['header_uppercase'] = intval($_POST['header_uppercase']);
 				$this->options['header_bold'] = intval($_POST['header_bold']);
+				$this->options['header_remove'] = intval($_POST['header_remove']);
 				$this->options['page_height_fix'] = intval($_POST['page_height_fix']);
 				$this->options['column_gap'] = intval($_POST['column_gap']);
 				$this->options['margin_right'] = intval($_POST['margin_right']);
@@ -1678,6 +1689,9 @@ if (!class_exists("Bread")) {
 			}
 			if ( !isset($this->options['header_bold']) || strlen(trim($this->options['header_bold'])) == 0 ) {
 				$this->options['header_bold'] = '1';
+			}
+			if ( !isset($this->options['header_remove']) || strlen(trim($this->options['header_remove'])) == 0 ) {
+				$this->options['header_remove'] = '1';
 			}
 			if ( !isset($this->options['margin_top']) || strlen(trim($this->options['margin_top'])) == 0 ) {
 				$this->options['margin_top'] = 3;
