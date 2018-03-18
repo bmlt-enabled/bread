@@ -41,8 +41,8 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         <input name="header_bold" value="0" type="hidden">
                     <td><label for="header_bold">Bold: </label><input type="checkbox" name="header_bold" value="1" <?php echo ($this->options['header_bold'] == '1' ? 'checked' : '') ?>></td>
                     <td style="padding-right: 10px;">
-                    	<input name="header_remove" value="0" type="hidden">
-                    <td><label for="header_remove">Display Header: </label><input type="checkbox" name="header_remove" value="1" <?php echo ($this->options['header_remove'] == '1' ? 'checked' : '') ?>></td>
+                    	<input name="sub_header_shown" value="0" type="hidden">
+                    <td><label for="sub_header_shown">Display Sub Heading: </label><input type="checkbox" name="sub_header_shown" value="1" <?php echo ($this->options['sub_header_shown'] == '1' ? 'checked' : '') ?>></td>
                     </tr></table>
                     <p>
                         <div class="group_by" style="margin-right: 10px; display: inline;">
