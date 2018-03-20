@@ -25,32 +25,30 @@ if (!class_exists("Bread")) {
 		var $optionsName = 'bmlt_meeting_list_options';
 		var $options = array();
 		function __construct() {
-			$this->getMLOptions();
-			
-			$this->lang = $this->get_bmlt_server_lang();
-			
-			if (is_admin()) {
-				// Back end
-				//Initialize the options
-				add_action("admin_init", array(&$this, 'my_sideload_image'));
-				add_action("admin_menu", array(&$this, "admin_menu_link"));
-				add_filter('tiny_mce_before_init', array(&$this, 'tiny_tweaks' ));
-				add_filter('mce_external_plugins', array(&$this, 'my_custom_plugins'));
-				add_filter('mce_buttons', array(&$this, 'my_register_mce_button'));
-				add_action("admin_notices", array(&$this, "is_root_server_missing"));
-				add_action("admin_init", array(&$this, "pwsix_process_settings_export"));
-				add_action("admin_init", array(&$this, "pwsix_process_settings_import"));
-				add_action("admin_init", array(&$this, "pwsix_process_default_settings"));
-				add_action("admin_init", array(&$this, "my_theme_add_editor_styles"));
-				add_action("admin_enqueue_scripts", array(&$this, "enqueue_backend_files"));
-				add_action("wp_default_editor", array(&$this, "ml_default_editor"));
-				add_filter('tiny_mce_version', array( __CLASS__, 'force_mce_refresh' ) );
-			} else {
-				// Front end
-				if ( intval($_GET['current-meeting-list']) == 1 || intval($_GET['export-meeting-list']) == 1 ) {
-					$this->bmlt_meeting_list();
-				}
-			}
+		    if (is_admin() || intval($_GET['current-meeting-list']) == 1 || intval($_GET['export-meeting-list']) == 1 ) {
+                $this->getMLOptions();
+                $this->lang = $this->get_bmlt_server_lang();
+
+                if (is_admin()) {
+                    // Back end
+                    //Initialize the options
+                    add_action("admin_init", array(&$this, 'my_sideload_image'));
+                    add_action("admin_menu", array(&$this, "admin_menu_link"));
+                    add_filter('tiny_mce_before_init', array(&$this, 'tiny_tweaks' ));
+                    add_filter('mce_external_plugins', array(&$this, 'my_custom_plugins'));
+                    add_filter('mce_buttons', array(&$this, 'my_register_mce_button'));
+                    add_action("admin_notices", array(&$this, "is_root_server_missing"));
+                    add_action("admin_init", array(&$this, "pwsix_process_settings_export"));
+                    add_action("admin_init", array(&$this, "pwsix_process_settings_import"));
+                    add_action("admin_init", array(&$this, "pwsix_process_default_settings"));
+                    add_action("admin_init", array(&$this, "my_theme_add_editor_styles"));
+                    add_action("admin_enqueue_scripts", array(&$this, "enqueue_backend_files"));
+                    add_action("wp_default_editor", array(&$this, "ml_default_editor"));
+                    add_filter('tiny_mce_version', array( __CLASS__, 'force_mce_refresh' ) );
+                } else if ( intval($_GET['current-meeting-list']) == 1 || intval($_GET['export-meeting-list']) == 1 ) {
+                    $this->bmlt_meeting_list();
+                }
+            }
 		}
 
 		function ml_default_editor() {
