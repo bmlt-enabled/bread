@@ -3,7 +3,7 @@
 Plugin Name: bread
 Plugin URI: http://wordpress.org/extend/plugins/bread/
 Description: Maintains and generates a PDF Meeting List from BMLT. 
-Version: 1.0.6
+Version: 1.0.7
 */
 /* Disallow direct access to the plugin file */
 if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
@@ -14,7 +14,7 @@ if (!class_exists("Bread")) {
 	class Bread {
 		var $lang = '';
 		
-		var $version = '1.0.6';
+		var $version = '1.0.7';
 		var $mpdf = '';
 		var $meeting_count = 0;
 		var $formats_used = '';
@@ -327,7 +327,7 @@ if (!class_exists("Bread")) {
 			$args = array(
 				'timeout' => '30',
 				'headers' => array(
-					'User-Agent' => 'Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)'
+					'User-Agent' => 'Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0) +bread'
 				),
                 'cookies' => isset($cookies) ? $cookies : null
 			);
