@@ -327,7 +327,7 @@ if (!class_exists("Bread")) {
 			$args = array(
 				'timeout' => '30',
 				'headers' => array(
-					'User-Agent' => 'Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)'
+					'User-Agent' => 'Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0) +bread'
 				),
                 'cookies' => isset($cookies) ? $cookies : null
 			);

@@ -11,7 +11,8 @@ git checkout master
 git rebase origin/master
 git merge --squash unstable
 git commit -m "version x.x.x"
-git push -u origin master
+git tag x.x.x
+git push -u origin master --tags
 git svn dcommit --username=radius314
 
 git checkout unstable
