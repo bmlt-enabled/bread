@@ -16,7 +16,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     <div style="margin-bottom: 10px; padding:0;" id="accordion2">
                         <h3 class="help-accordian">Instructions</h3>
                         <div class="videocontent">
-                            <video id="my_video_1"  style="width:100%;height:100%;" controls="controls" width="100%" height="100%" preload="auto">
+                            <video id="my_video_1"  style="width:100%;height:100%;" controls width="100%" height="100%" preload="auto">
                                 <source src="http://nameetinglist.org/videos/meeting_group_header.mp4" type="video/mp4">
                                 Your browser does not support HTML5 video.
                             </video>
@@ -40,6 +40,9 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     <td style="padding-right: 10px;">
                         <input name="header_bold" value="0" type="hidden">
                     <td><label for="header_bold">Bold: </label><input type="checkbox" name="header_bold" value="1" <?php echo ($this->options['header_bold'] == '1' ? 'checked' : '') ?>></td>
+                    <td style="padding-right: 10px;">
+                    	<input name="sub_header_shown" value="0" type="hidden">
+                    <td><label for="sub_header_shown">Display Sub Heading: </label><input type="checkbox" name="sub_header_shown" value="1" <?php echo ($this->options['sub_header_shown'] == '1' ? 'checked' : '') ?>></td>
                     </tr></table>
                     <p>
                         <div class="group_by" style="margin-right: 10px; display: inline;">
@@ -158,7 +161,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     <div style="margin-bottom: 10px; padding:0;" id="accordion3">
                         <h3 class="help-accordian">Instructions</h3>
                         <div class="videocontent">
-                            <video id="my_video_1"  style="width:100%;height:100%;" controls="controls" width="100%" height="100%" preload="auto">
+                            <video id="my_video_1"  style="width:100%;height:100%;" controls width="100%" height="100%" preload="auto">
                                 <source src="http://nameetinglist.org/videos/nameetinglist.mp4" type="video/mp4">
                                 Your browser does not support HTML5 video.
                             </video>
@@ -336,7 +339,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     <div style="margin-bottom: 10px; padding:0;" id="accordion_asm">
                         <h3 class="help-accordian">Instructions</h3>
                         <div class="videocontent">
-                            <video id="my_video_1"  style="width:100%;height:100%;" controls="controls" width="100%" height="100%" preload="auto">
+                            <video id="my_video_1"  style="width:100%;height:100%;" controls width="100%" height="100%" preload="auto">
                                 <source src="http://nameetinglist.org/videos/show_area_service_meetings.mp4" type="video/mp4">
                                 Your browser does not support HTML5 video.
                             </video>
