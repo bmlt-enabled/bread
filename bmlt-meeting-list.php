@@ -1056,7 +1056,7 @@ if (!class_exists("Bread")) {
 						$duration = explode(':',$meeting_value[duration_time]);
 						$minutes = intval($duration[0])*60 + intval($duration[1]) + intval($duration[2]);
 						$duration_m = $minutes;
-						$duration_h = number_format($duration_m/60,1);
+						$duration_h = rtrim(rtrim(number_format($duration_m/60,2),0),'.');
 						$space = ' ';
 						if ( $this->options['remove_space'] == 1 ) {
 							$space = '';
