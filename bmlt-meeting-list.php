@@ -990,23 +990,20 @@ if (!class_exists("Bread")) {
 											$header .= "<h2 style='".$header_style."margin-top:2pt;'>".$this->getday($meeting_value['weekday_tinyint'], false, $this->options['weekday_language'])."</h2>";
 										}
 										$show_first_weekday = false;
-									} elseif ( utf8_encode($this->mpdf->y) === $this->options['margin_top'] ) {
+									} elseif ( utf8_encode($this->mpdf->y) == $this->options['margin_top'] ) {
 										$header .= "<h2 style='".$header_style."'>".$this->getday($meeting_value['weekday_tinyint'], false, $this->options['weekday_language'])." " . $cont . "</h2>";
 									}
 									
 									$header .= $this->options['sub_header_shown'] == 1 ? "<p style='margin-top:1pt; padding-top:1pt; font-weight:bold;'>".$area_name."</p>" : "";
 									
-									} elseif ( utf8_encode($this->mpdf->y) === $this->options['margin_top'] ) {
+                                } elseif ( utf8_encode($this->mpdf->y) == $this->options['margin_top'] ) {
 									$header .= "<h2 style='".$header_style."'>".$this->getday($meeting_value['weekday_tinyint'], false, $this->options['weekday_language'])." " . $cont . "</h2>";
-									
 									$header .= $this->options['sub_header_shown'] == 1 ? "<p style='margin-top:1pt; padding-top:1pt; font-weight:bold;'>".$area_name."</p>" : "";
 								}
 							}
 							if ( $this->options['meeting_sort'] === 'city' || $this->options['meeting_sort'] === 'state' ) {
 								if ( $meeting_value['location_municipality'] == '' ) {
-									
 									$meeting_value['location_municipality'] = '[NO CITY DATA IN BMLT]';
-									
 								}
 								if ( $newVal ) {
 									$header .= "<h2 style='".$header_style."'>".$meeting_value['location_municipality']."</h2>";
