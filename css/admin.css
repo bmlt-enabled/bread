@@ -607,15 +607,15 @@ color: #222;
 }
 #meeting-list-tabs.ui-tabs.ui-tabs-vertical .ui-tabs-nav li a:hover {
     cursor: pointer;
-	background-color: #E69700;
+	background-color: #7AD03A;
 	color: #555;
 }
 #meeting-list-tabs.ui-tabs.ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active {
 margin-bottom: 0.2em;
 padding-bottom: 0;
 border-right: 1px solid #FFF;
-background: #E69700;
-background-color: #E69700;
+background: #7AD03A;
+background-color: #7AD03A;
 }
 #meeting-list-tabs.ui-tabs.ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active a {
 color: #000;
@@ -636,8 +636,8 @@ padding: 6px 3px !important;
 }
 #meeting-list-tabs.ui-state-default, #meeting-list-tabs.ui-widget-content .ui-state-default, #meeting-list-tabs.ui-widget-header .ui-state-default {
 border: 1px solid #E5E5E5;
-background: #1484E6;
-background-color: #1484E6;
+background: #495b4a;
+background-color: #495b4a;
 font-weight: normal;
 color: #FFF;
 }

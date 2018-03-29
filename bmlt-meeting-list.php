@@ -3,7 +3,7 @@
 Plugin Name: bread
 Plugin URI: http://wordpress.org/extend/plugins/bread/
 Description: Maintains and generates a PDF Meeting List from BMLT. 
-Version: 1.2.0
+Version: 1.2.1
 */
 /* Disallow direct access to the plugin file */
 if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
@@ -14,7 +14,7 @@ if (!class_exists("Bread")) {
 	class Bread {
 		var $lang = '';
 		
-		var $version = '1.2.0';
+		var $version = '1.2.1';
 		var $mpdf = '';
 		var $meeting_count = 0;
 		var $formats_used = '';
@@ -990,23 +990,20 @@ if (!class_exists("Bread")) {
 											$header .= "<h2 style='".$header_style."margin-top:2pt;'>".$this->getday($meeting_value['weekday_tinyint'], false, $this->options['weekday_language'])."</h2>";
 										}
 										$show_first_weekday = false;
-									} elseif ( utf8_encode($this->mpdf->y) === $this->options['margin_top'] ) {
+									} elseif ( utf8_encode($this->mpdf->y) == $this->options['margin_top'] ) {
 										$header .= "<h2 style='".$header_style."'>".$this->getday($meeting_value['weekday_tinyint'], false, $this->options['weekday_language'])." " . $cont . "</h2>";
 									}
 									
 									$header .= $this->options['sub_header_shown'] == 1 ? "<p style='margin-top:1pt; padding-top:1pt; font-weight:bold;'>".$area_name."</p>" : "";
 									
-									} elseif ( utf8_encode($this->mpdf->y) === $this->options['margin_top'] ) {
+                                } elseif ( utf8_encode($this->mpdf->y) == $this->options['margin_top'] ) {
 									$header .= "<h2 style='".$header_style."'>".$this->getday($meeting_value['weekday_tinyint'], false, $this->options['weekday_language'])." " . $cont . "</h2>";
-									
 									$header .= $this->options['sub_header_shown'] == 1 ? "<p style='margin-top:1pt; padding-top:1pt; font-weight:bold;'>".$area_name."</p>" : "";
 								}
 							}
 							if ( $this->options['meeting_sort'] === 'city' || $this->options['meeting_sort'] === 'state' ) {
 								if ( $meeting_value['location_municipality'] == '' ) {
-									
 									$meeting_value['location_municipality'] = '[NO CITY DATA IN BMLT]';
-									
 								}
 								if ( $newVal ) {
 									$header .= "<h2 style='".$header_style."'>".$meeting_value['location_municipality']."</h2>";
@@ -1056,7 +1053,7 @@ if (!class_exists("Bread")) {
 						$duration = explode(':',$meeting_value[duration_time]);
 						$minutes = intval($duration[0])*60 + intval($duration[1]) + intval($duration[2]);
 						$duration_m = $minutes;
-						$duration_h = number_format($duration_m/60,1);
+						$duration_h = rtrim(rtrim(number_format($duration_m/60,2),0),'.');
 						$space = ' ';
 						if ( $this->options['remove_space'] == 1 ) {
 							$space = '';

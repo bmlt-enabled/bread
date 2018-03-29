@@ -1,11 +1,11 @@
 === bread ===
 
-Contributors: odathp, radius314
+Contributors: odathp, radius314, pjaudiomv
 Tags: meeting list, bmlt, narcotics anonymous, na
 Requires at least: 4.0
 Requires PHP: 5.6
 Tested up to: 4.9.4
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 A web-based tool that creates, maintains and generates a PDF meeting list from BMLT.
@@ -47,12 +47,18 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 - The meeting list is setup one time and does not need to be edited when meetings change
 - The meeting list can be backed up or exported then imported into another site
 - Has its very own current meeting list link which can be shared across the web
-- Can use custom queries to a BMLT root server semantic interface
+- Can use custom queries to a BMLT root server semantic interface.  This can be used by adding everything after ‘?switcher=GetSearchResults’ into the custom query box, for example ‘&services[]=1&services[]=3&services[]=5’ would result in querying service bodies 1, 3 and 5. A good place to build a custom query is by using the semantic interface of your bmlt server.
 
 = How do I contribute?
 - Read here for more information: https://github.com/radius314/bread/blob/unstable/contribute.md
 
 == Changelog ==
+
+= 1.2.1 =
+
+* Fixed a bug where it was rounding off the decimal duration to the nearest tenth instead of hundreth.
+* Fixed a regression in continuing headers.
+* Made sidebar colors different to visually differentiate between the BMLT meeting list generator (EOL).
 
 = 1.2.0 =
 
