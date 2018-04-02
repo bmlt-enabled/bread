@@ -323,7 +323,7 @@ if (!class_exists("Bread")) {
 
 		function get($url, $cookies = null) {
 			$args = array(
-				'timeout' => '30',
+				'timeout' => '120',
 				'headers' => array(
 					'User-Agent' => 'Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0) +bread'
 				),
@@ -880,6 +880,7 @@ if (!class_exists("Bread")) {
 			$this->options['meeting_template_content'] = wpautop(stripslashes($this->options['meeting_template_content']));
 			$this->options['meeting_template_content'] = preg_replace('/[[:^print:]]/', ' ', $this->options['meeting_template_content']);
 			foreach ($unique_states as $this_state) {
+			    error_log($this_state);
 				$x++;
 
 				if ( $this->options['meeting_sort'] === 'weekday_area' || $this->options['meeting_sort'] === 'weekday_city' || $this->options['meeting_sort'] === 'weekday_county' ) {
