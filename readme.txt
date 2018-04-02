@@ -54,6 +54,10 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 
 == Changelog ==
 
+= next =
+
+* Bumped up the HTTP GET timeout from 30 seconds to 2 mins.
+
 = 1.2.1 =
 
 * Fixed a bug where it was rounding off the decimal duration to the nearest tenth instead of hundreth.
