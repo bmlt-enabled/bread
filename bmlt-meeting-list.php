@@ -309,7 +309,7 @@ if (!class_exists("Bread")) {
 		function get_root_server_request($url) {
 		    $cookies = null;
 
-			if ($this->options['include_meeting_email'] == 1) {
+			if ($this->options['include_meeting_email'] == 1 || $this->options['include_asm'] == 1) {
 				$auth_response = $this->authenticate_root_server();
                 $cookies = wp_remote_retrieve_cookies($auth_response);
 			}
@@ -435,7 +435,7 @@ if (!class_exists("Bread")) {
 		}
 
 		function bmlt_meeting_list($atts = null, $content = null) {
-			ini_set('max_execution_time', 600); // sandwich server can take a long time to generate a schedule, override the server setting
+			ini_set('max_execution_time', 600); // tomato server can take a long time to generate a schedule, override the server setting
 			if ( isset( $_GET['export-meeting-list'] ) && intval($_GET['export-meeting-list']) == 1 ) {
 				$this->pwsix_process_settings_export();
 			}
@@ -665,7 +665,6 @@ if (!class_exists("Bread")) {
             if ( $this->options['extra_meetings'] ) {
                 $extras = "";
                 foreach ($this->options['extra_meetings'] as $value) {
-
                     $data = array(" [", "]");
                     $value = str_replace($data, "", $value);
                     $extras .= "&meeting_ids[]=".$value;
@@ -682,17 +681,13 @@ if (!class_exists("Bread")) {
 
                     array_multisort($weekday, SORT_ASC, $start_time, SORT_ASC, $result_meetings);
                     $this->formats_used = array_merge($result['formats'], $extra_result['formats']);
-
                 } else {
                     $this->formats_used = $result['formats'];
                     $result_meetings = $result['meetings'];
-
                 }
-
             } else {
                 $this->formats_used = $result['formats'];
                 $result_meetings = $result['meetings'];
-
             }
 
 			if ( $result_meetings == Null ) {
@@ -703,7 +698,7 @@ if (!class_exists("Bread")) {
 				exit;
 			}
 			if ( strpos($this->options['custom_section_content'].$this->options['front_page_content'].$this->options['last_page_content'], "[service_meetings]") !== false ) {
-				$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services_service_body_1&sort_keys=meeting_name" );
+				$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services_service_body_1&sort_keys=meeting_name&advanced_published=0" );
 				$this->service_meeting_result = json_decode(wp_remote_retrieve_body($results), true);
 			}
 			$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetFormats");
@@ -803,13 +798,7 @@ if (!class_exists("Bread")) {
 				$header_style .= 'font-weight: bold;';
 			}
 			if ( $this->options['page_fold'] == 'half' ) {
-				if ( strpos($this->options['front_page_content'], '[start_toc]') !== false ) {
-					//$start_toc = true;
-				}
 				$this->write_front_page();
-				if ( $start_toc ) {
-					$this->mpdf->WriteHTML('<tocentry content="Meeting Directory" />');
-				}
 			}
 			$x = 0;
 			$this->mpdf->WriteHTML('td{font-size: '.$this->options['content_font_size']."pt;line-height:".$this->options['content_line_height'].';}',1);
