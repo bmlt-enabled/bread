@@ -3,7 +3,7 @@
 Plugin Name: bread
 Plugin URI: http://wordpress.org/extend/plugins/bread/
 Description: Maintains and generates a PDF Meeting List from BMLT. 
-Version: 1.2.1
+Version: 1.3.0
 */
 /* Disallow direct access to the plugin file */
 if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
@@ -14,7 +14,7 @@ if (!class_exists("Bread")) {
 	class Bread {
 		var $lang = '';
 		
-		var $version = '1.2.1';
+		var $version = '1.3.0';
 		var $mpdf = '';
 		var $meeting_count = 0;
 		var $formats_used = '';
@@ -309,7 +309,7 @@ if (!class_exists("Bread")) {
 		function get_root_server_request($url) {
 		    $cookies = null;
 
-			if ($this->options['include_meeting_email'] == 1) {
+			if ($this->options['include_meeting_email'] == 1 || $this->options['include_asm'] == 1) {
 				$auth_response = $this->authenticate_root_server();
                 $cookies = wp_remote_retrieve_cookies($auth_response);
 			}
@@ -323,7 +323,7 @@ if (!class_exists("Bread")) {
 
 		function get($url, $cookies = null) {
 			$args = array(
-				'timeout' => '30',
+				'timeout' => '120',
 				'headers' => array(
 					'User-Agent' => 'Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0) +bread'
 				),
@@ -435,7 +435,7 @@ if (!class_exists("Bread")) {
 		}
 
 		function bmlt_meeting_list($atts = null, $content = null) {
-			ini_set('max_execution_time', 600); // sandwich server can take a long time to generate a schedule, override the server setting
+			ini_set('max_execution_time', 600); // tomato server can take a long time to generate a schedule, override the server setting
 			if ( isset( $_GET['export-meeting-list'] ) && intval($_GET['export-meeting-list']) == 1 ) {
 				$this->pwsix_process_settings_export();
 			}
@@ -650,97 +650,46 @@ if (!class_exists("Bread")) {
 				$this->options['meeting_sort'] = 'day';
 				$sort_keys = 'weekday_tinyint,start_time,meeting_name';
 			}
-			if ( $this->options['service_body_1'] == 'Florida Region' && $services == '&recursive=1&services[]=1&recursive=1&services[]=20' ) {
-				// HARDCODED: Florida Region + Alabama Northwest Florida aggregate for statewide schedule
-				if ( $this->options['used_format_1'] == '' ) {
-					$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&get_used_formats&sort_keys=$sort_keys" );
-				} else {
-					$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=$sort_keys&get_used_formats&formats[]=".$this->options['used_format_1'] );
-				}
 
-				$florida = json_decode(wp_remote_retrieve_body($results), true);
+            $get_used_formats = '&get_used_formats';
 
-				if ( $this->options['used_format_1'] == '' ) {
-					$results1 = $this->get_root_server_request("http://www.alnwfl.org/main_server/client_interface/json/?switcher=GetSearchResults&sort_keys=$sort_keys&meeting_key=location_province&meeting_key_value=florida&get_used_formats&meeting_key_contains=1");
-				} else {
-					$results1 = $this->get_root_server_request("http://www.alnwfl.org/main_server/client_interface/json/?switcher=GetSearchResults&sort_keys=$sort_keys&meeting_key=location_province&meeting_key_value=florida&get_used_formats&meeting_key_contains=1&formats[]=".$this->options['used_format_1']);
-				}
+            if ( $this->options['used_format_1'] == '' && $this->options['used_format_2'] == '' ) {
+                $results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=$sort_keys$get_used_formats");
+            } elseif ( $this->options['used_format_1'] != '' ) {
+                $results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=$sort_keys&get_used_formats&formats[]=".$this->options['used_format_1'] );
+            } elseif ( $this->options['used_format_2'] != '' ) {
+                $results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=$sort_keys&get_used_formats&formats[]=".$this->options['used_format_2'] );
+            }
 
-				$alnwfl1 = json_decode(wp_remote_retrieve_body($results1), true);
+            $result = json_decode(wp_remote_retrieve_body($results), true);
+            if ( $this->options['extra_meetings'] ) {
+                $extras = "";
+                foreach ($this->options['extra_meetings'] as $value) {
+                    $data = array(" [", "]");
+                    $value = str_replace($data, "", $value);
+                    $extras .= "&meeting_ids[]=".$value;
+                }
 
-				if ( $this->options['used_format_1'] == '' ) {
-					$results2 = $this->get_root_server_request("http://www.alnwfl.org/main_server/client_interface/json/?switcher=GetSearchResults&sort_keys=$sort_keys&meeting_key=location_province&meeting_key_value=fl&get_used_formats&meeting_key_contains=1");
-				} else {
-					$results2 = $this->get_root_server_request("http://www.alnwfl.org/main_server/client_interface/json/?switcher=GetSearchResults&sort_keys=$sort_keys&meeting_key=location_province&meeting_key_value=fl&get_used_formats&meeting_key_contains=1&formats[]=".$this->options['used_format_1']);
-				}
+                $extra_results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults&sort_keys=".$sort_keys."".$extras."".$get_used_formats );
+                $extra_result = json_decode(wp_remote_retrieve_body($extra_results), true);
+                if ( $extra_result <> Null ) {
+                    $result_meetings = array_merge($result['meetings'], $extra_result['meetings']);
+                    foreach ($result_meetings as $key => $row) {
+                        $weekday[$key] = $row['weekday_tinyint'];
+                        $start_time[$key] = $row['start_time'];
+                    }
 
-				$alnwfl2 = json_decode(wp_remote_retrieve_body($results2), true);
+                    array_multisort($weekday, SORT_ASC, $start_time, SORT_ASC, $result_meetings);
+                    $this->formats_used = array_merge($result['formats'], $extra_result['formats']);
+                } else {
+                    $this->formats_used = $result['formats'];
+                    $result_meetings = $result['meetings'];
+                }
+            } else {
+                $this->formats_used = $result['formats'];
+                $result_meetings = $result['meetings'];
+            }
 
-				if ( isset($alnwfl1['meetings']) && isset($alnwfl2['meetings']) ) {
-					$result_meetings = array_merge($florida['meetings'], $alnwfl1['meetings'], $alnwfl2['meetings']);
-					$this->formats_used = array_merge($florida['formats'], $alnwfl1['formats'], $alnwfl2['formats']);
-				} elseif ( isset($alnwfl1['meetings']) & ! isset($alnwfl2['meetings']) ) {
-					$result_meetings = array_merge($florida['meetings'], $alnwfl1['meetings']);
-					$this->formats_used = array_merge($florida['formats'], $alnwfl1['formats']);
-				} elseif ( isset($alnwfl2['meetings']) & ! isset($alnwfl1['meetings']) ) {
-					$result_meetings = array_merge($florida['meetings'], $alnwfl2['meetings']);
-					$this->formats_used = array_merge($florida['formats'], $alnwfl2['formats']);
-				} else {
-					$result_meetings = $florida['meetings'];
-					$this->formats_used = $florida['formats'];
-				}
-			} else {
-				$get_used_formats = '&get_used_formats';
-				// HARDCODED: Minnesota
-				if ( $this->options['root_server'] == "http://naminnesota.org/bmlt/main_server/" ) {
-					$get_used_formats = '';
-				}
-				if ( $this->options['used_format_1'] == '' && $this->options['used_format_2'] == '' ) {
-					$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=$sort_keys$get_used_formats");
-				} elseif ( $this->options['used_format_1'] != '' ) {
-					$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=$sort_keys&get_used_formats&formats[]=".$this->options['used_format_1'] );
-				} elseif ( $this->options['used_format_2'] != '' ) {
-					$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=$sort_keys&get_used_formats&formats[]=".$this->options['used_format_2'] );
-				}
-				
-				$result = json_decode(wp_remote_retrieve_body($results), true);
-				if ( $this->options['extra_meetings'] ) {
-				    $extras = "";
-					foreach ($this->options['extra_meetings'] as $value) {
-						
-						$data = array(" [", "]");
-						$value = str_replace($data, "", $value);
-						$extras .= "&meeting_ids[]=".$value;
-					}
-					
-					$extra_results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults&sort_keys=".$sort_keys."".$extras."".$get_used_formats );
-					$extra_result = json_decode(wp_remote_retrieve_body($extra_results), true);
-					if ( $extra_result <> Null ) {						
-						$result_meetings = array_merge($result['meetings'], $extra_result['meetings']);
-						foreach ($result_meetings as $key => $row) {
-							$weekday[$key] = $row['weekday_tinyint']; 
-							$start_time[$key] = $row['start_time'];
-						}
-						
-						array_multisort($weekday, SORT_ASC, $start_time, SORT_ASC, $result_meetings);
-						$this->formats_used = array_merge($result['formats'], $extra_result['formats']);
-						
-					} else {
-						$this->formats_used = $result['formats'];	
-						$result_meetings = $result['meetings'];
-						
-					}
-				
-				} else {
-					$this->formats_used = $result['formats'];	
-					$result_meetings = $result['meetings'];
-					
-				}
-				// HARCODED: Minnesota
-				if ( $this->options['root_server'] == "http://naminnesota.org/bmlt/main_server/" ) {
-					$result_meetings = $result;
-				}
-			}
 			if ( $result_meetings == Null ) {
 				echo "<script type='text/javascript'>\n";
 				echo "document.body.innerHTML = ''";
@@ -749,7 +698,7 @@ if (!class_exists("Bread")) {
 				exit;
 			}
 			if ( strpos($this->options['custom_section_content'].$this->options['front_page_content'].$this->options['last_page_content'], "[service_meetings]") !== false ) {
-				$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services_service_body_1&sort_keys=meeting_name" );
+				$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services_service_body_1&sort_keys=meeting_name&advanced_published=0" );
 				$this->service_meeting_result = json_decode(wp_remote_retrieve_body($results), true);
 			}
 			$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetFormats");
@@ -782,17 +731,8 @@ if (!class_exists("Bread")) {
 			$unique_areas = $this->get_areas();			
 			$unique_states = array();
 			$unique_data = array();
-			
-			// HARCODED: North Carolina
-			$seperate_nc = false;						
-			if ( (strpos($services, '&services[]=8') !== false || strpos($services, '&services[]=11') !== false) && ($this->options['service_body_1'] == 'Tidewater Area Service' || $this->options['service_body_2'] == 'Tidewater Area Service') ) {				
-				$seperate_nc = true;
-			}
+
 			foreach ($result_meetings as $value) {
-				// HARDCODED: Florida
-				if ( $this->options['service_body_1'] == 'Florida Region' && $services == '&recursive=1&services[]=1&recursive=1&services[]=20' && strtolower($value['location_province'][0]) === 'f' ) {
-					$value['location_province'] = 'Florida';
-				}
 				$result_meetings_temp[] = $value;
 				$unique_states[] = $value['location_province'];
 				if ( $this->options['meeting_sort'] === 'state' ) {
@@ -858,13 +798,7 @@ if (!class_exists("Bread")) {
 				$header_style .= 'font-weight: bold;';
 			}
 			if ( $this->options['page_fold'] == 'half' ) {
-				if ( strpos($this->options['front_page_content'], '[start_toc]') !== false ) {
-					//$start_toc = true;
-				}
 				$this->write_front_page();
-				if ( $start_toc ) {
-					$this->mpdf->WriteHTML('<tocentry content="Meeting Directory" />');
-				}
 			}
 			$x = 0;
 			$this->mpdf->WriteHTML('td{font-size: '.$this->options['content_font_size']."pt;line-height:".$this->options['content_line_height'].';}',1);
@@ -880,6 +814,7 @@ if (!class_exists("Bread")) {
 			$this->options['meeting_template_content'] = wpautop(stripslashes($this->options['meeting_template_content']));
 			$this->options['meeting_template_content'] = preg_replace('/[[:^print:]]/', ' ', $this->options['meeting_template_content']);
 			foreach ($unique_states as $this_state) {
+			    error_log($this_state);
 				$x++;
 
 				if ( $this->options['meeting_sort'] === 'weekday_area' || $this->options['meeting_sort'] === 'weekday_city' || $this->options['meeting_sort'] === 'weekday_county' ) {
@@ -1114,12 +1049,7 @@ if (!class_exists("Bread")) {
 							$data = str_replace('day', $this->getday($meeting_value['weekday_tinyint'], false, $this->lang), $data);
 							$data = str_replace('weekday_tinyint', $this->getday($meeting_value['weekday_tinyint'], false, $this->lang), $data);
 							$data = str_replace('start_time', $meeting_value['start_time'], $data);
-							// HARDCODED: North Carolina
-							if ( ($seperate_nc) && (strtolower($meeting_value['location_province']) === 'nc' || strtolower($meeting_value['location_province']) === 'n.c.') ) {
-								$data = str_replace('time', $this->getday($meeting_value['weekday_tinyint'], false, $this->lang).': '.$meeting_value['start_time'], $data);
-							} else {
-								$data = str_replace('time', $meeting_value['start_time'], $data);
-							}
+							$data = str_replace('time', $meeting_value['start_time'], $data);
 							
 							$meeting_value['formats'] = str_replace(',', ', ', $meeting_value['formats']);
 							$data = str_replace('formats', $meeting_value['formats'], $data);
@@ -1198,12 +1128,6 @@ if (!class_exists("Bread")) {
 							$data .= '</tr>';
 						}
 
-						// HARCODED: North Carolina
-						if ( ($seperate_nc) && (strtolower($meeting_value['location_province']) === 'nc' || strtolower($meeting_value['location_province']) === 'n.c.') ) {							
-							$data_nc .= $data;							
-							continue;							
-						}
-						
 						$data = $header . $data;
 											
 						$data = mb_convert_encoding($data, 'HTML-ENTITIES');
@@ -1226,15 +1150,7 @@ if (!class_exists("Bread")) {
 				}
 				if ( $this->options['meeting_sort'] !== 'state' ) { break; }
 			}
-			// HARCODED: North Carolina
-			if ( $seperate_nc ) {				
-				$header .= "<h2 style='".$header_style."'>North Carolina Meetings</h2>";
-				$data_nc = $header . $data_nc;
-				$data_nc = mb_convert_encoding($data_nc, 'HTML-ENTITIES');
-				$data_nc = utf8_encode($data_nc);
-				$this->mpdf->WriteHTML($data_nc);				
-			}
-			
+
 			if ( $this->options['page_fold'] == 'full' ) {
 				$this->mpdf->WriteHTML('</table>');
 			}

@@ -296,57 +296,60 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     </select>
                 </div>
             </div>
-            <?php $connected = ''; ?>
-            <?php if ( $this->options['include_meeting_email'] == '1' ) { ?>
-                <?php $logged_in = wp_remote_retrieve_body($this->authenticate_root_server()); ?>
-                <?php $connected = "<p><div style='color: #f00;font-size: 16px;vertical-align: middle;' class='dashicons dashicons-no'></div><span style='color: #f00;'>Login ID or Password Incorrect</span></p>"; ?>
-                <?php if ( $logged_in == 'OK') { ?>
-                    <?php $connected = "<p><div style='color: #00AD00;font-size: 16px;vertical-align: middle;' class='dashicons dashicons-smiley'></div><span style='color: #00AD00;'>Login OK</span></p>"; ?>
-                <?php } ?>
-                
+            <?php
+                $connected = '';
+                $logged_in = wp_remote_retrieve_body($this->authenticate_root_server()); ?>
+            <?php $connected = "<p><div style='color: #f00;font-size: 16px;vertical-align: middle;' class='dashicons dashicons-unlock'></div><span style='color: #f00;'>Login ID or Password Incorrect</span></p>"; ?>
+            <?php if ( $logged_in == 'OK') { ?>
+                <?php $connected = "<p><div style='color: #00AD00;font-size: 16px;vertical-align: middle;' class='dashicons dashicons-lock'></div><span style='color: #00AD00;'>Login OK</span></p>"; ?>
             <?php } ?>
-            <div id="includeemaildiv" class="postbox">
-                <?php $title = '
-                <p>Enable the <strong>Meeting Email Contact</strong> (email_contact) field in the <strong>Meeting Template</strong>.</p>
-                <p>This feature requires a login ID and password for the service body.</p>
-                <p>This can be Service Body Administrator or Observer.</p>
-                <p>Visit the <a target="_blank" href="http://bmlt.magshare.net/specific-topics/bmlt-roles/">BMLT Roles</a> page for more details.</p>
-                ';
-                ?>
-                <h3 class="hndle">Meeting Email Contact<span title='<?php echo $title; ?>' class="top-tooltip"></span></h3>
+            <div class="postbox">
+                <h3 class="hndle">Special Features<span title='You must login with an service body administrator account to use these features.' class="top-tooltip"></span></h3>
                 <div class="inside">
-                    <input name="include_meeting_email" value="0" type="hidden">
-                    <p><input type="checkbox" name="include_meeting_email" value="1" <?php echo ($this->options['include_meeting_email'] == '1' ? 'checked' : '') ?>>Enable</p>
                     <p>
-                    <label for="bmlt_login_id">Login ID: </label>
-                    <input class="bmlt-login" id="bmlt_login_id" type="text" name="bmlt_login_id" value="<?php echo esc_html($this->options['bmlt_login_id']) ;?>" />&nbsp;&nbsp;&nbsp;&nbsp;
-                    <label for="bmlt_login_password">Password: </label>
-                    <input class="bmlt-login" id="bmlt_login_password" type="password" name="bmlt_login_password" value="<?php echo esc_html($this->options['bmlt_login_password']) ;?>" />  <?php echo $connected; ?>
+                        <label for="bmlt_login_id">Login ID: </label>
+                        <input class="bmlt-login" id="bmlt_login_id" type="text" name="bmlt_login_id" value="<?php echo esc_html($this->options['bmlt_login_id']) ;?>" />&nbsp;&nbsp;&nbsp;&nbsp;
+                        <label for="bmlt_login_password">Password: </label>
+                        <input class="bmlt-login" id="bmlt_login_password" type="password" name="bmlt_login_password" value="<?php echo esc_html($this->options['bmlt_login_password']) ;?>" />  <?php echo $connected; ?>
                     </p>
-                </div>
-            </div>
-            <div id="includeasmdiv" class="postbox">
-                <?php $title = '
-                <p>Show <strong>Area Service Meetings</strong> (ASM) in the meeting list.</p>
-                <p>In BMLT a meeting can have the format code ASM indicating it is a service meeting.</p>
-                <p>Typically Areas show their Area Service Meetings separately on the meeting list</p>
-                <p>and may not want to show the Area Service Meetings again in the list of regular meetings.</p>
-                <p>To list the Area Service Meetings in the list of regular meetings enable this check-box.</p>
-                ';
-                ?>
-                <h3 class="hndle">Show Area Service Meetings<span title='<?php echo $title; ?>' class="top-tooltip"></span></h3>
-                <div class="inside">
-                    <div style="margin-bottom: 10px; padding:0;" id="accordion_asm">
-                        <h3 class="help-accordian">Instructions</h3>
-                        <div class="videocontent">
-                            <video id="my_video_1"  style="width:100%;height:100%;" controls width="100%" height="100%" preload="auto">
-                                <source src="http://nameetinglist.org/videos/show_area_service_meetings.mp4" type="video/mp4">
-                                Your browser does not support HTML5 video.
-                            </video>
+                    <?php if ($logged_in == 'OK') { ?>
+                        <div id="includeemaildiv" class="inside">
+                            <?php $title = '
+                                <p>Enable the <strong>Meeting Email Contact</strong> (email_contact) field in the <strong>Meeting Template</strong>.</p>
+                                <p>This feature requires a login ID and password for the service body.</p>
+                                <p>This can be Service Body Administrator or Observer.</p>
+                                <p>Visit the <a target="_blank" href="https://bmlt.magshare.net/specific-topics/bmlt-roles/">BMLT Roles</a> page for more details.</p>
+                                ';
+                            ?>
+                            <b>Meeting Email Contact<span title='<?php echo $title; ?>' class="top-tooltip"></span></b>
+                            <input name="include_meeting_email" value="0" type="hidden"><p><input type="checkbox" name="include_meeting_email" value="1" <?php echo ($this->options['include_meeting_email'] == '1' ? 'checked' : '') ?>>Enable</p>
                         </div>
-                    </div>
-                    <input name="include_asm" value="0" type="hidden">
-                    <p><input type="checkbox" name="include_asm" value="1" <?php echo ($this->options['include_asm'] == '1' ? 'checked' : '') ?>>Enable</p>
+                     <?php } ?>
+                        <div id="includeasmdiv" class="inside">
+                            <?php $title = '
+                                <p>Show <strong>Area Service Meetings</strong> (ASM) in the meeting list.</p>
+                                <p>In BMLT a meeting can have the format code ASM indicating it is a service meeting.</p>
+                                <p>Typically Areas show their Area Service Meetings separately on the meeting list</p>
+                                <p>and may not want to show the Area Service Meetings again in the list of regular meetings.</p>
+                                <p>To list the Area Service Meetings in the list of regular meetings enable this check-box.</p>
+                                <p>If you login, you can use unpublished meetings with the ASM format.</p>
+                                ';
+                            ?>
+                            <b>Show Area Service Meetings<span title='<?php echo $title; ?>' class="top-tooltip"></span></b>
+                            <input name="include_asm" value="0" type="hidden">
+                            <p><input type="checkbox" name="include_asm" value="1" <?php echo ($this->options['include_asm'] == '1' ? 'checked' : '') ?>>Enable</p>
+                            <div class="inside">
+                                <div style="margin-bottom: 10px; padding:0;" id="accordion_asm">
+                                    <h3 class="help-accordian">Instructions</h3>
+                                    <div class="videocontent">
+                                        <video id="my_video_1"  style="width:100%;height:100%;" controls width="100%" height="100%" preload="auto">
+                                            <source src="http://nameetinglist.org/videos/show_area_service_meetings.mp4" type="video/mp4">
+                                            Your browser does not support HTML5 video.
+                                        </video>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                 </div>
             </div>
         </div>
