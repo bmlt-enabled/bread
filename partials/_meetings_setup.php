@@ -17,7 +17,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         <h3 class="help-accordian">Instructions</h3>
                         <div class="videocontent">
                             <video id="my_video_1"  style="width:100%;height:100%;" controls width="100%" height="100%" preload="auto">
-                                <source src="http://nameetinglist.org/videos/meeting_group_header.mp4" type="video/mp4">
+                                <source src="https://nameetinglist.org/videos/meeting_group_header.mp4" type="video/mp4">
                                 Your browser does not support HTML5 video.
                             </video>
                         </div>
@@ -162,7 +162,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         <h3 class="help-accordian">Instructions</h3>
                         <div class="videocontent">
                             <video id="my_video_1"  style="width:100%;height:100%;" controls width="100%" height="100%" preload="auto">
-                                <source src="http://nameetinglist.org/videos/nameetinglist.mp4" type="video/mp4">
+                                <source src="https://nameetinglist.org/videos/nameetinglist.mp4" type="video/mp4">
                                 Your browser does not support HTML5 video.
                             </video>
                         </div>
@@ -343,7 +343,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                                     <h3 class="help-accordian">Instructions</h3>
                                     <div class="videocontent">
                                         <video id="my_video_1"  style="width:100%;height:100%;" controls width="100%" height="100%" preload="auto">
-                                            <source src="http://nameetinglist.org/videos/show_area_service_meetings.mp4" type="video/mp4">
+                                            <source src="https://nameetinglist.org/videos/show_area_service_meetings.mp4" type="video/mp4">
                                             Your browser does not support HTML5 video.
                                         </video>
                                     </div>

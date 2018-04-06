@@ -8,7 +8,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
             <h3 class="help-accordian"><strong>Read This Section First</strong></h3>
             <div>
                 <h2>Getting Started</h2>
-                <p>bread is first activated using a "Tri Fold - Landscape - Letter Size" layout. This is a "starter" meeting list that uses an Area with about 100 meetings.  The starter meeting list will contain standard content for a basic meeting list that can be printed on a home computer.  A basic NA logo will be added to your media libray.  The starter meeting list uses a logo being hosted on <a target="_blank" href="http://nameetinglist.org">http://nameetinglist.org</a>.</p>
+                <p>bread is first activated using a "Tri Fold - Landscape - Letter Size" layout. This is a "starter" meeting list that uses an Area with about 100 meetings.  The starter meeting list will contain standard content for a basic meeting list that can be printed on a home computer.  A basic NA logo will be added to your media libray.  The starter meeting list uses a logo being hosted on <a target="_blank" href="https://nameetinglist.org">https://nameetinglist.org</a>.</p>
                 <h2>Step 1.</h2>
                 <p>Click on the BMLT Server tab to the left.  Change the BMLT Server and click the Save Changes button.</p>
                 <p><em>To find your BMLT Server click on the red question (?) mark.</em></p>
