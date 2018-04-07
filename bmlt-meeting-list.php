@@ -25,6 +25,7 @@ if (!class_exists("Bread")) {
 		var $optionsName = 'bmlt_meeting_list_options';
 		var $options = array();
 		function __construct() {
+		    $this->protocol = (strpos(strtolower(home_url()), "https") !== false ? "https" : "http") . "://";
 		    if (is_admin() || intval($_GET['current-meeting-list']) == 1 || intval($_GET['export-meeting-list']) == 1 ) {
                 $this->getMLOptions();
                 $this->lang = $this->get_bmlt_server_lang();

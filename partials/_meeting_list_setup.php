@@ -64,6 +64,12 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
             <h3 class="help-accordian">Support and Help</h3>
             <div>
                 <p>File an issue <a href="https://github.com/radius314/bread/issues">https://github.com/radius314/bread/issues</a></p>
+                <u>Debug Information</u>
+                <ul>
+                <li><b>Protocol:</b> <?php echo $this->protocol; ?></li>
+                <li><b>PHP Version:</b> <?php echo phpversion(); ?></li>
+                <li><b>Server Version:</b> <?php echo $_SERVER["SERVER_SOFTWARE"]; ?></li>
+                </ul>
             </div>
         </div>
     </div>
