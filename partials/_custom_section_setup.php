@@ -34,7 +34,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                             'textarea_name' => $editor_id,
                             'tinymce'=> array('toolbar1' => 'bold,italic,underline,strikethrough,bullist,numlist,alignleft,aligncenter,alignright,alignjustify,link,unlink,table,undo,redo,fullscreen', 'toolbar2' => 'formatselect,fontsizeselect,fontselect,forecolor,backcolor,indent,outdent,pastetext,removeformat,charmap,code', 'toolbar3' => 'front_page_button')
                         );
-                        wp_editor( stripslashes($this->options['custom_section_content']), $editor_id, $settings );
+                        wp_editor( stripslashes(str_replace("http://", $this->protocol, $this->options['custom_section_content'])), $editor_id, $settings );
                         ?>
                     </div>
                 </div>
