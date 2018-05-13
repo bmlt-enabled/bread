@@ -3,18 +3,22 @@
 Plugin Name: bread
 Plugin URI: http://wordpress.org/extend/plugins/bread/
 Description: Maintains and generates a PDF Meeting List from BMLT. 
-Version: 1.3.1
+Version: 1.4.0
 */
 /* Disallow direct access to the plugin file */
+use Mpdf\Mpdf;
+error_reporting(0);
 if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 	die('Sorry, but you cannot access this page directly.');
 }
+
+require_once plugin_dir_path(__FILE__).'mpdf/vendor/autoload.php';
 include 'partials/_helpers.php';
 if (!class_exists("Bread")) {
 	class Bread {
 		var $lang = '';
 		
-		var $version = '1.3.1';
+		var $version = '1.4.0';
 		var $mpdf = '';
 		var $meeting_count = 0;
 		var $formats_used = '';
@@ -511,7 +515,7 @@ if (!class_exists("Bread")) {
 				echo '<p><strong>BMLT Meeting List Error: Service Body 1 missing from configuration.<br/><br/>Please go to Settings -> BMLT_Meeting_List and verify Service Body</strong><br/><br/>Contact the bread administrator and report this problem!</p>';
 				exit;
 			}
-			require_once plugin_dir_path(__FILE__).'mpdf/vendor/autoload.php';
+
 			$num_columns = 0;
 			if ( !isset($this->options['header_font_size']) ) {$this->options['header_font_size'] = $this->options['content_font_size'];}
 			if ( !isset($this->options['header_text_color']) ) {$this->options['header_text_color'] = '#ffffff';}
@@ -563,17 +567,71 @@ if (!class_exists("Bread")) {
 				}
 			}
 			if ( $this->options['page_fold'] == 'half' && $this->options['page_size'] == '5inch' ) {
-				$this->mpdf=new mPDF('utf-8',array(203.2,279.4), 7, '', $this->options['margin_left'], $this->options['margin_right'], $this->options['margin_top'], $this->options['margin_bottom'], 5, 5, 'P');
+				$this->mpdf=new mPDF([
+                    'mode' => 'utf-8',
+                    'format' => array(203.2,279.4),
+                    'default_font_size' => 7,
+                    'default_font' => '',
+                    'margin_left' => $this->options['margin_left'],
+                    'margin_right' => $this->options['margin_right'],
+                    'margin_top' => $this->options['margin_top'],
+                    'margin_bottom' => $this->options['margin_bottom'],
+                    'margin_footer' => 5,
+                    'orientation' => 'P']);
 				$this->mpdf->DefHTMLFooterByName('MyFooter','<div style="text-align: center; font-size: 9pt; font-style: italic;">Page {PAGENO}</div>');
 			} elseif ( $this->options['page_fold'] == 'half' && $this->options['page_size'] == 'A5' ) {
-				$this->mpdf=new mPDF('utf-8','A4', 7, '', $this->options['margin_left'], $this->options['margin_right'], $this->options['margin_top'], $this->options['margin_bottom'], 5, 5);
+				$this->mpdf=new mPDF([
+                    'mode' => 'utf-8',
+                    'format' => 'A4',
+                    'default_font_size' => 7,
+                    'default_font' => '',
+                    'margin_left' => $this->options['margin_left'],
+                    'margin_right' => $this->options['margin_right'],
+                    'margin_top' => $this->options['margin_top'],
+                    'margin_bottom' => $this->options['margin_bottom'],
+                    'margin_footer' => 5,
+                    'orientation' => 5
+                ]);
 				$this->mpdf->DefHTMLFooterByName('MyFooter','<div style="text-align: center; font-size: 9pt; font-style: italic;">Page {PAGENO}</div>');
 			} elseif ( $this->options['page_size'] . '-' .$this->options['page_orientation'] == 'ledger-L' ) {
-				$this->mpdf=new mPDF('utf-8', array(432,279), 7, '', $this->options['margin_left'], $this->options['margin_right'], $this->options['margin_top'], $this->options['margin_bottom'], 0, 0);
+				$this->mpdf=new mPDF([
+                    'mode' => 'utf-8',
+                    'format' => array(432,279),
+                    'default_font_size' => 7,
+                    'default_font' => '',
+                    'margin_left' => $this->options['margin_left'],
+                    'margin_right' => $this->options['margin_right'],
+                    'margin_top' => $this->options['margin_top'],
+                    'margin_bottom' => $this->options['margin_bottom'],
+                    'margin_footer' => 0,
+                    'orientation' => 0
+                ]);
 			} elseif ( $this->options['page_size'] . '-' .$this->options['page_orientation'] == 'ledger-P' ) {
-				$this->mpdf=new mPDF('utf-8', array(279,432), 7, '', $this->options['margin_left'], $this->options['margin_right'], $this->options['margin_top'], $this->options['margin_bottom'], 0, 0);
+				$this->mpdf=new mPDF([
+                    'mode' => 'utf-8',
+                    'format' => array(279,432),
+                    'default_font_size' => 7,
+                    'default_font' => '',
+                    'margin_left' => $this->options['margin_left'],
+                    'margin_right' => $this->options['margin_right'],
+                    'margin_top' => $this->options['margin_top'],
+                    'margin_bottom' => $this->options['margin_bottom'],
+                    'margin_footer' => 0,
+                    'orientation' => 0
+                ]);
 			} else {
-				$this->mpdf=new mPDF('utf-8',$this->options['page_size']."-".$this->options['page_orientation'], 7, '', $this->options['margin_left'], $this->options['margin_right'], $this->options['margin_top'], $this->options['margin_bottom'], 0, 0);
+				$this->mpdf=new mPDF([
+                    'mode' => 'utf-8',
+                    'format' => $this->options['page_size']."-".$this->options['page_orientation'],
+                    'default_font_size' => 7,
+                    'default_font' => '',
+                    'margin_left' => $this->options['margin_left'],
+                    'margin_right' => $this->options['margin_right'],
+                    'margin_top' => $this->options['margin_top'],
+                    'margin_bottom' => $this->options['margin_bottom'],
+                    'margin_footer' => 0,
+                    'orientation' => 0
+                ]);
 			}					
 			if ( $this->options['include_protection'] == 1 ) {
 				// 'copy','print','modify','annot-forms','fill-forms','extract','assemble','print-highres'
@@ -619,7 +677,18 @@ if (!class_exists("Bread")) {
 					</table>';
 				}
 				$this->mpdf->SetImportUse(); 		
-				$this->mpdf_column=new mPDF('utf-8',$this->options['page_size']."-".$this->options['page_orientation'], 7, '', $this->options['margin_left'], $this->options['margin_right'], $this->options['margin_top'], $this->options['margin_bottom'], 0, 0);
+				$this->mpdf_column=new mPDF([
+                    'mode' => 'utf-8',
+                    'format' => $this->options['page_size']."-".$this->options['page_orientation'],
+                    'default_font_size' => 7,
+                    'default_font' => '',
+                    'margin_left' => $this->options['margin_left'],
+                    'margin_right' => $this->options['margin_right'],
+                    'margin_top' => $this->options['margin_top'],
+                    'margin_bottom' => $this->options['margin_bottom'],
+                    'margin_footer' => 0,
+                    'orientation' => 0
+                ]);
 				
 				$this->mpdf_column->WriteHTML($html);
 				$FilePath = ABSPATH . "column_tmp_".strtolower( date ( "njYghis" ) ).".pdf";
@@ -1170,9 +1239,31 @@ if (!class_exists("Bread")) {
 			if ( $this->options['page_fold'] == 'half' ) {
 				$this->mpdf->Output($FilePath,'F');
 				if ( $this->options['page_size'] == '5inch' ) {
-					$this->mpdftmp=new mPDF('',array(203.2,279.4),'','',0,0,0,0,6,6,'L');
+					$this->mpdftmp=new mPDF([
+                        'mode' => '',
+                        'format' => array(203.2,279.4),
+                        'default_font_size' => '',
+                        'default_font' => '',
+                        'margin_left' => 0,
+                        'margin_right' => 0,
+                        'margin_top' => 0,
+                        'margin_bottom' => 0,
+                        'margin_footer' => 6,
+                        'orientation' => 'L'
+                    ]);
 				} else {
-					$this->mpdftmp=new mPDF('utf-8','A4-L','7','',0,0,0,0,0,0);
+					$this->mpdftmp=new mPDF([
+                        'mode' => 'utf-8',
+                        'format' => 'A4-L',
+                        'default_font_size' => '7',
+                        'default_font' => '',
+                        'margin_left' => 0,
+                        'margin_right' => 0,
+                        'margin_top' => 0,
+                        'margin_bottom' => 0,
+                        'margin_footer' => 0,
+                        'orientation' => 0
+                    ]);
 				}
 				$this->mpdftmp->SetImportUse();    
 				$ow = $this->mpdftmp->h;
