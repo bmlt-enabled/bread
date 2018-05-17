@@ -590,7 +590,7 @@ if (!class_exists("Bread")) {
                     'margin_top' => $this->options['margin_top'],
                     'margin_bottom' => $this->options['margin_bottom'],
                     'margin_footer' => 5,
-                    'orientation' => 'L'
+                    'orientation' => 'P'
                 ]);
 				$this->mpdf->DefHTMLFooterByName('MyFooter','<div style="text-align: center; font-size: 9pt; font-style: italic;">Page {PAGENO}</div>');
 			} elseif ( $this->options['page_size'] . '-' .$this->options['page_orientation'] == 'ledger-L' ) {
@@ -604,7 +604,7 @@ if (!class_exists("Bread")) {
                     'margin_top' => $this->options['margin_top'],
                     'margin_bottom' => $this->options['margin_bottom'],
                     'margin_footer' => 0,
-                    'orientation' => 'L'
+                    'orientation' => 'P'
                 ]);
 			} elseif ( $this->options['page_size'] . '-' .$this->options['page_orientation'] == 'ledger-P' ) {
 				$this->mpdf=new mPDF([
@@ -617,7 +617,7 @@ if (!class_exists("Bread")) {
                     'margin_top' => $this->options['margin_top'],
                     'margin_bottom' => $this->options['margin_bottom'],
                     'margin_footer' => 0,
-                    'orientation' => 'L'
+                    'orientation' => 'P'
                 ]);
 			} else {
 				$this->mpdf=new mPDF([
@@ -630,7 +630,7 @@ if (!class_exists("Bread")) {
                     'margin_top' => $this->options['margin_top'],
                     'margin_bottom' => $this->options['margin_bottom'],
                     'margin_footer' => 0,
-                    'orientation' => 'L'
+                    'orientation' => 'P'
                 ]);
 			}					
 			if ( $this->options['include_protection'] == 1 ) {
@@ -687,7 +687,7 @@ if (!class_exists("Bread")) {
                     'margin_top' => $this->options['margin_top'],
                     'margin_bottom' => $this->options['margin_bottom'],
                     'margin_footer' => 0,
-                    'orientation' => 'L'
+                    'orientation' => 'P'
                 ]);
 				
 				$this->mpdf_column->WriteHTML($html);
@@ -1249,7 +1249,7 @@ if (!class_exists("Bread")) {
                         'margin_top' => 0,
                         'margin_bottom' => 0,
                         'margin_footer' => 6,
-                        'orientation' => 'L'
+                        'orientation' => 'P'
                     ]);
 				} else {
 					$this->mpdftmp=new mPDF([
@@ -1262,7 +1262,7 @@ if (!class_exists("Bread")) {
                         'margin_top' => 0,
                         'margin_bottom' => 0,
                         'margin_footer' => 0,
-                        'orientation' => 'L'
+                        'orientation' => 'P'
                     ]);
 				}
 				$this->mpdftmp->SetImportUse();    
