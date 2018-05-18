@@ -501,6 +501,7 @@ var $ml = jQuery.noConflict
 		$ml("#A5, label[for=A5]").hide();
 		$ml("#meeting-list-tabs ul li:eq(5)").hide();
 		$ml("#meeting-list-tabs ul li:eq(6)").show();
+        $ml("#jersey, label[for=jersey]").hide();
 		$ml('#meeting-list-tabs').tabs('disable', 5);
 		$ml('#meeting-list-tabs').tabs('enable', 6);
 		$ml('input[name=page_height]').val(['']);
@@ -510,6 +511,7 @@ var $ml = jQuery.noConflict
 	} else {
 		$ml("#5inch, label[for=5inch]").hide();
 		$ml("#A5, label[for=A5]").hide();
+        $ml("#jersey, label[for=jersey]").hide();
 		$ml('#meeting-list-tabs').tabs('disable', 6);
 		$ml("#meeting-list-tabs ul li:eq(6)").hide();
 	}
@@ -526,6 +528,7 @@ var $ml = jQuery.noConflict
 			$ml('input[name=page_orientation]').val(['L']);
 			$ml("#5inch, label[for=5inch]").show();
 			$ml("#A5, label[for=A5]").show();
+            $ml("#jersey, label[for=jersey]").show();
 			$ml("#letter, label[for=letter]").hide();
 			$ml("#legal, label[for=legal]").hide();
 			$ml("#ledger, label[for=ledger]").hide();
@@ -554,6 +557,7 @@ var $ml = jQuery.noConflict
 			$ml("#legal, label[for=legal]").show();
 			$ml("#ledger, label[for=ledger]").show();
 			$ml("#A4, label[for=A4]").show();
+            $ml("#jersey, label[for=jersey]").hide();
 			$ml("#portrait, label[for=portrait]").show();
 			$ml("#meeting-list-tabs ul li:eq(5)").hide();
 			$ml("#meeting-list-tabs ul li:eq(6)").show();
@@ -588,6 +592,7 @@ var $ml = jQuery.noConflict
 			$ml('label[for=legal]').html('Legal (14" X 8.5")&nbsp;&nbsp;');
 			$ml('label[for=ledger]').html('Ledger (17" X 11")&nbsp;&nbsp;');
 			$ml('label[for=A4]').html('A4 (297mm X 210mm)&nbsp;&nbsp;');
+            $ml("#jersey, label[for=jersey]").hide();
 		};
 		if (page_fold_val === 'tri') {
 			$ml('input[name=page_size]').val(['letter']);

@@ -566,6 +566,7 @@ if (!class_exists("Bread")) {
 					exit;
 				}
 			}
+
 			if ( $this->options['page_fold'] == 'half' && $this->options['page_size'] == '5inch' ) {
 				$this->mpdf=new mPDF([
                     'mode' => 'utf-8',
@@ -619,7 +620,20 @@ if (!class_exists("Bread")) {
                     'margin_footer' => 0,
                     'orientation' => 'P'
                 ]);
-			} else {
+			} elseif ( $this->options['page_fold'] == 'half' && $this->options['page_size'] == 'jersey' ) {
+                $this->mpdf=new mPDF([
+                    'mode' => 'utf-8',
+                    'format' => array(203,213),
+                    'default_font_size' => 7,
+                    'default_font' => '',
+                    'margin_left' => $this->options['margin_left'],
+                    'margin_right' => $this->options['margin_right'],
+                    'margin_top' => $this->options['margin_top'],
+                    'margin_bottom' => $this->options['margin_bottom'],
+                    'margin_footer' => 0,
+                    'orientation' => 'P'
+                ]);
+            } else {
 				$this->mpdf=new mPDF([
                     'mode' => 'utf-8',
                     'format' => $this->options['page_size']."-".$this->options['page_orientation'],
@@ -999,11 +1013,11 @@ if (!class_exists("Bread")) {
 										$header .= "<h2 style='".$header_style."'>".$this->getday($meeting_value['weekday_tinyint'], false, $this->options['weekday_language'])." " . $cont . "</h2>";
 									}
 									
-									$header .= $this->options['sub_header_shown'] == 1 ? "<p style='margin-top:1pt; padding-top:1pt; font-weight:bold;'>".$area_name."</p>" : "";
+									$header .= $this->options['sub_header_shown'] == 1 ? "<p style='margin-top:1pt; padding-top:1pt; font-weight:bold; text-transform: uppercase; '>".$area_name."</p>" : "";
 									
                                 } elseif ( utf8_encode($this->mpdf->y) == $this->options['margin_top'] ) {
 									$header .= "<h2 style='".$header_style."'>".$this->getday($meeting_value['weekday_tinyint'], false, $this->options['weekday_language'])." " . $cont . "</h2>";
-									$header .= $this->options['sub_header_shown'] == 1 ? "<p style='margin-top:1pt; padding-top:1pt; font-weight:bold;'>".$area_name."</p>" : "";
+									$header .= $this->options['sub_header_shown'] == 1 ? "<p style='margin-top:1pt; padding-top:1pt; font-weight:bold; text-transform: uppercase;'>".$area_name."</p>" : "";
 								}
 							}
 							if ( $this->options['meeting_sort'] === 'city' || $this->options['meeting_sort'] === 'state' ) {

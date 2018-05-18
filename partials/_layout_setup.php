@@ -68,6 +68,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     <input class="mlg" id="legal" type="radio" name="page_size" value="legal" <?php echo ($this->options['page_size'] == 'legal' ? 'checked' : '') ?>><label for="legal">Legal (8.5" X 14")&nbsp;&nbsp;&nbsp;</label>
                     <input class="mlg" id="ledger" type="radio" name="page_size" value="ledger" <?php echo ($this->options['page_size'] == 'ledger' ? 'checked' : '') ?>><label for="ledger">Ledger (17" X 11")&nbsp;&nbsp;&nbsp;</label>
                     <input class="mlg" id="A4" type="radio" name="page_size" value="A4" <?php echo ($this->options['page_size'] == 'A4' ? 'checked' : '') ?>><label for="A4">A4 (210mm X 297mm)</label>
+                    <input class="mlg" id="jersey" type="radio" name="page_size" value="jersey" <?php echo ($this->options['page_size'] == 'jersey' ? 'checked' : '') ?>><label for="jersey">Jersey Booklet (8" X 8 3/8")</label>
                     </p>
                     </p>
                     <div id="marginsdiv" style="border-top: 1px solid #EEE;">
