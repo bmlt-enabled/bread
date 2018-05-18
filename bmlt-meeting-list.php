@@ -7,7 +7,7 @@ Version: 1.4.0
 */
 /* Disallow direct access to the plugin file */
 use Mpdf\Mpdf;
-error_reporting(0);
+error_reporting(1);
 if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 	die('Sorry, but you cannot access this page directly.');
 }
@@ -638,6 +638,17 @@ if (!class_exists("Bread")) {
 				$this->mpdf->SetProtection(array('copy','print','print-highres'), '', $this->options['protection_password']);
 				
 			}
+
+			$this->mpdf->AddFontDirectory([
+                plugin_dir_path(__FILE__) . 'mpdf/vendor/mpdf/mpdf/ttfonts',
+                plugin_dir_path(__FILE__) . 'fonts'
+            ]);
+
+			$this->mpdf->fonttrans = array(
+                'arial' => 'chelvetica',
+                'times' => 'ctimes',
+                'courier' => 'ccourier'
+            );
 			$this->mpdf->simpleTables = false;
 			$this->mpdf->useSubstitutions = false;
 			$this->mpdf->progressBar = 0;				// Shows progress-bars whilst generating file 0 off, 1 simple, 2 advanced
@@ -884,7 +895,6 @@ if (!class_exists("Bread")) {
 			$this->options['meeting_template_content'] = wpautop(stripslashes($this->options['meeting_template_content']));
 			$this->options['meeting_template_content'] = preg_replace('/[[:^print:]]/', ' ', $this->options['meeting_template_content']);
 			foreach ($unique_states as $this_state) {
-			    error_log($this_state);
 				$x++;
 
 				if ( $this->options['meeting_sort'] === 'weekday_area' || $this->options['meeting_sort'] === 'weekday_city' || $this->options['meeting_sort'] === 'weekday_county' ) {
