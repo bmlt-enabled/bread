@@ -6,6 +6,6 @@
     }
   ],
   "require": {
-    "mpdf/mpdf": "dev-master#572e39c59509d662cbf3f21439c523110149ba4c"
+    "mpdf/mpdf": "7.1.0"
   }
 }

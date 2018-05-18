@@ -1,22 +1,17 @@
 [
     {
         "name": "mpdf/mpdf",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
+        "version": "v7.1.0",
+        "version_normalized": "7.1.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/mpdf/mpdf",
-            "reference": "572e39c59509d662cbf3f21439c523110149ba4c"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/mpdf/mpdf/zipball/572e39c59509d662cbf3f21439c523110149ba4c",
-            "reference": "572e39c59509d662cbf3f21439c523110149ba4c",
-            "shasum": ""
+            "reference": "8e3d0d7bf74f71d04904215fb487d01e924c469a"
         },
         "require": {
             "ext-gd": "*",
             "ext-mbstring": "*",
+            "myclabs/deep-copy": "^1.7",
             "paragonie/random_compat": "^1.4|^2.0",
             "php": "^5.6 || ~7.0.0 || ~7.1.0 || ~7.2.0",
             "psr/log": "^1.0",
@@ -33,7 +28,7 @@
             "ext-xml": "Needed mainly for SVG manipulation",
             "ext-zlib": "Needed for compression of embedded resources, such as fonts"
         },
-        "time": "2018-01-03T07:32:36+00:00",
+        "time": "2018-05-18T05:41:37+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -46,9 +41,21 @@
                 "Mpdf\\": "src/"
             }
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "autoload-dev": {
+            "psr-4": {
+                "Mpdf\\": "tests/Mpdf"
+            },
+            "files": [
+                "src/functions-dev.php"
+            ]
+        },
+        "scripts": {
+            "post-install-cmd": [
+                "php -r \"chmod('./tmp', 0777);\""
+            ]
+        },
         "license": [
-            "GPL-2.0"
+            "GPL-2.0-only"
         ],
         "authors": [
             {
@@ -66,6 +73,58 @@
             "pdf",
             "php",
             "utf-8"
+        ],
+        "support": {
+            "issues": "https://github.com/mpdf/mpdf/issues",
+            "source": "https://github.com/mpdf/mpdf",
+            "docs": "http://mpdf.github.io"
+        }
+    },
+    {
+        "name": "myclabs/deep-copy",
+        "version": "1.7.0",
+        "version_normalized": "1.7.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/myclabs/DeepCopy.git",
+            "reference": "3b8a3a99ba1f6a3952ac2747d989303cbd6b7a3e"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/3b8a3a99ba1f6a3952ac2747d989303cbd6b7a3e",
+            "reference": "3b8a3a99ba1f6a3952ac2747d989303cbd6b7a3e",
+            "shasum": ""
+        },
+        "require": {
+            "php": "^5.6 || ^7.0"
+        },
+        "require-dev": {
+            "doctrine/collections": "^1.0",
+            "doctrine/common": "^2.6",
+            "phpunit/phpunit": "^4.1"
+        },
+        "time": "2017-10-19T19:58:43+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "DeepCopy\\": "src/DeepCopy/"
+            },
+            "files": [
+                "src/DeepCopy/deep_copy.php"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "description": "Create deep copies (clones) of your objects",
+        "keywords": [
+            "clone",
+            "copy",
+            "duplicate",
+            "object",
+            "object graph"
         ]
     },
     {

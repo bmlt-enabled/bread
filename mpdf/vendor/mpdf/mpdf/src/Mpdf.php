@@ -55,7 +55,7 @@ use Psr\Log\NullLogger;
 class Mpdf implements \Psr\Log\LoggerAwareInterface
 {
 
-	const VERSION = '7.0.4';
+	const VERSION = '7.1.0';
 
 	const SCALE = 72 / 25.4;
 
@@ -7232,13 +7232,32 @@ class Mpdf implements \Psr\Log\LoggerAwareInterface
 						$this->qrcode->disableBorder();
 					}
 
+					$bgColor = [255, 255, 255];
+					if ($objattr['bgcolor']) {
+						$bgColor = array_map(
+							function ($col) {
+								return intval(255 * floatval($col));
+							},
+							explode(" ", $this->SetColor($objattr['bgcolor'], 'CodeOnly'))
+						);
+					}
+					$color = [0, 0, 0];
+					if ($objattr['color']) {
+						$color = array_map(
+							function ($col) {
+								return intval(255 * floatval($col));
+							},
+							explode(" ", $this->SetColor($objattr['color'], 'CodeOnly'))
+						);
+					}
+
 					$this->qrcode->displayFPDF(
 						$this,
 						$objattr['INNER-X'],
 						$objattr['INNER-Y'],
 						$objattr['bsize'] * 25,
-						[255, 255, 255],
-						[0, 0, 0]
+						$bgColor,
+						$color
 					);
 
 				} else {
