@@ -117,7 +117,7 @@ if (!class_exists("Bread")) {
 				$initArray['wordpress_adv_hidden'] = false;
 				$initArray['font_formats']='Arial (Default)=arial;';
 				$initArray['font_formats'].='Times (Sans-Serif)=times;';
-				$initArray['font_formats'].='Courier (Monospace)=courier ;';
+				$initArray['font_formats'].='Courier (Monospace)=courier;';
 			}
 			return $initArray;
 		}
@@ -537,6 +537,7 @@ if (!class_exists("Bread")) {
 			if ( !isset($this->options['include_zip']) ) {$this->options['include_zip'] = 0;}
 			if ( !isset($this->options['include_meeting_email']) ) {$this->options['include_meeting_email'] = 0;}
 			if ( !isset($this->options['include_protection']) ) {$this->options['include_protection'] = 0;}
+            if ( !isset($this->options['base_font']) ) {$this->options['base_font'] = 'dejavusanscondensed';}
 			if ( !isset($this->options['weekday_language']) ) {$this->options['weekday_language'] = 'en';}
 			if ( !isset($this->options['include_asm']) ) {$this->options['include_asm'] = '0';}
 			if ( !isset($this->options['header_uppercase']) ) {$this->options['header_uppercase'] = '0';}
@@ -566,89 +567,51 @@ if (!class_exists("Bread")) {
 					exit;
 				}
 			}
+
 			if ( $this->options['page_fold'] == 'half' && $this->options['page_size'] == '5inch' ) {
-				$this->mpdf=new mPDF([
-                    'mode' => 'utf-8',
-                    'format' => array(203.2,279.4),
-                    'default_font_size' => 7,
-                    'default_font' => '',
-                    'margin_left' => $this->options['margin_left'],
-                    'margin_right' => $this->options['margin_right'],
-                    'margin_top' => $this->options['margin_top'],
-                    'margin_bottom' => $this->options['margin_bottom'],
-                    'margin_footer' => 5,
-                    'orientation' => 'P']);
+			    $page_type_settings = ['format' => array(203.2,279.4), 'margin_footer' => 5];
 				$this->mpdf->DefHTMLFooterByName('MyFooter','<div style="text-align: center; font-size: 9pt; font-style: italic;">Page {PAGENO}</div>');
 			} elseif ( $this->options['page_fold'] == 'half' && $this->options['page_size'] == 'A5' ) {
-				$this->mpdf=new mPDF([
-                    'mode' => 'utf-8',
-                    'format' => 'A4',
-                    'default_font_size' => 7,
-                    'default_font' => '',
-                    'margin_left' => $this->options['margin_left'],
-                    'margin_right' => $this->options['margin_right'],
-                    'margin_top' => $this->options['margin_top'],
-                    'margin_bottom' => $this->options['margin_bottom'],
-                    'margin_footer' => 5,
-                    'orientation' => 'P'
-                ]);
+                $page_type_settings = ['format' => 'A5', 'margin_footer' => 5];
 				$this->mpdf->DefHTMLFooterByName('MyFooter','<div style="text-align: center; font-size: 9pt; font-style: italic;">Page {PAGENO}</div>');
 			} elseif ( $this->options['page_size'] . '-' .$this->options['page_orientation'] == 'ledger-L' ) {
-				$this->mpdf=new mPDF([
-                    'mode' => 'utf-8',
-                    'format' => array(432,279),
-                    'default_font_size' => 7,
-                    'default_font' => '',
-                    'margin_left' => $this->options['margin_left'],
-                    'margin_right' => $this->options['margin_right'],
-                    'margin_top' => $this->options['margin_top'],
-                    'margin_bottom' => $this->options['margin_bottom'],
-                    'margin_footer' => 0,
-                    'orientation' => 'P'
-                ]);
+                $page_type_settings = ['format' => array(432,279), 'margin_footer' => 0];
 			} elseif ( $this->options['page_size'] . '-' .$this->options['page_orientation'] == 'ledger-P' ) {
-				$this->mpdf=new mPDF([
-                    'mode' => 'utf-8',
-                    'format' => array(279,432),
-                    'default_font_size' => 7,
-                    'default_font' => '',
-                    'margin_left' => $this->options['margin_left'],
-                    'margin_right' => $this->options['margin_right'],
-                    'margin_top' => $this->options['margin_top'],
-                    'margin_bottom' => $this->options['margin_bottom'],
-                    'margin_footer' => 0,
-                    'orientation' => 'P'
-                ]);
+                $page_type_settings = ['format' => array(279,432), 'margin_footer' => 0];
 			} else {
-				$this->mpdf=new mPDF([
-                    'mode' => 'utf-8',
-                    'format' => $this->options['page_size']."-".$this->options['page_orientation'],
-                    'default_font_size' => 7,
-                    'default_font' => '',
-                    'margin_left' => $this->options['margin_left'],
-                    'margin_right' => $this->options['margin_right'],
-                    'margin_top' => $this->options['margin_top'],
-                    'margin_bottom' => $this->options['margin_bottom'],
-                    'margin_footer' => 0,
-                    'orientation' => 'P'
-                ]);
-			}					
+                $page_type_settings = ['format' => $this->options['page_size']."-".$this->options['page_orientation'], 'margin_footer' => 0];
+			}
+
+            $default_font = $this->options['base_font'];
+			if ($default_font == 'arial' || $default_font == 'times' || $default_font == 'courier') {
+                $mode = 'c';
+			    $this->mpdf->fonttrans = array(
+                    'arial' => 'chelvetica',
+                    'times' => 'ctimes',
+                    'courier' => 'ccourier'
+                );
+            } else {
+                $mode = 's';
+            }
+            
+            $mpdf_init_options = [
+                'mode' => $mode,
+                'default_font_size' => 7,
+                'default_font' => $default_font,
+                'margin_left' => $this->options['margin_left'],
+                'margin_right' => $this->options['margin_right'],
+                'margin_top' => $this->options['margin_top'],
+                'margin_bottom' => $this->options['margin_bottom'],
+                'orientation' => 'P'
+            ];
+
+            $this->mpdf = new mPDF(array_merge($mpdf_init_options, $page_type_settings));
 			if ( $this->options['include_protection'] == 1 ) {
 				// 'copy','print','modify','annot-forms','fill-forms','extract','assemble','print-highres'
 				$this->mpdf->SetProtection(array('copy','print','print-highres'), '', $this->options['protection_password']);
 				
 			}
 
-			$this->mpdf->AddFontDirectory([
-                plugin_dir_path(__FILE__) . 'mpdf/vendor/mpdf/mpdf/ttfonts',
-                plugin_dir_path(__FILE__) . 'fonts'
-            ]);
-
-			$this->mpdf->fonttrans = array(
-                'arial' => 'chelvetica',
-                'times' => 'ctimes',
-                'courier' => 'ccourier'
-            );
 			$this->mpdf->simpleTables = false;
 			$this->mpdf->useSubstitutions = false;
 			$this->mpdf->progressBar = 0;				// Shows progress-bars whilst generating file 0 off, 1 simple, 2 advanced
@@ -689,10 +652,10 @@ if (!class_exists("Bread")) {
 				}
 				$this->mpdf->SetImportUse(); 		
 				$this->mpdf_column=new mPDF([
-                    'mode' => 'utf-8',
+                    'mode' => $mode,
                     'format' => $this->options['page_size']."-".$this->options['page_orientation'],
                     'default_font_size' => 7,
-                    'default_font' => '',
+                    'default_font' => $default_font,
                     'margin_left' => $this->options['margin_left'],
                     'margin_right' => $this->options['margin_right'],
                     'margin_top' => $this->options['margin_top'],
@@ -1250,10 +1213,10 @@ if (!class_exists("Bread")) {
 				$this->mpdf->Output($FilePath,'F');
 				if ( $this->options['page_size'] == '5inch' ) {
 					$this->mpdftmp=new mPDF([
-                        'mode' => '',
+                        'mode' => $mode,
                         'format' => array(203.2,279.4),
                         'default_font_size' => '',
-                        'default_font' => '',
+                        'default_font' => $default_font,
                         'margin_left' => 0,
                         'margin_right' => 0,
                         'margin_top' => 0,
@@ -1263,10 +1226,10 @@ if (!class_exists("Bread")) {
                     ]);
 				} else {
 					$this->mpdftmp=new mPDF([
-                        'mode' => 'utf-8',
+                        'mode' => $mode,
                         'format' => 'A4-L',
                         'default_font_size' => '7',
-                        'default_font' => '',
+                        'default_font' => $default_font,
                         'margin_left' => 0,
                         'margin_right' => 0,
                         'margin_top' => 0,
@@ -1631,6 +1594,7 @@ if (!class_exists("Bread")) {
 				$this->options['include_asm'] = boolval($_POST['include_asm']);
 				$this->options['bmlt_login_id'] = sanitize_text_field($_POST['bmlt_login_id']);
 				$this->options['bmlt_login_password'] = sanitize_text_field($_POST['bmlt_login_password']);
+                $this->options['base_font'] = sanitize_text_field($_POST['base_font']);
 				$this->options['protection_password'] = sanitize_text_field($_POST['protection_password']);
                 $this->options['time_clock'] = sanitize_text_field($_POST['time_clock']);
 				$this->options['time_option'] = intval($_POST['time_option']);
@@ -1772,8 +1736,11 @@ if (!class_exists("Bread")) {
 			}			
 			if ( !isset($this->options['include_meeting_email']) || strlen(trim($this->options['include_meeting_email'])) == 0 ) {
 				$this->options['include_meeting_email'] = 0;
-			}			
-			if ( !isset($this->options['include_protection']) || strlen(trim($this->options['include_protection'])) == 0 ) {
+			}
+            if ( !isset($this->options['base_font']) || strlen(trim($this->options['base_font'])) == 0 ) {
+                $this->options['base_font'] = 'dejavusanscondensed';
+            }
+            if ( !isset($this->options['include_protection']) || strlen(trim($this->options['include_protection'])) == 0 ) {
 				$this->options['include_protection'] = 0;
 			}			
 			if ( !isset($this->options['weekday_language']) || strlen(trim($this->options['weekday_language'])) == 0 ) {

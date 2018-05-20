@@ -98,6 +98,24 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         
                         </p>
                     </div>
+                    <div id="columnseparatordiv" style="border-top: 1px solid #EEE;">
+                        <p>
+                        <table><tr>
+                                <input class="mlg" name="column_line" value="0" type="hidden">
+                                <td style="padding-right: 10px;">
+                                    <label for="base_font">Base Font: </label>
+                                    <select id="base_font" name="base_font">
+                                        <option value="dejavusanscondensed" <?php echo $this->options['base_font'] == 'dejavusanscondensed' ? "selected=\"selected\"" : ""?>>DejaVu Sans Condensed</option>
+                                        <option value="freesans"<?php echo $this->options['base_font'] == 'freesans' ? "selected=\"selected\"" : ""?>>FreeSans</option>
+                                        <option value="courier"<?php echo $this->options['base_font'] == 'courier' ? "selected=\"selected\"" : ""?>>Courier</option>
+                                        <option value="times"<?php echo $this->options['base_font'] == 'times' ? "selected=\"selected\"" : ""?>>Times</option>
+                                        <option value="arial"<?php echo $this->options['base_font'] == 'arial' ? "selected=\"selected\"" : ""?>>Arial</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </table>
+                        </p>
+                    </div>
                     <div id="includeprotection" style="border-top: 1px solid #EEE;">
                         <?PHP $title = '
                         <p>Enable <strong>PDF Protection</strong>.</p>
