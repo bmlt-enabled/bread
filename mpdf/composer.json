@@ -1,5 +1,11 @@
 {
-    "require": {
-        "mpdf/mpdf": "^6.1"
+  "repositories": [
+    {
+      "type": "git",
+      "url": "https://github.com/mpdf/mpdf"
     }
+  ],
+  "require": {
+    "mpdf/mpdf": "7.1.0"
+  }
 }

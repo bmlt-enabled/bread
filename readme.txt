@@ -1,11 +1,11 @@
 === bread ===
 
-Contributors: odathp, radius314, pjaudiomv
+Contributors: odathp, radius314, pjaudiomv, klgrimley
 Tags: meeting list, bmlt, narcotics anonymous, na
 Requires at least: 4.0
 Requires PHP: 5.6
-Tested up to: 4.9.4
-Stable tag: 1.3.1
+Tested up to: 4.9.6
+Stable tag: 1.4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 A web-based tool that creates, maintains and generates a PDF meeting list from BMLT.
@@ -53,6 +53,11 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 - Read here for more information: https://github.com/radius314/bread/blob/unstable/contribute.md
 
 == Changelog ==
+
+= 1.4.0 =
+* Support for PHP 7.1 and up
+* Migrated/refactor to support mPDF 7.x
+* Introducing base fonts which allow for a more customized styling
 
 = 1.3.1 =
 

@@ -3,18 +3,22 @@
 Plugin Name: bread
 Plugin URI: http://wordpress.org/extend/plugins/bread/
 Description: Maintains and generates a PDF Meeting List from BMLT. 
-Version: 1.3.1
+Version: 1.4.0
 */
 /* Disallow direct access to the plugin file */
+use Mpdf\Mpdf;
+error_reporting(1);
 if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 	die('Sorry, but you cannot access this page directly.');
 }
+
+require_once plugin_dir_path(__FILE__).'mpdf/vendor/autoload.php';
 include 'partials/_helpers.php';
 if (!class_exists("Bread")) {
 	class Bread {
 		var $lang = '';
 		
-		var $version = '1.3.1';
+		var $version = '1.4.0';
 		var $mpdf = '';
 		var $meeting_count = 0;
 		var $formats_used = '';
@@ -113,7 +117,7 @@ if (!class_exists("Bread")) {
 				$initArray['wordpress_adv_hidden'] = false;
 				$initArray['font_formats']='Arial (Default)=arial;';
 				$initArray['font_formats'].='Times (Sans-Serif)=times;';
-				$initArray['font_formats'].='Courier (Monospace)=courier ;';
+				$initArray['font_formats'].='Courier (Monospace)=courier;';
 			}
 			return $initArray;
 		}
@@ -511,7 +515,7 @@ if (!class_exists("Bread")) {
 				echo '<p><strong>BMLT Meeting List Error: Service Body 1 missing from configuration.<br/><br/>Please go to Settings -> BMLT_Meeting_List and verify Service Body</strong><br/><br/>Contact the bread administrator and report this problem!</p>';
 				exit;
 			}
-			require_once plugin_dir_path(__FILE__).'mpdf/vendor/autoload.php';
+
 			$num_columns = 0;
 			if ( !isset($this->options['header_font_size']) ) {$this->options['header_font_size'] = $this->options['content_font_size'];}
 			if ( !isset($this->options['header_text_color']) ) {$this->options['header_text_color'] = '#ffffff';}
@@ -533,6 +537,7 @@ if (!class_exists("Bread")) {
 			if ( !isset($this->options['include_zip']) ) {$this->options['include_zip'] = 0;}
 			if ( !isset($this->options['include_meeting_email']) ) {$this->options['include_meeting_email'] = 0;}
 			if ( !isset($this->options['include_protection']) ) {$this->options['include_protection'] = 0;}
+            if ( !isset($this->options['base_font']) ) {$this->options['base_font'] = 'dejavusanscondensed';}
 			if ( !isset($this->options['weekday_language']) ) {$this->options['weekday_language'] = 'en';}
 			if ( !isset($this->options['include_asm']) ) {$this->options['include_asm'] = '0';}
 			if ( !isset($this->options['header_uppercase']) ) {$this->options['header_uppercase'] = '0';}
@@ -562,24 +567,55 @@ if (!class_exists("Bread")) {
 					exit;
 				}
 			}
+
 			if ( $this->options['page_fold'] == 'half' && $this->options['page_size'] == '5inch' ) {
-				$this->mpdf=new mPDF('utf-8',array(203.2,279.4), 7, '', $this->options['margin_left'], $this->options['margin_right'], $this->options['margin_top'], $this->options['margin_bottom'], 5, 5, 'P');
-				$this->mpdf->DefHTMLFooterByName('MyFooter','<div style="text-align: center; font-size: 9pt; font-style: italic;">Page {PAGENO}</div>');
+			    $page_type_settings = ['format' => array(203.2,279.4), 'margin_footer' => 5];
 			} elseif ( $this->options['page_fold'] == 'half' && $this->options['page_size'] == 'A5' ) {
-				$this->mpdf=new mPDF('utf-8','A4', 7, '', $this->options['margin_left'], $this->options['margin_right'], $this->options['margin_top'], $this->options['margin_bottom'], 5, 5);
-				$this->mpdf->DefHTMLFooterByName('MyFooter','<div style="text-align: center; font-size: 9pt; font-style: italic;">Page {PAGENO}</div>');
+                $page_type_settings = ['format' => 'A5', 'margin_footer' => 5];
 			} elseif ( $this->options['page_size'] . '-' .$this->options['page_orientation'] == 'ledger-L' ) {
-				$this->mpdf=new mPDF('utf-8', array(432,279), 7, '', $this->options['margin_left'], $this->options['margin_right'], $this->options['margin_top'], $this->options['margin_bottom'], 0, 0);
+                $page_type_settings = ['format' => array(432,279), 'margin_footer' => 0];
 			} elseif ( $this->options['page_size'] . '-' .$this->options['page_orientation'] == 'ledger-P' ) {
-				$this->mpdf=new mPDF('utf-8', array(279,432), 7, '', $this->options['margin_left'], $this->options['margin_right'], $this->options['margin_top'], $this->options['margin_bottom'], 0, 0);
+                $page_type_settings = ['format' => array(279,432), 'margin_footer' => 0];
 			} else {
-				$this->mpdf=new mPDF('utf-8',$this->options['page_size']."-".$this->options['page_orientation'], 7, '', $this->options['margin_left'], $this->options['margin_right'], $this->options['margin_top'], $this->options['margin_bottom'], 0, 0);
-			}					
+                $page_type_settings = ['format' => $this->options['page_size']."-".$this->options['page_orientation'], 'margin_footer' => 0];
+			}
+
+            $default_font = $this->options['base_font'];
+			if ($default_font == 'arial' || $default_font == 'times' || $default_font == 'courier') {
+                $mode = 'c';
+			    $this->mpdf->fonttrans = array(
+                    'arial' => 'chelvetica',
+                    'times' => 'ctimes',
+                    'courier' => 'ccourier'
+                );
+            } else {
+                $mode = 's';
+            }
+            
+            $mpdf_init_options = [
+                'mode' => $mode,
+                'default_font_size' => 7,
+                'default_font' => $default_font,
+                'margin_left' => $this->options['margin_left'],
+                'margin_right' => $this->options['margin_right'],
+                'margin_top' => $this->options['margin_top'],
+                'margin_bottom' => $this->options['margin_bottom'],
+                'orientation' => 'P'
+            ];
+
+            $this->mpdf = new mPDF(array_merge($mpdf_init_options, $page_type_settings));
+
+            // TODO: Adding a page number really could just be an option or tag.
+            if ( $this->options['page_fold'] == 'half' &&
+                 ($this->options['page_size'] == '5inch' || $this->options['page_size'] == 'A5')) {
+                $this->mpdf->DefHTMLFooterByName('MyFooter','<div style="text-align: center; font-size: 9pt; font-style: italic;">Page {PAGENO}</div>');
+            }
+
 			if ( $this->options['include_protection'] == 1 ) {
 				// 'copy','print','modify','annot-forms','fill-forms','extract','assemble','print-highres'
 				$this->mpdf->SetProtection(array('copy','print','print-highres'), '', $this->options['protection_password']);
-				
 			}
+
 			$this->mpdf->simpleTables = false;
 			$this->mpdf->useSubstitutions = false;
 			$this->mpdf->progressBar = 0;				// Shows progress-bars whilst generating file 0 off, 1 simple, 2 advanced
@@ -619,7 +655,18 @@ if (!class_exists("Bread")) {
 					</table>';
 				}
 				$this->mpdf->SetImportUse(); 		
-				$this->mpdf_column=new mPDF('utf-8',$this->options['page_size']."-".$this->options['page_orientation'], 7, '', $this->options['margin_left'], $this->options['margin_right'], $this->options['margin_top'], $this->options['margin_bottom'], 0, 0);
+				$this->mpdf_column=new mPDF([
+                    'mode' => $mode,
+                    'format' => $this->options['page_size']."-".$this->options['page_orientation'],
+                    'default_font_size' => 7,
+                    'default_font' => $default_font,
+                    'margin_left' => $this->options['margin_left'],
+                    'margin_right' => $this->options['margin_right'],
+                    'margin_top' => $this->options['margin_top'],
+                    'margin_bottom' => $this->options['margin_bottom'],
+                    'margin_footer' => 0,
+                    'orientation' => 'P'
+                ]);
 				
 				$this->mpdf_column->WriteHTML($html);
 				$FilePath = ABSPATH . "column_tmp_".strtolower( date ( "njYghis" ) ).".pdf";
@@ -815,7 +862,6 @@ if (!class_exists("Bread")) {
 			$this->options['meeting_template_content'] = wpautop(stripslashes($this->options['meeting_template_content']));
 			$this->options['meeting_template_content'] = preg_replace('/[[:^print:]]/', ' ', $this->options['meeting_template_content']);
 			foreach ($unique_states as $this_state) {
-			    error_log($this_state);
 				$x++;
 
 				if ( $this->options['meeting_sort'] === 'weekday_area' || $this->options['meeting_sort'] === 'weekday_city' || $this->options['meeting_sort'] === 'weekday_county' ) {
@@ -1170,9 +1216,29 @@ if (!class_exists("Bread")) {
 			if ( $this->options['page_fold'] == 'half' ) {
 				$this->mpdf->Output($FilePath,'F');
 				if ( $this->options['page_size'] == '5inch' ) {
-					$this->mpdftmp=new mPDF('',array(203.2,279.4),'','',0,0,0,0,6,6,'L');
+					$this->mpdftmp=new mPDF([
+                        'mode' => $mode,
+                        'format' => array(203.2,279.4),
+                        'default_font_size' => '',
+                        'margin_left' => 0,
+                        'margin_right' => 0,
+                        'margin_top' => 0,
+                        'margin_bottom' => 0,
+                        'margin_footer' => 6,
+                        'orientation' => 'L'
+                    ]);
 				} else {
-					$this->mpdftmp=new mPDF('utf-8','A4-L','7','',0,0,0,0,0,0);
+					$this->mpdftmp=new mPDF([
+                        'mode' => $mode,
+                        'format' => 'A4-L',
+                        'default_font_size' => '7',
+                        'margin_left' => 0,
+                        'margin_right' => 0,
+                        'margin_top' => 0,
+                        'margin_bottom' => 0,
+                        'margin_footer' => 0,
+                        'orientation' => 'P'
+                    ]);
 				}
 				$this->mpdftmp->SetImportUse();    
 				$ow = $this->mpdftmp->h;
@@ -1530,6 +1596,7 @@ if (!class_exists("Bread")) {
 				$this->options['include_asm'] = boolval($_POST['include_asm']);
 				$this->options['bmlt_login_id'] = sanitize_text_field($_POST['bmlt_login_id']);
 				$this->options['bmlt_login_password'] = sanitize_text_field($_POST['bmlt_login_password']);
+                $this->options['base_font'] = sanitize_text_field($_POST['base_font']);
 				$this->options['protection_password'] = sanitize_text_field($_POST['protection_password']);
                 $this->options['time_clock'] = sanitize_text_field($_POST['time_clock']);
 				$this->options['time_option'] = intval($_POST['time_option']);
@@ -1671,8 +1738,11 @@ if (!class_exists("Bread")) {
 			}			
 			if ( !isset($this->options['include_meeting_email']) || strlen(trim($this->options['include_meeting_email'])) == 0 ) {
 				$this->options['include_meeting_email'] = 0;
-			}			
-			if ( !isset($this->options['include_protection']) || strlen(trim($this->options['include_protection'])) == 0 ) {
+			}
+            if ( !isset($this->options['base_font']) || strlen(trim($this->options['base_font'])) == 0 ) {
+                $this->options['base_font'] = 'dejavusanscondensed';
+            }
+            if ( !isset($this->options['include_protection']) || strlen(trim($this->options['include_protection'])) == 0 ) {
 				$this->options['include_protection'] = 0;
 			}			
 			if ( !isset($this->options['weekday_language']) || strlen(trim($this->options['weekday_language'])) == 0 ) {

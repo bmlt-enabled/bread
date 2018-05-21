@@ -11,27 +11,27 @@ h2 {
     padding-bottom: 2pt;
     padding-top: 2pt;
     text-align: center;
-    font-family: courier;
+    /*font-family: courier;*/
 }
 th {
     background-color: lightgrey;
     color: black;
-    font-family: arialnarrow;
+    /*font-family: arialnarrow;*/
 }
 tbody {
     display: table-row-group;
 }
 body {
-    font-family: arialnarrow;
+    /*font-family: arialnarrow;*/
     font-size: 7pt;
     background-color: transparent;
     background: transparent;
 }
 .front-page-header {
-    font-family: arialnarrow;
+    /*font-family: arialnarrow;*/
 }
 .front-page-content {
-    font-family: arialnarrow;
+    /*font-family: arialnarrow;*/
 }
 p {
     margin-bottom: 1pt;
@@ -50,15 +50,15 @@ div {
 }
 table {
     border-collapse: collapse;
-    font-family: arialnarrow;
+    /*font-family: arialnarrow;*/
     /* font-size: 7pt; */
     
     margin-bottom: 0pt;
     margin-top: 0pt;
 }
 .helplines td {
-    font-family: arialnarrow !important;
-    font-family: arialnarrow;
+    /*font-family: arialnarrow !important;
+    font-family: arialnarrow;*/
     font-size: 7pt;
     margin-bottom: 1pt;
     margin-top: 0pt;
@@ -128,7 +128,7 @@ li {
     margin-bottom: .5em !important;
 }
 pre {
-    font-family: DejaVuSansMono;
+    /*font-family: DejaVuSansMono;*/
     font-size: 9pt;
     margin-bottom: 5pt;
     margin-top: 5pt;
@@ -137,7 +137,7 @@ h1 {
     border-bottom: 0.075cm solid #000000;
     border-top: 0.075cm solid #000000;
     color: #000066;
-    font-family: DejaVuSansCondensed;
+    /*font-family: DejaVuSansCondensed;*/
     font-size: 26pt;
     font-weight: normal;
     margin-bottom: 6pt;
@@ -148,7 +148,7 @@ h3 {
     border-bottom: 0;
     border-top: 0;
     color: #000000;
-    font-family: DejaVuSansCondensed;
+    /*font-family: DejaVuSansCondensed;*/
     font-size: 26pt;
     font-weight: normal;
     margin-bottom: 6pt;
@@ -157,7 +157,7 @@ h3 {
 }
 h4 {
     color: #9f2b1e;
-    font-family: DejaVuSansCondensed;
+    /*font-family: DejaVuSansCondensed;*/
     font-size: 13pt;
     font-variant: small-caps;
     margin-bottom: 7pt;
@@ -167,7 +167,7 @@ h4 {
 }
 h5 {
     color: #000044;
-    font-family: DejaVuSansCondensed;
+    /*font-family: DejaVuSansCondensed;*/
     font-size: 11pt;
     font-style: italic;
     font-weight: bold;
@@ -177,7 +177,7 @@ h5 {
 }
 h6 {
     color: #333333;
-    font-family: DejaVuSansCondensed;
+    /*font-family: DejaVuSansCondensed;*/
     font-size: 9.5pt;
     font-weight: bold;
     margin-top: 6pt;
@@ -185,7 +185,7 @@ h6 {
 }
 .breadcrumb {
     color: #666666;
-    font-family: DejaVuSerifCondensed;
+    /*font-family: DejaVuSerifCondensed;*/
     font-size: 8pt;
     font-style: normal;
     font-weight: bold;
@@ -329,7 +329,7 @@ img.alignleft {
     float: left;
 }
 div.mpdf_toc {
-    font-family: sans;
+    /*font-family: sans;*/
     font-size: 10pt;
 }
 a.mpdf_toc_a {
