@@ -57,6 +57,7 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 = 1.4.0 =
 * Support for PHP 7.1 and up
 * Migrated/refactor to support mPDF 7.x
+* Introducing base fonts which allow for a more customized styling
 
 = 1.3.1 =
 

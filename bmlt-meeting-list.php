@@ -570,10 +570,8 @@ if (!class_exists("Bread")) {
 
 			if ( $this->options['page_fold'] == 'half' && $this->options['page_size'] == '5inch' ) {
 			    $page_type_settings = ['format' => array(203.2,279.4), 'margin_footer' => 5];
-				$this->mpdf->DefHTMLFooterByName('MyFooter','<div style="text-align: center; font-size: 9pt; font-style: italic;">Page {PAGENO}</div>');
 			} elseif ( $this->options['page_fold'] == 'half' && $this->options['page_size'] == 'A5' ) {
                 $page_type_settings = ['format' => 'A5', 'margin_footer' => 5];
-				$this->mpdf->DefHTMLFooterByName('MyFooter','<div style="text-align: center; font-size: 9pt; font-style: italic;">Page {PAGENO}</div>');
 			} elseif ( $this->options['page_size'] . '-' .$this->options['page_orientation'] == 'ledger-L' ) {
                 $page_type_settings = ['format' => array(432,279), 'margin_footer' => 0];
 			} elseif ( $this->options['page_size'] . '-' .$this->options['page_orientation'] == 'ledger-P' ) {
@@ -606,10 +604,16 @@ if (!class_exists("Bread")) {
             ];
 
             $this->mpdf = new mPDF(array_merge($mpdf_init_options, $page_type_settings));
+
+            // TODO: Adding a page number really could just be an option or tag.
+            if ( $this->options['page_fold'] == 'half' &&
+                 ($this->options['page_size'] == '5inch' || $this->options['page_size'] == 'A5')) {
+                $this->mpdf->DefHTMLFooterByName('MyFooter','<div style="text-align: center; font-size: 9pt; font-style: italic;">Page {PAGENO}</div>');
+            }
+
 			if ( $this->options['include_protection'] == 1 ) {
 				// 'copy','print','modify','annot-forms','fill-forms','extract','assemble','print-highres'
 				$this->mpdf->SetProtection(array('copy','print','print-highres'), '', $this->options['protection_password']);
-				
 			}
 
 			$this->mpdf->simpleTables = false;
@@ -1216,20 +1220,18 @@ if (!class_exists("Bread")) {
                         'mode' => $mode,
                         'format' => array(203.2,279.4),
                         'default_font_size' => '',
-                        'default_font' => $default_font,
                         'margin_left' => 0,
                         'margin_right' => 0,
                         'margin_top' => 0,
                         'margin_bottom' => 0,
                         'margin_footer' => 6,
-                        'orientation' => 'P'
+                        'orientation' => 'L'
                     ]);
 				} else {
 					$this->mpdftmp=new mPDF([
                         'mode' => $mode,
                         'format' => 'A4-L',
                         'default_font_size' => '7',
-                        'default_font' => $default_font,
                         'margin_left' => 0,
                         'margin_right' => 0,
                         'margin_top' => 0,
