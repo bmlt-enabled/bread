@@ -54,6 +54,10 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 
 == Changelog ==
 
+= 1.5.0 =
+* Added recurse service bodies option for zones and metros
+* Bug fixes for base font selection
+
 = 1.4.0 =
 * Support for PHP 7.1 and up
 * Migrated/refactor to support mPDF 7.x
