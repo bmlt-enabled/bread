@@ -583,18 +583,41 @@ if (!class_exists("Bread")) {
 			}
 
             $default_font = $this->options['base_font'];
-			if ($default_font == 'arial' || $default_font == 'times' || $default_font == 'courier') {
-                $mode = 'c';
-			    $this->mpdf->fonttrans = array(
-                    'arial' => 'chelvetica',
-                    'times' => 'ctimes',
-                    'courier' => 'ccourier'
-                );
-            } else {
-                $mode = 's';
+            $mode = 's';
+            if ($default_font == 'arial' || $default_font == 'times' || $default_font == 'courier') {
+              $mpdf_init_options = [
+                'mode' => $mode,
+                'default_font_size' => 7,
+                'fontdata' => [
+                    "arial" => [
+                    'R' => "Arial.ttf",
+                    'B' => "ArialBold.ttf",
+                    'I' => "ArialItalic.ttf",
+                    'BI' => "ArialBoldItalic.ttf",
+                  ],
+                  "times" => [
+                    'R' => "Times.ttf",
+                    'B' => "TimesBold.ttf",
+                    'I' => "TimesItalic.ttf",
+                    'BI' => "TimesBoldItalic.ttf",
+                  ],
+                  "courier" => [
+                    'R' => "CourierNew.ttf",
+                    'B' => "CourierNewBold.ttf",
+                    'I' => "CourierNewItalic.ttf",
+                    'BI' => "CourierNewBoldItalic.ttf",
+                  ]
+                ],
+                'default_font' => $default_font,
+                'margin_left' => $this->options['margin_left'],
+                'margin_right' => $this->options['margin_right'],
+                'margin_top' => $this->options['margin_top'],
+                'margin_bottom' => $this->options['margin_bottom'],
+                'orientation' => 'P'
+              ]; 
             }
-            
-            $mpdf_init_options = [
+            else {
+              $mpdf_init_options = [
                 'mode' => $mode,
                 'default_font_size' => 7,
                 'default_font' => $default_font,
@@ -603,8 +626,9 @@ if (!class_exists("Bread")) {
                 'margin_top' => $this->options['margin_top'],
                 'margin_bottom' => $this->options['margin_bottom'],
                 'orientation' => 'P'
-            ];
-
+              ];
+            }
+   
             $this->mpdf = new mPDF(array_merge($mpdf_init_options, $page_type_settings));
 
             // TODO: Adding a page number really could just be an option or tag.
