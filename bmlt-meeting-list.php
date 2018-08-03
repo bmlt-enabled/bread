@@ -3,7 +3,7 @@
 Plugin Name: bread
 Plugin URI: http://wordpress.org/extend/plugins/bread/
 Description: Maintains and generates a PDF Meeting List from BMLT. 
-Version: 1.4.0
+Version: 1.5.0
 */
 /* Disallow direct access to the plugin file */
 use Mpdf\Mpdf;
@@ -18,7 +18,7 @@ if (!class_exists("Bread")) {
 	class Bread {
 		var $lang = '';
 		
-		var $version = '1.4.0';
+		var $version = '1.5.0';
 		var $mpdf = '';
 		var $meeting_count = 0;
 		var $formats_used = '';
@@ -820,7 +820,7 @@ if (!class_exists("Bread")) {
 				if ( $this->options['meeting_sort'] === 'state' ) {
 					$unique_data[] = $value['location_municipality'] . ', '.$value['location_province'];
 				} elseif ( $this->options['meeting_sort'] === 'city' ) {
-					$unique_data[] = $value['location_municipality'];
+					$unique_data[] = strtoupper($value['location_municipality']);
 				} elseif ( $this->options['meeting_sort'] === 'borough' ) {
 					$unique_data[] = $value['location_city_subsection'];
 				} elseif ( $this->options['meeting_sort'] === 'county' ) {
@@ -938,7 +938,7 @@ if (!class_exists("Bread")) {
 						}
 						if ( $this->options['meeting_sort'] === 'state' && $meeting_value['location_municipality'] . ', ' . $meeting_value['location_province'] !== $this_unique_value ) { continue; }
 						if ( $this->options['meeting_sort'] === 'group' && $meeting_value['meeting_name'] !== $this_unique_value ) { continue; }
-						if ( $this->options['meeting_sort'] === 'city' && $meeting_value['location_municipality'] !== $this_unique_value ) { continue; }
+						if ( $this->options['meeting_sort'] === 'city' && strtoupper($meeting_value['location_municipality']) !== $this_unique_value ) { continue; }
 						if ( $this->options['meeting_sort'] === 'borough' && $meeting_value['location_city_subsection'] !== $this_unique_value ) { continue; }
 						if ( $this->options['meeting_sort'] === 'county' && $meeting_value['location_sub_province'] !== $this_unique_value ) { continue; }
 						if ( $this->options['meeting_sort'] === 'borough_county' ) {

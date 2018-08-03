@@ -4,8 +4,8 @@ Contributors: odathp, radius314, pjaudiomv, klgrimley
 Tags: meeting list, bmlt, narcotics anonymous, na
 Requires at least: 4.0
 Requires PHP: 5.6
-Tested up to: 4.9.6
-Stable tag: 1.4.0
+Tested up to: 4.9.7
+Stable tag: 1.4.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 A web-based tool that creates, maintains and generates a PDF meeting list from BMLT.
@@ -55,8 +55,11 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 == Changelog ==
 
 = 1.5.0 =
+* Upgraded to mPDF 7.1.1
 * Added recurse service bodies option for zones and metros
-* Bug fixes for base font selection
+* Bug fixes for base font selection and some formatting issues
+* Remove duplicate formats that can occur with Tomato
+* Keep city headers grouped together if casing doesn't match (won't fix sorting issues).
 
 = 1.4.0 =
 * Support for PHP 7.1 and up
