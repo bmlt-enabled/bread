@@ -805,6 +805,10 @@ if (!class_exists("Bread")) {
 			}
 			$this->sortBySubkey($this->formats_used, 'key_string');
 			$this->sortBySubkey($this->formats_all, 'key_string');
+
+            $this->uniqueFormat($this->formats_used, 'key_string');
+            $this->uniqueFormat($this->formats_all, 'key_string');
+
 			$this->meeting_count = count($result_meetings);
 			$unique_areas = $this->get_areas();			
 			$unique_states = array();
@@ -2026,7 +2030,19 @@ if (!class_exists("Bread")) {
 			update_option($this->optionsName, $this->options);
 			return;
 		}
-	} //End Class bread
+
+        public function uniqueFormat(&$array_of_formats, $subkey) {
+            $lastFormat = "";
+            for ( $i = 0; $i < count( $array_of_formats ); $i++ ) {
+                if ( strtoupper($lastFormat) == strtoupper($array_of_formats[$i][$subkey]) ) {
+                    array_splice($array_of_formats, $i, 1);
+                    $i--;
+                } else {
+                    $lastFormat = $array_of_formats[$i][$subkey];
+                }
+            }
+        }
+    } //End Class bread
 } // end if
 //instantiate the class
 if (class_exists("Bread")) {
