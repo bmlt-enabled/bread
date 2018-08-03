@@ -586,6 +586,10 @@ if (!class_exists("Bread")) {
             $mode = 's';
             if ($default_font == 'arial' || $default_font == 'times' || $default_font == 'courier') {
               $mpdf_init_options = [
+                'fontDir' => array(
+                    __DIR__ . '/mpdf/vendor/mpdf/mpdf/ttfonts',
+                    __DIR__ . '/fonts',
+                ),
                 'mode' => $mode,
                 'default_font_size' => 7,
                 'fontdata' => [
