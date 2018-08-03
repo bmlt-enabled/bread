@@ -147,6 +147,9 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                             </select>
                         </li> 
                     </ul>
+                    <div>
+                        <input type="checkbox" name="recurse_service_bodies" value="1" <?php echo ($this->options['recurse_service_bodies'] == 1 ? 'checked' : '') ?> /></td> Recurse Service Bodies
+                    </div>
                 </div>
             </div>
             <div id="customquery" class="postbox">

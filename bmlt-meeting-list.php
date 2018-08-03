@@ -407,10 +407,11 @@ if (!class_exists("Bread")) {
 		}
 
 		function getUsedFormats() {
+            if ( !isset($this->options['recurse_service_bodies']) ) {$this->options['recurse_service_bodies'] = 1;}
 			$area_data = explode(',',$this->options['service_body_1']);
 			$service_body_id = $area_data[1];
 			$parent_body_id = $area_data[2];
-			if ( $parent_body_id == '0' || $parent_body_id == '' ) {
+			if ( $this->options['recurse_service_bodies'] == 1 ) {
 				$services = '&recursive=1&services[]=' . $service_body_id;
 			} else {
 				$services = '&services[]='.$service_body_id;
@@ -418,7 +419,7 @@ if (!class_exists("Bread")) {
 			$area_data = explode(',',$this->options['service_body_1']);
 			$service_body_id = $area_data[1];
 			$parent_body_id = $area_data[2];
-			if ( $parent_body_id == '0' || $parent_body_id == '' ) {
+            if ( $this->options['recurse_service_bodies'] == 1 ) {
 				$services = '&recursive=1&services[]=' . $service_body_id;
 			} else {
 				$services = '&services[]='.$service_body_id;
@@ -449,7 +450,8 @@ if (!class_exists("Bread")) {
 			$this->options['service_body_1'] = $area;
 			$service_body_id = $area_data[1];
 			$parent_body_id = $area_data[2];
-			if ( $parent_body_id == '0' || $parent_body_id == '' ) {
+            if ( !isset($this->options['recurse_service_bodies']) ) {$this->options['recurse_service_bodies'] = 1;}
+            if ( $this->options['recurse_service_bodies'] == 1 ) {
 				$services = '&recursive=1&services[]=' . $service_body_id;
 				$services_service_body_1 = '&recursive=1&services[]=' . $service_body_id;
 			} else {
@@ -462,7 +464,7 @@ if (!class_exists("Bread")) {
 				$this->options['service_body_2'] = ($area == 'NOT USED' ? '' : $area);
 				$service_body_id = $area_data[1];
 				$parent_body_id = $area_data[2];
-				if ( $parent_body_id == '0' || $parent_body_id == '' ) {
+                if ( $this->options['recurse_service_bodies'] == 1 ) {
 					$services .= '&recursive=1&services[]=' . $service_body_id;
 				} else {
 					$services .= '&services[]='.$service_body_id;
@@ -474,7 +476,7 @@ if (!class_exists("Bread")) {
 				$this->options['service_body_3'] = ($area == 'NOT USED' ? '' : $area);
 				$service_body_id = $area_data[1];
 				$parent_body_id = $area_data[2];
-				if ( $parent_body_id == '0' || $parent_body_id == '' ) {
+                if ( $this->options['recurse_service_bodies'] == 1 ) {
 					$services .= '&recursive=1&services[]=' . $service_body_id;
 				} else {
 					$services .= '&services[]='.$service_body_id;
@@ -486,7 +488,7 @@ if (!class_exists("Bread")) {
 				$this->options['service_body_4'] = ($area == 'NOT USED' ? '' : $area);
 				$service_body_id = $area_data[1];
 				$parent_body_id = $area_data[2];
-				if ( $parent_body_id == '0' || $parent_body_id == '' ) {
+                if ( $this->options['recurse_service_bodies'] == 1 ) {
 					$services .= '&recursive=1&services[]=' . $service_body_id;
 				} else {
 					$services .= '&services[]='.$service_body_id;
@@ -498,7 +500,7 @@ if (!class_exists("Bread")) {
 				$this->options['service_body_5'] = ($area == 'NOT USED' ? '' : $area);
 				$service_body_id = $area_data[1];
 				$parent_body_id = $area_data[2];
-				if ( $parent_body_id == '0' || $parent_body_id == '' ) {
+                if ( $this->options['recurse_service_bodies'] == 1 ) {
 					$services .= '&recursive=1&services[]=' . $service_body_id;
 				} else {
 					$services .= '&services[]='.$service_body_id;
@@ -1591,6 +1593,7 @@ if (!class_exists("Bread")) {
 				$this->options['include_zip'] = boolval($_POST['include_zip']);
 				$this->options['used_format_1'] = sanitize_text_field($_POST['used_format_1']);
 				$this->options['include_meeting_email'] = boolval($_POST['include_meeting_email']);
+                $this->options['recurse_service_bodies'] = boolval($_POST['recurse_service_bodies']);
 				$this->options['include_protection'] = boolval($_POST['include_protection']);
 				$this->options['weekday_language'] = sanitize_text_field($_POST['weekday_language']);
 				$this->options['include_asm'] = boolval($_POST['include_asm']);
@@ -1741,6 +1744,9 @@ if (!class_exists("Bread")) {
 			}
             if ( !isset($this->options['base_font']) || strlen(trim($this->options['base_font'])) == 0 ) {
                 $this->options['base_font'] = 'dejavusanscondensed';
+            }
+            if ( !isset($this->options['recurse_service_bodies']) || strlen(trim($this->options['recurse_service_bodies'])) == 0) {
+                $this->options['recurse_service_bodies'] = 1;
             }
             if ( !isset($this->options['include_protection']) || strlen(trim($this->options['include_protection'])) == 0 ) {
 				$this->options['include_protection'] = 0;
