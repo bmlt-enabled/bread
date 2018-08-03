@@ -4,22 +4,7 @@ Take a look at the issues for bugs that you might be able to help fix.
 
 Once your pull request is merged it will be released in the next version.
 
-If you are the maintainer of this code you will have to squash the commits to master from unstable as follows.
-
-```shell
-git checkout master
-git rebase origin/master
-git merge --squash unstable
-git commit -m "version x.x.x"
-git push -u origin master
-git svn dcommit --username=radius314
-git tag x.x.x
-git push -u origin master --tags -f
-
-git checkout unstable
-git merge master
-git push origin unstable
-```
+We are using https://github.com/GaryJones/wordpress-plugin-svn-deploy to deploy the plugin to SVN.
 
 To get things going in your local environment.
 
