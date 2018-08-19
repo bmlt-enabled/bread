@@ -1291,7 +1291,7 @@ if (!class_exists("Bread")) {
 				$FilePath = ABSPATH . "current_meeting_list_".strtolower( date ( "njYghis" ) ).".pdf";
 				$this->mpdf = $this->mpdftmp;
 			}
-   if ( $this->options['include_protection'] == 1 ) {
+			if ( $this->options['include_protection'] == 1 ) {
 				// 'copy','print','modify','annot-forms','fill-forms','extract','assemble','print-highres'
 				$this->mpdf->SetProtection(array('copy','print','print-highres'), '', $this->options['protection_password']);
 			}
