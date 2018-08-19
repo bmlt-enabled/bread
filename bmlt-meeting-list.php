@@ -1625,7 +1625,7 @@ if (!class_exists("Bread")) {
 				$this->options['include_zip'] = boolval($_POST['include_zip']);
 				$this->options['used_format_1'] = sanitize_text_field($_POST['used_format_1']);
 				$this->options['include_meeting_email'] = boolval($_POST['include_meeting_email']);
-                $this->options['recurse_service_bodies'] = boolval($_POST['recurse_service_bodies']);
+                $this->options['recurse_service_bodies'] = intval($_POST['recurse_service_bodies']);
 				$this->options['include_protection'] = boolval($_POST['include_protection']);
 				$this->options['weekday_language'] = sanitize_text_field($_POST['weekday_language']);
 				$this->options['include_asm'] = boolval($_POST['include_asm']);
