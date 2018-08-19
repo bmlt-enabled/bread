@@ -54,6 +54,9 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 
 == Changelog ==
 
+= *Unreleased* =
+* Fixed a bug with the Recurse Service Bodies Checkbox
+
 = 1.5.1 =
 * Fixing faulty version number
 
