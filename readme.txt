@@ -4,8 +4,8 @@ Contributors: odathp, radius314, pjaudiomv, klgrimley
 Tags: meeting list, bmlt, narcotics anonymous, na
 Requires at least: 4.0
 Requires PHP: 5.6
-Tested up to: 4.9.7
-Stable tag: 1.5.1
+Tested up to: 4.9.8
+Stable tag: 1.5.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 A web-based tool that creates, maintains and generates a PDF meeting list from BMLT.
@@ -54,7 +54,7 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 
 == Changelog ==
 
-= *Unreleased* =
+= 1.5.2 =
 * Fixed a bug with the Recurse Service Bodies Checkbox
 * Fixed a bug with PDF Protection for Half-Fold Page Layouts
 
