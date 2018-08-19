@@ -641,11 +641,6 @@ if (!class_exists("Bread")) {
                 $this->mpdf->DefHTMLFooterByName('MyFooter','<div style="text-align: center; font-size: 9pt; font-style: italic;">Page {PAGENO}</div>');
             }
 
-			if ( $this->options['include_protection'] == 1 ) {
-				// 'copy','print','modify','annot-forms','fill-forms','extract','assemble','print-highres'
-				$this->mpdf->SetProtection(array('copy','print','print-highres'), '', $this->options['protection_password']);
-			}
-
 			$this->mpdf->simpleTables = false;
 			$this->mpdf->useSubstitutions = false;
 			$this->mpdf->progressBar = 0;				// Shows progress-bars whilst generating file 0 off, 1 simple, 2 advanced
@@ -1295,6 +1290,10 @@ if (!class_exists("Bread")) {
 				unlink($FilePath);
 				$FilePath = ABSPATH . "current_meeting_list_".strtolower( date ( "njYghis" ) ).".pdf";
 				$this->mpdf = $this->mpdftmp;
+			}
+   if ( $this->options['include_protection'] == 1 ) {
+				// 'copy','print','modify','annot-forms','fill-forms','extract','assemble','print-highres'
+				$this->mpdf->SetProtection(array('copy','print','print-highres'), '', $this->options['protection_password']);
 			}
 			if ( intval($this->options['cache_time']) > 0 && ! isset($_GET['nocache']) ) {
 				$content = $this->mpdf->Output('', 'S');

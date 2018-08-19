@@ -56,6 +56,7 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 
 = *Unreleased* =
 * Fixed a bug with the Recurse Service Bodies Checkbox
+* Fixed a bug with PDF Protection for Half-Fold Page Layouts
 
 = 1.5.1 =
 * Fixing faulty version number
