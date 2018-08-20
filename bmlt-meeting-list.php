@@ -30,7 +30,7 @@ if (!class_exists("Bread")) {
 		var $options = array();
 		function __construct() {
 		    $this->protocol = (strpos(strtolower(home_url()), "https") !== false ? "https" : "http") . "://";
-		    if (is_admin() || intval($_GET['current-meeting-list']) == 1 || intval($_GET['export-meeting-list']) == 1 ) {
+		    if (is_admin() || intval($_GET['current-meeting-list']) == 1 ) {
                 $this->getMLOptions();
                 $this->lang = $this->get_bmlt_server_lang();
 
@@ -50,7 +50,7 @@ if (!class_exists("Bread")) {
                     add_action("admin_enqueue_scripts", array(&$this, "enqueue_backend_files"));
                     add_action("wp_default_editor", array(&$this, "ml_default_editor"));
                     add_filter('tiny_mce_version', array( __CLASS__, 'force_mce_refresh' ) );
-                } else if ( intval($_GET['current-meeting-list']) == 1 || intval($_GET['export-meeting-list']) == 1 ) {
+                } else if ( intval($_GET['current-meeting-list']) == 1 ) {
                     $this->bmlt_meeting_list();
                 }
             }
@@ -442,9 +442,6 @@ if (!class_exists("Bread")) {
 
 		function bmlt_meeting_list($atts = null, $content = null) {
 			ini_set('max_execution_time', 600); // tomato server can take a long time to generate a schedule, override the server setting
-			if ( isset( $_GET['export-meeting-list'] ) && intval($_GET['export-meeting-list']) == 1 ) {
-				$this->pwsix_process_settings_export();
-			}
 			$area_data = explode(',',$this->options['service_body_1']);
 			$area = $area_data[0];
 			$this->options['service_body_1'] = $area;
@@ -1907,17 +1904,15 @@ if (!class_exists("Bread")) {
 		 * Process a settings export that generates a .json file of the shop settings
 		 */
 		function pwsix_process_settings_export() {
-			if ( isset( $_GET['export-meeting-list'] ) && intval($_GET['export-meeting-list']) == 1 ) {
-			} else {
-				if ( $_POST['bmltmeetinglistsave'] == 'Save Changes' )
-					return;
-				if( empty( $_POST['pwsix_action'] ) || 'export_settings' != $_POST['pwsix_action'] )
-					return;
-				if( ! wp_verify_nonce( $_POST['pwsix_export_nonce'], 'pwsix_export_nonce' ) )
-					return;
-				if( ! current_user_can( 'manage_options' ) )
-					return;					
-			}
+            if ( $_POST['bmltmeetinglistsave'] == 'Save Changes' )
+                return;
+            if( empty( $_POST['pwsix_action'] ) || 'export_settings' != $_POST['pwsix_action'] )
+                return;
+            if( ! wp_verify_nonce( $_POST['pwsix_export_nonce'], 'pwsix_export_nonce' ) )
+                return;
+            if( ! current_user_can( 'manage_options' ) )
+                return;
+
 			$blogname = str_replace(" - ", " ", get_option('blogname'));
 			$blogname = str_replace(" ", "-", $blogname);
 			$date = date("m-d-Y");
