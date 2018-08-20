@@ -1922,9 +1922,10 @@ if (!class_exists("Bread")) {
 			$blogname = str_replace(" ", "-", $blogname);
 			$date = date("m-d-Y");
 			$blogname = trim(preg_replace('/[^a-z0-9]+/', '-', strtolower($blogname)), '-');
-			$json_name = $blogname."-meeting-list-settings-".$date.".json"; // Namming the filename will be generated.
+			$json_name = $blogname."-meeting-list-settings-".$date.".json"; // Naming the filename will be generated.
 			$settings = get_option( $this->optionsName );
 			foreach ($settings as $key => $value) {
+
 				$value = maybe_unserialize($value);
 				$need_options[$key] = $value;
 			}
