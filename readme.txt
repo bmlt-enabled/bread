@@ -55,8 +55,10 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 == Changelog ==
 
 = 1.5.2 =
+* Upgraded to mPDF 7.1.4
 * Fixed a bug with the Recurse Service Bodies Checkbox
 * Fixed a bug with PDF Protection for Half-Fold Page Layouts
+* Fixed image stetchiness on Half-Fold w/ Letter Page Layouts
 
 = 1.5.1 =
 * Fixing faulty version number

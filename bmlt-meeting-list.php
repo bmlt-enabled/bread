@@ -568,7 +568,7 @@ if (!class_exists("Bread")) {
 			}
 
 			if ( $this->options['page_fold'] == 'half' && $this->options['page_size'] == '5inch' ) {
-			    $page_type_settings = ['format' => array(203.2,279.4), 'margin_footer' => 5];
+			    $page_type_settings = ['format' => array(197.2,279.4), 'margin_footer' => 5];
 			} elseif ( $this->options['page_fold'] == 'half' && $this->options['page_size'] == 'A5' ) {
                 $page_type_settings = ['format' => 'A5', 'margin_footer' => 5];
 			} elseif ( $this->options['page_size'] . '-' .$this->options['page_orientation'] == 'ledger-L' ) {
@@ -1244,7 +1244,7 @@ if (!class_exists("Bread")) {
 				if ( $this->options['page_size'] == '5inch' ) {
 					$this->mpdftmp=new mPDF([
                         'mode' => $mode,
-                        'format' => array(203.2,279.4),
+                        'format' => array(197.2,279.4),
                         'default_font_size' => '',
                         'margin_left' => 0,
                         'margin_right' => 0,
