@@ -1263,7 +1263,7 @@ if (!class_exists("Bread")) {
                         'margin_right' => 0,
                         'margin_top' => 0,
                         'margin_bottom' => 0,
-                        'margin_footer' => 0,
+                        'margin_footer' => 6,
                         'orientation' => 'L'
                     ]);
 				} else {
