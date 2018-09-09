@@ -1220,7 +1220,7 @@ if (!class_exists("Bread")) {
       if ($this->options['margin_top'] < '5') {
         $ph_footer_fix_top = 5 - $this->options['margin_bottom'];
       }
-      $PH_FOOTER_MM = 22 + $ph_footer_fix_top + $ph_footer_fix_top;
+      $PH_FOOTER_MM = 22 + $ph_footer_fix_top + $ph_footer_fix_bot;
       
 						if ( strpos($this->options['front_page_content'], 'sethtmlpagefooter') !== false ) {
 							$ph = $ph + $PH_FOOTER_MM;
