@@ -1208,7 +1208,19 @@ if (!class_exists("Bread")) {
 						$data = utf8_encode($data);
 						$this->mpdf->WriteHTML($data);
 						$ph = intval($this->options['margin_bottom']) + intval($this->options['margin_top']) + $this->mpdf->y + -intval($this->options['page_height_fix']);
-      $footer_page_height = 22;
+      if ($this->options['margin_bottom'] == '5') {
+        $ph_footer_fix_bot = 0;
+      }
+      if ($this->options['margin_top'] == '5') {
+        $ph_footer_fix_top = 0;
+      }
+      if ($this->options['margin_bottom'] < '5') {
+        $ph_footer_fix_bot = 5 - $this->options['margin_bottom'];
+      }
+      if ($this->options['margin_top'] < '5') {
+        $ph_footer_fix_top = 5 - $this->options['margin_bottom'];
+      }
+      $footer_page_height = 22 + $ph_footer_fix_top + $ph_footer_fix_top;
 						if ( strpos($this->options['front_page_content'], 'sethtmlpagefooter') !== false ) {
 							$ph = $ph + $footer_page_height;
 						}
@@ -1251,7 +1263,7 @@ if (!class_exists("Bread")) {
                         'margin_right' => 0,
                         'margin_top' => 0,
                         'margin_bottom' => 0,
-                        'margin_footer' => 6,
+                        'margin_footer' => 0,
                         'orientation' => 'L'
                     ]);
 				} else {
