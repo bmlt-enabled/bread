@@ -1209,9 +1209,9 @@ if (!class_exists("Bread")) {
 						$this->mpdf->WriteHTML($data);
 						$ph = intval($this->options['margin_bottom']) + intval($this->options['margin_top']) + $this->mpdf->y + -intval($this->options['page_height_fix']);
 						if ( strpos($this->options['front_page_content'], 'sethtmlpagefooter') !== false ) {
-							$ph = $ph + 15;
+							$ph = $ph + 22;
 						}
-						if ( $ph + 15 >= $this->mpdf->h  ) {
+						if ( $ph + 22 >= $this->mpdf->h  ) {
 							$newCol = true;
 							if ( $this->options['page_fold'] === 'half' ) {
 								$this->mpdf->WriteHTML("<pagebreak>");
