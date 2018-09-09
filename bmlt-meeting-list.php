@@ -1220,11 +1220,12 @@ if (!class_exists("Bread")) {
       if ($this->options['margin_top'] < '5') {
         $ph_footer_fix_top = 5 - $this->options['margin_bottom'];
       }
-      $footer_page_height = 22 + $ph_footer_fix_top + $ph_footer_fix_top;
+      $PH_FOOTER_MM = 22 + $ph_footer_fix_top + $ph_footer_fix_top;
+      
 						if ( strpos($this->options['front_page_content'], 'sethtmlpagefooter') !== false ) {
-							$ph = $ph + $footer_page_height;
+							$ph = $ph + $PH_FOOTER_MM;
 						}
-						if ( $ph + $footer_page_height >= $this->mpdf->h  ) {
+						if ( $ph + $PH_FOOTER_MM >= $this->mpdf->h  ) {
 							$newCol = true;
 							if ( $this->options['page_fold'] === 'half' ) {
 								$this->mpdf->WriteHTML("<pagebreak>");
