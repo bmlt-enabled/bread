@@ -1208,10 +1208,11 @@ if (!class_exists("Bread")) {
 						$data = utf8_encode($data);
 						$this->mpdf->WriteHTML($data);
 						$ph = intval($this->options['margin_bottom']) + intval($this->options['margin_top']) + $this->mpdf->y + -intval($this->options['page_height_fix']);
+      $footer_page_height = 22;
 						if ( strpos($this->options['front_page_content'], 'sethtmlpagefooter') !== false ) {
-							$ph = $ph + 22;
+							$ph = $ph + $footer_page_height;
 						}
-						if ( $ph + 22 >= $this->mpdf->h  ) {
+						if ( $ph + $footer_page_height >= $this->mpdf->h  ) {
 							$newCol = true;
 							if ( $this->options['page_fold'] === 'half' ) {
 								$this->mpdf->WriteHTML("<pagebreak>");
