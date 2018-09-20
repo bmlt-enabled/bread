@@ -6,6 +6,6 @@
     }
   ],
   "require": {
-    "mpdf/mpdf": "7.1.4"
+    "mpdf/mpdf": "7.1.5"
   }
 }

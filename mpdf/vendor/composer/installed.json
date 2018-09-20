@@ -1,12 +1,12 @@
 [
     {
         "name": "mpdf/mpdf",
-        "version": "v7.1.4",
-        "version_normalized": "7.1.4.0",
+        "version": "v7.1.5",
+        "version_normalized": "7.1.5.0",
         "source": {
             "type": "git",
             "url": "https://github.com/mpdf/mpdf",
-            "reference": "349a1ffae7d04f0d976f619d6f00d8569a4a74c7"
+            "reference": "2ed29c3a59fa23e77052e9d7fa7e31c707fb7502"
         },
         "require": {
             "ext-gd": "*",
@@ -28,7 +28,7 @@
             "ext-xml": "Needed mainly for SVG manipulation",
             "ext-zlib": "Needed for compression of embedded resources, such as fonts"
         },
-        "time": "2018-08-10T11:00:53+00:00",
+        "time": "2018-09-19T09:57:25+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {

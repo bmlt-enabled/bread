@@ -2,8 +2,9 @@
 /**
 Plugin Name: bread
 Plugin URI: http://wordpress.org/extend/plugins/bread/
-Description: Maintains and generates a PDF Meeting List from BMLT. 
-Version: 1.5.2
+Description: Maintains and generates a PDF Meeting List from BMLT.
+Author: odathp, radius314, pjaudiomv, klgrimley
+Version: 1.5.3
 */
 /* Disallow direct access to the plugin file */
 use Mpdf\Mpdf;
@@ -18,7 +19,7 @@ if (!class_exists("Bread")) {
 	class Bread {
 		var $lang = '';
 		
-		var $version = '1.5.2';
+		var $version = '1.5.3';
 		var $mpdf = '';
 		var $meeting_count = 0;
 		var $formats_used = '';
@@ -360,7 +361,7 @@ if (!class_exists("Bread")) {
 			return $all_meetings;
 		}
 
-		function get_areas () {
+		function get_areas() {
 			$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetServiceBodies");
 			$result = json_decode(wp_remote_retrieve_body($results), true);
 			$unique_areas = array();
