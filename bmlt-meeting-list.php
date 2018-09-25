@@ -504,7 +504,9 @@ if (!class_exists("Bread")) {
 					$services .= '&services[]='.$service_body_id;
 				}
 			}
-			if ( false === ( $this->options['custom_query'] == '' ) ) {
+			if (isset($_GET['custom_query'])) {
+				$services = $_GET['custom_query'];
+			} elseif ( false === ( $this->options['custom_query'] == '' )) {
 				$services = $this->options['custom_query'];
 			}
 			if ( $this->options['root_server'] == '' ) {
