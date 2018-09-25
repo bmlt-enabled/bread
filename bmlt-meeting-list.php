@@ -1399,6 +1399,7 @@ if (!class_exists("Bread")) {
 			$this->options['front_page_content'] = str_replace("[service_body_3]", strtoupper($this->options['service_body_3']), $this->options['front_page_content']);
 			$this->options['front_page_content'] = str_replace("[service_body_4]", strtoupper($this->options['service_body_4']), $this->options['front_page_content']);
 			$this->options['front_page_content'] = str_replace("[service_body_5]", strtoupper($this->options['service_body_5']), $this->options['front_page_content']);
+			$this->options['front_page_content'] = str_replace("[querystring_title]", (isset($_GET['title']) ? strtoupper($_GET['title']) : "NOT SET"), $this->options['front_page_content']);
 			$this->options['front_page_content'] = str_replace("[area]", strtoupper($this->options['service_body_1']), $this->options['front_page_content']);
 			$this->options['front_page_content'] = str_replace('[page_break no_page_number]', '<sethtmlpagefooter name="" value="0" /><pagebreak />', $this->options['front_page_content']);
 			$this->options['front_page_content'] = str_replace('[start_page_numbers]', '<sethtmlpagefooter name="MyFooter" page="ALL" value="1" />', $this->options['front_page_content']);
