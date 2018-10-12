@@ -63,13 +63,11 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
             </div>
 	        <h3 class="help-accordian">Reusable Templating</h3>
 	        <div>
-		        <p>You can dynamically set some of the options to create a reusable template.</p>
-
+				<p>You can dynamically set some of the options to create a reusable template.</p>
 		        <p>In order to change the meeting information you can pass a dynamic custom query using &custom_query=, ensure you are using URL encoding.</p>
-
 		        <p>You can also use any combinations of [querystring_custom_*], where * is any digit.  You can then override that specific value using it in querystring as &querystring_custom_1= (for instance).</p>
-
 		        <p>You can use any HTML characters, including line breaks.</p>
+                <p>Here is a video of it in action: <a target="_blank">https://bmlt.app/reusable-templates-with-bread-1-6-x/</a></p>
 	        </div>
             <h3 class="help-accordian">Support and Help</h3>
             <div>
