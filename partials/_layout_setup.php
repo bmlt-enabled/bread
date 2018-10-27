@@ -78,9 +78,14 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         Right: <input min="0" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="margin_right" name="margin_right" value="<?php echo esc_html($this->options['margin_right']); ?>" />&nbsp;&nbsp;&nbsp;
                         </p>
                     </div>
+                    <div id="pagenodiv" style="border-top: 1px solid #EEE;">
+                        <p>
+                            Page Numbers Font Size: <input min="1" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="pagenumbering_font_size" name="pagenumbering_font_size" value="<?php echo esc_html($this->options['pagenumbering_font_size']); ?>" />
+                        </p>
+                    </div>
                     <div id="columngapdiv" style="border-top: 1px solid #EEE;">
                         <p>
-                        Column Gap Width: <input min="1" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="column_gap" name="column_gap" value="<?php echo esc_html($this->options['column_gap']); ?>" />
+                            Column Gap Width: <input min="1" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="column_gap" name="column_gap" value="<?php echo esc_html($this->options['column_gap']); ?>" />
                         </p>
                     </div>
                     <div id="columnseparatordiv" style="border-top: 1px solid #EEE;">

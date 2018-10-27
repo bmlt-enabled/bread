@@ -536,10 +536,11 @@ if (!class_exists("Bread")) {
 			if ( !isset($this->options['custom_section_content']) ) {$this->options['custom_section_content'] = '';}
 			if ( !isset($this->options['custom_section_line_height']) ) {$this->options['custom_section_line_height'] = '1';}
 			if ( !isset($this->options['custom_section_font_size']) ) {$this->options['custom_section_font_size'] = '9';}
+			if ( !isset($this->options['pagenumbering_font_size']) ) {$this->options['pagenumbering_font_size'] = '9';}
 			if ( !isset($this->options['include_zip']) ) {$this->options['include_zip'] = 0;}
 			if ( !isset($this->options['include_meeting_email']) ) {$this->options['include_meeting_email'] = 0;}
 			if ( !isset($this->options['include_protection']) ) {$this->options['include_protection'] = 0;}
-            if ( !isset($this->options['base_font']) ) {$this->options['base_font'] = 'dejavusanscondensed';}
+			if ( !isset($this->options['base_font']) ) {$this->options['base_font'] = 'dejavusanscondensed';}
 			if ( !isset($this->options['weekday_language']) ) {$this->options['weekday_language'] = 'en';}
 			if ( !isset($this->options['include_asm']) ) {$this->options['include_asm'] = '0';}
 			if ( !isset($this->options['header_uppercase']) ) {$this->options['header_uppercase'] = '0';}
@@ -638,7 +639,7 @@ if (!class_exists("Bread")) {
             // TODO: Adding a page number really could just be an option or tag.
             if ( $this->options['page_fold'] == 'half' &&
                  ($this->options['page_size'] == '5inch' || $this->options['page_size'] == 'A5')) {
-                $this->mpdf->DefHTMLFooterByName('MyFooter','<div style="text-align: center; font-size: 9pt; font-style: italic;">Page {PAGENO}</div>');
+                $this->mpdf->DefHTMLFooterByName('MyFooter','<div style="text-align: center; font-size:' . $this->options['pagenumbering_font_size'] . 'pt; font-style: italic;">Page {PAGENO}</div>');
             }
 
 			$this->mpdf->simpleTables = false;
@@ -1642,18 +1643,19 @@ if (!class_exists("Bread")) {
 				$this->options['custom_section_content'] = wp_kses_post($_POST['custom_section_content']);
 				$this->options['custom_section_line_height'] = intval($_POST['custom_section_line_height']);
 				$this->options['custom_section_font_size'] = floatval($_POST['custom_section_font_size']);
+				$this->options['pagenumbering_font_size'] = floatval($_POST['pagenumbering_font_size']);
 				$this->options['include_zip'] = boolval($_POST['include_zip']);
 				$this->options['used_format_1'] = sanitize_text_field($_POST['used_format_1']);
 				$this->options['include_meeting_email'] = boolval($_POST['include_meeting_email']);
-                $this->options['recurse_service_bodies'] = intval($_POST['recurse_service_bodies']);
+				$this->options['recurse_service_bodies'] = intval($_POST['recurse_service_bodies']);
 				$this->options['include_protection'] = boolval($_POST['include_protection']);
 				$this->options['weekday_language'] = sanitize_text_field($_POST['weekday_language']);
 				$this->options['include_asm'] = boolval($_POST['include_asm']);
 				$this->options['bmlt_login_id'] = sanitize_text_field($_POST['bmlt_login_id']);
 				$this->options['bmlt_login_password'] = sanitize_text_field($_POST['bmlt_login_password']);
-                $this->options['base_font'] = sanitize_text_field($_POST['base_font']);
+				$this->options['base_font'] = sanitize_text_field($_POST['base_font']);
 				$this->options['protection_password'] = sanitize_text_field($_POST['protection_password']);
-                $this->options['time_clock'] = sanitize_text_field($_POST['time_clock']);
+				 $this->options['time_clock'] = sanitize_text_field($_POST['time_clock']);
 				$this->options['time_option'] = intval($_POST['time_option']);
 				$this->options['remove_space'] = boolval($_POST['remove_space']);
 				$this->options['content_line_height'] = floatval($_POST['content_line_height']);
@@ -1781,16 +1783,19 @@ if (!class_exists("Bread")) {
 			}
 			if ( !isset($this->options['custom_section_font_size']) || strlen(trim($this->options['custom_section_font_size'])) == 0 ) {
 				$this->options['custom_section_font_size'] = '9';
-			}			
+			}
+			if ( !isset($this->options['pagenumbering_font_size']) || strlen(trim($this->options['pagenumbering_font_size'])) == 0 ) {
+				$this->options['pagenumbering_font_size'] = '9';
+			}
 			if ( !isset($this->options['include_zip']) || strlen(trim($this->options['include_zip'])) == 0 ) {
 				$this->options['include_zip'] = 0;
-			}			
+			}
 			if ( !isset($this->options['used_format_1']) || strlen(trim($this->options['used_format_1'])) == 0 ) {
 				$this->options['used_format_1'] = '';
-			}			
+			}
 			if ( !isset($this->options['used_format_2']) || strlen(trim($this->options['used_format_2'])) == 0 ) {
 				$this->options['used_format_2'] = '';
-			}			
+			}
 			if ( !isset($this->options['include_meeting_email']) || strlen(trim($this->options['include_meeting_email'])) == 0 ) {
 				$this->options['include_meeting_email'] = 0;
 			}
