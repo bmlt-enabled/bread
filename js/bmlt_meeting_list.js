@@ -367,20 +367,28 @@ var $ml = jQuery.noConflict
 	} else {
 		$ml('.weekday_language_div').hide();
 	}
-	$ml('.borough_by_suffix').hide();
-	$ml('.county_by_suffix').hide();
-	if (meeting_sort_val === 'borough_county') {
-		$ml('.borough_by_suffix').show();
-		$ml('.county_by_suffix').show();
-	} else if (meeting_sort_val === 'borough') { 
-		$ml('.borough_by_suffix').show();
-	} else if (meeting_sort_val === 'county') { 
-		$ml('.county_by_suffix').show();
-	}
+     $ml('.borough_by_suffix').hide();
+     $ml('.county_by_suffix').hide();
+     if (meeting_sort_val === 'borough_county') {
+         $ml('.borough_by_suffix').show();
+         $ml('.county_by_suffix').show();
+     } else if (meeting_sort_val === 'borough') {
+         $ml('.borough_by_suffix').show();
+     } else if (meeting_sort_val === 'county') {
+         $ml('.county_by_suffix').show();
+     }
+     $ml('.neighborhood_by_suffix').hide();
+     $ml('.city_by_suffix').hide();
+     if (meeting_sort_val === 'neighborhood_city') {
+         $ml('.neighborhood_by_suffix').show();
+         $ml('.city_by_suffix').show();
+     }
 	$ml("#meeting_sort").click(function() {
 		var meeting_sort_val = $ml("#meeting_sort").val();
-		$ml('.borough_by_suffix').hide();
-		$ml('.county_by_suffix').hide();
+        $ml('.borough_by_suffix').hide();
+        $ml('.county_by_suffix').hide();
+        $ml('.neighborhood_by_suffix').hide();
+        $ml('.city_by_suffix').hide();
 		if (meeting_sort_val === 'day' || meeting_sort_val === 'weekday_area' || meeting_sort_val === 'weekday_city' ||  meeting_sort_val === 'weekday_county') {
 			$ml('.weekday_language_div').show();
 		} else {
@@ -389,10 +397,14 @@ var $ml = jQuery.noConflict
 		if (meeting_sort_val === 'borough_county') {
 			$ml('.borough_by_suffix').show();
 			$ml('.county_by_suffix').show();
-		} else if (meeting_sort_val === 'borough') { 
+		} else if (meeting_sort_val === 'borough') {
 			$ml('.borough_by_suffix').show();
-		} else if (meeting_sort_val === 'county') { 
+		} else if (meeting_sort_val === 'county') {
 			$ml('.county_by_suffix').show();
+		}
+		if (meeting_sort_val === 'neighborhood_city') {
+			$ml('.neighborhood_by_suffix').show();
+			$ml('.city_by_suffix').show();
 		}
 	});
 	var time_clock_val = $ml('input[name=time_clock]:checked').val();

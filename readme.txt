@@ -56,6 +56,7 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 
 = UNRELEASED =
 * Added page numbering font size adjustment.
+* Added sort by Neighborhood+City option.
 
 = 1.6.2 =
 * Added icon
