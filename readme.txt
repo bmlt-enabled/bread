@@ -59,7 +59,7 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 * Added page numbering font size adjustment. [#41]
 * Added sort by Neighborhood+City option. [#22]
 * Removed default information in stock configuration files. [#35]
-* Addressed a number of general long standing housekeeping issues.
+* Addressed a number of general long-standing housekeeping issues.
 
 = 1.6.2 =
 * Added icon
