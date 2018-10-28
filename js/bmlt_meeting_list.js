@@ -485,6 +485,7 @@ var $ml = jQuery.noConflict
 	});
 	var page_fold_val = $ml('input[name=page_fold]:checked').val();
 	if (page_fold_val == 'half') {
+		$ml('#pagenodiv').show();
 		$ml('#columngapdiv').hide();
 		$ml('#columnseparatordiv').hide();
 		$ml("#letter, label[for=letter]").hide();
@@ -497,6 +498,7 @@ var $ml = jQuery.noConflict
 		$ml('#meeting-list-tabs').tabs('disable', 5);
 		$ml('#meeting-list-tabs').tabs('enable', 6);
 	} else if (page_fold_val == 'full') {
+		$ml('#pagenodiv').hide();
 		$ml("#5inch, label[for=5inch]").hide();
 		$ml("#A5, label[for=A5]").hide();
 		$ml("#meeting-list-tabs ul li:eq(5)").hide();
@@ -518,6 +520,7 @@ var $ml = jQuery.noConflict
 		var page_orientation_val = $ml('input[name=page_orientation]:checked').val();
 		var page_size_val = $ml('input[name=page_size]:checked').val();
 		if (page_fold_val == 'half') {
+			$ml('#pagenodiv').show();
 			$ml('#pageheightdiv').show();
 			$ml('#columngapdiv').hide();
 			$ml('#columnseparatordiv').hide();
@@ -543,6 +546,7 @@ var $ml = jQuery.noConflict
 			});
 		};
 		if (page_fold_val == 'full') {
+			$ml('#pagenodiv').hide();
 			$ml('#pageheightdiv').hide();
 			$ml('#columngapdiv').hide();
 			$ml('#columnseparatordiv').hide();
@@ -567,6 +571,7 @@ var $ml = jQuery.noConflict
 			});
 		};
 		if (page_fold_val === 'tri' || page_fold_val === 'quad') {
+			$ml('#pagenodiv').hide();
 			$ml('#pageheightdiv').show();
 			$ml('#columngapdiv').show();
 			$ml('#columnseparatordiv').show();

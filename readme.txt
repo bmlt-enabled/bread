@@ -54,6 +54,9 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 
 == Changelog ==
 
+= UNRELEASED =
+* Added page numbering font size adjustment.
+
 = 1.6.2 =
 * Added icon
 
