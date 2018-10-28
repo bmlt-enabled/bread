@@ -826,15 +826,13 @@ if (!class_exists("Bread")) {
 					} else {
 						$unique_data[] = $value['location_sub_province'];
 					}
-				}
-				elseif ( $this->options['meeting_sort'] === 'neighborhood_city' ) {
+				} elseif ( $this->options['meeting_sort'] === 'neighborhood_city' ) {
 					if ( $value['location_neighborhood'] !== '' ) {
 						$unique_data[] = $value['location_neighborhood'];
 					} else {
 						$unique_data[] = $value['location_municipality'];
 					}
-				}
-				elseif ( $this->options['meeting_sort'] === 'group' ) {
+				} elseif ( $this->options['meeting_sort'] === 'group' ) {
 					$unique_data[] = $value['meeting_name'];
 				} elseif ( $this->options['meeting_sort'] === 'weekday_area' ) {
 					foreach($unique_areas as $unique_area){
