@@ -709,11 +709,9 @@ if (!class_exists("Bread")) {
 				$sort_keys = 'location_sub_province,weekday_tinyint,start_time,meeting_name';
 			} elseif ( $this->options['meeting_sort'] == 'borough_county' ) {
 				$sort_keys = 'location_city_subsection,location_sub_province,weekday_tinyint,start_time,meeting_name';
-			}
-			elseif ( $this->options['meeting_sort'] == 'neighborhood_city' ) {
+			} elseif ( $this->options['meeting_sort'] == 'neighborhood_city' ) {
 				$sort_keys = 'location_neighborhood,location_municipality,weekday_tinyint,start_time,meeting_name';
-			}
-			elseif ( $this->options['meeting_sort'] == 'group' ) {
+			} elseif ( $this->options['meeting_sort'] == 'group' ) {
 				$sort_keys = 'meeting_name,weekday_tinyint,start_time';
 			} elseif ( $this->options['meeting_sort'] == 'weekday_area' ) {
 				$sort_keys = 'weekday_tinyint,service_body_bigint,start_time';
