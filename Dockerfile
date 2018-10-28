@@ -1,4 +1,4 @@
-FROM wordpress:4.9.8-php7.2-apache
+FROM radius314/wordpress:5.0.0-nightly-php7.3-rc-apache
 
 RUN apt-get update && \
 	apt-get install -y  --no-install-recommends ssl-cert && \

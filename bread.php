@@ -4,7 +4,7 @@ Plugin Name: bread
 Plugin URI: http://wordpress.org/extend/plugins/bread/
 Description: Maintains and generates a PDF Meeting List from BMLT.
 Author: odathp, radius314, pjaudiomv, klgrimley
-Version: 1.6.2
+Version: 1.7.0
 */
 /* Disallow direct access to the plugin file */
 use Mpdf\Mpdf;
@@ -18,8 +18,6 @@ include 'partials/_helpers.php';
 if (!class_exists("Bread")) {
 	class Bread {
 		var $lang = '';
-		
-		var $version = '1.6.2';
 		var $mpdf = '';
 		var $meeting_count = 0;
 		var $formats_used = '';
@@ -1518,7 +1516,7 @@ if (!class_exists("Bread")) {
 		function write_detailed_formats($formats, $page) {
 			if ( $formats == Null ) { return ''; }
 			$this->mpdf->WriteHTML('td{font-size: '.$this->options[$page.'_font_size']."pt;line-height:".$this->options[$page.'_line_height'].';}',1);
-			$data .= "<table style='font-size:".$this->options[$page.'_font_size']."pt;line-height:".$this->options[$page.'_line_height']."; width: 100%;'>";
+			$data = "<table style='font-size:".$this->options[$page.'_font_size']."pt;line-height:".$this->options[$page.'_line_height']."; width: 100%;'>";
 			$countmax = count ( $formats );
 			for ( $count = 0; $count < $countmax; $count++ ) {
 				$data .= '<tr>';
