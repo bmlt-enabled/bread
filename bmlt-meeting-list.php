@@ -4,7 +4,7 @@ Plugin Name: bread
 Plugin URI: http://wordpress.org/extend/plugins/bread/
 Description: Maintains and generates a PDF Meeting List from BMLT.
 Author: odathp, radius314, pjaudiomv, klgrimley
-Version: 1.7.0
+Version: 1.7.1
 */
 /* Disallow direct access to the plugin file */
 use Mpdf\Mpdf;
@@ -128,7 +128,7 @@ if (!class_exists("Bread")) {
 				$root_server = $this->options['root_server'];
 				if ( $root_server == '' ) {
 					echo '<div id="message" class="error"><p>Missing BMLT Server in settings for bread.</p>';
-					$url = admin_url( 'options-general.php?page=bread.php' );
+					$url = admin_url( 'options-general.php?page=bmlt-meeting-list.php' );
 					echo "<p><a href='$url'>Settings</a></p>";
 					echo '</div>';
 				}
@@ -158,7 +158,7 @@ if (!class_exists("Bread")) {
 		* @desc Adds JS/CSS to the header
 		*/
 		function enqueue_backend_files($hook) {
-			if( $hook == 'toplevel_page_bread' ) {
+			if( $hook == 'toplevel_page_bmlt-meeting-list' ) {
 				wp_enqueue_script('common');
 				wp_enqueue_script('jquery-ui-tabs');
 				wp_enqueue_script('jquery-ui-accordion');
@@ -2032,7 +2032,7 @@ if (!class_exists("Bread")) {
             $settings = json_decode($encode_options, true);
 			update_option( $this->optionsName, $settings );
 			setcookie('pwsix_action', "import_settings", time()+10); 
-			wp_safe_redirect( admin_url( '?page=bread.php' ) );
+			wp_safe_redirect( admin_url( '?page=bmlt-meeting-list.php' ) );
 		}
 
 		/**
@@ -2062,7 +2062,7 @@ if (!class_exists("Bread")) {
             $settings = json_decode($encode_options, true);
 			update_option( $this->optionsName, $settings );
 			setcookie('pwsix_action', "default_settings_success", time()+10); 
-			wp_safe_redirect( admin_url( '?page=bread.php' ) );
+			wp_safe_redirect( admin_url( '?page=bmlt-meeting-list.php' ) );
 		}
 
 		/**
