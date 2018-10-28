@@ -129,7 +129,7 @@ if (!class_exists("Bread")) {
 				if ( $root_server == '' ) {
 					echo '<div id="message" class="error"><p>Missing BMLT Server in settings for bread.</p>';
 					$url = admin_url( 'options-general.php?page=bread.php' );
-					echo "<p><a href='$url'>BMLT_Meetng_List Settings</a></p>";
+					echo "<p><a href='$url'>bread Settings</a></p>";
 					echo '</div>';
 				}
 				add_action("admin_notices", array(
