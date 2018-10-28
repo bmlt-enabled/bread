@@ -95,14 +95,12 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 * Introducing base fonts which allow for a more customized styling
 
 = 1.3.1 =
-
 * Graceful protocol rewriting for Front Page + Custom Content
 * Hardcoded links forced to HTTPS
 * Contributor HTTPS (non-strict) capabilities in Docker (https://localhost:7443)
 * Added Debug information for assisting in troubleshooting remotely
 
 = 1.3.0 =
-
 * Bumped up the HTTP GET timeout from 30 seconds to 2 mins.
 * Allows for specifying an unpublished ASM (must use credentials.
 * Restructured "Special Features" section.
@@ -110,47 +108,37 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 * Cleaned up some dead code.
 
 = 1.2.1 =
-
 * Fixed a bug where it was rounding off the decimal duration to the nearest tenth instead of hundreth.
 * Fixed a regression in continuing headers.
 * Made sidebar colors different to visually differentiate between the BMLT meeting list generator (EOL).
 
 = 1.2.0 =
-
 * Added the ability to hide a sub header when using a two-dimensional group by.
 
 = 1.1.0 =
-
 * Patching bad bug in which GetServerInfo requests were made on every page load.
 
 = 1.0.7 =
-
 * Adding User Agent Signature
 
 = 1.0.6 =
-
 * Show that you are connected to a tomato server now, if you are.
 * Minor fixes
 
 = 1.0.5 =
-
 * Fix for short tags that might be off on PHP settings.  There were a couple of dangling occurrences left.
 * Compatibility testing for WP 4.9.4
 
 = 1.0.4 =
-
 * Minor bug fix for loading up a fresh plugin
 
 = 1.0.3 =
-
 * Support for Weekday + County group by.
 
 = 1.0.2 =
-
 * Fixed a bug where the custom query regressed because of escaping.
 
 = 1.0.1 =
-
 * Fixed a bug with encoding Spanish characters.
 * Fixed a bug where Upper casing was not working on titles.
 * Cleaned up boolean settings.
@@ -160,7 +148,6 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 * Added upgrade information.
 
 = 1.0.0 =
-
 * Allow for custom queries
 * Tons of refactoring to make code more readable
 * Implemented the Wordpress HTTP API instead of curl
