@@ -56,8 +56,8 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 
 = 1.7.0 =
 * Upgraded to mPDF 7.1.6
-* Added page numbering font size adjustment.
-* Added sort by Neighborhood+City option.
+* Added page numbering font size adjustment. [#41]
+* Added sort by Neighborhood+City option. [#22]
 
 = 1.6.2 =
 * Added icon
