@@ -41,7 +41,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         <input name="header_bold" value="0" type="hidden">
                     <td><label for="header_bold">Bold: </label><input type="checkbox" name="header_bold" value="1" <?php echo ($this->options['header_bold'] == '1' ? 'checked' : '') ?>></td>
                     <td style="padding-right: 10px;">
-                    	<input name="sub_header_shown" value="0" type="hidden">
+                        <input name="sub_header_shown" value="0" type="hidden">
                     <td><label for="sub_header_shown">Display Sub Heading: </label><input type="checkbox" name="sub_header_shown" value="1" <?php echo ($this->options['sub_header_shown'] == '1' ? 'checked' : '') ?>></td>
                     </tr></table>
                     <p>
@@ -54,29 +54,49 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                                 <option <?php echo ($this->options['meeting_sort'] == 'county' ? 'selected="selected"' : '') ?> value="county">County</option>
                                 <option <?php echo ($this->options['meeting_sort'] == 'borough' ? 'selected="selected"' : '') ?> value="borough">Borough</option>
                                 <option <?php echo ($this->options['meeting_sort'] == 'borough_county' ? 'selected="selected"' : '') ?> value="borough_county">Borough+County</option>
+                                <option <?php echo ($this->options['meeting_sort'] == 'neighborhood_city' ? 'selected="selected"' : '') ?> value="neighborhood_city">Neighborhood+City</option>
                                 <option <?php echo ($this->options['meeting_sort'] == 'state' ? 'selected="selected"' : '') ?> value="state">State+City</option>
                                 <option <?php echo ($this->options['meeting_sort'] == 'weekday_area' ? 'selected="selected"' : '') ?> value="weekday_area">Weekday+Area</option>
                                 <option <?php echo ($this->options['meeting_sort'] == 'weekday_city' ? 'selected="selected"' : '') ?> value="weekday_city">Weekday+City</option>
                                 <option <?php echo ($this->options['meeting_sort'] == 'weekday_county' ? 'selected="selected"' : '') ?> value="weekday_county">Weekday+County</option>
                             </select>
                         </div>
-                        <div class="borough_by_suffix">
-                        
-                            <p>
+                    <div class="borough_by_suffix">
+
+                        <p>
                             <label for="borough_suffix">Borough Suffix: </label>
                             <input class="borough-by-suffix" id="borough_suffix" type="text" name="borough_suffix" value="<?php echo $this->options['borough_suffix']; ?>" />
-                            
-                            </p>
-                            
-                        </div>
-                        <div class="county_by_suffix">
-                                                                        
-                            <p>
+
+                        </p>
+
+                    </div>
+                    <div class="county_by_suffix">
+
+                        <p>
                             <label for="county_suffix">County Suffix: </label>
                             <input class="county-by-suffix" id="county_suffix" type="text" name="county_suffix" value="<?php echo $this->options['county_suffix']; ?>" />
-                            
-                            </p>
-                        </div>
+
+                        </p>
+                    </div>
+
+                    <div class="neighborhood_by_suffix">
+
+                        <p>
+                            <label for="neighborhood_suffix">Neighborhood Suffix: </label>
+                            <input class="neighborhood-by-suffix" id="neighborhood_suffix" type="text" name="neighborhood_suffix" value="<?php echo $this->options['neighborhood_suffix']; ?>" />
+
+                        </p>
+
+                    </div>
+                    <div class="city_by_suffix">
+
+                        <p>
+                            <label for="county_suffix">City Suffix: </label>
+                            <input class="city-by-suffix" id="city_suffix" type="text" name="city_suffix" value="<?php echo $this->options['city_suffix']; ?>" />
+
+                        </p>
+                    </div>
+
                         <div class="weekday_language_div" style="display: inline;">
                             <label for="weekday_language">Weekday Language: </label>											
                             <select name="weekday_language">

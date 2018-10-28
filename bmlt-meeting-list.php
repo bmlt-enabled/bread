@@ -531,6 +531,8 @@ if (!class_exists("Bread")) {
 			if ( !isset($this->options['meeting_sort']) ) {$this->options['meeting_sort'] = 'day';}
 			if ( !isset($this->options['borough_suffix']) ) {$this->options['borough_suffix'] = 'Borough';}
 			if ( !isset($this->options['county_suffix']) ) {$this->options['county_suffix'] = 'County';}
+			if ( !isset($this->options['neighborhood_suffix']) ) {$this->options['neighborhood_suffix'] = 'Neighborhood';}
+			if ( !isset($this->options['city_suffix']) ) {$this->options['city_suffix'] = 'City';}
 			if ( !isset($this->options['column_line']) ) {$this->options['column_line'] = 0;}
 			if ( !isset($this->options['col_color']) ) {$this->options['col_color'] = '#bfbfbf';}
 			if ( !isset($this->options['custom_section_content']) ) {$this->options['custom_section_content'] = '';}
@@ -712,7 +714,11 @@ if (!class_exists("Bread")) {
 				$sort_keys = 'location_sub_province,weekday_tinyint,start_time,meeting_name';
 			} elseif ( $this->options['meeting_sort'] == 'borough_county' ) {
 				$sort_keys = 'location_city_subsection,location_sub_province,weekday_tinyint,start_time,meeting_name';
-			} elseif ( $this->options['meeting_sort'] == 'group' ) {
+			}
+			elseif ( $this->options['meeting_sort'] == 'neighborhood_city' ) {
+				$sort_keys = 'location_neighborhood,location_municipality,weekday_tinyint,start_time,meeting_name';
+			}
+			elseif ( $this->options['meeting_sort'] == 'group' ) {
 				$sort_keys = 'meeting_name,weekday_tinyint,start_time';
 			} elseif ( $this->options['meeting_sort'] == 'weekday_area' ) {
 				$sort_keys = 'weekday_tinyint,service_body_bigint,start_time';
@@ -827,7 +833,15 @@ if (!class_exists("Bread")) {
 					} else {
 						$unique_data[] = $value['location_sub_province'];
 					}
-				} elseif ( $this->options['meeting_sort'] === 'group' ) {
+				}
+				elseif ( $this->options['meeting_sort'] === 'neighborhood_city' ) {
+					if ( $value['location_neighborhood'] !== '' ) {
+						$unique_data[] = $value['location_neighborhood'];
+					} else {
+						$unique_data[] = $value['location_municipality'];
+					}
+				}
+				elseif ( $this->options['meeting_sort'] === 'group' ) {
 					$unique_data[] = $value['meeting_name'];
 				} elseif ( $this->options['meeting_sort'] === 'weekday_area' ) {
 					foreach($unique_areas as $unique_area){
@@ -943,7 +957,14 @@ if (!class_exists("Bread")) {
 							} else {
 								if ( $meeting_value['location_sub_province'] !== $this_unique_value ) { continue; }
 							}
-						}				
+						}
+						if ( $this->options['meeting_sort'] === 'neighborhood_city' ) {
+							if ( $meeting_value['location_neighborhood'] !== '' ) {
+								if ( $meeting_value['location_neighborhood'] !== $this_unique_value ) { continue; }
+							} else {
+								if ( $meeting_value['location_municipality'] !== $this_unique_value ) { continue; }
+							}
+						}
 						if ( $this->options['meeting_sort'] === 'day' && $meeting_value['weekday_tinyint'] !== $this_unique_value ) { continue; }
 						$enFormats = explode ( ",", $meeting_value['formats'] );
 						if ( $this->options['include_asm'] == 0 && in_array ( "ASM", $enFormats ) ) { continue; }
@@ -960,37 +981,59 @@ if (!class_exists("Bread")) {
 								if ( $this->options['borough_suffix'] ) {$this->options['borough_suffix'] = ' ' . $this->options['borough_suffix'];}
 								if ( $this->options['county_suffix'] ) {$this->options['county_suffix'] = ' ' . $this->options['county_suffix'];}
 								$header_suffix = '';
-									
+
 								if ( $this->options['meeting_sort'] === 'borough' ) {
-									
+
 									if ( $this_unique_value == '' ) {
-										
+
 										$this_unique_data = '[NO BOROUGH DATA]';
-										
+
 									} else {
 										$this_unique_data = $this_unique_value;
-										
+
 									}
 									$header_suffix = $this->options['borough_suffix'];
-									
+
 								}
 								if ( $this->options['meeting_sort'] === 'county' ) {
-									
+
 									if ( $this_unique_value == '' ) {
-										
+
 										$this_unique_data = '[NO COUNTY DATA]';
-										
+
 									} else {
 										$this_unique_data = $this_unique_value;
-										
+
 									}
 									$header_suffix = $this->options['county_suffix'];
-									
+
 								}
 								if ( $newVal ) {
 									$header .= "<h2 style='".$header_style."'>".$this_unique_data.''.$header_suffix."</h2>";
 								} elseif ( $newCol ) {
 									$header .= "<h2 style='".$header_style."'>".$this_unique_data.''.$header_suffix." " . $cont . "</h2>";
+								}
+							}
+							if ( $this->options['meeting_sort'] === 'neighborhood_city' ) {
+								if ( $this->options['neighborhood_suffix'] ) {$this->options['neighborhood_suffix'] = ' ' . $this->options['neighborhood_suffix'];}
+								if ( $this->options['city_suffix'] ) {$this->options['city_suffix'] = ' ' . $this->options['city_suffix'];}
+
+								if ( $newVal ) {
+									if ( $meeting_value['location_neighborhood'] !== '' ) {
+										$header .= "<h2 style='".$header_style."'>".$meeting_value['location_neighborhood'].''.$this->options['neighborhood_suffix']."</h2>";
+									} elseif ( $meeting_value['location_municipality'] !== '' ) {
+										$header .= "<h2 style='".$header_style."'>".$meeting_value['location_municipality'].''.$this->options['city_suffix']."</h2>";
+									} else {
+										$header .= "<h2 style='".$header_style."'>[NO NEIGHBORHOOD OR CITY DATA]</h2>";
+									}
+								} elseif ( $newCol ) {
+									if ( $meeting_value['location_neighborhood'] !== '' ) {
+										$header .= "<h2 style='".$header_style."'>".$meeting_value['location_neighborhood'].''.$this->options['neighborhood_suffix']." " . $cont . "</h2>";
+									} elseif ( $meeting_value['location_municipality'] !== '' ) {
+										$header .= "<h2 style='".$header_style."'>".$meeting_value['location_municipality'].''.$this->options['city_suffix']." " . $cont . "</h2>";
+									} else {
+										$header .= "<h2 style='".$header_style."'>[NO NEIGHBORHOOD OR CITY DATA] " . $cont . "</h2>";
+									}
 								}
 							}
 							if ( $this->options['meeting_sort'] === 'weekday_area' || $this->options['meeting_sort'] === 'weekday_city' || $this->options['meeting_sort'] === 'weekday_county' ) {
@@ -1189,7 +1232,7 @@ if (!class_exists("Bread")) {
 								$data .= "<td style='padding-right:0px;vertical-align:top;'>".$meeting_value['location_text']."</td>";
 								$data .= "<td style='padding-right:0px;vertical-align:top;'>".$meeting_value['location_street']."</td>";
 								$data .= "<td style='vertical-align:top;'>".$meeting_value['location_municipality']."</td>";
-							} elseif ( $this->options['meeting_sort'] == 'city' || $this->options['meeting_sort'] == 'state' || $this->options['meeting_sort'] == 'borough' || $this->options['meeting_sort'] == 'county' || $this->options['meeting_sort'] == 'borough_county' ) {
+							} elseif ( $this->options['meeting_sort'] == 'city' || $this->options['meeting_sort'] == 'state' || $this->options['meeting_sort'] == 'borough' || $this->options['meeting_sort'] == 'county' || $this->options['meeting_sort'] == 'borough_county' || $this->options['meeting_sort'] == 'neighborhood_city' ) {
 								$data .= "<td style='padding-right:0px;vertical-align:top;'>".$meeting_value['location_municipality']."</td>";
 								$data .= "<td style='padding-right:0px;vertical-align:top;'>".$this->getday($meeting_value['weekday_tinyint'], false, $this->lang)."</td>".$meeting_value['start_time'];
 								$data .= "<td style='padding-right:0px;vertical-align:top;'>".$meeting_value['meeting_name']."</td>";
@@ -1636,6 +1679,8 @@ if (!class_exists("Bread")) {
 				$this->options['meeting_sort'] = sanitize_text_field($_POST['meeting_sort']);
 				$this->options['borough_suffix'] = sanitize_text_field($_POST['borough_suffix']);
 				$this->options['county_suffix'] = sanitize_text_field($_POST['county_suffix']);
+				$this->options['neighborhood_suffix'] = sanitize_text_field($_POST['neighborhood_suffix']);
+				$this->options['city_suffix'] = sanitize_text_field($_POST['city_suffix']);
 				$this->options['meeting_template'] = wp_kses_post($_POST['meeting_template']);
 				$this->options['meeting_template_content'] = wp_kses_post($_POST['meeting_template_content']);
 				$this->options['column_line'] = boolval($_POST['column_line']); #seperator
@@ -1762,6 +1807,12 @@ if (!class_exists("Bread")) {
 			}
 			if ( !isset($this->options['county_suffix']) ) {
 				$this->options['county_suffix'] = 'County';
+			}
+			if ( !isset($this->options['neighborhood_suffix']) ) {
+				$this->options['neighborhood_suffix'] = 'Neighborhood';
+			}
+			if ( !isset($this->options['city_suffix']) ) {
+				$this->options['city_suffix'] = 'City';
 			}
 			if ( !isset($this->options['meeting_template']) || strlen(trim($this->options['meeting_template'])) == 0 ) {
 				$this->options['meeting_template'] = '1';
