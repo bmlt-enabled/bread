@@ -1246,21 +1246,21 @@ if (!class_exists("Bread")) {
 						$data = utf8_encode($data);
 						$this->mpdf->WriteHTML($data);
 						$ph = intval($this->options['margin_bottom']) + intval($this->options['margin_top']) + $this->mpdf->y + -intval($this->options['page_height_fix']);
-      if ($this->options['margin_bottom'] == '5') {
-        $ph_footer_fix_bot = 0;
-      }
-      if ($this->options['margin_top'] == '5') {
-        $ph_footer_fix_top = 0;
-      }
-      if ($this->options['margin_bottom'] < '5') {
-        $ph_footer_fix_bot = 5 - $this->options['margin_bottom'];
-      }
-      if ($this->options['margin_top'] < '5') {
-        $ph_footer_fix_top = 5 - $this->options['top'];
-      }
-      $PH_FOOTER_MM_HEIGHT_ADJUST = 22;
-      $PH_FOOTER_MM = $PH_FOOTER_MM_HEIGHT_ADJUST + $ph_footer_fix_top + $ph_footer_fix_bot;
-      
+						if ($this->options['margin_bottom'] == '5') {
+							$ph_footer_fix_bot = 0;
+						}
+						if ($this->options['margin_top'] == '5') {
+							$ph_footer_fix_top = 0;
+						}
+						if ($this->options['margin_bottom'] < '5') {
+							$ph_footer_fix_bot = 5 - $this->options['margin_bottom'];
+						}
+						if ($this->options['margin_top'] < '5') {
+							$ph_footer_fix_top = 5 - $this->options['top'];
+						}
+							$PH_FOOTER_MM_HEIGHT_ADJUST = 22;
+							$PH_FOOTER_MM = $PH_FOOTER_MM_HEIGHT_ADJUST + $ph_footer_fix_top + $ph_footer_fix_bot;
+
 						if ( strpos($this->options['front_page_content'], 'sethtmlpagefooter') !== false ) {
 							$ph = $ph + $PH_FOOTER_MM;
 						}
@@ -1691,7 +1691,7 @@ if (!class_exists("Bread")) {
 				$this->options['bmlt_login_password'] = sanitize_text_field($_POST['bmlt_login_password']);
 				$this->options['base_font'] = sanitize_text_field($_POST['base_font']);
 				$this->options['protection_password'] = sanitize_text_field($_POST['protection_password']);
-				 $this->options['time_clock'] = sanitize_text_field($_POST['time_clock']);
+				$this->options['time_clock'] = sanitize_text_field($_POST['time_clock']);
 				$this->options['time_option'] = intval($_POST['time_option']);
 				$this->options['remove_space'] = boolval($_POST['remove_space']);
 				$this->options['content_line_height'] = floatval($_POST['content_line_height']);
