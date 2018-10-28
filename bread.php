@@ -128,7 +128,7 @@ if (!class_exists("Bread")) {
 				$root_server = $this->options['root_server'];
 				if ( $root_server == '' ) {
 					echo '<div id="message" class="error"><p>Missing BMLT Server in settings for bread.</p>';
-					$url = admin_url( 'options-general.php?page=bmlt-meeting-list.php' );
+					$url = admin_url( 'options-general.php?page=bread.php' );
 					echo "<p><a href='$url'>BMLT_Meetng_List Settings</a></p>";
 					echo '</div>';
 				}
@@ -158,7 +158,7 @@ if (!class_exists("Bread")) {
 		* @desc Adds JS/CSS to the header
 		*/
 		function enqueue_backend_files($hook) {
-			if( $hook == 'toplevel_page_bmlt-meeting-list' ) {
+			if( $hook == 'toplevel_page_bread' ) {
 				wp_enqueue_script('common');
 				wp_enqueue_script('jquery-ui-tabs');
 				wp_enqueue_script('jquery-ui-accordion');
@@ -644,10 +644,7 @@ if (!class_exists("Bread")) {
 
 			$this->mpdf->simpleTables = false;
 			$this->mpdf->useSubstitutions = false;
-			$this->mpdf->progressBar = 0;				// Shows progress-bars whilst generating file 0 off, 1 simple, 2 advanced
-			$this->mpdf->progbar_heading = 'Generating Meeting List from BMLT';
 			$blog = get_bloginfo( "name" );
-			$this->mpdf->progbar_altHTML = '<html><body><div style="font-family: arial;text-align:center;width: 100%;position: absolute;top:0;bottom: 0;left: 0;right: 0;margin: 0 auto;margin-top: 50px;"><h2>'.$blog.'</h2><h2>Generating Meeting List</h2><h2>Please Wait...</h2></div>';
 			$this->mpdf->mirrorMargins = false;
 			$this->mpdf->list_indent_first_level = 1; // 1 or 0 - whether to indent the first level of a list
 			// LOAD a stylesheet
@@ -2039,7 +2036,7 @@ if (!class_exists("Bread")) {
             $settings = json_decode($encode_options, true);
 			update_option( $this->optionsName, $settings );
 			setcookie('pwsix_action', "import_settings", time()+10); 
-			wp_safe_redirect( admin_url( '?page=bmlt-meeting-list.php' ) );
+			wp_safe_redirect( admin_url( '?page=bread.php' ) );
 		}
 
 		/**
@@ -2069,7 +2066,7 @@ if (!class_exists("Bread")) {
             $settings = json_decode($encode_options, true);
 			update_option( $this->optionsName, $settings );
 			setcookie('pwsix_action', "default_settings_success", time()+10); 
-			wp_safe_redirect( admin_url( '?page=bmlt-meeting-list.php' ) );
+			wp_safe_redirect( admin_url( '?page=bread.php' ) );
 		}
 
 		/**
