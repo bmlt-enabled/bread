@@ -58,6 +58,7 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 * Upgraded to mPDF 7.1.6
 * Added page numbering font size adjustment. [#41]
 * Added sort by Neighborhood+City option. [#22]
+* Removed default Greater Orlando info. [#35]
 
 = 1.6.2 =
 * Added icon
