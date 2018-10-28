@@ -512,7 +512,7 @@ if (!class_exists("Bread")) {
 				exit;
 			}
 			if ( $this->options['service_body_1'] == 'Not Used' && true === ($this->options['custom_query'] == '' ) ) {
-				echo '<p><strong>bread Error: Service Body 1 missing from configuration.<br/><br/>Please go to Settings -> BMLT_Meeting_List and verify Service Body</strong><br/><br/>Contact the bread administrator and report this problem!</p>';
+				echo '<p><strong>bread Error: Service Body 1 missing from configuration.<br/><br/>Please go to Settings -> bread and verify Service Body</strong><br/><br/>Contact the bread administrator and report this problem!</p>';
 				exit;
 			}
 
