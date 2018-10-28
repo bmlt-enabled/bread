@@ -508,11 +508,11 @@ if (!class_exists("Bread")) {
 				$services = $this->options['custom_query'];
 			}
 			if ( $this->options['root_server'] == '' ) {
-				echo '<p><strong>BMLT Meeting List Error: BMLT Server missing.<br/><br/>Please go to Settings -> BMLT_Meeting_List and verify BMLT Server</strong></p>';
+				echo '<p><strong>bread Error: BMLT Server missing.<br/><br/>Please go to Settings -> bread and verify BMLT Server</strong></p>';
 				exit;
 			}
 			if ( $this->options['service_body_1'] == 'Not Used' && true === ($this->options['custom_query'] == '' ) ) {
-				echo '<p><strong>BMLT Meeting List Error: Service Body 1 missing from configuration.<br/><br/>Please go to Settings -> BMLT_Meeting_List and verify Service Body</strong><br/><br/>Contact the bread administrator and report this problem!</p>';
+				echo '<p><strong>bread Error: Service Body 1 missing from configuration.<br/><br/>Please go to Settings -> BMLT_Meeting_List and verify Service Body</strong><br/><br/>Contact the bread administrator and report this problem!</p>';
 				exit;
 			}
 

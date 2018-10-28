@@ -10,6 +10,6 @@ To get things going in your local environment.
 
 `docker-compose up`
 
-Get your wordpress installation going.  Remember your admin password.  Once it's up, login to admin and activate the BMLT meeting list plugin.
+Get your wordpress installation going.  Remember your admin password.  Once it's up, login to admin and activate the bread plugin.
 
 Now you can make edits to the bread.php file and it will instantly take effect.
