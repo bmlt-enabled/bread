@@ -5,7 +5,7 @@ Tags: meeting list, bmlt, narcotics anonymous, na
 Requires at least: 4.0
 Requires PHP: 5.6
 Tested up to: 4.9.8
-Stable tag: 1.7.3
+Stable tag: 1.7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 A web-based tool that creates, maintains and generates a PDF meeting list from BMLT.
@@ -53,6 +53,10 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 - Read here for more information: https://github.com/radius314/bread/blob/unstable/contribute.md
 
 == Changelog ==
+
+= 1.7.4 =
+* Moved "Meeting List" link to the bottom of the admin menu to avoid conflicts with hardcoded positioning.
+* Added an actual icon for the "Meeting List" link on the admin page.
 
 = 1.7.3 =
 * Version bump
