@@ -55,7 +55,7 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 == Changelog ==
 
 = 1.7.4 =
-* Moved "Meeting List" link to the bottom of the admin menu to avoid conflicts with hardcoded positioning.
+* Moved "Meeting List" link to the bottom of the admin menu to avoid conflicts with hardcoded positioning. [#40]
 * Added an actual icon for the "Meeting List" link on the admin page.
 
 = 1.7.3 =
