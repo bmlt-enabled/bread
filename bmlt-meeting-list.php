@@ -635,11 +635,12 @@ if (!class_exists("Bread")) {
             }
    
             $this->mpdf = new mPDF(array_merge($mpdf_init_options, $page_type_settings));
+            $this->mpdf->setAutoBottomMargin = 'pad';
 
             // TODO: Adding a page number really could just be an option or tag.
             if ( $this->options['page_fold'] == 'half' &&
                  ($this->options['page_size'] == '5inch' || $this->options['page_size'] == 'A5')) {
-                $this->mpdf->DefHTMLFooterByName('MyFooter','<div style="text-align: center; font-size:' . $this->options['pagenumbering_font_size'] . 'pt; font-style: italic;">Page {PAGENO}</div>');
+                $this->mpdf->DefHTMLFooterByName('MyFooter','<div style="text-align:center;font-size:' . $this->options['pagenumbering_font_size'] . 'pt;font-style: italic;">Page {PAGENO}</div>');
             }
 
 			$this->mpdf->simpleTables = false;
@@ -1258,8 +1259,7 @@ if (!class_exists("Bread")) {
 						if ($this->options['margin_top'] < '5') {
 							$ph_footer_fix_top = 5 - $this->options['top'];
 						}
-							$PH_FOOTER_MM_HEIGHT_ADJUST = 22;
-							$PH_FOOTER_MM = $PH_FOOTER_MM_HEIGHT_ADJUST + $ph_footer_fix_top + $ph_footer_fix_bot;
+							$PH_FOOTER_MM = $ph_footer_fix_top + $ph_footer_fix_bot;
 
 						if ( strpos($this->options['front_page_content'], 'sethtmlpagefooter') !== false ) {
 							$ph = $ph + $PH_FOOTER_MM;
