@@ -165,11 +165,11 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     <p class="ctrl_key" style="display:none; color: #00AD00;">Hold CTRL Key down to select multiple meetings.</p>
                     <select class="chosen-select" style="width: 100%;" data-placeholder="Select Extra Meetings" id="extra_meetings" name="extra_meetings[]" multiple="multiple">
                     <?php if ($this_connected && $this->options['extra_meetings_enabled'] == 1) {
-							$extra_meetings_array = $this->get_all_meetings();
+                    		$extra_meetings_array = $this->get_all_meetings();
                         	foreach($extra_meetings_array as $extra_meeting) {
-                            	$extra_meeting_x = explode('|||',$extra_meeting);
-                            	$extra_meeting_id = $extra_meeting_x[3];
-                            	$extra_meeting_display = substr($extra_meeting_x[0], 0, 30) . ';' . $extra_meeting_x[1] . ';' . $extra_meeting_x[2]; ?>
+								$extra_meeting_x = explode('|||',$extra_meeting);
+								$extra_meeting_id = $extra_meeting_x[3];
+								$extra_meeting_display = substr($extra_meeting_x[0], 0, 30) . ';' . $extra_meeting_x[1] . ';' . $extra_meeting_x[2]; ?>
                             <option <?php echo ($this->options['extra_meetings'] != '' && in_array($extra_meeting_id, $this->options['extra_meetings']) ? 'selected="selected"' : '') ?> value="<?php echo $extra_meeting_id ?>"><?php echo esc_html($extra_meeting_display) ?></option>
                         <?php } ?>
                     <?php } else { ?>
