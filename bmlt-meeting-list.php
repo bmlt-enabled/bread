@@ -74,7 +74,7 @@ if (!class_exists("Bread")) {
 		function my_sideload_image() {
 			global $my_admin_page;
 			$screen = get_current_screen();
-			if ( $screen->id == $my_admin_page ) {
+			if ( isset($screen) && $screen->id == $my_admin_page ) {
 				if ( get_option($this->optionsName) === false ) {
 					$url = plugin_dir_url(__FILE__) . "includes/nalogo.jpg";
 					media_sideload_image( $url, 0 );
@@ -177,7 +177,7 @@ if (!class_exists("Bread")) {
 		function my_theme_add_editor_styles() {
 			global $my_admin_page;
 			$screen = get_current_screen();
-			if ( $screen->id == $my_admin_page ) {
+			if ( isset($screen) && $screen->id == $my_admin_page ) {
 				add_editor_style( plugin_dir_url(__FILE__) . "css/editor-style.css" );
 			}
 		}
@@ -1684,6 +1684,7 @@ if (!class_exists("Bread")) {
 				$this->options['used_format_1'] = sanitize_text_field($_POST['used_format_1']);
 				$this->options['include_meeting_email'] = boolval($_POST['include_meeting_email']);
 				$this->options['recurse_service_bodies'] = intval($_POST['recurse_service_bodies']);
+				$this->options['extra_meetings_enabled'] = intval($_POST['extra_meetings_enabled']);
 				$this->options['include_protection'] = boolval($_POST['include_protection']);
 				$this->options['weekday_language'] = sanitize_text_field($_POST['weekday_language']);
 				$this->options['include_asm'] = boolval($_POST['include_asm']);
@@ -1712,11 +1713,11 @@ if (!class_exists("Bread")) {
 					echo "<p>$num Cache entries deleted</p>";
 				}
 				echo '</div>';
-			} elseif ( $_COOKIE['pwsix_action'] == "import_settings" ) {
+			} elseif ( isset($_COOKIE['pwsix_action']) && $_COOKIE['pwsix_action'] == "import_settings" ) {
 				echo '<div class="updated"><p style="color: #F00;">Your file was successfully imported!</p></div>';
 				setcookie('pwsix_action', NULL, -1);
 				$num = $this->delete_transient_cache();
-			} elseif ( $_COOKIE['pwsix_action'] == "default_settings_success" ) {
+			} elseif ( isset($_COOKIE['pwsix_action']) && $_COOKIE['pwsix_action'] == "default_settings_success" ) {
 				echo '<div class="updated"><p style="color: #F00;">Your default settings were successfully updated!</p></div>';
 				setcookie('pwsix_action', NULL, -1);
 				$num = $this->delete_transient_cache();
@@ -1847,6 +1848,9 @@ if (!class_exists("Bread")) {
             if ( !isset($this->options['recurse_service_bodies']) || strlen(trim($this->options['recurse_service_bodies'])) == 0) {
                 $this->options['recurse_service_bodies'] = 1;
             }
+			if ( !isset($this->options['extra_meetings_enabled']) || strlen(trim($this->options['extra_meetings_enabled'])) == 0) {
+				$this->options['extra_meetings_enabled'] = 1;
+			}
             if ( !isset($this->options['include_protection']) || strlen(trim($this->options['include_protection'])) == 0 ) {
 				$this->options['include_protection'] = 0;
 			}			
@@ -1871,9 +1875,10 @@ if (!class_exists("Bread")) {
 			if ( !isset($this->options['cache_time']) || strlen(trim($this->options['cache_time'])) == 0 ) {
 				$this->options['cache_time'] = 0;
 			}
-			if ( !isset($this->options['extra_meetings'])  ) {
+			if ( !isset($this->options['extra_meetings']) || $this->options['extra_meetings'] == '' ) {
 				$this->options['extra_meetings'] = '';
-				
+			} else {
+				$this->options['extra_meetings_enabled'] = 1;
 			}
 			
 			?>
@@ -1975,7 +1980,7 @@ if (!class_exists("Bread")) {
 		 * Process a settings export that generates a .json file of the shop settings
 		 */
 		function pwsix_process_settings_export() {
-            if ( $_POST['bmltmeetinglistsave'] == 'Save Changes' )
+            if ( isset($_POST['bmltmeetinglistsave']) && $_POST['bmltmeetinglistsave'] == 'Save Changes' )
                 return;
             if( empty( $_POST['pwsix_action'] ) || 'export_settings' != $_POST['pwsix_action'] )
                 return;
@@ -2008,7 +2013,7 @@ if (!class_exists("Bread")) {
 		 * Process a settings import from a json file
 		 */
 		function pwsix_process_settings_import() {
-			if ( $_POST['bmltmeetinglistsave'] == 'Save Changes' )
+			if ( isset($_POST['bmltmeetinglistsave']) && $_POST['bmltmeetinglistsave'] == 'Save Changes' )
 				return;
 			if( empty( $_POST['pwsix_action'] ) || 'import_settings' != $_POST['pwsix_action'] )
 				return;
@@ -2039,17 +2044,18 @@ if (!class_exists("Bread")) {
 		 * Process a default settings
 		 */
 		function pwsix_process_default_settings() {
-			if ( ! current_user_can( 'manage_options' ) || $_POST['bmltmeetinglistsave'] == 'Save Changes' ) {
+			if ( ! current_user_can( 'manage_options' ) ||
+				(isset($_POST['bmltmeetinglistsave']) && $_POST['bmltmeetinglistsave'] == 'Save Changes' )) {
 				return;
-			} elseif ( 'three_column_default_settings' == $_POST['pwsix_action'] ) {
+			} elseif ( isset($_POST['pwsix_action']) && 'three_column_default_settings' == $_POST['pwsix_action'] ) {
 				if( ! wp_verify_nonce( $_POST['pwsix_submit_three_column'], 'pwsix_submit_three_column' ) )
 					die('Whoops! There was a problem with the data you posted. Please go back and try again.');
 				$import_file = plugin_dir_path(__FILE__) . "includes/three_column_settings.json";
-			} elseif ( 'four_column_default_settings' == $_POST['pwsix_action'] ) {
+			} elseif ( isset($_POST['pwsix_action']) && 'four_column_default_settings' == $_POST['pwsix_action'] ) {
 				if( ! wp_verify_nonce( $_POST['pwsix_submit_four_column'], 'pwsix_submit_four_column' ) )
 					die('Whoops! There was a problem with the data you posted. Please go back and try again.');
 				$import_file = plugin_dir_path(__FILE__) . "includes/four_column_settings.json";
-			} elseif ( 'booklet_default_settings' == $_POST['pwsix_action'] ) {
+			} elseif ( isset($_POST['pwsix_action']) && 'booklet_default_settings' == $_POST['pwsix_action'] ) {
 				if( ! wp_verify_nonce( $_POST['pwsix_submit_booklet'], 'pwsix_submit_booklet' ) )
 					die('Whoops! There was a problem with the data you posted. Please go back and try again.');
 				$import_file = plugin_dir_path(__FILE__) . "includes/booklet_settings.json";

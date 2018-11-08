@@ -56,6 +56,7 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 
 = UNRELEASED =
 * Wordpress 5.0.0 compatibility testing. [#38]
+* Toggle added for extra meetings, improves plugin page load time by not fetching all meetings unless the feature is required.
 * Added debugging capabilities
 
 = 1.7.7 =
