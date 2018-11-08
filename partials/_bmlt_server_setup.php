@@ -39,7 +39,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                                     <?php $area_parent_name = $area_data[3]; ?>
                                     <?php $option_description = $area_name . " (" . $area_id . ") " . $area_parent_name . " (" . $area_parent . ")" ?></option>
                                     <?php $is_data = explode(',',esc_html($this->options['service_body_1'])); ?>
-                                    <?php if ( $area_id == $is_data[1] ) { ?>
+                                    <?php if ( $is_data[0] != "Not Used" && $area_id == $is_data[1] ) { ?>
                                         <option selected="selected" value="<?php echo $unique_area ?>"><?php echo $option_description ?></option>
                                     <?php } else { ?>
                                         <option value="<?php echo $unique_area ?>"><?php echo $option_description ?></option>
@@ -63,7 +63,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                                     <?php $area_parent_name = $area_data[3]; ?>
                                     <?php $option_description = $area_name . " (" . $area_id . ") " . $area_parent_name . " (" . $area_parent . ")" ?></option>
                                     <?php $is_data = explode(',',esc_html($this->options['service_body_2'])); ?>
-                                    <?php if ( $area_id == $is_data[1] ) { ?>
+                                    <?php if ( $is_data[0] != "Not Used" && $area_id == $is_data[1] ) { ?>
                                         <option selected="selected" value="<?php echo $unique_area ?>"><?php echo $option_description ?></option>
                                     <?php } else { ?>
                                         <option value="<?php echo $unique_area ?>"><?php echo $option_description ?></option>
@@ -87,7 +87,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                                     <?php $area_parent_name = $area_data[3]; ?>
                                     <?php $option_description = $area_name . " (" . $area_id . ") " . $area_parent_name . " (" . $area_parent . ")" ?></option>
                                     <?php $is_data = explode(',',esc_html($this->options['service_body_3'])); ?>
-                                    <?php if ( $area_id == $is_data[1] ) { ?>
+                                    <?php if ( $is_data[0] != "Not Used" && $area_id == $is_data[1] ) { ?>
                                         <option selected="selected" value="<?php echo $unique_area ?>"><?php echo $option_description ?></option>
                                     <?php } else { ?>
                                         <option value="<?php echo $unique_area ?>"><?php echo $option_description ?></option>
@@ -111,7 +111,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                                     <?php $area_parent_name = $area_data[3]; ?>
                                     <?php $option_description = $area_name . " (" . $area_id . ") " . $area_parent_name . " (" . $area_parent . ")" ?></option>
                                     <?php $is_data = explode(',',esc_html($this->options['service_body_4'])); ?>
-                                    <?php if ( $area_id == $is_data[1] ) { ?>
+                                    <?php if ( $is_data[0] != "Not Used" && $area_id == $is_data[1] ) { ?>
                                         <option selected="selected" value="<?php echo $unique_area ?>"><?php echo $option_description ?></option>
                                     <?php } else { ?>
                                         <option value="<?php echo $unique_area ?>"><?php echo $option_description ?></option>
@@ -135,7 +135,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                                     <?php $area_parent_name = $area_data[3]; ?>
                                     <?php $option_description = $area_name . " (" . $area_id . ") " . $area_parent_name . " (" . $area_parent . ")" ?></option>
                                     <?php $is_data = explode(',',esc_html($this->options['service_body_5'])); ?>
-                                    <?php if ( $area_id == $is_data[1] ) { ?>
+                                    <?php if ( $is_data[0] != "Not Used" && $area_id == $is_data[1] ) { ?>
                                         <option selected="selected" value="<?php echo $unique_area ?>"><?php echo $option_description ?></option>
                                     <?php } else { ?>
                                         <option value="<?php echo $unique_area ?>"><?php echo $option_description ?></option>
