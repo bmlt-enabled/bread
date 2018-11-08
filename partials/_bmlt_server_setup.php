@@ -172,9 +172,11 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 								$extra_meeting_display = substr($extra_meeting_x[0], 0, 30) . ';' . $extra_meeting_x[1] . ';' . $extra_meeting_x[2]; ?>
                             <option <?php echo ($this->options['extra_meetings'] != '' && in_array($extra_meeting_id, $this->options['extra_meetings']) ? 'selected="selected"' : '') ?> value="<?php echo $extra_meeting_id ?>"><?php echo esc_html($extra_meeting_display) ?></option>
                         <?php } ?>
-                    <?php } else { ?>
+                    <?php } elseif (!$this_connected ) { ?>
                         <option selected="selected" value="none"><?php echo 'Not Connected - Can not get Extra Meetings'; ?></option>
-                    <?php } ?>
+                    <?php } elseif ($this->options['extra_meetings_enabled'] == 0) { ?>
+                    	<option selected="selected" value="none"><?php echo 'Not Enabled'; ?></option>
+					<?php } ?>
                     </select>
                     <p>Hint: Type a group name, weekday or area to narrow down your choices.</p>
 					<div>
