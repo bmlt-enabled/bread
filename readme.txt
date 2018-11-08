@@ -4,7 +4,7 @@ Contributors: odathp, radius314, pjaudiomv, klgrimley
 Tags: meeting list, bmlt, narcotics anonymous, na
 Requires at least: 4.0
 Requires PHP: 5.6
-Tested up to: 4.9.8
+Tested up to: 5.0.0
 Stable tag: 1.7.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -53,6 +53,10 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 - Read here for more information: https://github.com/radius314/bread/blob/unstable/contribute.md
 
 == Changelog ==
+
+= UNRELEASED =
+* Wordpress 5.0.0 compatibility testing. [#38]
+* Added debugging capabilities
 
 = 1.7.7 =
 * Icon fixes didn't take
