@@ -5,7 +5,7 @@ Tags: meeting list, bmlt, narcotics anonymous, na
 Requires at least: 4.0
 Requires PHP: 5.6
 Tested up to: 5.0.0
-Stable tag: 1.7.7
+Stable tag: 1.8.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 A web-based tool that creates, maintains and generates a PDF meeting list from BMLT.
@@ -54,9 +54,10 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 
 == Changelog ==
 
-= UNRELEASED =
-* Wordpress 5.0.0 compatibility testing. [#38]
+= 1.8.0 =
 * Toggle added for extra meetings, improves plugin page load time by not fetching all meetings unless the feature is required.
+* Improved handling for page numbering margins [#46]
+* Compatible with Wordpress 5.0.0. [#38]
 * Added debugging capabilities
 
 = 1.7.7 =
