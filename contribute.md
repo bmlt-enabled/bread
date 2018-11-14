@@ -13,3 +13,7 @@ To get things going in your local environment.
 Get your wordpress installation going.  Remember your admin password.  Once it's up, login to admin and activate the bread plugin.
 
 Now you can make edits to the bmlt-meeting-list.php file and it will instantly take effect.
+
+To profile a PHP page, include `XDEBUG_PROFILE` as part of the querystring.  The result will be in `/tmp/cachegrind.out.???`, the extension being the process ID.  
+
+You can then open this file in IntelliJ, Valgrind, or any other tool that let's you review an Xdebug profiler result.

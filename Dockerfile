@@ -18,6 +18,7 @@ RUN pecl install xdebug-2.6.1 \
     && echo "xdebug.idekey=IDEA_DEBUG" >> ${PHP_INI_PATH} \
     && echo "xdebug.remote_autostart=1" >> ${PHP_INI_PATH} \
     && echo "xdebug.remote_log=/tmp/xdebug.log" >> ${PHP_INI_PATH} \
+    && echo "xdebug.profiler_enable_trigger=1" >> ${PHP_INI_PATH} \
     && echo "log_errors = On" >> ${PHP_INI_PATH} \
     && echo "error_reporting = E_ALL" >> ${PHP_INI_PATH} \
     && echo "error_log=/var/www/php_error.log" >> ${PHP_INI_PATH}
