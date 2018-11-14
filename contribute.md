@@ -17,3 +17,7 @@ Now you can make edits to the bmlt-meeting-list.php file and it will instantly t
 To profile a PHP page, include `XDEBUG_PROFILE` as part of the querystring.  The result will be in `/tmp/cachegrind.out.???`, the extension being the process ID.  
 
 You can then open this file in IntelliJ, Valgrind, or any other tool that let's you review an Xdebug profiler result.
+
+If you are using a mac for development and Homebrew, this is a fairly easy way to get going.
+
+`brew install qcachegrind --with-graphviz`
