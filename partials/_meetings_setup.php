@@ -96,31 +96,46 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 
                         </p>
                     </div>
-
-                        <div class="weekday_language_div" style="display: inline;">
-                            <label for="weekday_language">Weekday Language: </label>											
-                            <select name="weekday_language">
-							<?php
-								$languages = [
-									"en" => "English",
-									"fr" => "French",
-									"po" => "Portuguese",
-									"both" => "English/Spanish",
-									"both_po" => "English/Spanish/Portuguese",
-									"fr_en" => "French/English",
-									"se" => "Swedish"
-								];
-
-								foreach ($languages as $key => $value) {
-									if ($this->options['weekday_language'] == $key || $this->options['weekday_language'] == '' ) {
-										echo "<option value=\"$key\" selected=\"selected\">$value</option>";
-									} else {
-										echo "<option value=\"$key\">$value</option>";
-									}
+					<?php
+						$languages = [
+								"en" => "English",
+								"fr" => "French",
+								"po" => "Portuguese",
+								"both" => "English/Spanish",
+								"both_po" => "English/Spanish/Portuguese",
+								"fr_en" => "French/English",
+								"se" => "Swedish"
+						];
+					?>
+					<div class="weekday_language_div">
+						<label for="weekday_language">Weekday Language: </label>
+						<select name="weekday_language">
+						<?php
+							foreach ($languages as $key => $value) {
+								if ($this->options['weekday_language'] == $key || $this->options['weekday_language'] == '' ) {
+									echo "<option value=\"$key\" selected=\"selected\">$value</option>";
+								} else {
+									echo "<option value=\"$key\">$value</option>";
 								}
+							}
+						?>
+						</select>
+					</div>
+
+					<div class="weekday_start_div">
+						<label for="weekday_start">Weekday Start: </label>
+						<select name="weekday_start">
+							<?php
+							for ($d = 1; $d <= 7; $d++) {
+								if ($this->options['weekday_start'] == $d || $this->options['weekday_start'] == '' ) {
+									echo "<option value=\"$d\" selected=\"selected\">" . $this->getday($d, false, $this->options['weekday_language'], true) . "</option>";
+								} else {
+									echo "<option value=\"$d\">" . $this->getday($d, false, $this->options['weekday_language'], true) . "</option>";
+								}
+							}
 							?>
-                            </select>
-                        </div>
+						</select>
+					</div>
                     <p>
                 </div>
             </div>

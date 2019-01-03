@@ -182,8 +182,17 @@ if (!class_exists("Bread")) {
 			}
 		}
 
-		function getday( $day, $abbreviate = false, $language = '' ) {
-			
+		function getday( $day, $abbreviate = false, $language = '', $listing = false) {
+			if (!$listing) {
+				$adjusted_day = isset($this->options['weekday_start']) ? intval($this->options['weekday_start']) + $day - 1 : 1;
+
+				if ($adjusted_day > 7) {
+					$day = $adjusted_day - 7;
+				} else {
+					$day = $adjusted_day;
+				}
+			}
+
 			$data = '';
 			if ( $day == 1 ) {
 				if ( $language == 'en' || $language == 'en' ) {
@@ -556,6 +565,7 @@ if (!class_exists("Bread")) {
 			if ( !isset($this->options['include_protection']) ) {$this->options['include_protection'] = 0;}
 			if ( !isset($this->options['base_font']) ) {$this->options['base_font'] = 'dejavusanscondensed';}
 			if ( !isset($this->options['weekday_language']) ) {$this->options['weekday_language'] = 'en';}
+			if ( !isset($this->options['weekday_start']) ) {$this->options['weekday_start'] = '1';}
 			if ( !isset($this->options['include_asm']) ) {$this->options['include_asm'] = '0';}
 			if ( !isset($this->options['header_uppercase']) ) {$this->options['header_uppercase'] = '0';}
 			if ( !isset($this->options['header_bold']) ) {$this->options['header_bold'] = '1';}
@@ -1701,6 +1711,7 @@ if (!class_exists("Bread")) {
 				$this->options['extra_meetings_enabled'] = intval($_POST['extra_meetings_enabled']);
 				$this->options['include_protection'] = boolval($_POST['include_protection']);
 				$this->options['weekday_language'] = sanitize_text_field($_POST['weekday_language']);
+				$this->options['weekday_start'] = sanitize_text_field($_POST['weekday_start']);
 				$this->options['include_asm'] = boolval($_POST['include_asm']);
 				$this->options['bmlt_login_id'] = sanitize_text_field($_POST['bmlt_login_id']);
 				$this->options['bmlt_login_password'] = sanitize_text_field($_POST['bmlt_login_password']);
@@ -1870,7 +1881,10 @@ if (!class_exists("Bread")) {
 			}			
 			if ( !isset($this->options['weekday_language']) || strlen(trim($this->options['weekday_language'])) == 0 ) {
 				$this->options['weekday_language'] = 'en';
-			}			
+			}
+			if ( !isset($this->options['weekday_start']) || strlen(trim($this->options['weekday_start'])) == 0 ) {
+				$this->options['weekday_start'] = '1';
+			}
 			if ( !isset($this->options['include_asm']) || strlen(trim($this->options['include_asm'])) == 0 ) {
 				$this->options['include_asm'] = '0';
 			}			

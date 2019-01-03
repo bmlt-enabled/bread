@@ -55,6 +55,7 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 == Changelog ==
 
 = 1.9.0 =
+* Added a feature to change the start day of the week [#55]
 * Support for Swedish, better language support overall [#54]
 * Only allow Administrator role to see the plugin (specifically manage_options permission flag) [#53]
 
