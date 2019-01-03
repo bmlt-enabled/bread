@@ -988,7 +988,9 @@ if (!class_exists("Bread")) {
 						
 						if ( $this->lang == 'fr' ) {							
 							$cont = '(suite)';							
-						} else {							
+						} else if ( $this->lang == 'se' ) {
+							$cont = '(forts)';
+						} else {
 							$cont = '(cont)';							
 						}
 
