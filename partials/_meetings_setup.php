@@ -100,63 +100,25 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         <div class="weekday_language_div" style="display: inline;">
                             <label for="weekday_language">Weekday Language: </label>											
                             <select name="weekday_language">
-                            <?php if ( $this->options['weekday_language'] == 'en' || $this->options['weekday_language'] == '' ) { ?>
-                                <option selected="selected" value="en">English</option>
-                                <option value="es">Spanish</option>
-                                <option value="fr">French</option>
-                                <option value="po">Portuguese</option>
-                                <option value="both">English/Spanish</option>
-                                <option value="both_po">English/Spanish/Portuguese</option>
-                                <option value="fr_en">French/English</option>
-                            <?php } elseif ( $this->options['weekday_language'] == 'es' ) { ?>
-                                <option selected="selected" value="es">Spanish</option>
-                                <option value="en">English</option>
-                                <option value="fr">French</option>
-                                <option value="po">Portuguese</option>
-                                <option value="both">English/Spanish</option>
-                                <option value="both_po">English/Spanish/Portuguese</option>
-                                <option value="fr_en">French/English</option>
-                            <?php } elseif ( $this->options['weekday_language'] == 'both' ) { ?>
-                                <option selected="selected" value="both">English/Spanish</option>
-                                <option value="en">English</option>
-                                <option value="es">Spanish</option>
-                                <option value="fr">French</option>
-                                <option value="po">Portuguese</option>
-                                <option value="both_po">English/Spanish/Portuguese</option>
-                                <option value="fr_en">French/English</option>
-                            <?php } elseif ( $this->options['weekday_language'] == 'fr' ) { ?>
-                                <option selected="selected" value="fr">French</option>
-                                <option value="en">English</option>
-                                <option value="es">Spanish</option>
-                                <option value="po">Portuguese</option>
-                                <option value="both">English/Spanish</option>
-                                <option value="both_po">English/Spanish/Portuguese</option>
-                                <option value="fr_en">French/English</option>
-                            <?php } elseif ( $this->options['weekday_language'] == 'po' ) { ?>
-                                <option selected="selected" value="po">Portuguese</option>
-                                <option value="en">English</option>
-                                <option value="es">Spanish</option>
-                                <option value="fr">French</option>
-                                <option value="both">English/Spanish</option>
-                                <option value="both_po">English/Spanish/Portuguese</option>
-                                <option value="fr_en">French/English</option>
-                            <?php } elseif ( $this->options['weekday_language'] == 'fr_en' ) { ?>
-                                <option selected="selected" value="fr_en">French/Engish</option>
-                                <option value="en">English</option>
-                                <option value="es">Spanish</option>
-                                <option value="fr">French</option>
-                                <option value="po">Portuguese</option>
-                                <option value="both">English/Spanish</option>
-                                <option value="both_po">English/Spanish/Portuguese</option>
-                            <?php } elseif ( $this->options['weekday_language'] == 'both_po' ) { ?>
-                                <option selected="selected" value="both_po">English/Spanish/Portuguese</option>
-                                <option value="en">English</option>
-                                <option value="es">Spanish</option>
-                                <option value="fr">French</option>
-                                <option value="po">Portuguese</option>
-                                <option value="both">English/Spanish</option>
-                                <option value="fr_en">French/English</option>
-                            <?php } ?>
+							<?php
+								$languages = [
+									"en" => "English",
+									"fr" => "French",
+									"po" => "Portuguese",
+									"both" => "English/Spanish",
+									"both_po" => "English/Spanish/Portuguese",
+									"fr_en" => "French/English",
+									"se" => "Swedish"
+								];
+
+								foreach ($languages as $key => $value) {
+									if ($this->options['weekday_language'] == $key || $this->options['weekday_language'] == '' ) {
+										echo "<option value=\"$key\" selected=\"selected\">$value</option>";
+									} else {
+										echo "<option value=\"$key\">$value</option>";
+									}
+								}
+							?>
                             </select>
                         </div>
                     <p>

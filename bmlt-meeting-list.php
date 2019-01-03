@@ -200,7 +200,9 @@ if (!class_exists("Bread")) {
 					$data = ($abbreviate ? 'Sun / Dom' : "Sunday / Domingo");
 				} elseif ( $language == 'fr_en' ) {
 					$data = ($abbreviate ? 'Dim / Sun' : "Dimanche / Sunday");
-				}				
+				} elseif ( $language == 'se') {
+					$data = ($abbreviate ? "S&#246;n" : "S&#246;ndag");
+				}
 			} elseif ( $day == 2 ) {
 				if ( $language == 'en' || $language == 'en' ) {
 					$data = ($abbreviate ? 'Mon' : "Monday");
@@ -216,7 +218,9 @@ if (!class_exists("Bread")) {
 					$data = ($abbreviate ? 'Mon / Lun' : "Monday / Lunes");
 				} elseif ( $language == 'fr_en' ) {
 					$data = ($abbreviate ? 'Lun / Mon' : "Lundi / Monday");
-				}				
+				} elseif ( $language == 'se') {
+					$data = ($abbreviate ? "M&#229;n" : "M&#229;ndag");
+				}
 			} elseif ( $day == 3 ) {
 				if ( $language == 'en' || $language == 'en' ) {
 					$data = ($abbreviate ? 'Tue' : "Tuesday");
@@ -232,7 +236,9 @@ if (!class_exists("Bread")) {
 					$data = ($abbreviate ? 'Tue / Mar' : "Tuesday / Martes");
 				} elseif ( $language == 'fr_en' ) {
 					$data = ($abbreviate ? 'Mar / Tues' : "Mardi / Tuesday");
-				}				
+				} elseif ( $language == 'se') {
+					$data = ($abbreviate ? "Tis" : "Tisdag");
+				}
 			} elseif ( $day == 4 ) {
 				if ( $language == 'en' || $language == 'en' ) {
 					$data = ($abbreviate ? 'Wed' : "Wednesday");
@@ -248,7 +254,9 @@ if (!class_exists("Bread")) {
 					$data = ($abbreviate ? 'Wed / Mi&eacute;' : "Wednesday / Mi&eacute;rcoles");
 				} elseif ( $language == 'fr_en' ) {
 					$data = ($abbreviate ? 'Mer / Wed' : "Mercredi / Wednesday");
-				}				
+				} elseif ( $language == 'se') {
+					$data = ($abbreviate ? "Ons" : "Onsdag");
+				}
 			} elseif ( $day == 5 ) {
 				if ( $language == 'en' || $language == 'en' ) {
 					$data = ($abbreviate ? 'Thu' : "Thursday");
@@ -264,7 +272,9 @@ if (!class_exists("Bread")) {
 					$data = ($abbreviate ? 'Thu / Jue' : "Thursday / Jueves");
 				} elseif ( $language == 'fr_en' ) {
 					$data = ($abbreviate ? 'Jeu / Thu' : "Jeudi / Thursday");
-				}				
+				} elseif ( $language == 'se') {
+					$data = ($abbreviate ? "Tors" : "Torsdag");
+				}
 			} elseif ( $day == 6 ) {
 				if ( $language == 'en' || $language == 'en' ) {
 					$data = ($abbreviate ? 'Fri' : "Friday");
@@ -280,7 +290,9 @@ if (!class_exists("Bread")) {
 					$data = ($abbreviate ? 'Fri / Vie' : "Friday / Viernes");
 				} elseif ( $language == 'fr_en' ) {
 					$data = ($abbreviate ? 'Ven / Fri' : "Vendredi / Friday");
-				}				
+				} elseif ( $language == 'se') {
+					$data = ($abbreviate ? "Fre" : "Fredag");
+				}
 			} elseif ( $day == 7 ) {
 				if ( $language == 'en' || $language == 'en' ) {
 					$data = ($abbreviate ? 'Sat' : "Saturday");
@@ -296,7 +308,9 @@ if (!class_exists("Bread")) {
 					$data = ($abbreviate ? 'Sat / S&aacute;b' : "Saturday / S&aacute;bado");
 				} elseif ( $language == 'fr_en' ) {
 					$data = ($abbreviate ? 'Sam / Sat' : "Samedi / Saturday");
-				}				
+				} elseif ( $language == 'se') {
+					$data = ($abbreviate ? "L&#246;r" : "L&#246;rdag");
+				}
 			}
 			
 			Return utf8_encode($data);
@@ -1445,7 +1459,7 @@ if (!class_exists("Bread")) {
 			$this->options['front_page_content'] = str_replace('[start_page_numbers]', '<sethtmlpagefooter name="MyFooter" page="ALL" value="1" />', $this->options['front_page_content']);
 			$this->options['front_page_content'] = mb_convert_encoding($this->options['front_page_content'], 'HTML-ENTITIES');
 			$this->mpdf->WriteHTML(utf8_encode(wpautop(stripslashes($this->options['front_page_content']))));
-			
+
 		}
 
 		function write_last_page() {
