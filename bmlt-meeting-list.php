@@ -1606,7 +1606,7 @@ if (!class_exists("Bread")) {
 		*/
 		function admin_menu_link() 	{
 			global $my_admin_page;
-			$my_admin_page = add_menu_page( 'Meeting List', 'Meeting List', 'edit_posts', basename(__FILE__), array(&$this, 'admin_options_page'), 'dashicons-admin-page');
+			$my_admin_page = add_menu_page( 'Meeting List', 'Meeting List', 'manage_options', basename(__FILE__), array(&$this, 'admin_options_page'), 'dashicons-admin-page');
 		}
 
 		function bmltrootserverurl_meta_box() {
