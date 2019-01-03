@@ -360,7 +360,7 @@ if (!class_exists("Bread")) {
             return wp_remote_get($url, $args);
 		}
 
-		function get_all_meetings ( ) {
+		function get_all_meetings() {
 			$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults&data_field_key=weekday_tinyint,start_time,service_body_bigint,id_bigint,meeting_name,location_text,email_contact&sort_keys=meeting_name,service_body_bigint,weekday_tinyint,start_time");
 			$result = json_decode(wp_remote_retrieve_body($results),true);
 			
@@ -986,9 +986,9 @@ if (!class_exists("Bread")) {
 						if ( $this->options['include_asm'] == 0 && in_array ( "ASM", $enFormats ) ) { continue; }
 						$header = '';
 						
-						if ( $this->lang == 'fr' ) {							
+						if ( $this->options['weekday_language'] === 'fr' ) {
 							$cont = '(suite)';							
-						} else if ( $this->lang == 'se' ) {
+						} else if ( $this->options['weekday_language'] === 'se' ) {
 							$cont = '(forts)';
 						} else {
 							$cont = '(cont)';							
