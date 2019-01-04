@@ -128,9 +128,9 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 							<?php
 							for ($d = 1; $d <= 7; $d++) {
 								if ($this->options['weekday_start'] == $d || $this->options['weekday_start'] == '' ) {
-									echo "<option value=\"$d\" selected=\"selected\">" . $this->getday($d, false, $this->options['weekday_language'], true) . "</option>";
+									echo "<option value=\"$d\" selected=\"selected\">" . $this->getday($d, false, $this->options['weekday_language']) . "</option>";
 								} else {
-									echo "<option value=\"$d\">" . $this->getday($d, false, $this->options['weekday_language'], true) . "</option>";
+									echo "<option value=\"$d\">" . $this->getday($d, false, $this->options['weekday_language']) . "</option>";
 								}
 							}
 							?>

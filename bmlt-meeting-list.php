@@ -182,17 +182,7 @@ if (!class_exists("Bread")) {
 			}
 		}
 
-		function getday( $day, $abbreviate = false, $language = '', $listing = false) {
-			if (!$listing) {
-				$adjusted_day = isset($this->options['weekday_start']) ? intval($this->options['weekday_start']) + $day - 1 : 1;
-
-				if ($adjusted_day > 7) {
-					$day = $adjusted_day - 7;
-				} else {
-					$day = $adjusted_day;
-				}
-			}
-
+		function getday( $day, $abbreviate = false, $language = '') {
 			$data = '';
 			if ( $day == 1 ) {
 				if ( $language == 'en' || $language == 'en' ) {
@@ -770,7 +760,7 @@ if (!class_exists("Bread")) {
 
                 $extra_results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults&sort_keys=".$sort_keys."".$extras."".$get_used_formats );
                 $extra_result = json_decode(wp_remote_retrieve_body($extra_results), true);
-                if ( $extra_result <> Null ) {
+                if ( $extra_result <> null ) {
                     $result_meetings = array_merge($result['meetings'], $extra_result['meetings']);
                     foreach ($result_meetings as $key => $row) {
                         $weekday[$key] = $row['weekday_tinyint'];
@@ -788,7 +778,7 @@ if (!class_exists("Bread")) {
                 $result_meetings = $result['meetings'];
             }
 
-			if ( $result_meetings == Null ) {
+			if ( $result_meetings == null ) {
 				echo "<script type='text/javascript'>\n";
 				echo "document.body.innerHTML = ''";
 				echo "</script>";
@@ -834,8 +824,14 @@ if (!class_exists("Bread")) {
 			$unique_states = array();
 			$unique_data = array();
 
+			$days = array_column($result_meetings, 'weekday_tinyint');
+			$today_str = $this->options['weekday_start'];
+			$result_meetings = array_merge(
+				array_splice($result_meetings, array_search($today_str, $days)),
+				array_splice($result_meetings, 0)
+			);
+
 			foreach ($result_meetings as $value) {
-				$result_meetings_temp[] = $value;
 				$unique_states[] = $value['location_province'];
 				if ( $this->options['meeting_sort'] === 'state' ) {
 					$unique_data[] = $value['location_municipality'] . ', '.$value['location_province'];
@@ -870,7 +866,7 @@ if (!class_exists("Bread")) {
 					}
 				} elseif ( $this->options['meeting_sort'] === 'weekday_city' ) {
 					$unique_data[] = $value['weekday_tinyint'] . ',' . $value['location_municipality'];
-                } elseif ( $this->options['meeting_sort'] === 'weekday_county' ) {
+				} elseif ( $this->options['meeting_sort'] === 'weekday_county' ) {
                     $unique_data[] = $value['weekday_tinyint'] . ',' . $value['location_sub_province'];
 				} else {
 					$unique_data[] = $value['weekday_tinyint'];
@@ -878,7 +874,10 @@ if (!class_exists("Bread")) {
 			}
 
 			$unique_states = array_unique($unique_states);
-			asort($unique_data, SORT_NATURAL | SORT_FLAG_CASE);
+			if (strpos($this->options['meeting_sort'], "weekday") === false && strpos($this->options['meeting_sort'], "day") === false) {
+				asort($unique_data, SORT_NATURAL | SORT_FLAG_CASE);
+			}
+
 			$unique_data = array_unique($unique_data);
 			if ( $this->options['page_fold'] === 'full' || $this->options['page_fold'] === 'half' ) {
 				$num_columns = 0;
@@ -939,6 +938,7 @@ if (!class_exists("Bread")) {
 					}
 					$newVal = true;
 					if ( $this->options['meeting_sort'] === 'state' && strpos($this_unique_value, $this_state) === false ) { continue; }
+
 					foreach ($result_meetings as $meeting_value) {			
 						if ( $this->options['meeting_sort'] === 'weekday_area' || $this->options['meeting_sort'] === 'weekday_city' || $this->options['meeting_sort'] === 'weekday_county' ) {
 							$area_data = explode(',',$this_unique_value);
