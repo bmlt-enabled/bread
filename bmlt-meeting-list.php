@@ -924,7 +924,7 @@ if (!class_exists("Bread")) {
 				$x++;
 
 				if ( $this->options['meeting_sort'] === 'weekday_area' || $this->options['meeting_sort'] === 'weekday_city' || $this->options['meeting_sort'] === 'weekday_county' ) {
-					$current_weekday = 1;
+					$current_weekday = intval($this->options['weekday_start']);
 					$show_first_weekday = true;
 				}
 				foreach ($unique_data as $this_unique_value) {
@@ -933,6 +933,9 @@ if (!class_exists("Bread")) {
 						$weekday_tinyint = intval($area_data[0]);
 						if ( $weekday_tinyint !== $current_weekday ) {
 							$current_weekday++;
+							if ($current_weekday > 7) {
+								$current_weekday = 1;
+							}
 							$show_first_weekday = true;
 						}
 					}
@@ -1047,7 +1050,7 @@ if (!class_exists("Bread")) {
 							if ( $this->options['meeting_sort'] === 'weekday_area' || $this->options['meeting_sort'] === 'weekday_city' || $this->options['meeting_sort'] === 'weekday_county' ) {
 								if ( $newVal ) {
 									if ( $show_first_weekday === true ) {
-										if ( $current_weekday === 1 ) {
+										if ( $current_weekday === $this->options['weekday_start'] ) {
 											$header .= "<h2 style='".$header_style."'>".$this->getday($meeting_value['weekday_tinyint'], false, $this->options['weekday_language'])."</h2>";
 										} else {
 											$header .= "<h2 style='".$header_style."margin-top:2pt;'>".$this->getday($meeting_value['weekday_tinyint'], false, $this->options['weekday_language'])."</h2>";
