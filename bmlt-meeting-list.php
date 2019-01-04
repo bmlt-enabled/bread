@@ -1001,30 +1001,20 @@ if (!class_exists("Bread")) {
 								$header_suffix = '';
 
 								if ( $this->options['meeting_sort'] === 'borough' ) {
-
 									if ( $this_unique_value == '' ) {
-
 										$this_unique_data = '[NO BOROUGH DATA]';
-
 									} else {
 										$this_unique_data = $this_unique_value;
-
 									}
 									$header_suffix = $this->options['borough_suffix'];
-
 								}
 								if ( $this->options['meeting_sort'] === 'county' ) {
-
 									if ( $this_unique_value == '' ) {
-
 										$this_unique_data = '[NO COUNTY DATA]';
-
 									} else {
 										$this_unique_data = $this_unique_value;
-
 									}
 									$header_suffix = $this->options['county_suffix'];
-
 								}
 								if ( $newVal ) {
 									$header .= "<h2 style='".$header_style."'>".$this_unique_data.''.$header_suffix."</h2>";
@@ -1131,7 +1121,7 @@ if (!class_exists("Bread")) {
 						if ( $this->options['remove_space'] == 1 ) {
 							$space = '';
 						}
-						if ( $this->options['time_clock'] == Null || $this->options['time_clock'] == '12' || $this->options['time_option'] == '' ) {
+						if ( $this->options['time_clock'] == null || $this->options['time_clock'] == '12' || $this->options['time_option'] == '' ) {
 							$time_format = "g:i".$space."A";
 							
 						} elseif ( $this->options['time_clock'] == '24fr' ) {
