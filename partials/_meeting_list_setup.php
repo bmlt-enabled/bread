@@ -77,6 +77,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                 <li><b>Protocol:</b> <?php echo $this->protocol; ?></li>
                 <li><b>PHP Version:</b> <?php echo phpversion(); ?></li>
                 <li><b>Server Version:</b> <?php echo $_SERVER["SERVER_SOFTWARE"]; ?></li>
+				<li><b>Temporary Directory:</b> <?php echo get_temp_dir(); ?></li>
                 </ul>
             </div>
         </div>

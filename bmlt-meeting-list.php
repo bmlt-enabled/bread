@@ -4,7 +4,7 @@ Plugin Name: bread
 Plugin URI: http://wordpress.org/extend/plugins/bread/
 Description: Maintains and generates a PDF Meeting List from BMLT.
 Author: odathp, radius314, pjaudiomv, klgrimley
-Version: 1.9.0
+Version: 1.9.1
 */
 /* Disallow direct access to the plugin file */
 use Mpdf\Mpdf;
@@ -128,6 +128,11 @@ if (!class_exists("Bread")) {
 				$root_server = $this->options['root_server'];
 				if ( $root_server == '' ) {
 					echo '<div id="message" class="error"><p>Missing BMLT Server in settings for bread.</p>';
+					$url = admin_url( 'options-general.php?page=bmlt-meeting-list.php' );
+					echo "<p><a href='$url'>Settings</a></p>";
+					echo '</div>';
+				} else if (!get_temp_dir()) {
+					echo '<div id="message" class="error"><p>' . get_temp_dir() . ' temporary directory is not writable.</p>';
 					$url = admin_url( 'options-general.php?page=bmlt-meeting-list.php' );
 					echo "<p><a href='$url'>Settings</a></p>";
 					echo '</div>';
@@ -600,52 +605,54 @@ if (!class_exists("Bread")) {
             $default_font = $this->options['base_font'];
             $mode = 's';
             if ($default_font == 'arial' || $default_font == 'times' || $default_font == 'courier') {
-              $mpdf_init_options = [
-                'fontDir' => array(
-                    __DIR__ . '/mpdf/vendor/mpdf/mpdf/ttfonts',
-                    __DIR__ . '/fonts',
-                ),
-                'mode' => $mode,
-                'default_font_size' => 7,
-                'fontdata' => [
-                    "arial" => [
-                    'R' => "Arial.ttf",
-                    'B' => "ArialBold.ttf",
-                    'I' => "ArialItalic.ttf",
-                    'BI' => "ArialBoldItalic.ttf",
-                  ],
-                  "times" => [
-                    'R' => "Times.ttf",
-                    'B' => "TimesBold.ttf",
-                    'I' => "TimesItalic.ttf",
-                    'BI' => "TimesBoldItalic.ttf",
-                  ],
-                  "courier" => [
-                    'R' => "CourierNew.ttf",
-                    'B' => "CourierNewBold.ttf",
-                    'I' => "CourierNewItalic.ttf",
-                    'BI' => "CourierNewBoldItalic.ttf",
-                  ]
-                ],
-                'default_font' => $default_font,
-                'margin_left' => $this->options['margin_left'],
-                'margin_right' => $this->options['margin_right'],
-                'margin_top' => $this->options['margin_top'],
-                'margin_bottom' => $this->options['margin_bottom'],
-                'orientation' => 'P'
-              ]; 
+            	$mpdf_init_options = [
+            		'fontDir' => array(
+            			__DIR__ . '/mpdf/vendor/mpdf/mpdf/ttfonts',
+						__DIR__ . '/fonts',
+						),
+					'tempDir' => get_temp_dir(),
+					'mode' => $mode,
+					'default_font_size' => 7,
+					'fontdata' => [
+						"arial" => [
+							'R' => "Arial.ttf",
+							'B' => "ArialBold.ttf",
+							'I' => "ArialItalic.ttf",
+							'BI' => "ArialBoldItalic.ttf",
+						],
+						"times" => [
+							'R' => "Times.ttf",
+							'B' => "TimesBold.ttf",
+							'I' => "TimesItalic.ttf",
+							'BI' => "TimesBoldItalic.ttf",
+						],
+						"courier" => [
+							'R' => "CourierNew.ttf",
+							'B' => "CourierNewBold.ttf",
+							'I' => "CourierNewItalic.ttf",
+							'BI' => "CourierNewBoldItalic.ttf",
+						]
+					],
+					'default_font' => $default_font,
+					'margin_left' => $this->options['margin_left'],
+					'margin_right' => $this->options['margin_right'],
+					'margin_top' => $this->options['margin_top'],
+					'margin_bottom' => $this->options['margin_bottom'],
+					'orientation' => 'P'
+				];
             }
             else {
-              $mpdf_init_options = [
-                'mode' => $mode,
-                'default_font_size' => 7,
-                'default_font' => $default_font,
-                'margin_left' => $this->options['margin_left'],
-                'margin_right' => $this->options['margin_right'],
-                'margin_top' => $this->options['margin_top'],
-                'margin_bottom' => $this->options['margin_bottom'],
-                'orientation' => 'P'
-              ];
+            	$mpdf_init_options = [
+            		'mode' => $mode,
+					'tempDir' => get_temp_dir(),
+					'default_font_size' => 7,
+					'default_font' => $default_font,
+					'margin_left' => $this->options['margin_left'],
+					'margin_right' => $this->options['margin_right'],
+					'margin_top' => $this->options['margin_top'],
+					'margin_bottom' => $this->options['margin_bottom'],
+					'orientation' => 'P'
+				];
             }
    
             $this->mpdf = new mPDF(array_merge($mpdf_init_options, $page_type_settings));
