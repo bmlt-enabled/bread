@@ -1937,7 +1937,7 @@ if (!class_exists("Bread")) {
 						$ThisVersion = "<span style='color: #00AD00;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-admin-site'></div>Using Tomato Server</span>";
                     } else {
                         $this_version = intval(str_replace(".", "", $this_connected));
-                        $source_of_truth = $this->testRootServer("http://bmlt.newyorkna.org");
+                        $source_of_truth = $this->getLatestRootVersion();
                         $source_of_truth_version = intval(str_replace(".", "", $source_of_truth));
                         $connect = "<p><div style='color: #f00;font-size: 16px;vertical-align: middle;' class='dashicons dashicons-no'></div><span style='color: #f00;'>Connection to BMLT Server Failed.  Check spelling or try again.  If you are certain spelling is correct, BMLT Server could be down.</span></p>";
                         if ( $this_connected ) {
@@ -2144,6 +2144,18 @@ if (!class_exists("Bread")) {
                 }
             }
         }
+
+		public function getLatestRootVersion() {
+			$results = $this->get("https://api.github.com/repos/bmlt-enabled/bmlt-root-server/releases/latest");
+			$httpcode = wp_remote_retrieve_response_code( $results );
+			$response_message = wp_remote_retrieve_response_message( $results );
+			if ($httpcode != 200 && $httpcode != 302 && $httpcode != 304 && ! empty( $response_message )) {
+				return 'Problem Connecting to Server!';
+			};
+			$body = wp_remote_retrieve_body($results);
+			$result = json_decode($body, true);
+			return $result['name'];
+		}
     } //End Class bread
 } // end if
 //instantiate the class

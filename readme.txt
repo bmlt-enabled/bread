@@ -54,6 +54,9 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 
 == Changelog ==
 
+= 1.9.2 = *UNRELEASED*
+* Changed latest version source of truth.
+
 = 1.9.1 =
 * Added a check for checking if temp folder is writable.  Using the Wordpress influenced temp folder.
 
