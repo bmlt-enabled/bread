@@ -4,7 +4,7 @@ Contributors: odathp, radius314, pjaudiomv, klgrimley
 Tags: meeting list, bmlt, narcotics anonymous, na
 Requires at least: 4.0
 Requires PHP: 5.6
-Tested up to: 5.0.0
+Tested up to: 5.0.3
 Stable tag: 1.9.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -54,11 +54,10 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 
 == Changelog ==
 
-= 1.9.2 = *UNRELEASED*
-* Changed latest version source of truth.
-
-= 1.9.1 =
+= 1.9.1 = *UNRELEASED*
 * Added a check for checking if temp folder is writable.  Using the Wordpress influenced temp folder.
+* Changed latest version source of truth.
+* Fix for column separator checkbox.
 
 = 1.9.0 =
 * Added a feature to change the start day of the week [#55]

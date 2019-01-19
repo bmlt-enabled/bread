@@ -103,10 +103,10 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         
                         </p>
                     </div>
-                    <div id="columnseparatordiv" style="border-top: 1px solid #EEE;">
+                    <div id="basefontdiv" style="border-top: 1px solid #EEE;">
                         <p>
                         <table><tr>
-                                <input class="mlg" name="column_line" value="0" type="hidden">
+                                <input class="mlg" name="base_font" value="0" type="hidden">
                                 <td style="padding-right: 10px;">
                                     <label for="base_font">Base Font: </label>
                                     <select id="base_font" name="base_font">
