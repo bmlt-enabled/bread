@@ -702,6 +702,7 @@ if (!class_exists("Bread")) {
 				$this->mpdf->SetImportUse(); 		
 				$this->mpdf_column=new mPDF([
                     'mode' => $mode,
+                    'tempDir' => get_temp_dir(),
                     'format' => $this->options['page_size']."-".$this->options['page_orientation'],
                     'default_font_size' => 7,
                     'default_font' => $default_font,
@@ -1285,7 +1286,8 @@ if (!class_exists("Bread")) {
 						if ($this->options['margin_top'] < '5') {
 							$ph_footer_fix_top = 5 - $this->options['top'];
 						}
-							$PH_FOOTER_MM = $ph_footer_fix_top + $ph_footer_fix_bot;
+
+						$PH_FOOTER_MM = $ph_footer_fix_top + $ph_footer_fix_bot;
 
 						if ( strpos($this->options['front_page_content'], 'sethtmlpagefooter') !== false ) {
 							$ph = $ph + $PH_FOOTER_MM;
@@ -1323,6 +1325,7 @@ if (!class_exists("Bread")) {
 				if ( $this->options['page_size'] == '5inch' ) {
 					$this->mpdftmp=new mPDF([
                         'mode' => $mode,
+                        'tempDir' => get_temp_dir(),
                         'format' => array(197.2,279.4),
                         'default_font_size' => '',
                         'margin_left' => 0,
@@ -1335,6 +1338,7 @@ if (!class_exists("Bread")) {
 				} else {
 					$this->mpdftmp=new mPDF([
                         'mode' => $mode,
+                        'tempDir' => get_temp_dir(),
                         'format' => 'A4-L',
                         'default_font_size' => '7',
                         'margin_left' => 0,
