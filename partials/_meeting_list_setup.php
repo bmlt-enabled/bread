@@ -40,7 +40,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                 <p>Larger service bodies would benefit from using a booklet meeting list.</p>
                 <p></i>The booklet uses the Front and Last pages for custom content.  There is no Custom Content section on a booklet meeting list.</i></p>
                 <h2>Support</h2>
-                <p>Assistance is available with setting up a meeting list.  For support file an issue at https://github.com/radius314/bread/issues</p>
+                <p>For support file an issue at https://github.com/bmlt-enabled/bread/issues</p>
             </div>
             <h3 class="help-accordian">Multiple Meeting Lists</h3>
             <div>
@@ -71,7 +71,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 	        </div>
             <h3 class="help-accordian">Support and Help</h3>
             <div>
-                <p>File an issue <a href="https://github.com/radius314/bread/issues">https://github.com/radius314/bread/issues</a></p>
+                <p>File an issue <a href="https://github.com/radius314/bread/issues">https://github.com/bmlt-enabled/bread/issues</a></p>
                 <u>Debug Information</u>
                 <ul>
                 <li><b>Protocol:</b> <?php echo $this->protocol; ?></li>

@@ -1,6 +1,6 @@
 === bread ===
 
-Contributors: odathp, radius314, pjaudiomv, klgrimley
+Contributors: odathp, radius314, pjaudiomv, klgrimley, jbraswell
 Tags: meeting list, bmlt, narcotics anonymous, na
 Requires at least: 4.0
 Requires PHP: 5.6
@@ -50,7 +50,7 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 - Can use custom queries to a BMLT root server semantic interface.  This can be used by adding everything after ‘?switcher=GetSearchResults’ into the custom query box, for example ‘&services[]=1&services[]=3&services[]=5’ would result in querying service bodies 1, 3 and 5. A good place to build a custom query is by using the semantic interface of your bmlt server.
 
 = How do I contribute?
-- Read here for more information: https://github.com/radius314/bread/blob/unstable/contribute.md
+- Read here for more information: https://github.com/bmlt-enabled/bread/blob/unstable/contribute.md
 
 == Changelog ==
 
