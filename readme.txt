@@ -54,10 +54,11 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 
 == Changelog ==
 
-= 1.9.1 = *UNRELEASED*
-* Added a check for checking if temp folder is writable.  Using the Wordpress influenced temp folder.
-* Changed latest version source of truth.
+= 1.9.1 =
+* Added a check for checking if temp folder is writable.  Using the Wordpress influenced temp folder. [#64]
+* Changed latest root server version source of truth. [#60]
 * Fix for column separator checkbox.
+* Fix for day continuation headers [#62]
 
 = 1.9.0 =
 * Added a feature to change the start day of the week [#55]

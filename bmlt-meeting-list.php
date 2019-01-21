@@ -1274,24 +1274,24 @@ if (!class_exists("Bread")) {
 						$data = utf8_encode($data);
 						$this->mpdf->WriteHTML($data);
 						$ph = intval($this->options['margin_bottom']) + intval($this->options['margin_top']) + $this->mpdf->y + -intval($this->options['page_height_fix']);
-						if ($this->options['margin_bottom'] == '5') {
-							$ph_footer_fix_bot = 0;
+
+                        $ph_footer_fix_top = 0;
+                        $ph_footer_fix_bot = 0;
+
+						if (intval($this->options['margin_bottom']) < 5) {
+							$ph_footer_fix_bot = 5 - intval($this->options['margin_bottom']);
 						}
-						if ($this->options['margin_top'] == '5') {
-							$ph_footer_fix_top = 0;
-						}
-						if ($this->options['margin_bottom'] < '5') {
-							$ph_footer_fix_bot = 5 - $this->options['margin_bottom'];
-						}
-						if ($this->options['margin_top'] < '5') {
-							$ph_footer_fix_top = 5 - $this->options['top'];
+						if (intval($this->options['margin_top']) < 5) {
+							$ph_footer_fix_top = 5 - intval($this->options['top']);
 						}
 
-						$PH_FOOTER_MM = $ph_footer_fix_top + $ph_footer_fix_bot;
+						$DAY_HEADER_HEIGHT = 22;
+						$PH_FOOTER_MM = $DAY_HEADER_HEIGHT + $ph_footer_fix_top + $ph_footer_fix_bot;
 
 						if ( strpos($this->options['front_page_content'], 'sethtmlpagefooter') !== false ) {
-							$ph = $ph + $PH_FOOTER_MM;
+							$ph += $PH_FOOTER_MM;
 						}
+
 						if ( $ph + $PH_FOOTER_MM >= $this->mpdf->h  ) {
 							$newCol = true;
 							if ( $this->options['page_fold'] === 'half' ) {
