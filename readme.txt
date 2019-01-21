@@ -5,7 +5,7 @@ Tags: meeting list, bmlt, narcotics anonymous, na
 Requires at least: 4.0
 Requires PHP: 5.6
 Tested up to: 5.0.3
-Stable tag: 1.9.1
+Stable tag: 1.9.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 A web-based tool that creates, maintains and generates a PDF meeting list from BMLT.
@@ -54,11 +54,12 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 
 == Changelog ==
 
-= 1.9.1 =
+= 1.9.2 =
 * Added a check for checking if temp folder is writable.  Using the Wordpress influenced temp folder. [#64]
 * Changed latest root server version source of truth. [#60]
 * Fix for column separator checkbox.
 * Fix for day continuation headers [#62]
+* Added travis support
 
 = 1.9.0 =
 * Added a feature to change the start day of the week [#55]

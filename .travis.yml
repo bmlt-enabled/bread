@@ -1,0 +1,65 @@
+language: php
+
+php:
+  - '7.1'
+env:
+  global:
+    - ZIP_FILENAME=bread-build${TRAVIS_BUILD_NUMBER}-${TRAVIS_COMMIT}.zip
+    - S3_BUCKET=archives.bmlt.app
+    - S3_KEY=bread
+jobs:
+  include:
+
+    - stage: lint
+      install:
+        - composer install
+      script:
+        - find . -name "*.php" ! -path '*/vendor/*' -print0 | xargs -0 -n1 -P8 php -l
+        - vendor/squizlabs/php_codesniffer/bin/phpcs --warning-severity=6 --standard=PSR2 --ignore=vendor --extensions=php --report=summary ./
+    - stage: zip file
+      env:
+        - BUILD_DIR=build
+        - DIST_DIR_S3=dist/s3
+        - DIST_DIR_GITHUB=dist/github
+        - GITHUB_RELEASE_FILENAME=bread.zip
+        - PLUGIN="bread"
+        - MAINFILE="bmlt-meeting-list.php"
+      script:
+        - find ./ -type d | xargs chmod 755
+        - find ./ -name '*.php' | xargs chmod 644
+        - zip -r $ZIP_FILENAME ./ -x "*.git*" -x "*.editorconfig*" -x "*.travis.yml*" -x "*assets*" -x "composer.*" && mkdir $BUILD_DIR && mv $ZIP_FILENAME $BUILD_DIR/
+      before_deploy:
+        - mkdir -p $DIST_DIR_S3 && cp $BUILD_DIR/$ZIP_FILENAME $DIST_DIR_S3/$ZIP_FILENAME
+        - mkdir -p $DIST_DIR_GITHUB && cp $BUILD_DIR/$ZIP_FILENAME $DIST_DIR_GITHUB/$GITHUB_RELEASE_FILENAME
+        - curl -LO https://raw.githubusercontent.com/bmlt-enabled/bmlt-wordpress-deploy/master/deploy-wordpress.sh
+        - chmod +x deploy-wordpress.sh
+      deploy:
+        - provider: s3
+          access_key_id: AKIAI7JHYFA6DI3WYP5A
+          secret_access_key:
+            secure: jAFBLyw5GIGl7lit4lcMkNWiYpsGGIdIzGeubdj6eLR8/impcTpwynj+V50bY19ttqq1gUkv6siFcRCUXgbNeonfNM8VCxFYUiE4pGhtiU/nl1X3YQDREoSDu1HK9nCTOBxdtdUpHzpDu535e/bN+i/pc0FgDAdh3QtzIEeZQ2G7QHbXQ2ydS7O03ZOPOlR4GYP4lf9O+uVwuzdAeJs2RT+empStg94xFxyTSi08SAUGMuPt6jGn8LC8YGSr7DDwwRiNdf4Hwr5ZeBSkbXDMdvt8TuVGKBxae/lN3swL9gcLPf/9LCUL+qD3ELHEh6Hx6mrWYtVysuNAEqhH8w062xfxLuD9tKquG4R99l6r4EZjZ6t2qOJzFg2SNLKXvZduBNTEI2Z1i2Maw8pd14O3Ok3Ue8d8RhWN03E7FlDuth3J4yQ6hAKXnM5UCKelhzEJRLJeTqBbxRaDreLlxX6veHFXRBV6i9lPn0M5x+0/jmh8L/I9xcPemF+2i4eRlGxLMHee0k/xLxdezja1u4QPTFrvPqhJZgos2oxLP4pN5Vol6XxIVJ/CrCYG77+59ZhFLbKno6bjLIdMiY24U7o0DqWLsmaUQteDMmskPl+IiHYkREASIxpfgrJN7suc9KMVpKYVSMl/OZvFJIZzrymhAEIH5nFWdAuVvjuvJj/DfoA=
+          bucket: "$S3_BUCKET"
+          local_dir: "$DIST_DIR_S3"
+          upload-dir: "$S3_KEY"
+          skip_cleanup: true
+          on:
+            all_branches: true
+        - provider: releases
+          api_key:
+            secure: tJsVlhVaYjlA7frFEFIGN+DjUxSo1y8MIq6DX/NmIq8rB5r+b6eIfosDi58ON3cwqfLRk1Mw3uVqozGlWhw73NErUeGzkvof3IL3/sSe258o5Jq6RDdZXuhUddFhTnoJvQvBYcyxinl729QmQCzaPObVy254bmpXrJvbLuAU6ns/6dvF3RBDMiVzDSy2+IYDmTFwGdUo1/FyW23nmFMEs26aLivZy/UnLZ5D7qOevvRRPUxHKZFsMPXxI5RI11XQkA7dCeLKQawuBsiwg+eyvzlS1ZYw+js53fCv758jPYcFpg/2/b6jfMql0tPSIYxO4mnyW5FOpMhmqT5XWmgLF4NelF81av2g6Rif2I+O8UB7wHnv0gEDIbhTzp7RK7fcjxjGfME89EKfjVohuD2FMfNukjgWIg0TUfQ4zsPYbcbT3yIppDi8CkcGmd3VuTC8qUac7FLdd6ZO7+9yohWfiCqHwzzzyh94In5QXH0rNSPV0eOkpvlSGY+S8T2qwcMaapGBWCmsGHZfjxrpJTskNTmm7eRkxNp6aCBw1S0nDY1/JMhGixu0Gk0yomn7d7QkTdxksfSRkTnhiLyKVfeYwu4ybi1DAUXG+sHvLofKUv6ZKP10t3REr0GIjnv/xv0B80op5yv/YP8QZYR7UC5EJdY303sWi4Am1s5DwM940hs=
+          file: "$DIST_DIR_GITHUB/$GITHUB_RELEASE_FILENAME"
+          skip_cleanup: true
+          name: "$TRAVIS_TAG"
+          on:
+            tags: true
+        - provider: script
+          script: ./deploy-wordpress.sh
+          skip_cleanup: true
+          on:
+            tags: true
+notifications:
+  slack:
+    rooms:
+      - secure: bmoIugz9sorNakDw7LnfC3iB7a4CnhuZeZBAVxefSoqipbZAGLoA86pSaDwSK3kNsCRAUXyHJ0pBxxJuCO5jrQKhl9TNBFQQ60KPvn3LQj9OXXTSHp4qoqBytipQGyjeqySu4fJt8Lc0u8FQ0qinxn21qF7K7c54aygVKQd+nxf/+9rVzSOJIY+c6UEBb9FwKfHl9cOJy8nTHYPNl0ZbQaYVS1gvyOV2jzrlurOXb0t2xYs2W9EOAjUd2E4ZVaD8EEyRZ9zcvy8ne41qZGBLMJjHZo6TdN4x0AdEYiITst5fKj+YILNCaVQMyURu5h65RPVXyjZ/eIOUixSt1EOpMTxWcRiDn3H7B2F7eEUIXyo/c5x1AEWEQFLGK+/PEqWx/zaBG0rJJdzVbLaqet2kg5piy+f84EBCZiXm7CZIYPMSjLJo9AJDcY9iSRgvpRnkSagHZAgMILNut53aNPd8i3FoOeycPwux/KDQpSz0uIpn4xu26VY0bzxJ8N27VugUhmNhLCN05Hgw8GoDjEoh4EgPPsdNVzXT4mzpjx2GfhRZOm/78LUSDB/w3oIAEPzRFfhberBAo0l2w9T5+Ynbw9yyquYgNUOW/nMhbwqOPbWqndHa8Xume0DXp2COHEqoSZx4gDIIRRKjKdsrFjjasWB5K7IQXQfBoiGAL7EscNA=
+    on_success: change
+  email: false
