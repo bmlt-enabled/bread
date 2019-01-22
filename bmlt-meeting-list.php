@@ -602,7 +602,7 @@ if (!class_exists("Bread")) {
                 $page_type_settings = ['format' => $this->options['page_size']."-".$this->options['page_orientation'], 'margin_footer' => 0];
 			}
 
-            $default_font = $this->options['base_font'];
+            $default_font = $this->options['base_font'] == "freesans" ? "dejavusanscondensed" : $this->options['base_font'];
             $mode = 's';
             if ($default_font == 'arial' || $default_font == 'times' || $default_font == 'courier') {
             	$mpdf_init_options = [
