@@ -4,7 +4,7 @@ Plugin Name: bread
 Plugin URI: http://wordpress.org/extend/plugins/bread/
 Description: Maintains and generates a PDF Meeting List from BMLT.
 Author: odathp, radius314, pjaudiomv, klgrimley, jbraswell
-Version: 1.9.3
+Version: 1.9.4
 */
 /* Disallow direct access to the plugin file */
 use Mpdf\Mpdf;
