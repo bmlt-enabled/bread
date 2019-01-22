@@ -15,6 +15,7 @@ jobs:
         - composer install
       script:
         - find . -name "*.php" ! -path '*/vendor/*' -print0 | xargs -0 -n1 -P8 php -l
+        - ./simplify-mpdf.sh
         #- mpdf/vendor/squizlabs/php_codesniffer/bin/phpcs --warning-severity=6 --standard=PSR2 --ignore=vendor --extensions=php --report=summary ./
     - stage: zip file
       env:
@@ -29,6 +30,7 @@ jobs:
       script:
         - find ./ -type d | xargs chmod 755
         - find ./ -name '*.php' | xargs chmod 644
+        - ./simplify-mpdf.sh
         - zip -r $ZIP_FILENAME ./ -x "*.git*" -x "*.editorconfig*" -x "*.travis.yml*" -x "*assets*" -x "composer.*" && mkdir $BUILD_DIR && mv $ZIP_FILENAME $BUILD_DIR/
       before_deploy:
         - mkdir -p $DIST_DIR_S3 && cp $BUILD_DIR/$ZIP_FILENAME $DIST_DIR_S3/$ZIP_FILENAME
