@@ -24,6 +24,8 @@ jobs:
         - GITHUB_RELEASE_FILENAME=bread.zip
         - PLUGIN="bread"
         - MAINFILE="bmlt-meeting-list.php"
+      install:
+        - composer install --no-dev --no-autoloader
       script:
         - find ./ -type d | xargs chmod 755
         - find ./ -name '*.php' | xargs chmod 644
