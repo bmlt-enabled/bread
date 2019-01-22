@@ -37,7 +37,7 @@ jobs:
         - provider: s3
           access_key_id: AKIAI7JHYFA6DI3WYP5A
           secret_access_key:
-            secure: jAFBLyw5GIGl7lit4lcMkNWiYpsGGIdIzGeubdj6eLR8/impcTpwynj+V50bY19ttqq1gUkv6siFcRCUXgbNeonfNM8VCxFYUiE4pGhtiU/nl1X3YQDREoSDu1HK9nCTOBxdtdUpHzpDu535e/bN+i/pc0FgDAdh3QtzIEeZQ2G7QHbXQ2ydS7O03ZOPOlR4GYP4lf9O+uVwuzdAeJs2RT+empStg94xFxyTSi08SAUGMuPt6jGn8LC8YGSr7DDwwRiNdf4Hwr5ZeBSkbXDMdvt8TuVGKBxae/lN3swL9gcLPf/9LCUL+qD3ELHEh6Hx6mrWYtVysuNAEqhH8w062xfxLuD9tKquG4R99l6r4EZjZ6t2qOJzFg2SNLKXvZduBNTEI2Z1i2Maw8pd14O3Ok3Ue8d8RhWN03E7FlDuth3J4yQ6hAKXnM5UCKelhzEJRLJeTqBbxRaDreLlxX6veHFXRBV6i9lPn0M5x+0/jmh8L/I9xcPemF+2i4eRlGxLMHee0k/xLxdezja1u4QPTFrvPqhJZgos2oxLP4pN5Vol6XxIVJ/CrCYG77+59ZhFLbKno6bjLIdMiY24U7o0DqWLsmaUQteDMmskPl+IiHYkREASIxpfgrJN7suc9KMVpKYVSMl/OZvFJIZzrymhAEIH5nFWdAuVvjuvJj/DfoA=
+            secure: fMcpeB4ECFIBuwKQl3Xa5vl/iuy3amrGPoPC3zvUnheWfrdV/0y7bc0jTybXw1RMQ38vsz8WrFZQgt3stMCpwA6aEE8Sq60iahDmhKCTpyb13XZEQrZefZQutM3C7zR0Yo3TtjN1URrkzKdau+hoMEx59Xuv7FjV8NwgKHD5Mj3kDDBHjeEI+sRAXwUKQs7jMdP9LXjU3brK+c9u8cuCOepc1dlTkRAV4WYbkSILy55yewRG4gS8hYQ8W3CzkNCIMQebpb1WBhVpwXxcwl1G8xvTp6go/9qesyL8YA1nHM54oeTTknpuxh8l2ydBmtgGb7BCyYVq/g6Eqzx5/S0sGpzQZ3CG4a55BAP/w4zvMtipWshfS+N72G26ils/0xC/xozO1im6dakaGQYBEjo/OWr0tiwQYZ6U5JlSp7jd0x0Gtpyvwysmsti4sIenK3RO7zqUFwBQbt4KMva+VJV9foTaqUKFEkxqN9l4hW+wOR9rfj4nAkOTIH700uaa5QwziISL7O/0jLPuKW7+055vSEbeAgJWdP86m68y0AV0Ijt993YvU8YV6bzJ7qEh6UE0z2FZorRTOqHB31cOv49tKZJOUxtiqx984cGOZTRdIBvxr5sBN1mT9pY0Wx9C46y+r548SVJ04R/HytB+ZfJLowxpMJ4RNGW0wX8Hd64AKVo=
           bucket: "$S3_BUCKET"
           local_dir: "$DIST_DIR_S3"
           upload-dir: "$S3_KEY"
@@ -46,7 +46,7 @@ jobs:
             all_branches: true
         - provider: releases
           api_key:
-            secure: tJsVlhVaYjlA7frFEFIGN+DjUxSo1y8MIq6DX/NmIq8rB5r+b6eIfosDi58ON3cwqfLRk1Mw3uVqozGlWhw73NErUeGzkvof3IL3/sSe258o5Jq6RDdZXuhUddFhTnoJvQvBYcyxinl729QmQCzaPObVy254bmpXrJvbLuAU6ns/6dvF3RBDMiVzDSy2+IYDmTFwGdUo1/FyW23nmFMEs26aLivZy/UnLZ5D7qOevvRRPUxHKZFsMPXxI5RI11XQkA7dCeLKQawuBsiwg+eyvzlS1ZYw+js53fCv758jPYcFpg/2/b6jfMql0tPSIYxO4mnyW5FOpMhmqT5XWmgLF4NelF81av2g6Rif2I+O8UB7wHnv0gEDIbhTzp7RK7fcjxjGfME89EKfjVohuD2FMfNukjgWIg0TUfQ4zsPYbcbT3yIppDi8CkcGmd3VuTC8qUac7FLdd6ZO7+9yohWfiCqHwzzzyh94In5QXH0rNSPV0eOkpvlSGY+S8T2qwcMaapGBWCmsGHZfjxrpJTskNTmm7eRkxNp6aCBw1S0nDY1/JMhGixu0Gk0yomn7d7QkTdxksfSRkTnhiLyKVfeYwu4ybi1DAUXG+sHvLofKUv6ZKP10t3REr0GIjnv/xv0B80op5yv/YP8QZYR7UC5EJdY303sWi4Am1s5DwM940hs=
+            secure: e8x7MjdhEyq929NMebqhDGbCG64OUzIWiBeNb+ZF0xeGjghjljOUEaLm+2bdDZyMLyho94zayp1rq0gfXUz8vBkLgSYOaCuJhsFRoXhWPcvbGcXe3URpDSfUrx8QE46UtATFdBdfT2KFjeyH95g/w/1WFjSqOfQtAyFV+bs4YzOyaXRjo4SQxupfM1+Is/A3FTskXXW2y5M6raIViuz3eZGkJjVIkIV5sCPRloro80q+GonraSLtr2aBElR8CZaNESPJpcLcA467BW3Pf8p5Mm6jYO4rSTFcUN2s/O8S+C8rrKKw9UYL0mFAratrGK/+GXZbbmgZD4Ujw24xOre/x240NHMTF4TpXrLSLmRjycC3IPyKt0wCb//rKl0YoTMo1390+xWnvM3V08L2CXwhFqGH8j0DgKam1+KhtM0hHFT8NNC9CltyKXdGEzo367N+i9JTtoJbwsfXxNGlF7uKGHu9u7WQQ0oE3ARF5SyFE/6F7e5z5hyItfpitHirMSDOjWkVbbb0ukhFhFkLRddmrFmRW0fu+beAcIlmQtTkPIoBUt+rvcr4Vb51uK5VqcnvAqYtvVrMGRmwTOvdqI0tHmSFw3lOcyf0c4BiplysYHSmQz2pBy+eQmPga1GW5xJt43bkz5B35AEMkq6kVRrIar5YiHBccQZff/T0dMxFmjM=
           file: "$DIST_DIR_GITHUB/$GITHUB_RELEASE_FILENAME"
           skip_cleanup: true
           name: "$TRAVIS_TAG"
