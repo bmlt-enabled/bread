@@ -4,7 +4,7 @@ Plugin Name: bread
 Plugin URI: http://wordpress.org/extend/plugins/bread/
 Description: Maintains and generates a PDF Meeting List from BMLT.
 Author: odathp, radius314, pjaudiomv, klgrimley, jbraswell
-Version: 1.9.5
+Version: 1.9.6
 */
 /* Disallow direct access to the plugin file */
 use Mpdf\Mpdf;
@@ -206,7 +206,9 @@ if (!class_exists("Bread")) {
 					$data = ($abbreviate ? 'Dim / Sun' : "Dimanche / Sunday");
 				} elseif ( $language == 'se') {
 					$data = ($abbreviate ? "S&#246;n" : "S&#246;ndag");
-				}
+				} elseif ( $language == 'dk') {
+                    $data = ($abbreviate ? "S&#248;" : "S&#248;ndag");
+                }
 			} elseif ( $day == 2 ) {
 				if ( $language == 'en' || $language == 'en' ) {
 					$data = ($abbreviate ? 'Mon' : "Monday");
@@ -224,7 +226,9 @@ if (!class_exists("Bread")) {
 					$data = ($abbreviate ? 'Lun / Mon' : "Lundi / Monday");
 				} elseif ( $language == 'se') {
 					$data = ($abbreviate ? "M&#229;n" : "M&#229;ndag");
-				}
+				} elseif ( $language == 'dk') {
+                    $data = ($abbreviate ? "Ma" : "Mandag");
+                }
 			} elseif ( $day == 3 ) {
 				if ( $language == 'en' || $language == 'en' ) {
 					$data = ($abbreviate ? 'Tue' : "Tuesday");
@@ -242,7 +246,9 @@ if (!class_exists("Bread")) {
 					$data = ($abbreviate ? 'Mar / Tues' : "Mardi / Tuesday");
 				} elseif ( $language == 'se') {
 					$data = ($abbreviate ? "Tis" : "Tisdag");
-				}
+				} elseif ( $language == 'dk') {
+                    $data = ($abbreviate ? "Ti" : "Tirsdag");
+                }
 			} elseif ( $day == 4 ) {
 				if ( $language == 'en' || $language == 'en' ) {
 					$data = ($abbreviate ? 'Wed' : "Wednesday");
@@ -260,7 +266,9 @@ if (!class_exists("Bread")) {
 					$data = ($abbreviate ? 'Mer / Wed' : "Mercredi / Wednesday");
 				} elseif ( $language == 'se') {
 					$data = ($abbreviate ? "Ons" : "Onsdag");
-				}
+				} elseif ( $language == 'dk') {
+                    $data = ($abbreviate ? "On" : "Onsdag");
+                }
 			} elseif ( $day == 5 ) {
 				if ( $language == 'en' || $language == 'en' ) {
 					$data = ($abbreviate ? 'Thu' : "Thursday");
@@ -278,7 +286,9 @@ if (!class_exists("Bread")) {
 					$data = ($abbreviate ? 'Jeu / Thu' : "Jeudi / Thursday");
 				} elseif ( $language == 'se') {
 					$data = ($abbreviate ? "Tors" : "Torsdag");
-				}
+				} elseif ( $language == 'dk') {
+                    $data = ($abbreviate ? "To" : "Torsdag");
+                }
 			} elseif ( $day == 6 ) {
 				if ( $language == 'en' || $language == 'en' ) {
 					$data = ($abbreviate ? 'Fri' : "Friday");
@@ -296,7 +306,9 @@ if (!class_exists("Bread")) {
 					$data = ($abbreviate ? 'Ven / Fri' : "Vendredi / Friday");
 				} elseif ( $language == 'se') {
 					$data = ($abbreviate ? "Fre" : "Fredag");
-				}
+				} elseif ( $language == 'dk') {
+                    $data = ($abbreviate ? "Fr" : "Fredag");
+                }
 			} elseif ( $day == 7 ) {
 				if ( $language == 'en' || $language == 'en' ) {
 					$data = ($abbreviate ? 'Sat' : "Saturday");
@@ -314,7 +326,9 @@ if (!class_exists("Bread")) {
 					$data = ($abbreviate ? 'Sam / Sat' : "Samedi / Saturday");
 				} elseif ( $language == 'se') {
 					$data = ($abbreviate ? "L&#246;r" : "L&#246;rdag");
-				}
+				} elseif ( $language == 'dk') {
+                    $data = ($abbreviate ? "L&#248;" : "L&#248;rdag");
+                }
 			}
 			
 			Return utf8_encode($data);
@@ -1000,9 +1014,11 @@ if (!class_exists("Bread")) {
 						if ( $this->options['weekday_language'] === 'fr' ) {
 							$cont = '(suite)';							
 						} else if ( $this->options['weekday_language'] === 'se' ) {
-							$cont = '(forts)';
-						} else {
-							$cont = '(cont)';							
+                            $cont = '(forts)';
+                        }  else if ( $this->options['weekday_language'] === 'dk' ) {
+                            $cont = '(forts)';
+                        } else {
+							$cont = '(cont)';
 						}
 
 						if ( $this->options['page_fold'] !== 'full' ) {
