@@ -97,14 +97,15 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         </p>
                     </div>
 					<?php
-						$languages = [
+                    $languages = [
 								"en" => "English",
 								"fr" => "French",
 								"po" => "Portuguese",
 								"both" => "English/Spanish",
 								"both_po" => "English/Spanish/Portuguese",
 								"fr_en" => "French/English",
-								"se" => "Swedish"
+								"se" => "Swedish",
+                                "dk" => "Danish"
 						];
 					?>
 					<div class="weekday_language_div">
