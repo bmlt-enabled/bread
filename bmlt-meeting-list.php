@@ -4,7 +4,7 @@ Plugin Name: bread
 Plugin URI: http://wordpress.org/extend/plugins/bread/
 Description: Maintains and generates a PDF Meeting List from BMLT.
 Author: odathp, radius314, pjaudiomv, klgrimley, jbraswell
-Version: 1.9.6
+Version: 1.9.7
 */
 /* Disallow direct access to the plugin file */
 use Mpdf\Mpdf;
@@ -1212,7 +1212,6 @@ if (!class_exists("Bread")) {
 							$data = str_replace('hrs', $duration_h, $data);
 							$data = str_replace('duration_m', $duration_m, $data);
 							$data = str_replace('mins', $duration_m, $data);
-							$data = str_replace('meeting_name', $meeting_value['meeting_name'], $data);
 							$data = str_replace('location_text', $meeting_value['location_text'], $data);
 							$data = str_replace('location_info', $meeting_value['location_info'], $data);
 							$data = str_replace('location_street', $meeting_value['location_street'], $data);
@@ -1233,6 +1232,7 @@ if (!class_exists("Bread")) {
 							$data = str_replace('location_city_subsection', $meeting_value['location_city_subsection'], $data);	//borough
 							$data = str_replace('county', $meeting_value['location_sub_province'], $data);			//county
 							$data = str_replace('location_sub_province', $meeting_value['location_sub_province'], $data);			//county
+                            $data = str_replace('meeting_name', $meeting_value['meeting_name'], $data);
 							$data = str_replace('group', $meeting_value['meeting_name'], $data);
 							$data = str_replace('comments', $meeting_value['comments'], $data);
 							$data = str_replace('email_contact', $meeting_value['email_contact'], $data);
