@@ -3,8 +3,9 @@
 Plugin Name: bread
 Plugin URI: http://wordpress.org/extend/plugins/bread/
 Description: Maintains and generates a PDF Meeting List from BMLT.
-Author: odathp, radius314, pjaudiomv, klgrimley, jbraswell
-Version: 1.9.7
+Author: bmlt-enabled
+Author URI: https://bmlt.app
+Version: 1.9.8
 */
 /* Disallow direct access to the plugin file */
 use Mpdf\Mpdf;
@@ -1013,9 +1014,7 @@ if (!class_exists("Bread")) {
 						
 						if ( $this->options['weekday_language'] === 'fr' ) {
 							$cont = '(suite)';							
-						} else if ( $this->options['weekday_language'] === 'se' ) {
-                            $cont = '(forts)';
-                        }  else if ( $this->options['weekday_language'] === 'dk' ) {
+						} else if ( $this->options['weekday_language'] === 'se' || $this->options['weekday_language'] === 'dk' ) {
                             $cont = '(forts)';
                         } else {
 							$cont = '(cont)';
@@ -1301,7 +1300,7 @@ if (!class_exists("Bread")) {
 							$ph_footer_fix_top = 5 - intval($this->options['top']);
 						}
 
-						$DAY_HEADER_HEIGHT = 22;
+						$DAY_HEADER_HEIGHT = 5;
 						$PH_FOOTER_MM = $DAY_HEADER_HEIGHT + $ph_footer_fix_top + $ph_footer_fix_bot;
 
 						if ( strpos($this->options['front_page_content'], 'sethtmlpagefooter') !== false ) {

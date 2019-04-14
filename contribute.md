@@ -4,9 +4,12 @@ Take a look at the issues for bugs that you might be able to help fix.
 
 Once your pull request is merged it will be released in the next version.
 
-To get things going in your local environment.
+To get things going in your local environment, run the following:
 
-`docker-compose up`
+```shell
+composer install
+docker-compose up
+```
 
 Get your wordpress installation going.  Remember your admin password.  Once it's up, login to admin and activate the bread plugin.
 
