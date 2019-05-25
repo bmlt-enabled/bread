@@ -737,6 +737,9 @@ if (!class_exists("Bread")) {
 				$this->mpdf->SetPageTemplate($tplId);
 				unlink($FilePath);
 			}
+
+            $data_field_keys = 'id_bigint,service_body_bigint,weekday_tinyint,start_time,duration_time,formats,email_contact,comments,location_city_subsection,location_nation,location_postal_code_1,location_province,location_sub_province,location_municipality,location_neighborhood,location_street,location_info,location_text,meeting_name,bus_lines,format_shared_id_list';
+
 			if ( $this->options['meeting_sort'] == 'state' ) {
 				$sort_keys = 'location_province,location_municipality,weekday_tinyint,start_time,meeting_name';
 			} elseif ( $this->options['meeting_sort'] == 'city' ) {
@@ -765,11 +768,11 @@ if (!class_exists("Bread")) {
             $get_used_formats = '&get_used_formats';
 
             if ( $this->options['used_format_1'] == '' && $this->options['used_format_2'] == '' ) {
-                $results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=$sort_keys$get_used_formats");
+                $results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=$sort_keys&data_field_key=$data_field_keys$get_used_formats");
             } elseif ( $this->options['used_format_1'] != '' ) {
-                $results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=$sort_keys&get_used_formats&formats[]=".$this->options['used_format_1'] );
+                $results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=$sort_keys&data_field_key=$data_field_keys&get_used_formats&formats[]=".$this->options['used_format_1'] );
             } elseif ( $this->options['used_format_2'] != '' ) {
-                $results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=$sort_keys&get_used_formats&formats[]=".$this->options['used_format_2'] );
+                $results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=$sort_keys&data_field_key=$data_field_keys&get_used_formats&formats[]=".$this->options['used_format_2'] );
             }
 
             $result = json_decode(wp_remote_retrieve_body($results), true);
