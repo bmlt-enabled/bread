@@ -5,7 +5,7 @@ Plugin URI: http://wordpress.org/extend/plugins/bread/
 Description: Maintains and generates a PDF Meeting List from BMLT.
 Author: bmlt-enabled
 Author URI: https://bmlt.app
-Version: 1.9.9
+Version: 1.10.0
 */
 /* Disallow direct access to the plugin file */
 use Mpdf\Mpdf;
@@ -714,7 +714,7 @@ if (!class_exists("Bread")) {
 					</tbody>
 					</table>';
 				}
-				$this->mpdf->SetImportUse(); 		
+
 				$this->mpdf_column=new mPDF([
                     'mode' => $mode,
                     'tempDir' => get_temp_dir(),
@@ -733,7 +733,7 @@ if (!class_exists("Bread")) {
 				$FilePath = ABSPATH . "column_tmp_".strtolower( date ( "njYghis" ) ).".pdf";
 				$this->mpdf_column->Output($FilePath,'F');
 				$pagecount = $this->mpdf->SetSourceFile($FilePath);
-				$tplId = $this->mpdf->ImportPage($pagecount);
+				$tplId = $this->mpdf->importPage($pagecount);
 				$this->mpdf->SetPageTemplate($tplId);
 				unlink($FilePath);
 			}
@@ -1367,7 +1367,7 @@ if (!class_exists("Bread")) {
                         'orientation' => 'P'
                     ]);
 				}
-				$this->mpdftmp->SetImportUse();    
+
 				$ow = $this->mpdftmp->h;
 				$oh = $this->mpdftmp->w;
 				$pw = $this->mpdftmp->w / 2;
@@ -1377,11 +1377,11 @@ if (!class_exists("Bread")) {
 				foreach($pp AS $v) {
 					$this->mpdftmp->AddPage(); 
 					if ($v[0]>0 & $v[0]<=$pagecount) {
-						$tplIdx = $this->mpdftmp->ImportPage($v[0]);
+						$tplIdx = $this->mpdftmp->importPage($v[0]);
 						$this->mpdftmp->UseTemplate($tplIdx, 0, 0, $pw, $ph);
 					}
 					if ($v[1]>0 & $v[1]<=$pagecount) {
-						$tplIdx = $this->mpdftmp->ImportPage($v[1]);
+						$tplIdx = $this->mpdftmp->importPage($v[1]);
 						$this->mpdftmp->UseTemplate($tplIdx, $pw, 0, $pw, $ph);
 					}
 				}					

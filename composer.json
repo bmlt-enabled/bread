@@ -6,7 +6,7 @@
     }
   ],
   "require": {
-    "mpdf/mpdf": "7.1.6"
+    "mpdf/mpdf": "8.0.1"
   },
   "require-dev": {
     "squizlabs/php_codesniffer": "3.*"
