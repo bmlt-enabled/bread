@@ -177,6 +177,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     Page Height Adjust: <input min="-50" max="50" step="1" size="4" maxlength="4" type="number" class="bmlt-input-field" style="display:inline;" name="page_height_fix" value="<?php echo $this->options['page_height_fix'] ;?>" /><span title='<?php echo $title; ?>' class="top-middle-tooltip"></span>
                     </p>
                     <div><i>Decrease Page Height Adjust if <strong>MEETING GROUP HEADER</strong> is missing.</i></div>
+                    <div><i>Avoid using tables which will greatly slow down the generation time.  Use CSS instead to get table-like effects if need be.</i></div>
                     <div style="margin-top:0px; margin-bottom:20px; max-width:100%; width:100%;">
                         <?php
                         $editor_id = "meeting_template_content";
