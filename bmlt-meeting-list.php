@@ -1141,7 +1141,7 @@ if (!class_exists("Bread")) {
 						}
 						$newVal = false;
 						$newCol = false;
-						$duration = explode(':',$meeting_value[duration_time]);
+						$duration = explode(':', $meeting_value['duration_time']);
 						$minutes = intval($duration[0])*60 + intval($duration[1]) + intval($duration[2]);
 						$duration_m = $minutes;
 						$duration_h = rtrim(rtrim(number_format($duration_m/60,2),0),'.');
@@ -1158,29 +1158,29 @@ if (!class_exists("Bread")) {
 							$time_format = "H:i";
 						}
 						if ( $this->options['time_option'] == 1 || $this->options['time_option'] == '' ) {
-							$meeting_value[start_time] = date($time_format,strtotime($meeting_value[start_time]));
-							if ( $meeting_value[start_time] == '12:00PM' || $meeting_value[start_time] == '12:00 PM' ) {
-								$meeting_value[start_time] = 'NOON';
+							$meeting_value['start_time'] = date($time_format,strtotime($meeting_value['start_time']));
+							if ( $meeting_value['start_time'] == '12:00PM' || $meeting_value['start_time'] == '12:00 PM' ) {
+								$meeting_value['start_time'] = 'NOON';
 							}
 						} elseif ( $this->options['time_option'] == '2' ) {
 							$addtime = '+ ' . $minutes . ' minutes';
-							$end_time = date ($time_format,strtotime($meeting_value[start_time] . ' ' . $addtime));
-							$meeting_value[start_time] = date($time_format,strtotime($meeting_value[start_time]));
-							$meeting_value[start_time] = $meeting_value[start_time].$space.'-'.$space.$end_time;
+							$end_time = date ($time_format,strtotime($meeting_value['start_time'] . ' ' . $addtime));
+							$meeting_value['start_time'] = date($time_format,strtotime($meeting_value['start_time']));
+							$meeting_value['start_time'] = $meeting_value['start_time'].$space.'-'.$space.$end_time;
 						} elseif ( $this->options['time_option'] == '3' ) {
 							$time_array = array("1:00", "2:00", "3:00", "4:00", "5:00", "6:00", "7:00", "8:00", "9:00", "10:00", "11:00", "12:00");
-							$temp_start_time = date("g:i",strtotime($meeting_value[start_time]));
-							$temp_start_time_2 = date("g:iA",strtotime($meeting_value[start_time]));
+							$temp_start_time = date("g:i",strtotime($meeting_value['start_time']));
+							$temp_start_time_2 = date("g:iA",strtotime($meeting_value['start_time']));
 							if ( $temp_start_time_2 == '12:00PM' ) {
 								$start_time = 'NOON';
 							} elseif ( in_array($temp_start_time, $time_array) ) {
-								$start_time = date("g",strtotime($meeting_value[start_time]));
+								$start_time = date("g",strtotime($meeting_value['start_time']));
 							} else {
-								$start_time = date("g:i",strtotime($meeting_value[start_time]));
+								$start_time = date("g:i",strtotime($meeting_value['start_time']));
 							}
 							$addtime = '+ ' . $minutes . ' minutes';
-							$temp_end_time = date ("g:iA",strtotime($meeting_value[start_time] . ' ' . $addtime));
-							$temp_end_time_2 = date ("g:i",strtotime($meeting_value[start_time] . ' ' . $addtime));
+							$temp_end_time = date ("g:iA",strtotime($meeting_value['start_time'] . ' ' . $addtime));
+							$temp_end_time_2 = date ("g:i",strtotime($meeting_value['start_time'] . ' ' . $addtime));
 							if ( $temp_end_time == '12:00PM' ) {
 								$end_time = 'NOON';
 							} elseif ( in_array($temp_end_time_2, $time_array) ) {
@@ -1188,7 +1188,7 @@ if (!class_exists("Bread")) {
 							} else {
 								$end_time = date("g:i".$space."A",strtotime($temp_end_time));
 							}
-							$meeting_value[start_time] = $start_time.$space.'-'.$space.$end_time;
+							$meeting_value['start_time'] = $start_time.$space.'-'.$space.$end_time;
 						}
 						if ( $this->options['page_fold'] !== 'full' ) {
 							if ( isset($meeting_value['email_contact']) && $meeting_value['email_contact'] !== '' && $this->options['include_meeting_email'] == 1 ) {
@@ -1216,7 +1216,9 @@ if (!class_exists("Bread")) {
 							$data = str_replace('location_text', $meeting_value['location_text'], $data);
 							$data = str_replace('location_info', $meeting_value['location_info'], $data);
 							$data = str_replace('location_street', $meeting_value['location_street'], $data);
-							$data = str_replace('bus_line', $meeting_value['bus_line'], $data);						
+							if (isset($meeting_value['bus_line'])) {
+                                $data = str_replace('bus_line', $meeting_value['bus_line'], $data);
+                            }
 							$data = str_replace('state', $meeting_value['location_province'], $data);							
 							$data = str_replace('street', $meeting_value['location_street'], $data);
 							$data = str_replace('neighborhood', $meeting_value['location_neighborhood'], $data);
@@ -1298,9 +1300,12 @@ if (!class_exists("Bread")) {
 						if (intval($this->options['margin_bottom']) < 5) {
 							$ph_footer_fix_bot = 5 - intval($this->options['margin_bottom']);
 						}
-						if (intval($this->options['margin_top']) < 5) {
-							$ph_footer_fix_top = 5 - intval($this->options['top']);
-						}
+
+						if (isset($this->options['top'])) {
+                            if (intval($this->options['margin_top']) < 5) {
+                                $ph_footer_fix_top = 5 - intval($this->options['top']);
+                            }
+                        }
 
 						$DAY_HEADER_HEIGHT = 5;
 						$PH_FOOTER_MM = $DAY_HEADER_HEIGHT + $ph_footer_fix_top + $ph_footer_fix_bot;
@@ -1538,9 +1543,8 @@ if (!class_exists("Bread")) {
 		function write_formats($formats, $page) {
 			if ( $formats == Null ) { return ''; }
 			$this->mpdf->WriteHTML('td{font-size: '.$this->options[$page.'_font_size']."pt;line-height:".$this->options[$page.'_line_height'].';}',1);
-			$data .= "<table style='width:100%;font-size:".$this->options[$page.'_font_size']."pt;line-height:".$this->options[$page.'_line_height'].";'>";
-			$countmax = count ( $formats );
-			for ( $count = 0; $count < $countmax; $count++ ) {
+			$data = "<table style='width:100%;font-size:".$this->options[$page.'_font_size']."pt;line-height:".$this->options[$page.'_line_height'].";'>";
+			for ( $count = 0; $count < count ( $formats ); $count++ ) {
 				$data .= '<tr>';
 				$data .= "<td style='padding-left:4px;border:1px solid #555;border-right:0;width:12%;vertical-align:top;'>".$formats[$count]['key_string']."</td>";
 				$data .= "<td style='border: 1px solid #555;border-left:0;width:38%;vertical-align:top;'>".$formats[$count]['name_string']."</td>";
@@ -1559,10 +1563,12 @@ if (!class_exists("Bread")) {
 			$data = "<table style='font-size:".$this->options[$page.'_font_size']."pt;line-height:".$this->options[$page.'_line_height']."; width: 100%;'>";
 			$countmax = count ( $formats );
 			for ( $count = 0; $count < $countmax; $count++ ) {
-				$data .= '<tr>';
-				$data .= "<td style='border-bottom:1px solid #555;width:8%;vertical-align:top;'><span style='font-size:".$this->options[$page.'_font_size']."pt;line-height:".$this->options[$page.'_page_line_height'].";font-weight:bold;'>".$formats[$count]['key_string']."</span></td>";
-				$data .= "<td style='border-bottom:1px solid #555;width:92%;vertical-align:top;'><span style='font-size:".$this->options[$page.'_font_size']."pt;line-height:".$this->options[$page.'_page_line_height'].";'>(".$formats[$count]['name_string'].") ".$formats[$count]['description_string']."</span></td>";
-				$data .= "</tr>";
+			    if (isset($this->options[$page.'_font_size']) && isset($this->options[$page . '_page_line_height'])) {
+                    $data .= '<tr>';
+                    $data .= "<td style='border-bottom:1px solid #555;width:8%;vertical-align:top;'><span style='font-size:" . $this->options[$page . '_font_size'] . "pt;line-height:" . $this->options[$page . '_page_line_height'] . ";font-weight:bold;'>" . $formats[$count]['key_string'] . "</span></td>";
+                    $data .= "<td style='border-bottom:1px solid #555;width:92%;vertical-align:top;'><span style='font-size:" . $this->options[$page . '_font_size'] . "pt;line-height:" . $this->options[$page . '_page_line_height'] . ";'>(" . $formats[$count]['name_string'] . ") " . $formats[$count]['description_string'] . "</span></td>";
+                    $data .= "</tr>";
+                }
 			}
 			$data .= "</table>";
 			return $data;
