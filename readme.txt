@@ -57,6 +57,7 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 = 1.10.0 =
 * Limiting query size to needed fields.
 * Updated base templates to exclude tables, which cause slow generation.
+* Fixed many warning / notices messages.
 * Upgraded to mPDF 8.x
 
 = 1.9.8 =

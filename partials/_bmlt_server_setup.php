@@ -6,7 +6,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
     <div id="postbox-container" class="postbox-container">
         <div id="normal-sortables" class="meta-box-sortables ui-sortable">
             <div id="bmltrootserverurl" class="postbox">
-                <h3 class="hndle">BMLT Server<span title='<p>Visit <a target="_blank" href="https://bmlt.magshare.net/what-is-the-bmlt/hit-parade/#bmlt-server">BMLT Server Implementations</a> to find your BMLT server</p>' class="tooltip"></span></h3>
+                <h3 class="hndle">BMLT Server<span title='<p>Visit <a target="_blank" href="https://bmlt.app/what-is-the-bmlt/hit-parade/#bmlt-server">BMLT Server Implementations</a> to find your BMLT server</p>' class="tooltip"></span></h3>
                 <div class="inside">
                     <p>
                     <label for="root_server">BMLT Server URL: </label>

@@ -30,7 +30,7 @@ if (!class_exists("Bread")) {
 		var $options = array();
 		function __construct() {
 		    $this->protocol = (strpos(strtolower(home_url()), "https") !== false ? "https" : "http") . "://";
-		    if (is_admin() || intval($_GET['current-meeting-list']) == 1 ) {
+		    if (is_admin() || (isset($_GET['current-meeting-list']) && intval($_GET['current-meeting-list']) == 1)) {
                 $this->getMLOptions();
                 $this->lang = $this->get_bmlt_server_lang();
 
@@ -570,7 +570,6 @@ if (!class_exists("Bread")) {
 			if ( !isset($this->options['custom_section_line_height']) ) {$this->options['custom_section_line_height'] = '1';}
 			if ( !isset($this->options['custom_section_font_size']) ) {$this->options['custom_section_font_size'] = '9';}
 			if ( !isset($this->options['pagenumbering_font_size']) ) {$this->options['pagenumbering_font_size'] = '9';}
-			if ( !isset($this->options['include_zip']) ) {$this->options['include_zip'] = 0;}
 			if ( !isset($this->options['include_meeting_email']) ) {$this->options['include_meeting_email'] = 0;}
 			if ( !isset($this->options['include_protection']) ) {$this->options['include_protection'] = 0;}
 			if ( !isset($this->options['base_font']) ) {$this->options['base_font'] = 'dejavusanscondensed';}
@@ -1648,7 +1647,7 @@ if (!class_exists("Bread")) {
 			?>
 			<label for="root_server">BMLT Server: </label>
 			<input class="bmlt-input" id="root_server" type="text" size="80" name="root_server" value="<?php echo $this->options['root_server'] ;?>" /> <?php echo $connect; ?>
-			<p><a target="_blank" href="http://bmlt.magshare.net/what-is-the-bmlt/hit-parade/#bmlt-server">BMLT Server Implementations</a></p>
+			<p><a target="_blank" href="https://bmlt.app/what-is-the-bmlt/hit-parade/#bmlt-server">BMLT Server Implementations</a></p>
 			<?php			   
 		}
 
@@ -1720,7 +1719,6 @@ if (!class_exists("Bread")) {
 				$this->options['county_suffix'] = sanitize_text_field($_POST['county_suffix']);
 				$this->options['neighborhood_suffix'] = sanitize_text_field($_POST['neighborhood_suffix']);
 				$this->options['city_suffix'] = sanitize_text_field($_POST['city_suffix']);
-				$this->options['meeting_template'] = wp_kses_post($_POST['meeting_template']);
 				$this->options['meeting_template_content'] = wp_kses_post($_POST['meeting_template_content']);
 				$this->options['column_line'] = boolval($_POST['column_line']); #seperator
 				$this->options['col_color'] = validate_hex_color($_POST['col_color']);
@@ -1728,11 +1726,10 @@ if (!class_exists("Bread")) {
 				$this->options['custom_section_line_height'] = intval($_POST['custom_section_line_height']);
 				$this->options['custom_section_font_size'] = floatval($_POST['custom_section_font_size']);
 				$this->options['pagenumbering_font_size'] = floatval($_POST['pagenumbering_font_size']);
-				$this->options['include_zip'] = boolval($_POST['include_zip']);
 				$this->options['used_format_1'] = sanitize_text_field($_POST['used_format_1']);
-				$this->options['include_meeting_email'] = boolval($_POST['include_meeting_email']);
+				$this->options['include_meeting_email'] = isset($_POST['include_meeting_email']) ? boolval($_POST['include_meeting_email']) : false;
 				$this->options['recurse_service_bodies'] = intval($_POST['recurse_service_bodies']);
-				$this->options['extra_meetings_enabled'] = intval($_POST['extra_meetings_enabled']);
+				$this->options['extra_meetings_enabled'] = isset($_POST['extra_meetings_enabled']) ? intval($_POST['extra_meetings_enabled']) : 0;
 				$this->options['include_protection'] = boolval($_POST['include_protection']);
 				$this->options['weekday_language'] = sanitize_text_field($_POST['weekday_language']);
 				$this->options['weekday_start'] = sanitize_text_field($_POST['weekday_start']);
@@ -1753,7 +1750,7 @@ if (!class_exists("Bread")) {
 				$this->options['service_body_5'] = sanitize_text_field($_POST['service_body_5']);
 				$this->options['cache_time'] = intval($_POST['cache_time']);
 				$this->options['custom_query'] = sanitize_text_field($_POST['custom_query']);
-				$this->options['extra_meetings'] = wp_kses_post($_POST['extra_meetings']);
+				$this->options['extra_meetings'] = isset($_POST['extra_meetings']) ? wp_kses_post($_POST['extra_meetings']) : '';
 				$this->save_admin_options();
 				set_transient( 'admin_notice', 'Please put down your weapon. You have 20 seconds to comply.' );
 				echo '<div class="updated"><p style="color: #F00;">Your changes were successfully saved!</p>';
@@ -1762,13 +1759,11 @@ if (!class_exists("Bread")) {
 					echo "<p>$num Cache entries deleted</p>";
 				}
 				echo '</div>';
-			} elseif ( isset($_COOKIE['pwsix_action']) && $_COOKIE['pwsix_action'] == "import_settings" ) {
+			} elseif ( isset($_REQUEST['pwsix_action']) && $_REQUEST['pwsix_action'] == "import_settings" ) {
 				echo '<div class="updated"><p style="color: #F00;">Your file was successfully imported!</p></div>';
-				setcookie('pwsix_action', NULL, -1);
 				$num = $this->delete_transient_cache();
-			} elseif ( isset($_COOKIE['pwsix_action']) && $_COOKIE['pwsix_action'] == "default_settings_success" ) {
+			} elseif ( isset($_REQUEST['pwsix_action']) && $_REQUEST['pwsix_action'] == "default_settings_success" ) {
 				echo '<div class="updated"><p style="color: #F00;">Your default settings were successfully updated!</p></div>';
-				setcookie('pwsix_action', NULL, -1);
 				$num = $this->delete_transient_cache();
 			}
 			global $wpdb;
@@ -1855,9 +1850,6 @@ if (!class_exists("Bread")) {
 			if ( !isset($this->options['city_suffix']) ) {
 				$this->options['city_suffix'] = 'City';
 			}
-			if ( !isset($this->options['meeting_template']) || strlen(trim($this->options['meeting_template'])) == 0 ) {
-				$this->options['meeting_template'] = '1';
-			}
 			if ( !isset($this->options['meeting_template_content']) || strlen(trim($this->options['meeting_template_content'])) == 0 ) {
 				$this->options['meeting_template_content'] = '';
 			}
@@ -1878,9 +1870,6 @@ if (!class_exists("Bread")) {
 			}
 			if ( !isset($this->options['pagenumbering_font_size']) || strlen(trim($this->options['pagenumbering_font_size'])) == 0 ) {
 				$this->options['pagenumbering_font_size'] = '9';
-			}
-			if ( !isset($this->options['include_zip']) || strlen(trim($this->options['include_zip'])) == 0 ) {
-				$this->options['include_zip'] = 0;
 			}
 			if ( !isset($this->options['used_format_1']) || strlen(trim($this->options['used_format_1'])) == 0 ) {
 				$this->options['used_format_1'] = '';
@@ -2034,7 +2023,7 @@ if (!class_exists("Bread")) {
 		function pwsix_process_settings_export() {
             if ( isset($_POST['bmltmeetinglistsave']) && $_POST['bmltmeetinglistsave'] == 'Save Changes' )
                 return;
-            if( empty( $_POST['pwsix_action'] ) || 'export_settings' != $_POST['pwsix_action'] )
+            if( empty( $_REQUEST['pwsix_action'] ) || 'export_settings' != $_REQUEST['pwsix_action'] )
                 return;
             if( ! wp_verify_nonce( $_POST['pwsix_export_nonce'], 'pwsix_export_nonce' ) )
                 return;
@@ -2067,13 +2056,15 @@ if (!class_exists("Bread")) {
 		function pwsix_process_settings_import() {
 			if ( isset($_POST['bmltmeetinglistsave']) && $_POST['bmltmeetinglistsave'] == 'Save Changes' )
 				return;
-			if( empty( $_POST['pwsix_action'] ) || 'import_settings' != $_POST['pwsix_action'] )
+			if( empty( $_REQUEST['pwsix_action'] ) || 'import_settings' != $_REQUEST['pwsix_action'] )
 				return;
-			if( ! wp_verify_nonce( $_POST['pwsix_import_nonce'], 'pwsix_import_nonce' ) )
+			if( empty( $_REQUEST['pwsix_import_nonce']) || !wp_verify_nonce( $_REQUEST['pwsix_import_nonce'], 'pwsix_import_nonce' ) )
 				return;
 			if( ! current_user_can( 'manage_options' ) )
 				return;
-			$extension = end( explode( '.', $_FILES['import_file']['name'] ) );
+            $file_name = $_FILES['import_file']['name'];
+            $tmp = explode( '.',  $file_name);
+			$extension = end($tmp);
 			if( $extension != 'json' ) {
 				wp_die( __( 'Please upload a valid .json file' ) );
 			}
@@ -2088,8 +2079,7 @@ if (!class_exists("Bread")) {
             $encode_options = file_get_contents($import_file);
             $settings = json_decode($encode_options, true);
 			update_option( $this->optionsName, $settings );
-			setcookie('pwsix_action', "import_settings", time()+10); 
-			wp_safe_redirect( admin_url( '?page=bmlt-meeting-list.php' ) );
+			wp_safe_redirect( admin_url( '?page=bmlt-meeting-list.php&pwsix_action=import_settings' ) );
 		}
 
 		/**
@@ -2099,15 +2089,15 @@ if (!class_exists("Bread")) {
 			if ( ! current_user_can( 'manage_options' ) ||
 				(isset($_POST['bmltmeetinglistsave']) && $_POST['bmltmeetinglistsave'] == 'Save Changes' )) {
 				return;
-			} elseif ( isset($_POST['pwsix_action']) && 'three_column_default_settings' == $_POST['pwsix_action'] ) {
+			} elseif ( isset($_REQUEST['pwsix_action']) && 'three_column_default_settings' == $_REQUEST['pwsix_action'] ) {
 				if( ! wp_verify_nonce( $_POST['pwsix_submit_three_column'], 'pwsix_submit_three_column' ) )
 					die('Whoops! There was a problem with the data you posted. Please go back and try again.');
 				$import_file = plugin_dir_path(__FILE__) . "includes/three_column_settings.json";
-			} elseif ( isset($_POST['pwsix_action']) && 'four_column_default_settings' == $_POST['pwsix_action'] ) {
+			} elseif ( isset($_REQUEST['pwsix_action']) && 'four_column_default_settings' == $_REQUEST['pwsix_action'] ) {
 				if( ! wp_verify_nonce( $_POST['pwsix_submit_four_column'], 'pwsix_submit_four_column' ) )
 					die('Whoops! There was a problem with the data you posted. Please go back and try again.');
 				$import_file = plugin_dir_path(__FILE__) . "includes/four_column_settings.json";
-			} elseif ( isset($_POST['pwsix_action']) && 'booklet_default_settings' == $_POST['pwsix_action'] ) {
+			} elseif ( isset($_REQUEST['pwsix_action']) && 'booklet_default_settings' == $_REQUEST['pwsix_action'] ) {
 				if( ! wp_verify_nonce( $_POST['pwsix_submit_booklet'], 'pwsix_submit_booklet' ) )
 					die('Whoops! There was a problem with the data you posted. Please go back and try again.');
 				$import_file = plugin_dir_path(__FILE__) . "includes/booklet_settings.json";
@@ -2119,8 +2109,7 @@ if (!class_exists("Bread")) {
             $encode_options = file_get_contents($import_file);
             $settings = json_decode($encode_options, true);
 			update_option( $this->optionsName, $settings );
-			setcookie('pwsix_action', "default_settings_success", time()+10); 
-			wp_safe_redirect( admin_url( '?page=bmlt-meeting-list.php' ) );
+			wp_safe_redirect( admin_url( '?page=bmlt-meeting-list.php&pwsix_action=default_settings_success' ) );
 		}
 
 		/**

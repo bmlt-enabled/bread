@@ -317,7 +317,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                                 <p>Enable the <strong>Meeting Email Contact</strong> (email_contact) field in the <strong>Meeting Template</strong>.</p>
                                 <p>This feature requires a login ID and password for the service body.</p>
                                 <p>This can be Service Body Administrator or Observer.</p>
-                                <p>Visit the <a target="_blank" href="https://bmlt.magshare.net/specific-topics/bmlt-roles/">BMLT Roles</a> page for more details.</p>
+                                <p>Visit the <a target="_blank" href="https://bmlt.app/specific-topics/bmlt-roles/">BMLT Roles</a> page for more details.</p>
                                 ';
                             ?>
                             <b>Meeting Email Contact<span title='<?php echo $title; ?>' class="top-tooltip"></span></b>
