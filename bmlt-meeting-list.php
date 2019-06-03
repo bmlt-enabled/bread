@@ -938,7 +938,6 @@ if (!class_exists("Bread")) {
 			$this->mpdf->SetDefaultBodyCSS('line-height', $this->options['content_line_height']);
 			if ( $this->options['page_fold'] == 'full' ) {
 				$this->mpdf->WriteHTML("<table style='border-collapse:separate; width:100%;'>");
-				$data = '';
 			}
 			if ( $unique_states == null ) {
 				$unique_states[] = 'null';
