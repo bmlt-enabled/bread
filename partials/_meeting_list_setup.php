@@ -44,22 +44,11 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
             </div>
             <h3 class="help-accordian">Multiple Meeting Lists</h3>
             <div>
-                <p>Currently, this tool supports one meeting list per site.</p>
-                <p>The following methods could be used to get additional meeting lists.</p>
-                <p>Method 1. Install additional Wordpress installations on your server.  For example:</p>
-                <ol>
-                <li>Add a sub-domain for each meeting list. For example:</li>
-                <ul>
-                <li>area1.region.org</li>
-                <li>area2.region.org</li>
-                <li>area3.region.org</li>
-                </ul>
-                <li>Install Wordpress on each sub-domain.</li>
-                <li>Install the bread plugin on each sub-domain.</li>
-                <li>Provide the login to each Wordpress installation to each local web-servant.</li>
-                </ol>
-                <p>Method 2. Create a Wordpress multi-site installation.</p>
-                <p>Method 3. Contribute to this project so that multiple meeting lists could be configured in this plugin.</p>
+                <p>This tool supports multiple meeting lists per site.</p>
+                <p>This feature is configured from the Backup/Restore Tab.  There, each concurrent meeting list can be given a
+                    name, and the system gives the meeting list a numberic identifier.  The meeting list can then be generated using </p>
+                    a link of the form http://[host]?current-meeting-list=[id]</p>
+                <p>After switching to another concurrent meeting list, any changes in the admin UI impact the currently selected meeting list</p>
             </div>
 	        <h3 class="help-accordian">Reusable Templating</h3>
 	        <div>
