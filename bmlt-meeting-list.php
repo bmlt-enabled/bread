@@ -26,8 +26,34 @@ if (!class_exists("Bread")) {
 		var $formats_all = '';
 		
 		var $service_meeting_result ='';
-		var $optionsName = 'bmlt_meeting_list_options';
+		const SETTINGS = 'bmlt_meeting_list_settings';
+		const OPTIONS_NAME = 'bmlt_meeting_list_options';
+		var $optionsName = Bread::OPTIONS_NAME;
 		var $options = array();
+		var $outside_meeting_result = array();
+		var $allSettings = array();
+		var $maxSetting = 1;
+		var $loaded_setting = 1;
+		
+		function loadAllSettings() {
+		    $this->allSettings = get_option( Bread::SETTINGS );
+		    if ($this->allSettings === false) {
+		        $this->allSettings = array();
+		        $this->allSettings[1] = "Default Setting";
+		        $this->maxSetting = 1;
+		    } else {
+		        foreach ($this->allSettings as $key => $value ) {
+		            if ($key > $this->maxSetting) {
+		                $this->maxSetting = $key;
+		            }
+		        }
+		    }
+		}
+		function startsWith($haystack, $needle)
+		{
+		    $length = strlen($needle);
+		    return (substr($haystack, 0, $length) === $needle);
+		}
 		function __construct() {
 		    $this->protocol = (strpos(strtolower(home_url()), "https") !== false ? "https" : "http") . "://";
 		    if (is_admin() || (isset($_GET['current-meeting-list']) && intval($_GET['current-meeting-list']) == 1)) {
@@ -1665,6 +1691,7 @@ if (!class_exists("Bread")) {
 				<form method="POST" id="three_column_default_settings" name="three_column_default_settings" enctype="multipart/form-data">
 					<?php wp_nonce_field( 'pwsix_submit_three_column', 'pwsix_submit_three_column' ); ?>
 					<input type="hidden" name="pwsix_action" value="three_column_default_settings" />
+					<input type="hidden" name="current-meeting-list" value="<?php echo $this->loaded_setting?>" />
 					<div id="basicModal1">
 						<p style="color:#f00;">Your current meeting list settings will be replaced and lost forever.</p>
 						<p>Consider backing up your settings by using the Backup/Restore Tab.</p>
@@ -1673,6 +1700,7 @@ if (!class_exists("Bread")) {
 				<form method="POST" id="four_column_default_settings" name="four_column_default_settings" enctype="multipart/form-data">
 					<?php wp_nonce_field( 'pwsix_submit_four_column', 'pwsix_submit_four_column' ); ?>
 					<input type="hidden" name="pwsix_action" value="four_column_default_settings" />
+					<input type="hidden" name="current-meeting-list" value="<?php echo $this->loaded_setting?>" />
 					<div id="basicModal2">
 						<p style="color:#f00;">Your current meeting list settings will be replaced and lost forever.</p>
 						<p>Consider backing up your settings by using the Backup/Restore Tab.</p>
@@ -1681,6 +1709,7 @@ if (!class_exists("Bread")) {
 				<form method="POST" id="booklet_default_settings" name="booklet_default_settings" enctype="multipart/form-data">
 					<?php wp_nonce_field( 'pwsix_submit_booklet', 'pwsix_submit_booklet' ); ?>
 					<input type="hidden" name="pwsix_action" value="booklet_default_settings" />
+					<input type="hidden" name="current-meeting-list" value="<?php echo $this->loaded_setting?>" />
 					<div id="basicModal3">
 						<p style="color:#f00;">Your current meeting list settings will be replaced and lost forever.</p>
 						<p>Consider backing up your settings by using the Backup/Restore Tab.</p>
@@ -1940,6 +1969,7 @@ if (!class_exists("Bread")) {
 						<li><a href="#import-export"><?php _e('Backup/Restore', 'root-server'); ?></a></li>
 					</ul>
 					<form style=" display:inline!important;" method="POST" id="bmlt_meeting_list_options">
+					<input type="hidden" name="current-meeting-list" value="<?php echo $this->loaded_setting?>" />
 					<?php wp_nonce_field('closedpostboxes', 'closedpostboxesnonce', false ); ?>
 					<?php wp_nonce_field('meta-box-order', 'meta-box-order-nonce', false ); ?>
 					<?php
@@ -2018,7 +2048,51 @@ if (!class_exists("Bread")) {
 			wp_cache_flush();
 			return $num1 + $num2;
 		}
-
+		function pwsix_process_settings_admin() {
+		    if ( isset($_POST['bmltmeetinglistsave']) && $_POST['bmltmeetinglistsave'] == 'Save Changes' )
+		        return;
+		    if( empty( $_POST['pwsix_action'] ) || 'settings_admin' != $_POST['pwsix_action'] )
+		        return;
+		    if( ! wp_verify_nonce( $_POST['pwsix_settings_admin_nonce'], 'pwsix_settings_admin_nonce' ) )
+		        return;
+		    if( ! current_user_can( 'manage_options' ) )
+		        return;
+		    if (isSet($_POST['delete'])) { 
+		        if ($this->loaded_setting == 1) {
+		            return;
+		        }
+		        unset($this->allSettings[$this->loaded_setting]);
+		        if ($this->loaded_setting == $this->max_setting) {
+		            foreach ($this->allSettings as $aKey=>$aDescr) {
+		                $this->max_setting = $aKey;
+		            }
+		        }
+		        update_option(Bread::SETTINGS,$this->allSettings);
+		        $this->getMLOptions(1);
+		        $this->loaded_setting = 1;
+		    } elseif (isSet($_POST['duplicate'])) {
+		        $id = $this->maxSetting + 1;
+		        $this->optionsName = $this->genoptionName($id);
+		        $this->save_admin_options();
+		        $this->allSettings[$id] = 'Setting '.$id;
+		        update_option(Bread::SETTINGS,$this->allSettings);
+		        $this->maxSetting = $id;
+		        $this->getMLOptions($id);
+		    }
+		}
+		function pwsix_process_rename_settings() {
+		    if ( isset($_POST['bmltmeetinglistsave']) && $_POST['bmltmeetinglistsave'] == 'Save Changes' )
+		        return;
+		        if( empty( $_POST['pwsix_action'] ) || 'rename_setting' != $_POST['pwsix_action'] )
+		            return;
+		        if( ! wp_verify_nonce( $_POST['pwsix_rename_nonce'], 'pwsix_rename_nonce' ) )
+		            return;
+		        if( ! current_user_can( 'manage_options' ) )
+                    return;
+		                    
+		        $this->allSettings[$this->loaded_setting] = sanitize_text_field($_POST['setting_descr']);
+		        update_option(Bread::SETTINGS,$this->allSettings);
+		}
 		/**
 		 * Process a settings export that generates a .json file of the shop settings
 		 */
@@ -2127,15 +2201,35 @@ if (!class_exists("Bread")) {
 		* Retrieves the plugin options from the database.
 		* @return array
 		*/
-		function getMLOptions() {
+		function getMLOptions($current_setting) {
+			if ($current_setting<1 and is_admin( )) {
+		        $current_setting = 1;
+		    }
+		    if ($current_setting != 1) {
+		        $this->optionsName = $this->genoptionName($current_setting);
+		    } else {
+		        $this->optionsName = Bread::OPTIONS_NAME;
+		    }
 			//Don't forget to set up the default options
 			if (!$theOptions = get_option($this->optionsName)) {
+				if ($current_setting != 1) {
+			        unset($this->allSettings[$current_setting]);
+			        update_option(Bread::SETTINGS,$this->allSettings);
+			        die('Undefined setting: '.$current_setting);
+			    }
 				$import_file = plugin_dir_path(__FILE__) . "includes/three_column_settings.json";
 				$encode_options = file_get_contents($import_file);
 				$theOptions = json_decode($encode_options, true);
 				update_option( $this->optionsName, $theOptions );
 			}
 			$this->options = $theOptions;
+			$this->loaded_setting = $current_setting;
+		}
+        /**
+         * @param current_setting
+         */private function genOptionName($current_setting)
+        {
+            return Bread::OPTIONS_NAME.'_'.$current_setting;
 		}
 
 		/**
