@@ -55,18 +55,15 @@ if (!class_exists("Bread")) {
 		    return (substr($haystack, 0, $length) === $needle);
 		}
 		function __construct() {
-		    $this->protocol = (strpos(strtolower(home_url()), "https") !== false ? "https" : "http") . "://";
-			if (!($this->startsWith(strtolower($_SERVER['QUERY_STRING']),'current-meeting-list'))&&!is_admin() ) {
-		        return;
-		    }
+			$this->protocol = (strpos(strtolower(home_url()), "https") !== false ? "https" : "http") . "://";
+			$isCurrentMeetingListSet = isset($_REQUEST) and isset($_REQUEST['current-meeting-list']);
+			if (!$isCurrentMeetingListSet && !is_admin()) {
+				return;
+			}
 		    $this->loadAllSettings();
 		    $current_settings = 1;
-		    if (isSet($_GET) and isSet($_GET['current-meeting-list']))
-		          $current_settings = intval($_GET['current-meeting-list']);
-		    elseif (isSet($_POST) and isSet($_POST['current-meeting-list']))
-		          $current_settings = intval($_POST['current-meeting-list']);
-		    elseif (isSet($_COOKIE) and isSet($_COOKIE['current-meeting-list']))
-		          $current_settings = intval($_COOKIE['current-meeting-list']);
+		    if ($isCurrentMeetingListSet)
+		          $current_settings = intval($_REQUEST['current-meeting-list']);
             $this->getMLOptions($current_settings);
             $this->lang = $this->get_bmlt_server_lang();
             if (is_admin()) {
@@ -2066,7 +2063,7 @@ if (!class_exists("Bread")) {
 		        return;
 		    if( ! current_user_can( 'manage_options' ) )
 		        return;
-		    if (isSet($_POST['delete'])) { 
+		    if (isset($_POST['delete'])) { 
 		        if ($this->loaded_setting == 1) {
 		            return;
 		        }
@@ -2079,9 +2076,9 @@ if (!class_exists("Bread")) {
 		        update_option(Bread::SETTINGS,$this->allSettings);
 		        $this->getMLOptions(1);
 		        $this->loaded_setting = 1;
-		    } elseif (isSet($_POST['duplicate'])) {
+		    } elseif (isset($_POST['duplicate'])) {
 		        $id = $this->maxSetting + 1;
-		        $this->optionsName = $this->genoptionName($id);
+		        $this->optionsName = $this->generateOptionName($id);
 		        $this->save_admin_options();
 		        $this->allSettings[$id] = 'Setting '.$id;
 		        update_option(Bread::SETTINGS,$this->allSettings);
@@ -2216,7 +2213,7 @@ if (!class_exists("Bread")) {
 		        $current_setting = 1;
 		    }
 		    if ($current_setting != 1) {
-		        $this->optionsName = $this->genoptionName($current_setting);
+		        $this->optionsName = $this->generateOptionName($current_setting);
 		    } else {
 		        $this->optionsName = Bread::OPTIONS_NAME;
 		    }
@@ -2237,7 +2234,7 @@ if (!class_exists("Bread")) {
 		}
         /**
          * @param current_setting
-         */private function genOptionName($current_setting)
+         */private function generateOptionName($current_setting)
         {
             return Bread::OPTIONS_NAME.'_'.$current_setting;
 		}
