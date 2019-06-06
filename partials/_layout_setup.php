@@ -143,7 +143,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
         </div>
     </div>
     <input type="submit" value="Save Changes" id="bmltmeetinglistsave2" name="bmltmeetinglistsave" class="button-primary" />
-    <?php echo '<p style="display: inline; margin-top:.5em;margin-bottom:1.0em;margin-left:.2em;"><a target="_blank" class="button-primary" href="'.home_url() . '/?current-meeting-list=1">Generate Meeting List</a></p>'; ?>
+    <?php echo '<p style="display: inline; margin-top:.5em;margin-bottom:1.0em;margin-left:.2em;"><a target="_blank" class="button-primary" href="'.home_url() . '/?current-meeting-list='.$this->loaded_setting.'">Generate Meeting List</a></p>'; ?>
     <div style="display:inline;"><i>&nbsp;&nbsp;Save Changes before Generate Meeting List.</i></div>
     <br class="clear">
 </div>
