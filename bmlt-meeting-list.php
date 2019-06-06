@@ -61,7 +61,7 @@ if (!class_exists("Bread")) {
 		    }
 		    $this->loadAllSettings();
 		    $current_settings = 1;
-		    if (is_admin() || intval($_GET['current-meeting-list']) == 1 ) {
+		    if (isSet($_GET) and isSet($_GET['current-meeting-list']))
 		          $current_settings = intval($_GET['current-meeting-list']);
 		    elseif (isSet($_POST) and isSet($_POST['current-meeting-list']))
 		          $current_settings = intval($_POST['current-meeting-list']);
@@ -69,7 +69,6 @@ if (!class_exists("Bread")) {
 		          $current_settings = intval($_COOKIE['current-meeting-list']);
             $this->getMLOptions($current_settings);
             $this->lang = $this->get_bmlt_server_lang();
-
             if (is_admin()) {
                 // Back end
                 //Initialize the options
@@ -92,7 +91,6 @@ if (!class_exists("Bread")) {
                 $this->bmlt_meeting_list();
             }
 		}
-
 		function ml_default_editor() {
 			global $my_admin_page;
 			$screen = get_current_screen();
