@@ -56,32 +56,41 @@ if (!class_exists("Bread")) {
 		}
 		function __construct() {
 		    $this->protocol = (strpos(strtolower(home_url()), "https") !== false ? "https" : "http") . "://";
-		    if (is_admin() || (isset($_GET['current-meeting-list']) && intval($_GET['current-meeting-list']) == 1)) {
-                $this->getMLOptions();
-                $this->lang = $this->get_bmlt_server_lang();
-
-                if (is_admin()) {
-                    // Back end
-                    //Initialize the options
-                    add_action("admin_init", array(&$this, 'my_sideload_image'));
-                    add_action("admin_menu", array(&$this, "admin_menu_link"));
-                    add_filter('tiny_mce_before_init', array(&$this, 'tiny_tweaks' ));
-                    add_filter('mce_external_plugins', array(&$this, 'my_custom_plugins'));
-                    add_filter('mce_buttons', array(&$this, 'my_register_mce_button'));
-                    add_action("admin_notices", array(&$this, "is_root_server_missing"));
-                    add_action("admin_init", array(&$this, "pwsix_process_settings_export"));
-                    add_action("admin_init", array(&$this, "pwsix_process_settings_import"));
-                    add_action("admin_init", array(&$this, "pwsix_process_default_settings"));
-                    add_action("admin_init", array(&$this, "my_theme_add_editor_styles"));
-                    add_action("admin_enqueue_scripts", array(&$this, "enqueue_backend_files"));
-                    add_action("wp_default_editor", array(&$this, "ml_default_editor"));
-                    add_filter('tiny_mce_version', array( __CLASS__, 'force_mce_refresh' ) );
-                } else if ( intval($_GET['current-meeting-list']) == 1 ) {
-                    $this->bmlt_meeting_list();
-                }
+			if (!($this->startsWith(strtolower($_SERVER['QUERY_STRING']),'current-meeting-list'))&&!is_admin() ) {
+		        return;
+		    }
+		    $this->loadAllSettings();
+		    $current_settings = 1;
+		    if (isSet($_GET) and isSet($_GET['current-meeting-list']))
+		          $current_settings = intval($_GET['current-meeting-list']);
+		    elseif (isSet($_POST) and isSet($_POST['current-meeting-list']))
+		          $current_settings = intval($_POST['current-meeting-list']);
+		    elseif (isSet($_COOKIE) and isSet($_COOKIE['current-meeting-list']))
+		          $current_settings = intval($_COOKIE['current-meeting-list']);
+            $this->getMLOptions($current_settings);
+            $this->lang = $this->get_bmlt_server_lang();
+            if (is_admin()) {
+                // Back end
+                //Initialize the options
+				add_action("admin_init", array(&$this, 'my_sideload_image'));
+                add_action("admin_menu", array(&$this, "admin_menu_link"));
+                add_filter('tiny_mce_before_init', array(&$this, 'tiny_tweaks' ));
+                add_filter('mce_external_plugins', array(&$this, 'my_custom_plugins'));
+                add_filter('mce_buttons', array(&$this, 'my_register_mce_button'));
+                add_action("admin_notices", array(&$this, "is_root_server_missing"));
+                add_action("admin_init", array(&$this, "pwsix_process_settings_export"));
+                add_action("admin_init", array(&$this, "pwsix_process_settings_import"));
+				add_action("admin_init", array(&$this, "pwsix_process_default_settings"));
+				add_action("admin_init", array(&$this, "pwsix_process_settings_admin"));
+                add_action("admin_init", array(&$this, "pwsix_process_rename_settings"));
+                add_action("admin_init", array(&$this, "my_theme_add_editor_styles"));
+                add_action("admin_enqueue_scripts", array(&$this, "enqueue_backend_files"));
+                add_action("wp_default_editor", array(&$this, "ml_default_editor"));
+                add_filter('tiny_mce_version', array( __CLASS__, 'force_mce_refresh' ) );
+            } else if ( $current_settings >= 1 ) {
+                $this->bmlt_meeting_list();
             }
 		}
-
 		function ml_default_editor() {
 			global $my_admin_page;
 			$screen = get_current_screen();
