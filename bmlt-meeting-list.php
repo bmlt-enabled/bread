@@ -5,7 +5,7 @@ Plugin URI: http://wordpress.org/extend/plugins/bread/
 Description: Maintains and generates a PDF Meeting List from BMLT.
 Author: bmlt-enabled
 Author URI: https://bmlt.app
-Version: 1.10.1
+Version: 2.0.0
 */
 /* Disallow direct access to the plugin file */
 use Mpdf\Mpdf;
