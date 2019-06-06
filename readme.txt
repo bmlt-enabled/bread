@@ -5,7 +5,7 @@ Tags: meeting list, bmlt, narcotics anonymous, na
 Requires at least: 4.0
 Requires PHP: 5.6
 Tested up to: 5.2.1
-Stable tag: 1.10.1
+Stable tag: 2.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 A web-based tool that creates, maintains and generates a PDF meeting list from BMLT.
@@ -54,8 +54,8 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 
 == Changelog ==
 
-= 1.10.1 =
-* Fix for detailed formats not rendering [#82]
+= 2.0.0 =
+* Support for multiple configurations [#36]
 
 = 1.10.0 =
 * Limiting query size to needed fields.

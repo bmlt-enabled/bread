@@ -82,7 +82,7 @@ div#meeting-list-tabs-wrapper li {
 #meeting-list-tabs h3 {
 	font-size: 16px;
 	font-weight: 500;
-	color: #9E2121;
+	color: #495b4a;
 }
 #meeting-list-tabs .icon-forward {
 margin-top: 1px;
@@ -225,7 +225,7 @@ background: rgba(0, 0, 0, 0);
   color: #222 !important;
 }
 #meeting-list-tabs input[class=mlg]:checked+label {
-  color: #863B3B  !important;
+  color: #495b4a  !important;
   font-weight: bold !important;
 }
 /* #meeting-list-tabs input:checked + span > label {
@@ -250,7 +250,7 @@ color: #999;
   color: #000;
 }
 input:checked ~ td > label {
-  color: #863B3B  !important;
+  color: #495b4a  !important;
   font-weight: bold !important;
 }
 #meeting-list-tabs h2 {
@@ -291,7 +291,7 @@ font-size: 22px;
 .tooltipster-icon {
   cursor: help;
   margin-left: 10px;
-  background: url("images/help-image.png") no-repeat;
+  background: url("images/help-image2.png") no-repeat;
   color: rgba(0, 0, 0, 0);
   padding-right: 5px;
 }
@@ -614,7 +614,6 @@ color: #222;
 margin-bottom: 0.2em;
 padding-bottom: 0;
 border-right: 1px solid #FFF;
-background: #7AD03A;
 background-color: #7AD03A;
 }
 #meeting-list-tabs.ui-tabs.ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active a {
@@ -637,14 +636,12 @@ padding: 6px 3px !important;
 #meeting-list-tabs.ui-state-default, #meeting-list-tabs.ui-widget-content .ui-state-default, #meeting-list-tabs.ui-widget-header .ui-state-default {
 border: 1px solid #E5E5E5;
 background: #495b4a;
-background-color: #495b4a;
 font-weight: normal;
 color: #FFF;
 }
 #meeting-list-tabs .ui-accordion .ui-accordion-content {
     border: 1px solid #E5E5E5 !important;
     background-color: #FFF !important;
-    background: #FFF !important;
 	border-bottom-width: 0;
 }
 #meeting-list-tabs hr {
@@ -698,7 +695,7 @@ width: 4em !important;
     color: #FFF !important;
 }
 h3.help-accordian { background-color: #F5F5F5 !important; color: #000 !important; font-weight: 400 !important; border: 1px solid #E5E5E5 !important;}
-.help-accordian .ui-icon { background-color: #B80000; }
+.help-accordian .ui-icon { background-color: #7AD03A; }
 .videocontent {
 	width:100%;
 	max-width: 100%;
