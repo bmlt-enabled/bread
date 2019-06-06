@@ -56,36 +56,30 @@ if (!class_exists("Bread")) {
 		}
 		function __construct() {
 			$this->protocol = (strpos(strtolower(home_url()), "https") !== false ? "https" : "http") . "://";
-			$isCurrentMeetingListSet = isset($_REQUEST) and isset($_REQUEST['current-meeting-list']);
-			if (!$isCurrentMeetingListSet && !is_admin()) {
-				return;
-			}
-		    $this->loadAllSettings();
-		    $current_settings = 1;
-		    if ($isCurrentMeetingListSet)
-		          $current_settings = intval($_REQUEST['current-meeting-list']);
+
+            $this->loadAllSettings();
+            $current_settings = isset($_REQUEST['current-meeting-list']) ? intval($_REQUEST['current-meeting-list']) : 1;
             $this->getMLOptions($current_settings);
             $this->lang = $this->get_bmlt_server_lang();
-            if (is_admin()) {
-                // Back end
-                //Initialize the options
-				add_action("admin_init", array(&$this, 'my_sideload_image'));
+
+			if (isset($_REQUEST['current-meeting-list']) && !is_admin()) {
+                $this->bmlt_meeting_list();
+            } else if (is_admin()) {
+                add_action("admin_init", array(&$this, 'my_sideload_image'));
                 add_action("admin_menu", array(&$this, "admin_menu_link"));
-                add_filter('tiny_mce_before_init', array(&$this, 'tiny_tweaks' ));
+                add_filter('tiny_mce_before_init', array(&$this, 'tiny_tweaks'));
                 add_filter('mce_external_plugins', array(&$this, 'my_custom_plugins'));
                 add_filter('mce_buttons', array(&$this, 'my_register_mce_button'));
                 add_action("admin_notices", array(&$this, "is_root_server_missing"));
                 add_action("admin_init", array(&$this, "pwsix_process_settings_export"));
                 add_action("admin_init", array(&$this, "pwsix_process_settings_import"));
-				add_action("admin_init", array(&$this, "pwsix_process_default_settings"));
-				add_action("admin_init", array(&$this, "pwsix_process_settings_admin"));
+                add_action("admin_init", array(&$this, "pwsix_process_default_settings"));
+                add_action("admin_init", array(&$this, "pwsix_process_settings_admin"));
                 add_action("admin_init", array(&$this, "pwsix_process_rename_settings"));
                 add_action("admin_init", array(&$this, "my_theme_add_editor_styles"));
                 add_action("admin_enqueue_scripts", array(&$this, "enqueue_backend_files"));
                 add_action("wp_default_editor", array(&$this, "ml_default_editor"));
-                add_filter('tiny_mce_version', array( __CLASS__, 'force_mce_refresh' ) );
-            } else if ( $current_settings >= 1 ) {
-                $this->bmlt_meeting_list();
+                add_filter('tiny_mce_version', array(__CLASS__, 'force_mce_refresh'));
             }
 		}
 		function ml_default_editor() {
@@ -1965,7 +1959,6 @@ if (!class_exists("Bread")) {
 			?>
 			<?php include 'partials/_help_videos.php'; ?>
 			<div class="hide wrap" id="meeting-list-tabs-wrapper">
-				<h2>bread</h2>
 				<div id="meeting-list-tabs">
 					<ul class="nav">
 						<li><a href="#setup"><?php _e('Meeting List Setup', 'root-server'); ?></a></li>
@@ -2211,7 +2204,7 @@ if (!class_exists("Bread")) {
 		* @return array
 		*/
 		function getMLOptions($current_setting) {
-			if ($current_setting<1 and is_admin( )) {
+			if ($current_setting < 1 and is_admin( )) {
 		        $current_setting = 1;
 		    }
 		    if ($current_setting != 1) {
@@ -2223,8 +2216,8 @@ if (!class_exists("Bread")) {
 			if (!$theOptions = get_option($this->optionsName)) {
 				if ($current_setting != 1) {
 			        unset($this->allSettings[$current_setting]);
-			        update_option(Bread::SETTINGS,$this->allSettings);
-			        die('Undefined setting: '.$current_setting);
+			        update_option(Bread::SETTINGS, $this->allSettings);
+			        die('Undefined setting: '. $current_setting);
 			    }
 				$import_file = plugin_dir_path(__FILE__) . "includes/three_column_settings.json";
 				$encode_options = file_get_contents($import_file);
@@ -2234,11 +2227,10 @@ if (!class_exists("Bread")) {
 			$this->options = $theOptions;
 			$this->loaded_setting = $current_setting;
 		}
-        /**
-         * @param current_setting
-         */private function generateOptionName($current_setting)
+
+		private function generateOptionName($current_setting)
         {
-            return Bread::OPTIONS_NAME.'_'.$current_setting;
+            return Bread::OPTIONS_NAME . '_' . $current_setting;
 		}
 
 		/**
