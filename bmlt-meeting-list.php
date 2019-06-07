@@ -54,15 +54,26 @@ if (!class_exists("Bread")) {
 		    $length = strlen($needle);
 		    return (substr($haystack, 0, $length) === $needle);
 		}
+		function getCurrentMeetingListHolder() {
+			$ret = array();
+			if (isset($_REQUEST['current-meeting-list'])) {
+				$ret['current-meeting-list'] = $_REQUEST['current-meeting-list'];
+			} else if (isset($_COOKIE['current-meeting-list'])) {
+				$ret['current-meeting-list'] = $_COOKIE['current-meeting-list'];
+			}
+			return $ret;
+		}
 		function __construct() {
 			$this->protocol = (strpos(strtolower(home_url()), "https") !== false ? "https" : "http") . "://";
 
-            $this->loadAllSettings();
-            $current_settings = isset($_REQUEST['current-meeting-list']) ? intval($_REQUEST['current-meeting-list']) : 1;
+			$this->loadAllSettings();
+			$holder = $this->getCurrentMeetingListHolder();
+
+            $current_settings = isset($holder['current-meeting-list']) ? intval($holder['current-meeting-list']) : 1;
             $this->getMLOptions($current_settings);
             $this->lang = $this->get_bmlt_server_lang();
 
-			if (isset($_REQUEST['current-meeting-list']) && !is_admin()) {
+			if (isset($holder['current-meeting-list']) && !is_admin()) {
                 $this->bmlt_meeting_list();
             } else if (is_admin()) {
                 add_action("admin_init", array(&$this, 'my_sideload_image'));
@@ -2157,8 +2168,9 @@ if (!class_exists("Bread")) {
             $encode_options = file_get_contents($import_file);
             $settings = json_decode($encode_options, true);
 			update_option( $this->optionsName, $settings );
+			setcookie('pwsix_action', "import_settings", time()+10);
 			setcookie('current-meeting-list', $this->loaded_setting, time()+10);
-			wp_safe_redirect( admin_url( '?page=bmlt-meeting-list.php&pwsix_action=import_settings' ) );
+			wp_safe_redirect( admin_url( '?page=bmlt-meeting-list.php' ) );
 		}
 
 		/**
@@ -2188,7 +2200,9 @@ if (!class_exists("Bread")) {
             $encode_options = file_get_contents($import_file);
             $settings = json_decode($encode_options, true);
 			update_option( $this->optionsName, $settings );
-			wp_safe_redirect( admin_url( '?page=bmlt-meeting-list.php&pwsix_action=default_settings_success' ) );
+			setcookie('pwsix_action', "default_settings_success", time()+10);
+			setcookie('current-meeting-list', $this->loaded_setting, time()+10);
+			wp_safe_redirect( admin_url( '?page=bmlt-meeting-list.php' ) );
 		}
 
 		/**
