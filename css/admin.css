@@ -1,3 +1,39 @@
+.wpbody-content {
+	margin-top: 0;
+	margin-left: 0;
+	margin-right: 0;
+	height: 100%;
+	width: 100%;
+}
+
+#tallyBannerContainer {
+	background-image: url('images/banner_rails.png');
+	background-repeat: repeat-x;
+	background-size: 15% 100%;
+	display: block;
+	height: 15%;
+	width: auto;
+}
+
+img#tallyBannerImage {
+	display: block;
+	margin: auto;
+	height: 100%;
+	width: auto;
+}
+
+/* Portrait */
+@media only screen
+and (min-device-width: 320px)
+and (max-device-width: 480px)
+and (-webkit-min-device-pixel-ratio: 2)
+and (orientation: portrait) {
+	#tallyBannerContainer {
+		background-size: 12% 100%;
+		height: 12%;
+	}
+}
+
 .ui-accordion .ui-accordion-icons {
   padding-left: 2.2em !important; 
 }
