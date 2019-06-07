@@ -46,7 +46,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
         </div>
         <div id="normal-sortables" class="meta-box-sortables ui-sortable">
             <div id="exportdiv" class="postbox">
-                <h3 class="hndle">Export Meeting List Settings</h3>
+                <h3 class="hndle">Export Configuration</h3>
                 <div class="inside">
                     <p><?php _e( 'Export or backup meeting list settings.' ); ?></p>
                     <p><?php _e( 'This allows you to easily import meeting list settings into another site.' ); ?></p>
@@ -61,7 +61,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                 </div>
             </div>
             <div style="margin-bottom: 0px;" id="exportdiv" class="postbox">
-                <h3 class="hndle">Import Meeting List Settings</h3>
+                <h3 class="hndle">Import Configuration</h3>
                 <div class="inside">
                     <p><?php _e( 'Import meeting list settings from a previously exported meeting list.' ); ?></p>
                     <form id="form_import_file" method="post" enctype="multipart/form-data">

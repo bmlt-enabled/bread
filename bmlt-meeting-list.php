@@ -1694,7 +1694,7 @@ if (!class_exists("Bread")) {
 					<input type="hidden" name="current-meeting-list" value="<?php echo $this->loaded_setting?>" />
 					<div id="basicModal1">
 						<p style="color:#f00;">Your current meeting list settings will be replaced and lost forever.</p>
-						<p>Consider backing up your settings by using the Backup/Restore Tab.</p>
+						<p>Consider backing up your settings by using the Configuration Tab.</p>
 					</div>
 				</form>
 				<form method="POST" id="four_column_default_settings" name="four_column_default_settings" enctype="multipart/form-data">
@@ -1703,7 +1703,7 @@ if (!class_exists("Bread")) {
 					<input type="hidden" name="current-meeting-list" value="<?php echo $this->loaded_setting?>" />
 					<div id="basicModal2">
 						<p style="color:#f00;">Your current meeting list settings will be replaced and lost forever.</p>
-						<p>Consider backing up your settings by using the Backup/Restore Tab.</p>
+						<p>Consider backing up your settings by using the Configuration Tab.</p>
 					</div>
 				</form>
 				<form method="POST" id="booklet_default_settings" name="booklet_default_settings" enctype="multipart/form-data">
@@ -1712,7 +1712,7 @@ if (!class_exists("Bread")) {
 					<input type="hidden" name="current-meeting-list" value="<?php echo $this->loaded_setting?>" />
 					<div id="basicModal3">
 						<p style="color:#f00;">Your current meeting list settings will be replaced and lost forever.</p>
-						<p>Consider backing up your settings by using the Backup/Restore Tab.</p>
+						<p>Consider backing up your settings by using the Configuration Tab.</p>
 					</div>
 				</form>
 			</div>
@@ -1968,7 +1968,7 @@ if (!class_exists("Bread")) {
 						<li><a href="#meetings"><?php _e('Meetings', 'root-server'); ?></a></li>
 						<li><a href="#custom-section"><?php _e('Custom Content', 'root-server'); ?></a></li>
 						<li><a href="#last-page"><?php _e('Last Page', 'root-server'); ?></a></li>
-						<li><a href="#import-export"><?php _e('Backup/Restore', 'root-server'); ?></a></li>
+						<li><a href="#import-export"><?php _e('Configuration', 'root-server'); ?></a></li>
 					</ul>
 					<form style=" display:inline!important;" method="POST" id="bmlt_meeting_list_options">
 					<input type="hidden" name="current-meeting-list" value="<?php echo $this->loaded_setting?>" />
