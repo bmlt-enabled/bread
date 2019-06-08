@@ -246,7 +246,11 @@ if (!class_exists("Bread")) {
 					$data = ($abbreviate ? "S&#246;n" : "S&#246;ndag");
 				} elseif ( $language == 'dk') {
                     $data = ($abbreviate ? "S&#248;" : "S&#248;ndag");
-                }
+				} elseif ( $language == 'de' ) {
+				    $data = ($abbreviate ? 'So.' : "Sonntag");
+				} elseif ( $language == 'fa' ) {
+				    $data = ($abbreviate ? '' : mb_convert_encoding ('یَکشَنبه', 'HTML-ENTITIES'));
+				}
 			} elseif ( $day == 2 ) {
 				if ( $language == 'en' || $language == 'en' ) {
 					$data = ($abbreviate ? 'Mon' : "Monday");
@@ -266,7 +270,11 @@ if (!class_exists("Bread")) {
 					$data = ($abbreviate ? "M&#229;n" : "M&#229;ndag");
 				} elseif ( $language == 'dk') {
                     $data = ($abbreviate ? "Ma" : "Mandag");
-                }
+				} elseif ( $language == 'de' ) {
+				    $data = ($abbreviate ? 'Mo.' : "Montag");
+				} elseif ( $language == 'fa' ) {
+				    $data = ($abbreviate ? '' : mb_convert_encoding ('دوشَنبه', 'HTML-ENTITIES'));
+				}
 			} elseif ( $day == 3 ) {
 				if ( $language == 'en' || $language == 'en' ) {
 					$data = ($abbreviate ? 'Tue' : "Tuesday");
@@ -286,7 +294,11 @@ if (!class_exists("Bread")) {
 					$data = ($abbreviate ? "Tis" : "Tisdag");
 				} elseif ( $language == 'dk') {
                     $data = ($abbreviate ? "Ti" : "Tirsdag");
-                }
+				} elseif ( $language == 'de' ) {
+				    $data = ($abbreviate ? 'Di.' : "Dienstag");
+				} elseif ( $language == 'fa' ) {
+				    $data = ($abbreviate ? '' : mb_convert_encoding('سه‌شنبه', 'HTML-ENTITIES'));
+				}
 			} elseif ( $day == 4 ) {
 				if ( $language == 'en' || $language == 'en' ) {
 					$data = ($abbreviate ? 'Wed' : "Wednesday");
@@ -306,7 +318,11 @@ if (!class_exists("Bread")) {
 					$data = ($abbreviate ? "Ons" : "Onsdag");
 				} elseif ( $language == 'dk') {
                     $data = ($abbreviate ? "On" : "Onsdag");
-                }
+				} elseif ( $language == 'de' ) {
+				    $data = ($abbreviate ? 'Mi.' : "Mittwoch");
+				} elseif ( $language == 'fa' ) {
+				    $data = ($abbreviate ? '' : mb_convert_encoding('چهار شنبه', 'HTML-ENTITIES'));
+				}
 			} elseif ( $day == 5 ) {
 				if ( $language == 'en' || $language == 'en' ) {
 					$data = ($abbreviate ? 'Thu' : "Thursday");
@@ -326,7 +342,11 @@ if (!class_exists("Bread")) {
 					$data = ($abbreviate ? "Tors" : "Torsdag");
 				} elseif ( $language == 'dk') {
                     $data = ($abbreviate ? "To" : "Torsdag");
-                }
+				} elseif ( $language == 'de' ) {
+				    $data = ($abbreviate ? 'Do.' : "Donnerstag");
+				} elseif ( $language == 'fa' ) {
+				    $data = ($abbreviate ? '' : mb_convert_encoding ('پَنج شَنبه', 'HTML-ENTITIES'));
+				}
 			} elseif ( $day == 6 ) {
 				if ( $language == 'en' || $language == 'en' ) {
 					$data = ($abbreviate ? 'Fri' : "Friday");
@@ -346,7 +366,11 @@ if (!class_exists("Bread")) {
 					$data = ($abbreviate ? "Fre" : "Fredag");
 				} elseif ( $language == 'dk') {
                     $data = ($abbreviate ? "Fr" : "Fredag");
-                }
+				} elseif ( $language == 'de' ) {
+				    $data = ($abbreviate ? 'Fr.' : "Freitag");
+				} elseif ( $language == 'fa' ) {
+				    $data = ($abbreviate ? '' : mb_convert_encoding ('جُمعه', 'HTML-ENTITIES'));
+				}
 			} elseif ( $day == 7 ) {
 				if ( $language == 'en' || $language == 'en' ) {
 					$data = ($abbreviate ? 'Sat' : "Saturday");
@@ -366,7 +390,11 @@ if (!class_exists("Bread")) {
 					$data = ($abbreviate ? "L&#246;r" : "L&#246;rdag");
 				} elseif ( $language == 'dk') {
                     $data = ($abbreviate ? "L&#248;" : "L&#248;rdag");
-                }
+				} elseif ( $language == 'de' ) {
+				    $data = ($abbreviate ? 'Sa.' : "Samstag");
+				} elseif ( $language == 'fa' ) {
+				    $data = ($abbreviate ? '' : mb_convert_encoding ('شَنبه', 'HTML-ENTITIES'));
+				}
 			}
 			
 			Return utf8_encode($data);
@@ -1053,6 +1081,8 @@ if (!class_exists("Bread")) {
 						
 						if ( $this->options['weekday_language'] === 'fr' ) {
 							$cont = '(suite)';							
+						} else if ( $this->options['weekday_language'] == 'de') {
+						    $cont = '(weiter)';
 						} else if ( $this->options['weekday_language'] === 'se' || $this->options['weekday_language'] === 'dk' ) {
                             $cont = '(forts)';
                         } else {
@@ -1203,7 +1233,11 @@ if (!class_exists("Bread")) {
 							$addtime = '+ ' . $minutes . ' minutes';
 							$end_time = date ($time_format,strtotime($meeting_value['start_time'] . ' ' . $addtime));
 							$meeting_value['start_time'] = date($time_format,strtotime($meeting_value['start_time']));
-							$meeting_value['start_time'] = $meeting_value['start_time'].$space.'-'.$space.$end_time;
+							if ($this->options['weekday_language']=='fa') {
+								$meeting_value['start_time'] = $this->toPersianNum($end_time).$space.'-'.$space.$this->toPersianNum($meeting_value['start_time']);
+							} else {
+								$meeting_value['start_time'] = $meeting_value['start_time'].$space.'-'.$space.$end_time;
+							}
 						} elseif ( $this->options['time_option'] == '3' ) {
 							$time_array = array("1:00", "2:00", "3:00", "4:00", "5:00", "6:00", "7:00", "8:00", "9:00", "10:00", "11:00", "12:00");
 							$temp_start_time = date("g:i",strtotime($meeting_value['start_time']));
@@ -1510,6 +1544,25 @@ if (!class_exists("Bread")) {
 				$month = utf8_encode(strftime("%^B"));
 				setlocale(LC_TIME,NULL);
 				$this->options['front_page_content'] = str_replace("[month_upper_es]", $month, $this->options['front_page_content']);
+			}
+			if ( strpos($this->options['front_page_content'], '[month_lower_de') !== false ) {
+			    setlocale( LC_TIME, 'de_DE' );
+			    $month = ucfirst(utf8_encode(strftime("%B")));
+			    setlocale(LC_TIME,NULL);
+			    $this->options['front_page_content'] = str_replace("[month_lower_de]", $month, $this->options['front_page_content']);
+			}
+			
+			if ( strpos($this->options['front_page_content'], '[month_upper_de') !== false ) {
+			    setlocale( LC_TIME, "de_DE.utf8" );
+			    $month = utf8_encode(strftime("%B"));
+			    setlocale(LC_TIME,NULL);
+			    $this->options['front_page_content'] = str_replace("[month_upper_de]", $month, $this->options['front_page_content']);
+			}
+			if ( strpos($this->options['front_page_content'], '[month_lower_fa]') !== false ) {
+			    setlocale( LC_TIME, 'fa_IR' );
+			    $month = mb_convert_encoding (strftime("%B"), 'HTML-ENTITIES');
+			    setlocale(LC_TIME,NULL);
+			    $this->options['front_page_content'] = str_replace("[month_lower_fa]", $month, $this->options['front_page_content']);
 			}
 			$this->options['front_page_content'] = str_replace("[month_lower]", date ( "F" ), $this->options['front_page_content']);
 			$this->options['front_page_content'] = str_replace("[month_upper]", strtoupper( date ( "F" ) ), $this->options['front_page_content']);
@@ -2036,6 +2089,20 @@ if (!class_exists("Bread")) {
 				<textarea>test</textarea>
 			</div>
 <?php
+		}
+		function toPersianNum($number)
+		{
+		    $number = str_replace("1","۱",$number);
+		    $number = str_replace("2","۲",$number);
+		    $number = str_replace("3","۳",$number);
+		    $number = str_replace("4","۴",$number);
+		    $number = str_replace("5","۵",$number);
+		    $number = str_replace("6","۶",$number);
+		    $number = str_replace("7","۷",$number);
+		    $number = str_replace("8","۸",$number);
+		    $number = str_replace("9","۹",$number);
+		    $number = str_replace("0","۰",$number);
+		    return $number;
 		}
 
 		/**
