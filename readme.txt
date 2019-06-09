@@ -56,6 +56,7 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 
 = 2.0.0 =
 * Support for multiple configurations [#36]
+* German and Farsi support
 
 = 1.10.0 =
 * Limiting query size to needed fields.
