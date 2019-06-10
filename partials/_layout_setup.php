@@ -64,6 +64,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     <p>
                     <input class="mlg" id="5inch" type="radio" name="page_size" value="5inch" <?php echo ($this->options['page_size'] == '5inch' ? 'checked' : '') ?>><label for="5inch">Booklet (11" X 8.5")&nbsp;&nbsp;&nbsp;</label>
                     <input class="mlg" id="A5" type="radio" name="page_size" value="A5" <?php echo ($this->options['page_size'] == 'A5' ? 'checked' : '') ?>><label for="A5">Booklet-A5 (297mm X 210mm)&nbsp;&nbsp;&nbsp;</label>
+                    <input class="mlg" id="A6" type="radio" name="page_size" value="A6" <?php echo ($this->options['page_size'] == 'A6' ? 'checked' : '') ?>><label for="A6">Booklet-A6 (210mm X 142mm)&nbsp;&nbsp;&nbsp;</label>
                     <input class="mlg" id="letter" type="radio" name="page_size" value="letter" <?php echo ($this->options['page_size'] == 'letter' ? 'checked' : '') ?>><label for="letter">Letter (8.5" X 11")&nbsp;&nbsp;&nbsp;</label>
                     <input class="mlg" id="legal" type="radio" name="page_size" value="legal" <?php echo ($this->options['page_size'] == 'legal' ? 'checked' : '') ?>><label for="legal">Legal (8.5" X 14")&nbsp;&nbsp;&nbsp;</label>
                     <input class="mlg" id="ledger" type="radio" name="page_size" value="ledger" <?php echo ($this->options['page_size'] == 'ledger' ? 'checked' : '') ?>><label for="ledger">Ledger (17" X 11")&nbsp;&nbsp;&nbsp;</label>
@@ -76,6 +77,14 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         Bottom: <input min="0" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="margin_bottom" name="margin_bottom" value="<?php echo esc_html($this->options['margin_bottom']); ?>" />&nbsp;&nbsp;&nbsp;
                         Left: <input min="0" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="margin_left" name="margin_left" value="<?php echo esc_html($this->options['margin_left']); ?>" />&nbsp;&nbsp;&nbsp;
                         Right: <input min="0" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="margin_right" name="margin_right" value="<?php echo esc_html($this->options['margin_right']); ?>" />&nbsp;&nbsp;&nbsp;
+                        </p>
+                    </div>
+                    <div id="watermarkandheaderdiv" style="border-top: 1px solid #EEE;">
+                        <p>
+                        Header Margin Top: <input min="0" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="margin_header" name="margin_header" value="<?php echo esc_html($this->options['margin_header']); ?>" />&nbsp;&nbsp;&nbsp;
+                        Header Fontsize: <input min="0" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="pageheader_fontsize" name="pageheader_fontsize" value="<?php echo esc_html($this->options['pageheader_fontsize']); ?>" />&nbsp;&nbsp;&nbsp;
+                        <br>Header Text: <input size="100" type="text" id="pageheader_text" name="pageheader_text" value="<?php echo esc_html($this->options['pageheader_text']); ?>" />&nbsp;&nbsp;&nbsp;
+                        <br>Watermark: <input size="100" type="text" id="watermark" name="watermark" value="<?php echo isSet($this->options['watermark'])?esc_html($this->options['watermark']) : ''; ?>" />&nbsp;&nbsp;&nbsp;
                         </p>
                     </div>
                     <div id="pagenodiv" style="border-top: 1px solid #EEE;">
