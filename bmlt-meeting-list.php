@@ -672,7 +672,9 @@ if (!class_exists("Bread")) {
 			if ( $this->options['page_fold'] == 'half' && $this->options['page_size'] == '5inch' ) {
 			    $page_type_settings = ['format' => array(197.2,279.4), 'margin_footer' => 5];
 			} elseif ( $this->options['page_fold'] == 'half' && $this->options['page_size'] == 'A5' ) {
-                $page_type_settings = ['format' => 'A5', 'margin_footer' => 5];
+				$page_type_settings = ['format' => 'A5', 'margin_footer' => 5];
+			} elseif ( $this->options['page_fold'] == 'half' && $this->options['page_size'] == 'A6' ) {
+			    $page_type_settings = ['format' => 'A6', 'margin_footer' => 5];
 			} elseif ( $this->options['page_size'] . '-' .$this->options['page_orientation'] == 'ledger-L' ) {
                 $page_type_settings = ['format' => array(432,279), 'margin_footer' => 0];
 			} elseif ( $this->options['page_size'] . '-' .$this->options['page_orientation'] == 'ledger-P' ) {
@@ -717,6 +719,7 @@ if (!class_exists("Bread")) {
 					'margin_right' => $this->options['margin_right'],
 					'margin_top' => $this->options['margin_top'],
 					'margin_bottom' => $this->options['margin_bottom'],
+					'margin_header' => $this->options['margin_header'],
 					'orientation' => 'P'
 				];
             }
@@ -730,6 +733,7 @@ if (!class_exists("Bread")) {
 					'margin_right' => $this->options['margin_right'],
 					'margin_top' => $this->options['margin_top'],
 					'margin_bottom' => $this->options['margin_bottom'],
+					'margin_header' => $this->options['margin_header'],
 					'orientation' => 'P'
 				];
             }
@@ -739,8 +743,12 @@ if (!class_exists("Bread")) {
 
             // TODO: Adding a page number really could just be an option or tag.
             if ( $this->options['page_fold'] == 'half' &&
-                 ($this->options['page_size'] == '5inch' || $this->options['page_size'] == 'A5')) {
-                $this->mpdf->DefHTMLFooterByName('MyFooter','<div style="text-align:center;font-size:' . $this->options['pagenumbering_font_size'] . 'pt;font-style: italic;">Page {PAGENO}</div>');
+				 ($this->options['page_size'] == '5inch' || $this->options['page_size'] == 'A5' || $this->options['page_size'] == 'A6')) {
+					$page_string = "Page";
+					if ($this->options['weekday_language']=='de') {
+						$page_string = "Seite";
+					} //TODO: Other Languages
+                $this->mpdf->DefHTMLFooterByName('MyFooter','<div style="text-align:center;font-size:' . $this->options['pagenumbering_font_size'] . 'pt;font-style: italic;">'.$page_string.' {PAGENO}</div>');
             }
 
 			$this->mpdf->simpleTables = false;
@@ -804,6 +812,17 @@ if (!class_exists("Bread")) {
 
             $data_field_keys = 'id_bigint,service_body_bigint,weekday_tinyint,start_time,duration_time,formats,email_contact,comments,location_city_subsection,location_nation,location_postal_code_1,location_province,location_sub_province,location_municipality,location_neighborhood,location_street,location_info,location_text,meeting_name,bus_lines,format_shared_id_list';
 
+			if (isSet($this->options['pageheader_text'])) {
+			    $this->mpdf->SetHTMLHeader('
+<div style="vertical-align: top; text-align: center; font-weight: bold; font-size:'.$this->options['pageheader_fontsize'].'pt; line-height:25pt">
+    '.$this->options['pageheader_text'].'
+</div>',
+			        'O');
+			}
+			if (isSet($this->options['watermark'])) {
+			    $this->mpdf->SetWatermarkImage($this->options['watermark'],0.2,'F');
+			    $this->mpdf->showWatermarkImage = true;
+			}
 			if ( $this->options['meeting_sort'] == 'state' ) {
 				$sort_keys = 'location_province,location_municipality,weekday_tinyint,start_time,meeting_name';
 			} elseif ( $this->options['meeting_sort'] == 'city' ) {
@@ -1426,7 +1445,19 @@ if (!class_exists("Bread")) {
                         'margin_bottom' => 0,
                         'margin_footer' => 6,
                         'orientation' => 'L'
-                    ]);
+					]);
+				} else if ( $this->options['page_size'] == 'A6' ) {
+				    $this->mpdftmp=new mPDF([
+				        'mode' => $mode,
+				        'format' => 'A5-L',
+				        'default_font_size' => '7',
+				        'margin_left' => 0,
+				        'margin_right' => 0,
+				        'margin_top' => 0,
+				        'margin_bottom' => 0,
+				        'margin_footer' => 0,
+				        'orientation' => 'P'
+				    ]);
 				} else {
 					$this->mpdftmp=new mPDF([
                         'mode' => $mode,
@@ -1586,7 +1617,7 @@ if (!class_exists("Bread")) {
 			$this->options['front_page_content'] = str_replace('[start_page_numbers]', '<sethtmlpagefooter name="MyFooter" page="ALL" value="1" />', $this->options['front_page_content']);
 			$this->options['front_page_content'] = mb_convert_encoding($this->options['front_page_content'], 'HTML-ENTITIES');
 			$this->mpdf->WriteHTML(utf8_encode(wpautop(stripslashes($this->options['front_page_content']))));
-
+			$this->mpdf->showWatermarkImage = false;
 		}
 
 		function write_last_page() {
@@ -1806,6 +1837,9 @@ if (!class_exists("Bread")) {
 				$this->options['margin_left'] = intval($_POST['margin_left']);
 				$this->options['margin_bottom'] = intval($_POST['margin_bottom']);
 				$this->options['margin_top'] = intval($_POST['margin_top']);
+				$this->options['pageheader_fontsize'] = intval($_POST['pageheader_fontsize']);
+				$this->options['pageheader_text'] = sanitize_text_field($_POST['pageheader_text']);
+				$this->options['watermark'] = sanitize_text_field($_POST['watermark']);	
 				$this->options['page_size'] = sanitize_text_field($_POST['page_size']);
 				$this->options['page_orientation'] = validate_page_orientation($_POST['page_orientation']);
 				$this->options['page_fold'] = sanitize_text_field($_POST['page_fold']);
