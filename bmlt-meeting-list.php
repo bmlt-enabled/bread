@@ -812,14 +812,14 @@ if (!class_exists("Bread")) {
 
             $data_field_keys = 'id_bigint,service_body_bigint,weekday_tinyint,start_time,duration_time,formats,email_contact,comments,location_city_subsection,location_nation,location_postal_code_1,location_province,location_sub_province,location_municipality,location_neighborhood,location_street,location_info,location_text,meeting_name,bus_lines,format_shared_id_list';
 
-			if (isSet($this->options['pageheader_text'])) {
+			if (isset($this->options['pageheader_text'])) {
 			    $this->mpdf->SetHTMLHeader('
 <div style="vertical-align: top; text-align: center; font-weight: bold; font-size:'.$this->options['pageheader_fontsize'].'pt; line-height:25pt">
     '.$this->options['pageheader_text'].'
 </div>',
 			        'O');
 			}
-			if (isSet($this->options['watermark'])) {
+			if (isset($this->options['watermark'])) {
 			    $this->mpdf->SetWatermarkImage($this->options['watermark'],0.2,'F');
 			    $this->mpdf->showWatermarkImage = true;
 			}
