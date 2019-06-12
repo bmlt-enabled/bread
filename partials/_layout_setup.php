@@ -83,8 +83,8 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         <p>
                         Header Margin Top: <input min="0" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="margin_header" name="margin_header" value="<?php echo esc_html($this->options['margin_header']); ?>" />&nbsp;&nbsp;&nbsp;
                         Header Fontsize: <input min="0" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="pageheader_fontsize" name="pageheader_fontsize" value="<?php echo esc_html($this->options['pageheader_fontsize']); ?>" />&nbsp;&nbsp;&nbsp;
-                        <br>Header Text: <input size="100" type="text" id="pageheader_text" name="pageheader_text" value="<?php echo esc_html($this->options['pageheader_text']); ?>" />&nbsp;&nbsp;&nbsp;
-                        <br>Watermark: <input size="100" type="text" id="watermark" name="watermark" value="<?php echo isSet($this->options['watermark'])?esc_html($this->options['watermark']) : ''; ?>" />&nbsp;&nbsp;&nbsp;
+                        <br>Header Text: <input size="100" type="text" id="pageheader_text" name="pageheader_text" value="<?php echo isset($this->options['pageheader_text']) ? esc_html($this->options['pageheader_text']) : ''; ?>" />&nbsp;&nbsp;&nbsp;
+                        <br>Watermark: <input size="100" type="text" id="watermark" name="watermark" value="<?php echo isset($this->options['watermark']) ? esc_html($this->options['watermark']) : ''; ?>" />&nbsp;&nbsp;&nbsp;
                         </p>
                     </div>
                     <div id="pagenodiv" style="border-top: 1px solid #EEE;">
