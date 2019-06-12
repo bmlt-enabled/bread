@@ -621,6 +621,7 @@ if (!class_exists("Bread")) {
 			if ( !isset($this->options['margin_left']) ) {$this->options['margin_left'] = 3;}
 			if ( !isset($this->options['margin_bottom']) ) {$this->options['margin_bottom'] = 3;}
 			if ( !isset($this->options['margin_top']) ) {$this->options['margin_top'] = 3;}
+            if ( !isset($this->options['margin_header']) ) {$this->options['margin_header'] = 3;}
 			if ( !isset($this->options['page_size']) ) {$this->options['page_size'] = 'legal';}
 			if ( !isset($this->options['page_orientation']) ) {$this->options['page_orientation'] = 'L';}
 			if ( !isset($this->options['page_fold']) ) {$this->options['page_fold'] = 'quad';}
@@ -1840,6 +1841,7 @@ if (!class_exists("Bread")) {
 				$this->options['margin_left'] = intval($_POST['margin_left']);
 				$this->options['margin_bottom'] = intval($_POST['margin_bottom']);
 				$this->options['margin_top'] = intval($_POST['margin_top']);
+                $this->options['margin_header'] = intval($_POST['margin_header']);
 				$this->options['pageheader_fontsize'] = intval($_POST['pageheader_fontsize']);
 				$this->options['pageheader_text'] = sanitize_text_field($_POST['pageheader_text']);
 				$this->options['watermark'] = sanitize_text_field($_POST['watermark']);	
