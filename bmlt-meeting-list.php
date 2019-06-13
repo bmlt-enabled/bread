@@ -5,7 +5,7 @@ Plugin URI: http://wordpress.org/extend/plugins/bread/
 Description: Maintains and generates a PDF Meeting List from BMLT.
 Author: bmlt-enabled
 Author URI: https://bmlt.app
-Version: 1.10.0
+Version: 1.10.1
 */
 /* Disallow direct access to the plugin file */
 use Mpdf\Mpdf;
@@ -1540,9 +1540,9 @@ if (!class_exists("Bread")) {
 		}
 
 		function write_formats($formats, $page) {
-			if ( $formats == Null ) { return ''; }
+			if ( $formats == null ) { return ''; }
 			$this->mpdf->WriteHTML('td{font-size: '.$this->options[$page.'_font_size']."pt;line-height:".$this->options[$page.'_line_height'].';}',1);
-			$data = "<table style='width:100%;font-size:".$this->options[$page.'_font_size']."pt;line-height:".$this->options[$page.'_line_height'].";'>";
+			$data = "<table style='width:100%;font-size:".$this->options[$page.'_font_size']."pt;line-height:".$this->options[$page.'_line_height'].";>";
 			for ( $count = 0; $count < count ( $formats ); $count++ ) {
 				$data .= '<tr>';
 				$data .= "<td style='padding-left:4px;border:1px solid #555;border-right:0;width:12%;vertical-align:top;'>".$formats[$count]['key_string']."</td>";
@@ -1557,16 +1557,13 @@ if (!class_exists("Bread")) {
 		}
 
 		function write_detailed_formats($formats, $page) {
-			if ( $formats == Null ) { return ''; }
+			if ( $formats == null ) { return ''; }
 			$this->mpdf->WriteHTML('td{font-size: '.$this->options[$page.'_font_size']."pt;line-height:".$this->options[$page.'_line_height'].';}',1);
-			$data = "<table style='font-size:".$this->options[$page.'_font_size']."pt;line-height:".$this->options[$page.'_line_height']."; width: 100%;'>";
-			$countmax = count ( $formats );
-			for ( $count = 0; $count < $countmax; $count++ ) {
-			    if (isset($this->options[$page.'_font_size']) && isset($this->options[$page . '_page_line_height'])) {
-                    $data .= '<tr>';
-                    $data .= "<td style='border-bottom:1px solid #555;width:8%;vertical-align:top;'><span style='font-size:" . $this->options[$page . '_font_size'] . "pt;line-height:" . $this->options[$page . '_page_line_height'] . ";font-weight:bold;'>" . $formats[$count]['key_string'] . "</span></td>";
-                    $data .= "<td style='border-bottom:1px solid #555;width:92%;vertical-align:top;'><span style='font-size:" . $this->options[$page . '_font_size'] . "pt;line-height:" . $this->options[$page . '_page_line_height'] . ";'>(" . $formats[$count]['name_string'] . ") " . $formats[$count]['description_string'] . "</span></td>";
-                    $data .= "</tr>";
+			$data = "<table style='width:100%;font-size:".$this->options[$page.'_font_size']."pt;line-height:".$this->options[$page.'_line_height'].";'>";
+			for ( $count = 0; $count < count ( $formats ); $count++ ) {
+			    if (isset($this->options[$page.'_font_size']) && isset($this->options[$page . '_line_height'])) {
+                    $data .= "<tr><td style='border-bottom:1px solid #555;width:8%;vertical-align:top;'><span style='font-size:" . $this->options[$page . '_font_size'] . "pt;line-height:" . $this->options[$page . '_line_height'] . ";font-weight:bold;'>" . $formats[$count]['key_string'] . "</span></td>";
+                    $data .= "<td style='border-bottom:1px solid #555;width:92%;vertical-align:top;'><span style='font-size:" . $this->options[$page . '_font_size'] . "pt;line-height:" . $this->options[$page . '_line_height'] . ";'>(" . $formats[$count]['name_string'] . ") " . $formats[$count]['description_string'] . "</span></td></tr>";
                 }
 			}
 			$data .= "</table>";
@@ -1574,7 +1571,7 @@ if (!class_exists("Bread")) {
 		}
 
 		function write_service_meetings($font_size, $line_height) {
-			if ( $this->service_meeting_result == Null ) {
+			if ( $this->service_meeting_result == null ) {
 				return '';
 			}
 			$data = '';
