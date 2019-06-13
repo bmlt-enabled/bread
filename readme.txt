@@ -57,6 +57,10 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 = 2.0.0 =
 * Support for multiple configurations [#36]
 * German and Farsi support
+* New layout options
+  - A6 Booklet (fits more meetings than flyer, but more convenient to carry around than A5)
+  - Watermarks (typically the NA Logo, but you can be creative here)
+  - Page Headers (good when generating posters)
 
 = 1.10.0 =
 * Limiting query size to needed fields.
