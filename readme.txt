@@ -55,7 +55,7 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 == Changelog ==
 
 = 1.10.1 =
-* Fix for detailed formats not rendering.
+* Fix for detailed formats not rendering [#82]
 
 = 1.10.0 =
 * Limiting query size to needed fields.
