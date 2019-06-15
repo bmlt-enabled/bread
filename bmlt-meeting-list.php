@@ -482,27 +482,27 @@ if (!class_exists("Bread")) {
 
             return wp_remote_get($url, $args);
 		}
-		function get_all_meetings() {
-			$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults&data_field_key=weekday_tinyint,start_time,service_body_bigint,id_bigint,meeting_name,location_text,email_contact&sort_keys=meeting_name,service_body_bigint,weekday_tinyint,start_time");
-			$result = json_decode(wp_remote_retrieve_body($results),true);
+		// function get_all_meetings() {
+		// 	$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults&data_field_key=weekday_tinyint,start_time,service_body_bigint,id_bigint,meeting_name,location_text,email_contact&sort_keys=meeting_name,service_body_bigint,weekday_tinyint,start_time");
+		// 	$result = json_decode(wp_remote_retrieve_body($results),true);
 			
-			$unique_areas = $this->get_areas();			
-			$all_meetings = array();
-			foreach ($result as $value) {
-				foreach($unique_areas as $unique_area){
-					$area_data = explode(',',$unique_area);
-					$area_id = $area_data[1];
-					if ( $area_id === $value['service_body_bigint'] ) {
-						$area_name = $area_data[0];
-					}
-				}							
+		// 	$unique_areas = $this->get_areas();			
+		// 	$all_meetings = array();
+		// 	foreach ($result as $value) {
+		// 		foreach($unique_areas as $unique_area){
+		// 			$area_data = explode(',',$unique_area);
+		// 			$area_id = $area_data[1];
+		// 			if ( $area_id === $value['service_body_bigint'] ) {
+		// 				$area_name = $area_data[0];
+		// 			}
+		// 		}							
 				
-				$value['start_time'] = date("g:iA",strtotime($value['start_time']));
-				$all_meetings[] = $value['meeting_name'].'||| ['.$this->getday($value['weekday_tinyint'], true, $this->lang).'] ['.$value['start_time'].']||| ['.$area_name.']||| ['.$value['id_bigint'].']';
-			}
+		// 		$value['start_time'] = date("g:iA",strtotime($value['start_time']));
+		// 		$all_meetings[] = $value['meeting_name'].'||| ['.$this->getday($value['weekday_tinyint'], true, $this->lang).'] ['.$value['start_time'].']||| ['.$area_name.']||| ['.$value['id_bigint'].']';
+		// 	}
 			
-			return $all_meetings;
-		}
+		// 	return $all_meetings;
+		// }
 
 		function get_areas() {
 			$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetServiceBodies");
@@ -976,30 +976,6 @@ if (!class_exists("Bread")) {
 			foreach($this->formats_all as $thisFormat) {
 			    $this->formats_by_key[$thisFormat['key_string']] = $thisFormat;
 			}
-			$section_shortcodes = array(
-				'[meeting_count]' 				=> $this->meeting_count,
-				'<h2>'							=> '<h2 style="font-size:'.$this->options['front_page_font_size'] . 'pt!important;">',
-				'<div>[page_break]</div>'		=>  '<pagebreak />',
-				'<p>[page_break]</p>'			=>  '<pagebreak />',
-				'[page_break]'					=>  '<pagebreak />',
-				'<!--nextpage-->'				=>  '<pagebreak />',
-				"[area]"						=>  strtoupper($this->options['service_body_1']),
-				'[page_break no_page_number]'	=> '<sethtmlpagefooter name="" value="0" /><pagebreak />',
-				'[start_page_numbers]'			=> '<sethtmlpagefooter name="MyFooter" page="ALL" value="1" />',
-				"[month_lower]"					=> date ( "F" ),
-				"[month_upper]"					=> strtoupper( date ( "F" ) ),
-				"[month]"						=> strtoupper( date ( "F" ) ),
-				"[day]"							=> strtoupper( date ( "j" ) ),
-				"[year]"						=> strtoupper( date ( "Y" ) ),
-				"[service_body]"				=> strtoupper($this->options['service_body_1']),
-				"[service_body_1]"				=> strtoupper($this->options['service_body_1']),
-				"[service_body_2]"				=> strtoupper($this->options['service_body_2']),
-				"[service_body_3]"				=> strtoupper($this->options['service_body_3']), 
-				"[service_body_4]"				=> strtoupper($this->options['service_body_4']),
-				"[service_body_5]"				=> strtoupper($this->options['service_body_5']),
-		
-			);
-			apply_filters("Bread_Enhance_Section_Shortcodes",$this);
 			$this->uniqueFormat($this->formats_used, 'key_string');
             $this->uniqueFormat($this->formats_all, 'key_string');
 			$this->meeting_count = count($result_meetings);
@@ -1072,6 +1048,31 @@ if (!class_exists("Bread")) {
 				$this->options['page_fold'] = 'quad';
 				$num_columns = 4;
 			}
+			$this->section_shortcodes = array(
+				'[meeting_count]' 				=> $this->meeting_count,
+				'<h2>'							=> '<h2 style="font-size:'.$this->options['front_page_font_size'] . 'pt!important;">',
+				'<div>[page_break]</div>'		=>  '<pagebreak />',
+				'<p>[page_break]</p>'			=>  '<pagebreak />',
+				'[page_break]'					=>  '<pagebreak />',
+				'<!--nextpage-->'				=>  '<pagebreak />',
+				"[area]"						=>  strtoupper($this->options['service_body_1']),
+				'[page_break no_page_number]'	=> '<sethtmlpagefooter name="" value="0" /><pagebreak />',
+				'[start_page_numbers]'			=> '<sethtmlpagefooter name="MyFooter" page="ALL" value="1" />',
+				"[month_lower]"					=> date ( "F" ),
+				"[month_upper]"					=> strtoupper( date ( "F" ) ),
+				"[month]"						=> strtoupper( date ( "F" ) ),
+				"[day]"							=> strtoupper( date ( "j" ) ),
+				"[year]"						=> strtoupper( date ( "Y" ) ),
+				"[service_body]"				=> strtoupper($this->options['service_body_1']),
+				"[service_body_1]"				=> strtoupper($this->options['service_body_1']),
+				"[service_body_2]"				=> strtoupper($this->options['service_body_2']),
+				"[service_body_3]"				=> strtoupper($this->options['service_body_3']), 
+				"[service_body_4]"				=> strtoupper($this->options['service_body_4']),
+				"[service_body_5]"				=> strtoupper($this->options['service_body_5']),
+		
+			);
+			$this->section_shortcodes = apply_filters("Bread_Section_Shortcodes",$this->section_shortcodes, $unique_areas, $this->formats_used);
+
 			$this->mpdf->SetColumns($num_columns, '', $this->options['column_gap']);
 			$header_style = "color:".$this->options['header_text_color'].";";
 			$header_style .= "background-color:".$this->options['header_background_color'].";";
@@ -1360,7 +1361,7 @@ if (!class_exists("Bread")) {
 							$meeting_value['area_name'] = $area_name;
 							$meeting_value['area_i'] = substr($area_name, 0, 1);
 
-							//apply_filters("Bread_Enrich_Meeting", $meeting_value, $this->formats_by_key);
+							$meeting_value = apply_filters("Bread_Enrich_Meeting_Data", $meeting_value, $this->formats_by_key);
 							$data = $this->options['meeting_template_content'];
 							$data = str_replace("&nbsp;", " ", $data);
 							$search_strings = array();
@@ -1397,7 +1398,7 @@ if (!class_exists("Bread")) {
 								',</'			=> '</',
 								', </'			=> '</',
 							);
-							foreach($meeting_value as $key=>$value) {
+							foreach($clean_up as $key=>$value) {
 								$search_strings[] = $key;
 								$replacements[] = $value;
 							}
