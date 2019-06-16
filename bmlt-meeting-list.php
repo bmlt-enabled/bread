@@ -55,7 +55,7 @@ if (!class_exists("Bread")) {
 			'day_abbr',
 			'area_name',
 		);	
-		var $synonyms = array (
+		var $legacy_synonyms = array (
 			'borough' 	=> 'location_city_subsection',
 			'time' 		=> 'start_time',
 			'state'		=> 'location_province',
@@ -182,12 +182,16 @@ if (!class_exists("Bread")) {
 			global $my_admin_page;
 			$screen = get_current_screen();
 			if ( $screen->id == $my_admin_page ) {
-				$plugins = array('table', 'front_page_button', 'code', 'contextmenu' ); //Add any more plugins you want to load here
+				$plugins = array('table', 'code', 'contextmenu' ); //Add any more plugins you want to load here
 				$plugins_array = array();
 				//Build the response - the key is the plugin name, value is the URL to the plugin JS
 				foreach ($plugins as $plugin ) {
 				  $plugins_array[ $plugin ] = plugins_url('tinymce/', __FILE__) . $plugin . '/plugin.min.js';
 				}
+				$shortcode_menu = array();
+				$shortcode_menu['front_page_button'] = plugins_url('tinymce/', __FILE__) . 'front_page_button/plugin.min.js';
+				$shortcode_menu = apply_filters("Bread_Adjust_Menu", $shortcode_menu);
+				$plugins_array = array_merge($plugins_array, $shortcode_menu);
 			}
 			return $plugins_array;
 		}	
@@ -1370,7 +1374,7 @@ if (!class_exists("Bread")) {
 								$search_strings[] = $field;
 								$replacements[] = $this->get_field($meeting_value,$field);
 							}
-							foreach($this->synonyms as $syn=>$field) {
+							foreach($this->legacy_synonyms as $syn=>$field) {
 								$search_strings[] = $syn;
 								$replacements[] = $this->get_field($meeting_value,$field);
 							}
@@ -1726,8 +1730,7 @@ if (!class_exists("Bread")) {
 			$data .= "</table>";
 			return $data;
 		}
-		private function parse_field($text)
-        {
+		private function parse_field($text) {
             if ($text!='') {
                 $exploded = explode("#@-@#", $text);
                 if (count($exploded) > 1) {
