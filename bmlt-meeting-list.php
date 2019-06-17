@@ -190,7 +190,9 @@ if (!class_exists("Bread")) {
 				}
 				$shortcode_menu = array();
 				$shortcode_menu['front_page_button'] = plugins_url('tinymce/', __FILE__) . 'front_page_button/plugin.min.js';
-				$shortcode_menu = apply_filters("Bread_Adjust_Menu", $shortcode_menu);
+				//let's leave the enhancement mechanism open for now.
+				//apply_filters is one option, perhaps we will think of something better.
+				//$shortcode_menu = apply_filters("Bread_Adjust_Menu", $shortcode_menu);
 				$plugins_array = array_merge($plugins_array, $shortcode_menu);
 			}
 			return $plugins_array;
@@ -861,7 +863,9 @@ if (!class_exists("Bread")) {
 				$this->mpdf->SetPageTemplate($tplId);
 				unlink($FilePath);
 			}
-			$meeting_fields = apply_filters("Bread_Meeting_Fields", $this->meeting_fields);
+			//let's leave the enhancement mechanism open for now.
+			//apply_filters is one option, perhaps we will think of something better.
+			//$meeting_fields = apply_filters("Bread_Meeting_Fields", $this->meeting_fields);
             $data_field_keys = implode(',', $meeting_fields);
 			if (isset($this->options['pageheader_text'])) {
 			    $this->mpdf->SetHTMLHeader('
@@ -1075,7 +1079,9 @@ if (!class_exists("Bread")) {
 				"[service_body_5]"				=> strtoupper($this->options['service_body_5']),
 		
 			);
-			$this->section_shortcodes = apply_filters("Bread_Section_Shortcodes",$this->section_shortcodes, $unique_areas, $this->formats_used);
+			//let's leave the enhancement mechanism open for now.
+			//apply_filters is one option, perhaps we will think of something better.
+			//$this->section_shortcodes = apply_filters("Bread_Section_Shortcodes",$this->section_shortcodes, $unique_areas, $this->formats_used);
 
 			$this->mpdf->SetColumns($num_columns, '', $this->options['column_gap']);
 			$header_style = "color:".$this->options['header_text_color'].";";
@@ -1364,8 +1370,9 @@ if (!class_exists("Bread")) {
 							$meeting_value['day_abbr'] = $this->getday($meeting_value['weekday_tinyint'], true, $this->lang);
 							$meeting_value['area_name'] = $area_name;
 							$meeting_value['area_i'] = substr($area_name, 0, 1);
-
-							$meeting_value = apply_filters("Bread_Enrich_Meeting_Data", $meeting_value, $this->formats_by_key);
+							//let's leave the enhancement mechanism open for now.
+							//apply_filters is one option, perhaps we will think of something better.
+							//$meeting_value = apply_filters("Bread_Enrich_Meeting_Data", $meeting_value, $this->formats_by_key);
 							$data = $this->options['meeting_template_content'];
 							$data = str_replace("&nbsp;", " ", $data);
 							$search_strings = array();
