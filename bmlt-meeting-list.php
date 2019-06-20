@@ -1826,7 +1826,7 @@ if (!class_exists("Bread")) {
 				if (!wp_verify_nonce($_POST['_wpnonce'], 'bmltmeetinglistupdate-options'))
 					die('Whoops! There was a problem with the data you posted. Please go back and try again.');
 				if (!$this->current_user_can_modify()) {
-					die('You do not have permission to modify this setting.');
+					return;
 				}
 				$this->options['front_page_content'] = wp_kses_post($_POST['front_page_content']);
 				$this->options['last_page_content'] = wp_kses_post($_POST['last_page_content']);
@@ -2210,7 +2210,9 @@ if (!class_exists("Bread")) {
 					return;
 				}
 		        $id = $this->maxSetting + 1;
-		        $this->optionsName = $this->generateOptionName($id);
+				$this->optionsName = $this->generateOptionName($id);
+				$this->authors_safe = array();
+				$this->options['authors'] = array();
 		        $this->save_admin_options();
 		        $this->allSettings[$id] = 'Setting '.$id;
 		        update_option(Bread::SETTINGS,$this->allSettings);
@@ -2271,6 +2273,9 @@ if (!class_exists("Bread")) {
 			if (in_array('administrator', $user->roles)) {
 				return true;
 			}
+			if (!is_array($this->authors_safe) || $this->authors_safe.count()==0) {
+				return true;
+			}
 			if (in_array($user->ID, $this->authors_safe)) {
 				return true;
 			}
@@ -2280,17 +2285,7 @@ if (!class_exists("Bread")) {
 			if( ! current_user_can( 'manage_options' ) ) {
 				return false;
 			}
-			$user = wp_get_current_user();
-			if (in_array('administrator', $user->roles)) {
-				return true;
-			}
-			if (!isset($this->authors_safe) || sizeof($this->authors_safe)==0) {
-				return true;
-			}
-			if (in_array($user->ID, $this->authors_safe)) {
-				return true;
-			}
-			return false;
+			return true;
 		}
 		/**
 		 * Process a settings import from a json file
@@ -2395,7 +2390,7 @@ if (!class_exists("Bread")) {
 				update_option( $this->optionsName, $theOptions );
 			}
 			$this->options = $theOptions;
-			$this->authors_safe = $theOptions->authors;
+			$this->authors_safe = $theOptions['authors'];
 			$this->loaded_setting = $current_setting;
 		}
 
