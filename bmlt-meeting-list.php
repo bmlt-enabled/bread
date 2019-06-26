@@ -488,27 +488,27 @@ if (!class_exists("Bread")) {
 
             return wp_remote_get($url, $args);
 		}
-		// function get_all_meetings() {
-		// 	$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults&data_field_key=weekday_tinyint,start_time,service_body_bigint,id_bigint,meeting_name,location_text,email_contact&sort_keys=meeting_name,service_body_bigint,weekday_tinyint,start_time");
-		// 	$result = json_decode(wp_remote_retrieve_body($results),true);
+		function get_all_meetings() {
+			$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults&data_field_key=weekday_tinyint,start_time,service_body_bigint,id_bigint,meeting_name,location_text,email_contact&sort_keys=meeting_name,service_body_bigint,weekday_tinyint,start_time");
+			$result = json_decode(wp_remote_retrieve_body($results),true);
 			
-		// 	$unique_areas = $this->get_areas();			
-		// 	$all_meetings = array();
-		// 	foreach ($result as $value) {
-		// 		foreach($unique_areas as $unique_area){
-		// 			$area_data = explode(',',$unique_area);
-		// 			$area_id = $area_data[1];
-		// 			if ( $area_id === $value['service_body_bigint'] ) {
-		// 				$area_name = $area_data[0];
-		// 			}
-		// 		}							
+			$unique_areas = $this->get_areas();	
+			$all_meetings = array();
+			foreach ($result as $value) {
+				foreach($unique_areas as $unique_area){
+					$area_data = explode(',',$unique_area);
+					$area_id = $area_data[1];
+					if ( $area_id === $value['service_body_bigint'] ) {
+						$area_name = $area_data[0];
+					}
+				}
 				
-		// 		$value['start_time'] = date("g:iA",strtotime($value['start_time']));
-		// 		$all_meetings[] = $value['meeting_name'].'||| ['.$this->getday($value['weekday_tinyint'], true, $this->lang).'] ['.$value['start_time'].']||| ['.$area_name.']||| ['.$value['id_bigint'].']';
-		// 	}
+				$value['start_time'] = date("g:iA",strtotime($value['start_time']));
+				$all_meetings[] = $value['meeting_name'].'||| ['.$this->getday($value['weekday_tinyint'], true, $this->lang).'] ['.$value['start_time'].']||| ['.$area_name.']||| ['.$value['id_bigint'].']';
+			}
 			
-		// 	return $all_meetings;
-		// }
+			return $all_meetings;
+		}
 
 		function get_areas() {
 			$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetServiceBodies");
