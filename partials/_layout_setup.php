@@ -145,8 +145,8 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         <p>
                         <div style="overflow: none; height: 0px;background: transparent;" data-description="dummyPanel for Chrome auto-fill issue">
                             <input type="text" style="height:0;width:0; background: transparent; color: transparent;border: none;" data-description="dummyUsername">
-        <input type="password" style="height:0;width:0;background: transparent; color: transparent;border: none;" data-description="dummyPassword">
-</div>
+                            <input type="password" style="height:0;width:0;background: transparent; color: transparent;border: none;" data-description="dummyPassword">
+                        </div>
                         <label for="protection_password">Password: </label>
                         <input class="protection_pass" id="protection_password" type="password" name="protection_password" value="<?php echo esc_html($this->options['protection_password']); ?>" />
                         </p>
