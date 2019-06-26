@@ -84,7 +84,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         Header Margin Top: <input min="0" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="margin_header" name="margin_header" value="<?php echo esc_html($this->options['margin_header']); ?>" />&nbsp;&nbsp;&nbsp;
                         Header Fontsize: <input min="0" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="pageheader_fontsize" name="pageheader_fontsize" value="<?php echo esc_html($this->options['pageheader_fontsize']); ?>" />&nbsp;&nbsp;&nbsp;
                         <br>Header Text: <input size="100" type="text" id="pageheader_text" name="pageheader_text" value="<?php echo isset($this->options['pageheader_text']) ? esc_html($this->options['pageheader_text']) : ''; ?>" />&nbsp;&nbsp;&nbsp;
-                        <br>Watermark: <input size="100" type="text" id="watermark" name="watermark" value="<?php echo isset($this->options['watermark']) ? esc_html($this->options['watermark']) : ''; ?>" />&nbsp;&nbsp;&nbsp;
+                        <br>Watermark: <input size="100" type="text" id="watermark" name="watermark" autocomplete="off" value="<?php echo isset($this->options['watermark']) ? esc_html($this->options['watermark']) : ''; ?>" />&nbsp;&nbsp;&nbsp;
                         </p>
                     </div>
                     <div id="pagenodiv" style="border-top: 1px solid #EEE;">
@@ -143,6 +143,10 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         <input name="include_protection" value="0" type="hidden">
                         <p><input type="checkbox" name="include_protection" value="1" <?php echo ($this->options['include_protection'] == '1' ? 'checked' : '') ?>>Enable PDF Protection<span title='<?php echo $title; ?>' class="top-tooltip"></span></p>
                         <p>
+                        <div style="overflow: none; height: 0px;background: transparent;" data-description="dummyPanel for Chrome auto-fill issue">
+                            <input type="text" style="height:0;width:0; background: transparent; color: transparent;border: none;" data-description="dummyUsername">
+        <input type="password" style="height:0;width:0;background: transparent; color: transparent;border: none;" data-description="dummyPassword">
+</div>
                         <label for="protection_password">Password: </label>
                         <input class="protection_pass" id="protection_password" type="password" name="protection_password" value="<?php echo esc_html($this->options['protection_password']); ?>" />
                         </p>
