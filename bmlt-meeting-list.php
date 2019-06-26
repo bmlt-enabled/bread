@@ -2271,7 +2271,7 @@ if (!class_exists("Bread")) {
 			if (in_array('administrator', $user->roles)) {
 				return true;
 			}
-			if (!is_array($this->authors_safe) || $this->authors_safe.count()==0) {
+			if (!is_array($this->authors_safe) || empty($this->authors_safe)) {
 				return true;
 			}
 			if (in_array($user->ID, $this->authors_safe)) {
