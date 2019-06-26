@@ -215,8 +215,6 @@ if (!class_exists("Bread")) {
 				wp_enqueue_script("tooltipster", plugin_dir_url(__FILE__) . "js/jquery.tooltipster.min.js", array('jquery'), "1.2", true);
 				wp_enqueue_script("spectrum", plugin_dir_url(__FILE__) . "js/spectrum.js", array('jquery'), "1.2", true);
 				wp_enqueue_script("chosen", plugin_dir_url(__FILE__) . "js/chosen.jquery.min.js", array('jquery'), "1.2", true);
-				wp_enqueue_script("selectr", plugin_dir_url(__FILE__) . "js/selectr.min.js");
-				wp_enqueue_style("selectr", plugin_dir_url(__FILE__) . "css/selectr.min.css", false, "1.2", 'all');			
 			}
 		}
 

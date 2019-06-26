@@ -210,7 +210,7 @@ foreach($all_users as $user){
             <div id="currentmeetinglistauthordiv" class="postbox">
                 <h3 class="hndle">Meeting List Author(s)</h3>
                 <div class="inside">
-                <select id="author_selectr" name="authors_select[]" multiple>
+                <select id="author_chosen" name="authors_select[]" multiple>
                 <?php foreach($specific_users as $user) { ?>
                     <option value="<?php echo $user->ID ?>" <?php echo in_array($user->ID, $this->authors_safe) ? 'selected=' :'' ?>><?php echo $user->user_firstname ?> <?php echo $user->user_lastname ?> (<?php echo $user->user_login ?>) </option>
                 <?php } ?>
@@ -242,4 +242,3 @@ foreach($all_users as $user){
     <br class="clear">
     </div>
 </div>
-<script type='text/javascript'>new Selectr("#author_selectr");</script>
