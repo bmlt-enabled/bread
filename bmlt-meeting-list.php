@@ -82,6 +82,7 @@ if (!class_exists("Bread")) {
 		var $allSettings = array();
 		var $maxSetting = 1;
 		var $loaded_setting = 1;
+		var $authors_safe = array();
 		
 		function loadAllSettings() {
 		    $this->allSettings = get_option( Bread::SETTINGS );
@@ -1883,6 +1884,9 @@ if (!class_exists("Bread")) {
 			if ($_POST['bmltmeetinglistsave']) {
 				if (!wp_verify_nonce($_POST['_wpnonce'], 'bmltmeetinglistupdate-options'))
 					die('Whoops! There was a problem with the data you posted. Please go back and try again.');
+				if (!$this->current_user_can_modify()) {
+					return;
+				}
 				$this->options['front_page_content'] = wp_kses_post($_POST['front_page_content']);
 				$this->options['last_page_content'] = wp_kses_post($_POST['last_page_content']);
 				$this->options['front_page_line_height'] = $_POST['front_page_line_height'];   
@@ -1946,6 +1950,15 @@ if (!class_exists("Bread")) {
 				$this->options['cache_time'] = intval($_POST['cache_time']);
 				$this->options['custom_query'] = sanitize_text_field($_POST['custom_query']);
 				$this->options['extra_meetings'] = isset($_POST['extra_meetings']) ? wp_kses_post($_POST['extra_meetings']) : '';
+				$authors = $_POST['authors_select'];
+				$this->options['authors'] = array();
+				foreach ($authors as $author) {
+					$this->options['authors'][] = intval($author);
+				}
+				$user = wp_get_current_user();
+				if (!in_array($user->ID, $this->options['authors'])) {
+					$this->options['authors'][] = $user->ID;
+				}
 				$this->save_admin_options();
 				set_transient( 'admin_notice', 'Please put down your weapon. You have 20 seconds to comply.' );
 				echo '<div class="updated"><p style="color: #F00;">Your changes were successfully saved!</p>';
@@ -2116,7 +2129,7 @@ if (!class_exists("Bread")) {
 			} else {
 				$this->options['extra_meetings_enabled'] = 1;
 			}
-			
+			$this->authors_safe = $this->options['authors'];
 			?>
 			<?php include 'partials/_help_videos.php'; ?>
 			<div class="hide wrap" id="meeting-list-tabs-wrapper">
@@ -2235,9 +2248,10 @@ if (!class_exists("Bread")) {
 		        return;
 		    if( ! wp_verify_nonce( $_POST['pwsix_settings_admin_nonce'], 'pwsix_settings_admin_nonce' ) )
 		        return;
-		    if( ! current_user_can( 'manage_options' ) )
-		        return;
 		    if (isset($_POST['delete'])) { 
+				if(!$this->current_user_can_modify() ) {
+					return;
+				}
 		        if ($this->loaded_setting == 1) {
 		            return;
 		        }
@@ -2251,8 +2265,13 @@ if (!class_exists("Bread")) {
 		        $this->getMLOptions(1);
 		        $this->loaded_setting = 1;
 		    } elseif (isset($_POST['duplicate'])) {
+				if (!$this->current_user_can_create()) {
+					return;
+				}
 		        $id = $this->maxSetting + 1;
-		        $this->optionsName = $this->generateOptionName($id);
+				$this->optionsName = $this->generateOptionName($id);
+				$this->authors_safe = array();
+				$this->options['authors'] = array();
 		        $this->save_admin_options();
 		        $this->allSettings[$id] = 'Setting '.$id;
 		        update_option(Bread::SETTINGS,$this->allSettings);
@@ -2263,15 +2282,15 @@ if (!class_exists("Bread")) {
 		function pwsix_process_rename_settings() {
 		    if ( isset($_POST['bmltmeetinglistsave']) && $_POST['bmltmeetinglistsave'] == 'Save Changes' )
 		        return;
-		        if( empty( $_POST['pwsix_action'] ) || 'rename_setting' != $_POST['pwsix_action'] )
-		            return;
-		        if( ! wp_verify_nonce( $_POST['pwsix_rename_nonce'], 'pwsix_rename_nonce' ) )
-		            return;
-		        if( ! current_user_can( 'manage_options' ) )
-                    return;
+			if( empty( $_POST['pwsix_action'] ) || 'rename_setting' != $_POST['pwsix_action'] )
+		        return;
+		    if( ! wp_verify_nonce( $_POST['pwsix_rename_nonce'], 'pwsix_rename_nonce' ) )
+		        return;
+	        if( ! $this->current_user_can_modify() )
+                return;
 		                    
-		        $this->allSettings[$this->loaded_setting] = sanitize_text_field($_POST['setting_descr']);
-		        update_option(Bread::SETTINGS,$this->allSettings);
+		    $this->allSettings[$this->loaded_setting] = sanitize_text_field($_POST['setting_descr']);
+	        update_option(Bread::SETTINGS,$this->allSettings);
 		}
 		/**
 		 * Process a settings export that generates a .json file of the shop settings
@@ -2283,7 +2302,7 @@ if (!class_exists("Bread")) {
                 return;
             if( ! wp_verify_nonce( $_POST['pwsix_export_nonce'], 'pwsix_export_nonce' ) )
                 return;
-            if( ! current_user_can( 'manage_options' ) )
+            if( ! current_user_can( 'manage_options' ) )  // TODO: Is this necessary? Why not let him make a copy
                 return;
 
 			$blogname = str_replace(" - ", " ", get_option('blogname'));
@@ -2305,7 +2324,28 @@ if (!class_exists("Bread")) {
 			echo json_encode( $settings );
 			exit;
 		}
-
+		function current_user_can_modify() {
+			if( ! current_user_can( 'manage_options' ) ) {
+				return false;
+			}
+			$user = wp_get_current_user();
+			if (in_array('administrator', $user->roles)) {
+				return true;
+			}
+			if (!is_array($this->authors_safe) || empty($this->authors_safe)) {
+				return true;
+			}
+			if (in_array($user->ID, $this->authors_safe)) {
+				return true;
+			}
+			return false;
+		}
+		function current_user_can_create() {
+			if( ! current_user_can( 'manage_options' ) ) {
+				return false;
+			}
+			return true;
+		}
 		/**
 		 * Process a settings import from a json file
 		 */
@@ -2333,7 +2373,8 @@ if (!class_exists("Bread")) {
 				wp_die( __( 'File size greater than 500k' ) );
 			}
             $encode_options = file_get_contents($import_file);
-            $settings = json_decode($encode_options, true);
+			$settings = json_decode($encode_options, true);
+			$settings['authors'] = $this->authors_safe;
 			update_option( $this->optionsName, $settings );
 			setcookie('pwsix_action', "import_settings", time()+10);
 			setcookie('current-meeting-list', $this->loaded_setting, time()+10);
@@ -2365,7 +2406,8 @@ if (!class_exists("Bread")) {
 			if( empty( $import_file ) )
 				wp_die( __( 'Error importing default settings file' ) );
             $encode_options = file_get_contents($import_file);
-            $settings = json_decode($encode_options, true);
+			$settings = json_decode($encode_options, true);
+			$settings['authors'] = $this->authors_safe;
 			update_option( $this->optionsName, $settings );
 			setcookie('pwsix_action', "default_settings_success", time()+10);
 			setcookie('current-meeting-list', $this->loaded_setting, time()+10);
@@ -2407,6 +2449,7 @@ if (!class_exists("Bread")) {
 				update_option( $this->optionsName, $theOptions );
 			}
 			$this->options = $theOptions;
+			$this->authors_safe = $theOptions['authors'];
 			$this->loaded_setting = $current_setting;
 		}
 
