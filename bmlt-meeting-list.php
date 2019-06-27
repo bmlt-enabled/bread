@@ -461,11 +461,13 @@ if (!class_exists("Bread")) {
 				'c_comdef_admin_password' => $this->options['bmlt_login_password'], '&'));
 			return $this->get($this->options['root_server']."/local_server/server_admin/xml.php?" . $query_string);				
 		} 
-
+		function requires_authentication() {
+			return $this->options['include_meeting_email'] == 1 || $this->options['include_asm'] == 1;
+		}
 		function get_root_server_request($url) {
 		    $cookies = null;
 
-			if ($this->options['include_meeting_email'] == 1 || $this->options['include_asm'] == 1) {
+			if ($this->requires_authentication()) {
 				$auth_response = $this->authenticate_root_server();
                 $cookies = wp_remote_retrieve_cookies($auth_response);
 			}
@@ -555,7 +557,9 @@ if (!class_exists("Bread")) {
 			$results = $results["serverVersion"]["readableString"];
 			return $results;
 		}
-
+		function require_service_meetings() {
+			return strpos($this->options['custom_section_content'].$this->options['front_page_content'].$this->options['last_page_content'], "[service_meetings]") !== false;
+		}
 		function getUsedFormats() {
             if ( !isset($this->options['recurse_service_bodies']) ) {$this->options['recurse_service_bodies'] = 1;}
 			$area_data = explode(',',$this->options['service_body_1']);
@@ -695,6 +699,8 @@ if (!class_exists("Bread")) {
 			if ( !isset($this->options['weekday_language']) ) {$this->options['weekday_language'] = 'en';}
 			if ( !isset($this->options['weekday_start']) ) {$this->options['weekday_start'] = '1';}
 			if ( !isset($this->options['include_asm']) ) {$this->options['include_asm'] = '0';}
+			if ( !isset($this->options['asm_format_key']) ) {$this->options['asm_format_key'] = 'ASM';}
+			if ( !isset($this->options['asm_sort_order']) ) {$this->options['asm_sort_order'] = 'name';}
 			if ( !isset($this->options['header_uppercase']) ) {$this->options['header_uppercase'] = '0';}
 			if ( !isset($this->options['header_bold']) ) {$this->options['header_bold'] = '1';}
 			if ( !isset($this->options['sub_header_shown']) ) {$this->options['sub_header_shown'] = '1';}
@@ -949,8 +955,12 @@ if (!class_exists("Bread")) {
 				echo '<div style="font-size: 20px;text-align:center;font-weight:normal;color:#F00;margin:0 auto;margin-top: 30px;"><p>No Meetings Found</p><p>Or</p><p>Internet or Server Problem</p><p>'.$this->options['root_server'].'</p><p>Please try again or contact your BMLT Administrator</p></div>';
 				exit;
 			}
-			if ( strpos($this->options['custom_section_content'].$this->options['front_page_content'].$this->options['last_page_content'], "[service_meetings]") !== false ) {
-				$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services_service_body_1&sort_keys=meeting_name&advanced_published=0" );
+			if (  $this->require_service_meetings() ) {
+				// Why not add a query string that limits to meetings having the desired format????
+				$asm_query = "client_interface/json/?switcher=GetSearchResults$services_service_body_1&sort_keys=$this->options['asm_sort_order']";
+				// I'm not sure we need this, but for now we need to emulate the old behavior
+				$asm_query .= "&advanced_published=0";
+				$results = $this->get_configured_root_server_request( $asm_query );
 				$this->service_meeting_result = json_decode(wp_remote_retrieve_body($results), true);
 			}
 			$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetFormats");
@@ -971,7 +981,7 @@ if (!class_exists("Bread")) {
 			if ( $this->options['include_asm'] === '0' ) {
 				$countmax = count ( $this->formats_used );
 				for ( $count = 0; $count < $countmax; $count++ ) {
-					if ( $this->formats_used[$count]['key_string'] == 'ASM' ) {
+					if ( $this->formats_used[$count]['key_string'] == $this->options['asm_format_key'] ) {
 						unset($this->formats_used[$count]);
 					}
 				}
@@ -1180,7 +1190,7 @@ if (!class_exists("Bread")) {
 						}
 						if ( $this->options['meeting_sort'] === 'day' && $meeting_value['weekday_tinyint'] !== $this_unique_value ) { continue; }
 						$enFormats = explode ( ",", $meeting_value['formats'] );
-						if ( $this->options['include_asm'] == 0 && in_array ( "ASM", $enFormats ) ) { continue; }
+						if ( $this->options['include_asm'] == 0 && in_array ( $this->options['asm_format_key'], $enFormats ) ) { continue; }
 						$header = '';
 						
 						if ( $this->options['weekday_language'] === 'fr' ) {
@@ -1312,108 +1322,9 @@ if (!class_exists("Bread")) {
 						}
 						$newVal = false;
 						$newCol = false;
-						$duration = explode(':', $meeting_value['duration_time']);
-						$minutes = intval($duration[0])*60 + intval($duration[1]) + intval($duration[2]);
-						$meeting_value['duration_m'] = $minutes;
-						$meeting_value['duration_h'] = rtrim(rtrim(number_format($minutes/60,2),0),'.');
-						$space = ' ';
-						if ( $this->options['remove_space'] == 1 ) {
-							$space = '';
-						}
-						if ( $this->options['time_clock'] == null || $this->options['time_clock'] == '12' || $this->options['time_option'] == '' ) {
-							$time_format = "g:i".$space."A";
-							
-						} elseif ( $this->options['time_clock'] == '24fr' ) {
-							$time_format = "H\hi";
-						} else {
-							$time_format = "H:i";
-						}
-						if ( $this->options['time_option'] == 1 || $this->options['time_option'] == '' ) {
-							$meeting_value['start_time'] = date($time_format,strtotime($meeting_value['start_time']));
-							if ( $meeting_value['start_time'] == '12:00PM' || $meeting_value['start_time'] == '12:00 PM' ) {
-								$meeting_value['start_time'] = 'NOON';
-							}
-						} elseif ( $this->options['time_option'] == '2' ) {
-							$addtime = '+ ' . $minutes . ' minutes';
-							$end_time = date ($time_format,strtotime($meeting_value['start_time'] . ' ' . $addtime));
-							$meeting_value['start_time'] = date($time_format,strtotime($meeting_value['start_time']));
-							if ($this->options['weekday_language']=='fa') {
-								$meeting_value['start_time'] = $this->toPersianNum($end_time).$space.'-'.$space.$this->toPersianNum($meeting_value['start_time']);
-							} else {
-								$meeting_value['start_time'] = $meeting_value['start_time'].$space.'-'.$space.$end_time;
-							}
-						} elseif ( $this->options['time_option'] == '3' ) {
-							$time_array = array("1:00", "2:00", "3:00", "4:00", "5:00", "6:00", "7:00", "8:00", "9:00", "10:00", "11:00", "12:00");
-							$temp_start_time = date("g:i",strtotime($meeting_value['start_time']));
-							$temp_start_time_2 = date("g:iA",strtotime($meeting_value['start_time']));
-							if ( $temp_start_time_2 == '12:00PM' ) {
-								$start_time = 'NOON';
-							} elseif ( in_array($temp_start_time, $time_array) ) {
-								$start_time = date("g",strtotime($meeting_value['start_time']));
-							} else {
-								$start_time = date("g:i",strtotime($meeting_value['start_time']));
-							}
-							$addtime = '+ ' . $minutes . ' minutes';
-							$temp_end_time = date ("g:iA",strtotime($meeting_value['start_time'] . ' ' . $addtime));
-							$temp_end_time_2 = date ("g:i",strtotime($meeting_value['start_time'] . ' ' . $addtime));
-							if ( $temp_end_time == '12:00PM' ) {
-								$end_time = 'NOON';
-							} elseif ( in_array($temp_end_time_2, $time_array) ) {
-								$end_time = date("g".$space."A",strtotime($temp_end_time));
-							} else {
-								$end_time = date("g:i".$space."A",strtotime($temp_end_time));
-							}
-							$meeting_value['start_time'] = $start_time.$space.'-'.$space.$end_time;
-						}
+
 						if ( $this->options['page_fold'] !== 'full' ) {
-							$meeting_value['day'] = $this->getday($meeting_value['weekday_tinyint'], false, $this->lang);
-							$meeting_value['day_abbr'] = $this->getday($meeting_value['weekday_tinyint'], true, $this->lang);
-							$meeting_value['area_name'] = $area_name;
-							$meeting_value['area_i'] = substr($area_name, 0, 1);
-							//let's leave the enhancement mechanism open for now.
-							//apply_filters is one option, perhaps we will think of something better.
-							//$meeting_value = apply_filters("Bread_Enrich_Meeting_Data", $meeting_value, $this->formats_by_key);
-							$data = $this->options['meeting_template_content'];
-							$data = str_replace("&nbsp;", " ", $data);
-							$search_strings = array();
-							$replacements = array();
-							foreach($meeting_value as $field=>$notUsed) {
-								$search_strings[] = $field;
-								$replacements[] = $this->get_field($meeting_value,$field);
-							}
-							foreach($this->legacy_synonyms as $syn=>$field) {
-								$search_strings[] = $syn;
-								$replacements[] = $this->get_field($meeting_value,$field);
-							}
-							$clean_up = array(
-								'<p></p>'		=> '',
-								'<em></em>'		=> '',
-								'<em> </em>'	=> '',
-								'()'			=> '',
-								'    '			=> ' ',
-								'   '			=> ' ',
-								'  '			=> ' ',
-								'<br/>'			=> 'line_break',
-								'<br />'		=> 'line_break',
-								'line_break line_break'	=> '<br />',
-								'line_breakline_break'	=> '<br />',
-								'line_break'	=> '<br />',
-								'<br />,'		=> '<br />',
-								', <br />'		=> '<br />',
-								',<br />'		=> '<br />',
-								", , ,"			=> ",",					
-								", *,"			=> ",",							
-								", ,"			=> ",",
-								" , "			=> " ",
-								", ("			=> " (",
-								',</'			=> '</',
-								', </'			=> '</',
-							);
-							foreach($clean_up as $key=>$value) {
-								$search_strings[] = $key;
-								$replacements[] = $value;
-							}
-							$data = str_replace($search_strings,$replacements,$data);
+							$data = $this->write_single_meeting($meeting_value, $this->options['meeting_template_content']);
 						} else {
 							$data = '<tr>';
 							if ( $this->options['meeting_sort'] == 'group' ) {
@@ -1571,7 +1482,111 @@ if (!class_exists("Bread")) {
 			$this->mpdf->Output($FilePath,'I');
 			exit;
 		}
+		function write_single_meeting($meeting_value, $template) {
+			$duration = explode(':', $meeting_value['duration_time']);
+			$minutes = intval($duration[0])*60 + intval($duration[1]) + intval($duration[2]);
+			$meeting_value['duration_m'] = $minutes;
+			$meeting_value['duration_h'] = rtrim(rtrim(number_format($minutes/60,2),0),'.');
+			$space = ' ';
+			if ( $this->options['remove_space'] == 1 ) {
+				$space = '';
+			}
+			if ( $this->options['time_clock'] == null || $this->options['time_clock'] == '12' || $this->options['time_option'] == '' ) {
+				$time_format = "g:i".$space."A";
+				
+			} elseif ( $this->options['time_clock'] == '24fr' ) {
+				$time_format = "H\hi";
+			} else {
+				$time_format = "H:i";
+			}
+			if ( $this->options['time_option'] == 1 || $this->options['time_option'] == '' ) {
+				$meeting_value['start_time'] = date($time_format,strtotime($meeting_value['start_time']));
+				if ( $meeting_value['start_time'] == '12:00PM' || $meeting_value['start_time'] == '12:00 PM' ) {
+					$meeting_value['start_time'] = 'NOON';
+				}
+			} elseif ( $this->options['time_option'] == '2' ) {
+				$addtime = '+ ' . $minutes . ' minutes';
+				$end_time = date ($time_format,strtotime($meeting_value['start_time'] . ' ' . $addtime));
+				$meeting_value['start_time'] = date($time_format,strtotime($meeting_value['start_time']));
+				if ($this->options['weekday_language']=='fa') {
+					$meeting_value['start_time'] = $this->toPersianNum($end_time).$space.'-'.$space.$this->toPersianNum($meeting_value['start_time']);
+				} else {
+					$meeting_value['start_time'] = $meeting_value['start_time'].$space.'-'.$space.$end_time;
+				}
+			} elseif ( $this->options['time_option'] == '3' ) {
+				$time_array = array("1:00", "2:00", "3:00", "4:00", "5:00", "6:00", "7:00", "8:00", "9:00", "10:00", "11:00", "12:00");
+				$temp_start_time = date("g:i",strtotime($meeting_value['start_time']));
+				$temp_start_time_2 = date("g:iA",strtotime($meeting_value['start_time']));
+				if ( $temp_start_time_2 == '12:00PM' ) {
+					$start_time = 'NOON';
+				} elseif ( in_array($temp_start_time, $time_array) ) {
+					$start_time = date("g",strtotime($meeting_value['start_time']));
+				} else {
+					$start_time = date("g:i",strtotime($meeting_value['start_time']));
+				}
+				$addtime = '+ ' . $minutes . ' minutes';
+				$temp_end_time = date ("g:iA",strtotime($meeting_value['start_time'] . ' ' . $addtime));
+				$temp_end_time_2 = date ("g:i",strtotime($meeting_value['start_time'] . ' ' . $addtime));
+				if ( $temp_end_time == '12:00PM' ) {
+					$end_time = 'NOON';
+				} elseif ( in_array($temp_end_time_2, $time_array) ) {
+					$end_time = date("g".$space."A",strtotime($temp_end_time));
+				} else {
+					$end_time = date("g:i".$space."A",strtotime($temp_end_time));
+				}
+				$meeting_value['start_time'] = $start_time.$space.'-'.$space.$end_time;
+			}
 
+			$meeting_value['day'] = $this->getday($meeting_value['weekday_tinyint'], false, $this->lang);
+			$meeting_value['day_abbr'] = $this->getday($meeting_value['weekday_tinyint'], true, $this->lang);
+			$meeting_value['area_name'] = $area_name;
+			$meeting_value['area_i'] = substr($area_name, 0, 1);
+			//let's leave the enhancement mechanism open for now.
+			//apply_filters is one option, perhaps we will think of something better.
+			//$meeting_value = apply_filters("Bread_Enrich_Meeting_Data", $meeting_value, $this->formats_by_key);
+			$data = $template;
+			$data = str_replace("&nbsp;", " ", $data);
+			$search_strings = array();
+			$replacements = array();
+			foreach($meeting_value as $field=>$notUsed) {
+				$search_strings[] = $field;
+				$replacements[] = $this->get_field($meeting_value,$field);
+			}
+			foreach($this->legacy_synonyms as $syn=>$field) {
+				$search_strings[] = $syn;
+				$replacements[] = $this->get_field($meeting_value,$field);
+			}
+			$clean_up = array(
+				'<p></p>'		=> '',
+				'<em></em>'		=> '',
+				'<em> </em>'	=> '',
+				'()'			=> '',
+				'    '			=> ' ',
+				'   '			=> ' ',
+				'  '			=> ' ',
+				'<br/>'			=> 'line_break',
+				'<br />'		=> 'line_break',
+				'line_break line_break'	=> '<br />',
+				'line_breakline_break'	=> '<br />',
+				'line_break'	=> '<br />',
+				'<br />,'		=> '<br />',
+				', <br />'		=> '<br />',
+				',<br />'		=> '<br />',
+				", , ,"			=> ",",					
+				", *,"			=> ",",							
+				", ,"			=> ",",
+				" , "			=> " ",
+				", ("			=> " (",
+				',</'			=> '</',
+				', </'			=> '</',
+			);
+			foreach($clean_up as $key=>$value) {
+				$search_strings[] = $key;
+				$replacements[] = $value;
+			}
+			$data = str_replace($search_strings,$replacements,$data);
+			return $data;
+		}
 		function get_booklet_pages($np, $backcover=true) {
 			$lastpage = $np;
 			$np = 4*ceil($np/4);
@@ -1598,8 +1613,6 @@ if (!class_exists("Bread")) {
 			$this->mpdf->SetDefaultBodyCSS('line-height', $this->options['front_page_line_height']);
 			$this->mpdf->SetDefaultBodyCSS('font-size', $this->options['front_page_font_size'] . 'pt');
 			$this->standard_shortcode_replacement($this->options['front_page_content'], 'front_page');
-			$this->options['front_page_content'] = str_replace('<p>[service_meetings]</p>', $this->write_service_meetings($this->options['front_page_font_size'], $this->options['front_page_line_height'] ), $this->options['front_page_content']);
-			$this->options['front_page_content'] = str_replace('[service_meetings]', $this->write_service_meetings($this->options['front_page_font_size'], $this->options['front_page_line_height']), $this->options['front_page_content']);
 
 			if ( strpos($this->options['front_page_content'], '[month_lower_fr') !== false ) {
 				setlocale( LC_TIME, 'fr_FR' );
@@ -1685,6 +1698,8 @@ if (!class_exists("Bread")) {
 			$data = str_replace($search_strings,$replacements,$data);
 			$this->replace_format_shortcodes($data, $page);
 			$data = str_replace("[date]", strtoupper( date ( "F Y" ) ), $data);
+			$data = str_replace('<p>[service_meetings]</p>', $this->write_service_meetings($this->options[$page.'_font_size'], $this->options[$page.'_line_height'] ), $data);
+			$data = str_replace('[service_meetings]', $this->write_service_meetings($this->options[$page.'_font_size'], $this->options[$page.'_line_height']), $data);
 
 		}
 		function replace_format_shortcodes(&$data, $page_name) {
@@ -1761,7 +1776,7 @@ if (!class_exists("Bread")) {
 			$x = 0;
 			foreach ($this->service_meeting_result as $value) {
 				$enFormats = explode ( ",", $value['formats'] );
-				if ( ! in_array ( "ASM", $enFormats )  ) {
+				if ( ! in_array ( $this->options['asm_format_key'], $enFormats )  ) {
 					continue;
 				}
 				$x++;
@@ -1772,7 +1787,7 @@ if (!class_exists("Bread")) {
 			$data .= "<table style='line-height:".$line_height."; font-size:".$font_size."pt; width:100%;'>";
 			foreach ($this->service_meeting_result as $value) {
 				$enFormats = explode ( ",", $value['formats'] );
-				if ( ! in_array ( "ASM", $enFormats )  ) {
+				if ( ! in_array ( $this->options['asm_format_key'], $enFormats )  ) {
 					continue;
 				}
 				$display_string = '<strong>'.$value['meeting_name'].'</strong>';
@@ -1912,6 +1927,7 @@ if (!class_exists("Bread")) {
 				$this->options['neighborhood_suffix'] = sanitize_text_field($_POST['neighborhood_suffix']);
 				$this->options['city_suffix'] = sanitize_text_field($_POST['city_suffix']);
 				$this->options['meeting_template_content'] = wp_kses_post($_POST['meeting_template_content']);
+				$this->options['asm_template_content'] = wp_kses_post($_POST['asm_template_content']);
 				$this->options['column_line'] = boolval($_POST['column_line']); #seperator
 				$this->options['col_color'] = validate_hex_color($_POST['col_color']);
 				$this->options['custom_section_content'] = wp_kses_post($_POST['custom_section_content']);
@@ -1926,6 +1942,8 @@ if (!class_exists("Bread")) {
 				$this->options['weekday_language'] = sanitize_text_field($_POST['weekday_language']);
 				$this->options['weekday_start'] = sanitize_text_field($_POST['weekday_start']);
 				$this->options['include_asm'] = boolval($_POST['include_asm']);
+				$this->options['asm_format_key'] = sanitize_text_field($_POST['asm_format_key']);
+				$this->options['asm_sort_order'] = sanitize_text_field($_POST['asm_sort_order']);
 				$this->options['bmlt_login_id'] = sanitize_text_field($_POST['bmlt_login_id']);
 				$this->options['bmlt_login_password'] = sanitize_text_field($_POST['bmlt_login_password']);
 				$this->options['base_font'] = sanitize_text_field($_POST['base_font']);
@@ -2045,6 +2063,9 @@ if (!class_exists("Bread")) {
 			if ( !isset($this->options['meeting_template_content']) || strlen(trim($this->options['meeting_template_content'])) == 0 ) {
 				$this->options['meeting_template_content'] = '';
 			}
+			if ( !isset($this->options['asm_template_content']) || strlen(trim($this->options['asm_template_content'])) == 0 ) {
+				$this->options['asm_template_content'] = '';
+			}
 			if ( !isset($this->options['column_line']) || strlen(trim($this->options['column_line'])) == 0 ) {
 				$this->options['column_line'] = 0;
 			}
@@ -2092,7 +2113,13 @@ if (!class_exists("Bread")) {
 			}
 			if ( !isset($this->options['include_asm']) || strlen(trim($this->options['include_asm'])) == 0 ) {
 				$this->options['include_asm'] = '0';
-			}			
+			}
+			if ( !isset($this->options['asm_format_key']) || strlen(trim($this->options['asm_format_key'])) == 0 ) {
+				$this->options['asm_format_key'] = 'ASM';
+			}	
+			if ( !isset($this->options['asm_sort_order']) || strlen(trim($this->options['asm_sort_order'])) == 0 ) {
+				$this->options['asm_sort_order'] = 'name';
+			}						
 			if ( !isset($this->options['bmlt_login_id']) || strlen(trim($this->options['bmlt_login_id'])) == 0 ) {
 				$this->options['bmlt_login_id'] = '';
 			}			
