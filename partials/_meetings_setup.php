@@ -300,6 +300,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
             <?php
                 $connected = '';
                 $logged_in = wp_remote_retrieve_body($this->authenticate_root_server()); ?>
+            <input type="hidden" name="asm_logged_in" id="asm_logged_in" value="<?php $logged_in ? 1 : 0 ; ?>">
             <?php $connected = "<p><div style='color: #f00;font-size: 16px;vertical-align: middle;' class='dashicons dashicons-unlock'></div><span style='color: #f00;'>Login ID or Password Incorrect</span></p>"; ?>
             <?php if ( $logged_in == 'OK') { ?>
                 <?php $connected = "<p><div style='color: #00AD00;font-size: 16px;vertical-align: middle;' class='dashicons dashicons-lock'></div><span style='color: #00AD00;'>Login OK</span></p>"; ?>
@@ -307,6 +308,24 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
             <div class="postbox">
                 <h3 class="hndle">Special Features<span title='You must login with an service body administrator account to use these features.' class="top-tooltip"></span></h3>
                 <div class="inside">
+                    <p>
+                    <label for="asm_format">Service Meeting Format: </label>
+                    <select id="adm_format" name="asm_format_key">
+                    <?php if ($this_connected) { ?>
+                        <option value="">Not Used</option>
+                        <?php $countmax = count ( $used_formats ); ?>
+                        <?php for ( $count = 0; $count < $countmax; $count++ ) { ?>
+                            <?php if ( $used_formats[$count]['key_string'] == $this->options['asm_format_key'] ) { ?>
+                                <option selected="selected" value="<?php echo esc_html($used_formats[$count]['key_string']) ?>"><?php echo esc_html($used_formats[$count]['name_string']) ?></option>
+                            <?php } else { ?>
+                                <option value="<?php echo esc_html($used_formats[$count]['key_string']) ?>"><?php echo esc_html($used_formats[$count]['name_string']) ?></option>
+                            <?php } ?>
+                        <?php } ?>
+                    <?php } else { ?>
+                        <option selected="selected" value="<?php echo $this->options['asm_format_key']; ?>"><?php echo 'ASM'; ?></option>
+                    <?php } ?>
+                    </select>
+                    </p>
                     <p>
                         <label for="bmlt_login_id">Login ID: </label>
                         <input class="bmlt-login" id="bmlt_login_id" type="text" name="bmlt_login_id" value="<?php echo esc_html($this->options['bmlt_login_id']) ;?>" />&nbsp;&nbsp;&nbsp;&nbsp;
@@ -326,6 +345,11 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                             <input name="include_meeting_email" value="0" type="hidden"><p><input type="checkbox" name="include_meeting_email" value="1" <?php echo ($this->options['include_meeting_email'] == '1' ? 'checked' : '') ?>>Enable</p>
                         </div>
                      <?php } ?>
+                     <label for="asm_sort_order">Select sort order for ASM meetings</label>
+                     <select id="asm_sort_order" name="asm_sort_order">
+                        <option value="meeting_name">By Name</option>
+                        <option value="time">By Day and Time</option>
+                     </select>
                         <div id="includeasmdiv" class="inside">
                             <?php $title = '
                                 <p>Show <strong>Area Service Meetings</strong> (ASM) in the meeting list.</p>
@@ -338,7 +362,26 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                             ?>
                             <b>Show Area Service Meetings<span title='<?php echo $title; ?>' class="top-tooltip"></span></b>
                             <input name="include_asm" value="0" type="hidden">
-                            <p><input type="checkbox" name="include_asm" value="1" <?php echo ($this->options['include_asm'] == '1' ? 'checked' : '') ?>>Enable</p>
+                            <p><input type="checkbox" name="include_asm" value="1" <?php echo ($this->options['include_asm'] == '1' ? 'checked' : '') ?>>Include meetings with this format in the main list</p>
+                            <div style="margin-top:0px; margin-bottom:20px; max-width:100%; width:100%;">
+                        <?php
+                        $editor_id = "asm_template_content";
+                        $settings    = array (
+                            'tabindex'      => FALSE,
+                            'editor_height'	=> 110,
+                            'resize'        => TRUE,
+                            "media_buttons"	=> FALSE,
+                            "drag_drop_upload" => TRUE,
+                            "editor_css"	=> "<style>.aligncenter{display:block!important;margin-left:auto!important;margin-right:auto!important;}</style>",
+                            "teeny"			=> FALSE,
+                            'quicktags'		=> TRUE,
+                            'wpautop'		=> FALSE,
+                            'textarea_name' => $editor_id,
+                            'tinymce'=> array('toolbar1' => 'bold,italic,underline,strikethrough,bullist,numlist,alignleft,aligncenter,alignright,alignjustify,link,unlink,table,undo,redo,fullscreen', 'toolbar2' => 'formatselect,fontsizeselect,fontselect,forecolor,backcolor,indent,outdent,pastetext,removeformat,charmap,code', 'toolbar3' => 'custom_template_button_1,custom_template_button_2')
+                        );
+                        wp_editor( stripslashes($this->options['asm_template_content']), $editor_id, $settings );
+                        ?>
+                    </div>
                             <div class="inside">
                                 <div style="margin-bottom: 10px; padding:0;" id="accordion_asm">
                                     <h3 class="help-accordian">Instructions</h3>
