@@ -56,6 +56,7 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 
 = 2.0.0 =
 * Support for multiple configurations [#36]
+* Generalized ASM functionality to other formats, and user-defined templates
 * German and Farsi support
 * New layout options
   - A6 Booklet (fits more meetings than flyer, but more convenient to carry around than A5)
