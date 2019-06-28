@@ -960,7 +960,9 @@ if (!class_exists("Bread")) {
 				// Why not add a query string that limits to meetings having the desired format????
 				$asm_query = "client_interface/json/?switcher=GetSearchResults$services_service_body_1&sort_keys=$this->options['asm_sort_order']";
 				// I'm not sure we need this, but for now we need to emulate the old behavior
-				$asm_query .= "&advanced_published=0";
+				if ($this->options['asm_format_key']==='ASM') {
+					$asm_query .= "&advanced_published=0";
+				}
 				$results = $this->get_configured_root_server_request( $asm_query );
 				$this->service_meeting_result = json_decode(wp_remote_retrieve_body($results), true);
 			}
