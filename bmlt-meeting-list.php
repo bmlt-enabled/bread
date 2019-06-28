@@ -462,7 +462,8 @@ if (!class_exists("Bread")) {
 			return $this->get($this->options['root_server']."/local_server/server_admin/xml.php?" . $query_string);				
 		} 
 		function requires_authentication() {
-			return $this->options['include_meeting_email'] == 1 || $this->options['include_asm'] == 1;
+			return $this->options['asm_logged_in'] &&
+				($this->options['include_meeting_email'] == 1 || $this->options['include_asm'] == 1);
 		}
 		function get_root_server_request($url) {
 		    $cookies = null;
@@ -1784,10 +1785,19 @@ if (!class_exists("Bread")) {
 			if ( $x == 0 ) {
 				return $data;
 			}
-			$data .= "<table style='line-height:".$line_height."; font-size:".$font_size."pt; width:100%;'>";
+			$template = '';
+			if (isset($this->options['asm_template_content']) && trim($this->options['asm_template_content'])) {
+				$template = $this->options['asm_template_content'];
+			} else {
+				$data .= "<table style='line-height:".$line_height."; font-size:".$font_size."pt; width:100%;'>";
+			}
 			foreach ($this->service_meeting_result as $value) {
 				$enFormats = explode ( ",", $value['formats'] );
 				if ( ! in_array ( $this->options['asm_format_key'], $enFormats )  ) {
+					continue;
+				}
+				if ($template != '') {
+					$data .= $this->write_single_meeting($value, $template);
 					continue;
 				}
 				$display_string = '<strong>'.$value['meeting_name'].'</strong>';
@@ -1830,7 +1840,8 @@ if (!class_exists("Bread")) {
 				$display_string .=  $value['email_contact'];
 				$data .= "<tr><td style='border-bottom: 1px solid #555;'>".$display_string."</td></tr>";
 			}
-			$data .= "</table>";
+			if ($template == '')
+				$data .= "</table>";
 			return $data;
 		}
 
@@ -1944,6 +1955,7 @@ if (!class_exists("Bread")) {
 				$this->options['include_asm'] = boolval($_POST['include_asm']);
 				$this->options['asm_format_key'] = sanitize_text_field($_POST['asm_format_key']);
 				$this->options['asm_sort_order'] = sanitize_text_field($_POST['asm_sort_order']);
+				$this->options['asm_logged_in'] = isset($_POST['asm_logged_in']) ? boolval($_POST['asm_logged_in']) : false;
 				$this->options['bmlt_login_id'] = sanitize_text_field($_POST['bmlt_login_id']);
 				$this->options['bmlt_login_password'] = sanitize_text_field($_POST['bmlt_login_password']);
 				$this->options['base_font'] = sanitize_text_field($_POST['base_font']);
@@ -2140,7 +2152,13 @@ if (!class_exists("Bread")) {
 			} else {
 				$this->options['extra_meetings_enabled'] = 1;
 			}
-			
+			if ( !isset($this->options['asm_logged_in']) ) {
+				if (strlen ($this->options['bmlt_login_password']) > 0 &&  strlen ($this->options['bmlt_login_password']) > 0) {
+					$this->options['asm_logged_in'] = wp_remote_retrieve_body($this->authenticate_root_server());
+				} else {
+					$this->options['asm_logged_in'] = false;
+				}
+			}
 			?>
 			<?php include 'partials/_help_videos.php'; ?>
 			<div class="hide wrap" id="meeting-list-tabs-wrapper">

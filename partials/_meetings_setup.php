@@ -306,10 +306,13 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                 <?php $connected = "<p><div style='color: #00AD00;font-size: 16px;vertical-align: middle;' class='dashicons dashicons-lock'></div><span style='color: #00AD00;'>Login OK</span></p>"; ?>
             <?php } ?>
             <div class="postbox">
-                <h3 class="hndle">Special Features<span title='You must login with an service body administrator account to use these features.' class="top-tooltip"></span></h3>
+                <h3 class="hndle">Secondary Meeting List</h3>
                 <div class="inside">
                     <p>
-                    <label for="asm_format">Service Meeting Format: </label>
+                    This section allows the definition of a second meeting list, containing meetings that should not be included in the main
+                    list.  This is typically service meetings, but it can be any group of meetings identified by a format.
+                    </p><p>
+                    <label for="asm_format">Format of meetings in secondary list: </label>
                     <select id="adm_format" name="asm_format_key">
                     <?php if ($this_connected) { ?>
                         <option value="">Not Used</option>
@@ -325,13 +328,21 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         <option selected="selected" value="<?php echo $this->options['asm_format_key']; ?>"><?php echo 'ASM'; ?></option>
                     <?php } ?>
                     </select>
-                    </p>
-                    <p>
+                    </p><p>
+                    <label for="asm_sort_order">Select sort order for secondary meetings</label>
+                    <select id="asm_sort_order" name="asm_sort_order">
+                        <option value="meeting_name">By Name</option>
+                        <option value="time">By Day and Time</option>
+                     </select>
+                     </p><p>
+                    The secondary list my include fields that are not returned for normal meetings.  To access these fields
+                    you must login with an service body administrator account.
+                    <br>
                         <label for="bmlt_login_id">Login ID: </label>
                         <input class="bmlt-login" id="bmlt_login_id" type="text" name="bmlt_login_id" value="<?php echo esc_html($this->options['bmlt_login_id']) ;?>" />&nbsp;&nbsp;&nbsp;&nbsp;
                         <label for="bmlt_login_password">Password: </label>
                         <input class="bmlt-login" id="bmlt_login_password" type="password" name="bmlt_login_password" value="<?php echo esc_html($this->options['bmlt_login_password']) ;?>" />  <?php echo $connected; ?>
-                    </p>
+                    <br>
                     <?php if ($logged_in == 'OK') { ?>
                         <div id="includeemaildiv" class="inside">
                             <?php $title = '
@@ -344,26 +355,12 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                             <b>Meeting Email Contact<span title='<?php echo $title; ?>' class="top-tooltip"></span></b>
                             <input name="include_meeting_email" value="0" type="hidden"><p><input type="checkbox" name="include_meeting_email" value="1" <?php echo ($this->options['include_meeting_email'] == '1' ? 'checked' : '') ?>>Enable</p>
                         </div>
-                     <?php } ?>
-                     <label for="asm_sort_order">Select sort order for ASM meetings</label>
-                     <select id="asm_sort_order" name="asm_sort_order">
-                        <option value="meeting_name">By Name</option>
-                        <option value="time">By Day and Time</option>
-                     </select>
-                        <div id="includeasmdiv" class="inside">
-                            <?php $title = '
-                                <p>Show <strong>Area Service Meetings</strong> (ASM) in the meeting list.</p>
-                                <p>In BMLT a meeting can have the format code ASM indicating it is a service meeting.</p>
-                                <p>Typically Areas show their Area Service Meetings separately on the meeting list</p>
-                                <p>and may not want to show the Area Service Meetings again in the list of regular meetings.</p>
-                                <p>To list the Area Service Meetings in the list of regular meetings enable this check-box.</p>
-                                <p>If you login, you can use unpublished meetings with the ASM format.</p>
-                                ';
-                            ?>
-                            <b>Show Area Service Meetings<span title='<?php echo $title; ?>' class="top-tooltip"></span></b>
-                            <input name="include_asm" value="0" type="hidden">
-                            <p><input type="checkbox" name="include_asm" value="1" <?php echo ($this->options['include_asm'] == '1' ? 'checked' : '') ?>>Include meetings with this format in the main list</p>
-                            <div style="margin-top:0px; margin-bottom:20px; max-width:100%; width:100%;">
+                    <?php } ?>
+                    <input name="include_asm" value="0" type="hidden">
+                    <p><input type="checkbox" name="include_asm" value="1" <?php echo ($this->options['include_asm'] == '1' ? 'checked' : '') ?>>Include meetings with this format in the main list</p>
+                    Bread defines a default format for secondary meetings.  If you wish to define your own format for the
+                    secondary meeting list, use this template.
+                    <div style="margin-top:0px; margin-bottom:20px; max-width:100%; width:100%;">
                         <?php
                         $editor_id = "asm_template_content";
                         $settings    = array (
@@ -393,7 +390,6 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                                     </div>
                                 </div>
                             </div>
-                        </div>
                 </div>
             </div>
         </div>
