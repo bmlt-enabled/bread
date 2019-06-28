@@ -964,7 +964,7 @@ if (!class_exists("Bread")) {
 				$results = $this->get_configured_root_server_request( $asm_query );
 				$this->service_meeting_result = json_decode(wp_remote_retrieve_body($results), true);
 			}
-			$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetFormats");
+			$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetFormats&lang_enum=$this->options['weekday_language']");
 			$this->formats_all = json_decode(wp_remote_retrieve_body($results), true);
 			if ( strpos($this->options['custom_section_content'].$this->options['front_page_content'].$this->options['last_page_content'], '[format_codes_used_basic_es') !== false ) {
 				if ( $this->options['used_format_1'] == '' && $this->options['used_format_2'] == '' ) {
@@ -1538,8 +1538,8 @@ if (!class_exists("Bread")) {
 				$meeting_value['start_time'] = $start_time.$space.'-'.$space.$end_time;
 			}
 
-			$meeting_value['day'] = $this->getday($meeting_value['weekday_tinyint'], false, $this->lang);
-			$meeting_value['day_abbr'] = $this->getday($meeting_value['weekday_tinyint'], true, $this->lang);
+			$meeting_value['day'] = $this->getday($meeting_value['weekday_tinyint'], false, $this->options['weekday_language']);
+			$meeting_value['day_abbr'] = $this->getday($meeting_value['weekday_tinyint'], true, $this->options['weekday_language']);
 			$meeting_value['area_name'] = $area_name;
 			$meeting_value['area_i'] = substr($area_name, 0, 1);
 			//let's leave the enhancement mechanism open for now.

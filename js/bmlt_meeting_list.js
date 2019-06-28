@@ -363,10 +363,8 @@ var $ml = jQuery.noConflict
 	$ml("#container").removeClass('hide');
 	var meeting_sort_val = $ml("#meeting_sort").val();
 	if (meeting_sort_val === 'day' || meeting_sort_val === 'weekday_area' || meeting_sort_val === 'weekday_city' ||  meeting_sort_val === 'weekday_county') {
-		$ml('.weekday_language_div').show();
 		$ml('.weekday_start_div').show();
 	} else {
-		$ml('.weekday_language_div').hide();
         $ml('.weekday_start_div').hide();
 	}
      $ml('.borough_by_suffix').hide();
@@ -392,10 +390,8 @@ var $ml = jQuery.noConflict
         $ml('.neighborhood_by_suffix').hide();
         $ml('.city_by_suffix').hide();
 		if (meeting_sort_val === 'day' || meeting_sort_val === 'weekday_area' || meeting_sort_val === 'weekday_city' ||  meeting_sort_val === 'weekday_county') {
-			$ml('.weekday_language_div').show()
             $ml('.weekday_start_div').show();
 		} else {
-			$ml('.weekday_language_div').hide();
             $ml('.weekday_start_div').hide();
 		}
 		if (meeting_sort_val === 'borough_county') {
