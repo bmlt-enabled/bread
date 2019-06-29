@@ -54,6 +54,9 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 
 == Changelog ==
 
+= **UNRELEASED** =
+* Added support for Italian.
+
 = 1.10.1 =
 * Fix for detailed formats not rendering [#82]
 
