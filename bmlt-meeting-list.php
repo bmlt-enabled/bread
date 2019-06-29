@@ -321,7 +321,7 @@ if (!class_exists("Bread")) {
                     $data = ($abbreviate ? "Fr" : "Fredag");
                 } elseif ( $language == 'it') {
                     $data = ($abbreviate ? "Ven" : "Venerdì");
-                }");
+                }
                 }
 			} elseif ( $day == 7 ) {
 				if ( $language == 'en' || $language == 'en' ) {
@@ -344,7 +344,7 @@ if (!class_exists("Bread")) {
                     $data = ($abbreviate ? "L&#248;" : "L&#248;rdag");
                 } elseif ( $language == 'it') {
                     $data = ($abbreviate ? "Sab" : "Sabato");
-                }
+                }");
 			}
 			
 			Return utf8_encode($data);
