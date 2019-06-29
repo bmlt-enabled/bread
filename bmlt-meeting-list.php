@@ -322,7 +322,6 @@ if (!class_exists("Bread")) {
                 } elseif ( $language == 'it') {
                     $data = ($abbreviate ? "Ven" : "Venerdì");
                 }
-                }
 			} elseif ( $day == 7 ) {
 				if ( $language == 'en' || $language == 'en' ) {
 					$data = ($abbreviate ? 'Sat' : "Saturday");
