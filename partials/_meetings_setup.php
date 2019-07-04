@@ -306,13 +306,13 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                 <?php $connected = "<p><div style='color: #00AD00;font-size: 16px;vertical-align: middle;' class='dashicons dashicons-lock'></div><span style='color: #00AD00;'>Login OK</span></p>"; ?>
             <?php } ?>
             <div class="postbox">
-                <h3 class="hndle">Secondary Meeting List</h3>
+                <h3 class="hndle">Additional List</h3>
                 <div class="inside">
                     <p>
-                    This section allows the definition of a second meeting list, containing meetings that should not be included in the main
+                    This section allows the definition of an additional meeting list, containing meetings that should not be included in the main
                     list.  This is typically service meetings, but it can be any group of meetings identified by a format.
                     </p><p>
-                    <label for="asm_format">Format of meetings in secondary list: </label>
+                    <label for="asm_format">Format of meetings in the additional list: </label>
                     <select id="adm_format" name="asm_format_key">
                     <?php if ($this_connected) { ?>
                         <option value="">Not Used</option>
@@ -329,13 +329,13 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     <?php } ?>
                     </select>
                     </p><p>
-                    <label for="asm_sort_order">Select sort order for secondary meetings</label>
+                    <label for="asm_sort_order">Select sort order for the additional list</label>
                     <select id="asm_sort_order" name="asm_sort_order">
                         <option value="meeting_name">By Name</option>
                         <option value="time">By Day and Time</option>
                      </select>
                      </p><p>
-                    The secondary list my include fields that are not returned for normal meetings.  To access these fields
+                    The additional list may include fields that might be used for say "service meetings".  To access these fields
                     you must login with an service body administrator account.
                     <br>
                         <label for="bmlt_login_id">Login ID: </label>
@@ -358,8 +358,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     <?php } ?>
                     <input name="include_asm" value="0" type="hidden">
                     <p><input type="checkbox" name="include_asm" value="1" <?php echo ($this->options['include_asm'] == '1' ? 'checked' : '') ?>>Include meetings with this format in the main list</p>
-                    Bread defines a default format for secondary meetings.  If you wish to define your own format for the
-                    secondary meeting list, use this template.
+                    The default format for the additional list is ASM.  If you wish to define a different format for the additional list, use this template.
                     <div style="margin-top:0px; margin-bottom:20px; max-width:100%; width:100%;">
                         <?php
                         $editor_id = "asm_template_content";
