@@ -196,7 +196,7 @@ foreach($all_users as $user){
                     </select>
                     <p>Hint: Type a group name, weekday or area to narrow down your choices.</p>
 					<div>
-						<input type="checkbox" name="extra_meetings_enabled" value="1" <?php echo ($this->options['extra_meetings_enabled'] == 1 ? 'checked' : '') ?> /> Extra Meetings Enabled
+						<input type="checkbox" name="extra_meetings_enabled" value="1" <?php echo (isset($this->options['extra_meetings_enabled']) && $this->options['extra_meetings_enabled'] == 1 ? 'checked' : '') ?> /> Extra Meetings Enabled
 					</div>
                 </div>
                 

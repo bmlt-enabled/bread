@@ -2162,7 +2162,7 @@ if (!class_exists("Bread")) {
 			if ( !isset($this->options['cache_time']) || strlen(trim($this->options['cache_time'])) == 0 ) {
 				$this->options['cache_time'] = 0;
 			}
-			if ( !isset($this->options['extra_meetings']) || $this->options['extra_meetings'] == '' ) {
+			if ( !isset($this->options['extra_meetings']) || count($this->options['extra_meetings']) == 0 || $this->options['extra_meetings'] == '') {
 				$this->options['extra_meetings'] = '';
 			} else {
 				$this->options['extra_meetings_enabled'] = 1;
