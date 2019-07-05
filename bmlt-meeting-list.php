@@ -143,7 +143,6 @@ if (!class_exists("Bread")) {
                 add_action("admin_enqueue_scripts", array(&$this, "enqueue_backend_files"));
                 add_action("wp_default_editor", array(&$this, "ml_default_editor"));
                 add_filter('tiny_mce_version', array(__CLASS__, 'force_mce_refresh'));
-                Bread::add_cap();
             }
 
             register_deactivation_hook(__FILE__, array(__CLASS__, 'deactivation'));
@@ -1882,6 +1881,7 @@ if (!class_exists("Bread")) {
 		*/
 		function admin_menu_link() 	{
 			global $my_admin_page;
+			Bread::add_cap();
 			$my_admin_page = add_menu_page( 'Meeting List', 'Meeting List', 'manage_bread', basename(__FILE__), array(&$this, 'admin_options_page'), 'dashicons-admin-page');
 		}
 
