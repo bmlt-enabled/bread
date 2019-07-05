@@ -1106,6 +1106,9 @@ if (!class_exists("Bread")) {
 				'[page_break]'					=>  '<pagebreak />',
 				'<!--nextpage-->'				=>  '<pagebreak />',
 				"[area]"						=>  strtoupper($this->options['service_body_1']),
+				'<div>[new_column]</div>'		=>  '<columnbreak />',
+				'<p>[new_column]</p>'			=>  '<columnbreak />',
+				'[new_column]'					=>  '<columnbreak />',
 				'[page_break no_page_number]'	=> '<sethtmlpagefooter name="" value="0" /><pagebreak />',
 				'[start_page_numbers]'			=> '<sethtmlpagefooter name="MyFooter" page="ALL" value="1" />',
 				"[month_lower]"					=> date ( "F" ),
@@ -1569,8 +1572,8 @@ if (!class_exists("Bread")) {
 				$meeting_value['start_time'] = $start_time.$space.'-'.$space.$end_time;
 			}
 
-			$meeting_value['day'] = $this->getday($meeting_value['weekday_tinyint'], false, $this->options['weekday_language']);
 			$meeting_value['day_abbr'] = $this->getday($meeting_value['weekday_tinyint'], true, $this->options['weekday_language']);
+			$meeting_value['day'] = $this->getday($meeting_value['weekday_tinyint'], false, $this->options['weekday_language']);
 			$meeting_value['area_name'] = $area_name;
 			$meeting_value['area_i'] = substr($area_name, 0, 1);
 			//let's leave the enhancement mechanism open for now.
