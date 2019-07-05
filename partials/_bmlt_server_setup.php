@@ -1,7 +1,18 @@
 <?php
 if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
     die('Sorry, but you cannot access this page directly.');
-} ?>
+} 
+$all_users = get_users();
+$specific_users = array();
+
+foreach($all_users as $user){
+
+    if($user->has_cap('manage_bread')){
+        $specific_users[] = $user;
+    }
+
+}
+?>
 <div id="poststuff">
     <div id="postbox-container" class="postbox-container">
         <div id="normal-sortables" class="meta-box-sortables ui-sortable">
@@ -185,7 +196,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     </select>
                     <p>Hint: Type a group name, weekday or area to narrow down your choices.</p>
 					<div>
-						<input type="checkbox" name="extra_meetings_enabled" value="1" <?php echo ($this->options['extra_meetings_enabled'] == 1 ? 'checked' : '') ?> /> Extra Meetings Enabled
+						<input type="checkbox" name="extra_meetings_enabled" value="1" <?php echo (isset($this->options['extra_meetings_enabled']) && $this->options['extra_meetings_enabled'] == 1 ? 'checked' : '') ?> /> Extra Meetings Enabled
 					</div>
                 </div>
                 
@@ -193,7 +204,17 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
             <div id="currentmeetinglistlinkdiv" class="postbox">
                 <h3 class="hndle">Current Meeting List Link<span title='<p>Share the "Current Meeting List Link" on your website, email, etc to generate this meeting list.</p>' class="tooltip"></span></h3>
                 <div class="inside">
-                    <p><a target="_blank" href='<?php echo home_url() ?>/?current-meeting-list=1'><?php echo home_url() ?>/?current-meeting-list=1</a></p>
+                <p><a target="_blank" href='<?php echo home_url() ?>/?current-meeting-list=<?php echo $this->loaded_setting ?>'><?php echo home_url() ?>/?current-meeting-list=<?php echo $this->loaded_setting ?></a></p>
+                </div>
+            </div>
+            <div id="currentmeetinglistauthordiv" class="postbox">
+                <h3 class="hndle">Meeting List Author(s)</h3>
+                <div class="inside">
+                <select id="author_chosen" name="authors_select[]" multiple>
+                <?php foreach($specific_users as $user) { ?>
+                    <option value="<?php echo $user->ID ?>" <?php echo in_array($user->ID, $this->authors_safe) ? 'selected=' :'' ?>><?php echo $user->user_firstname ?> <?php echo $user->user_lastname ?> (<?php echo $user->user_login ?>) </option>
+                <?php } ?>
+                </select>
                 </div>
             </div>
             <div id="meetinglistcachediv" class="postbox">
@@ -213,8 +234,10 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                 </div>
             </div>
         </div>
+    <?php if ($this->current_user_can_modify()) echo '
     <input type="submit" value="Save Changes" id="bmltmeetinglistsave1" name="bmltmeetinglistsave" class="button-primary" />
-    <?php echo '<p style="display: inline; margin-top:.5em;margin-bottom:1.0em;margin-left:.2em;"><a target="_blank" class="button-primary" href="'.home_url() . '/?current-meeting-list=1">Generate Meeting List</a></p>'; ?>
+ ';?>
+    <?php echo '<p style="display: inline; margin-top:.5em;margin-bottom:1.0em;margin-left:.2em;"><a target="_blank" class="button-primary" href="'.home_url() . '/?current-meeting-list='.$this->loaded_setting.'">Generate Meeting List</a></p>'; ?>
     <div style="display:inline;"><i>&nbsp;&nbsp;Save Changes before Generate Meeting List.</i></div>
     <br class="clear">
     </div>

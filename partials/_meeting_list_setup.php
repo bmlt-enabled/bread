@@ -29,7 +29,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                 <h2>Default Settings and Content</h2>
                 <p>Changing the Default Settings and Content should only be considered when first using the Meeting List Generator or when you decide to completely start over with setting up your meeting list.</p>
                 <p><i>The buttons below will completely reset your meeting list settings (and content) to whichever layout you choose. There is no Undo.</i></p>
-                <p style="color: #f00; margin-bottom: 15px;">Consider backing up settings by using the Backup/Restore Tab before changing your Meeting List Settings.</p>
+                <p style="color: #f00; margin-bottom: 15px;">Consider backing up settings by using the Configuration Tab before changing your Meeting List Settings.</p>
                 <input type="submit" value="Tri Fold - Letter Size" id="submit_three_column" class="button-primary" />
                 <input type="submit" value="Quad Fold - Legal Size" id="submit_four_column" class="button-primary" />
                 <input type="submit" value="Half Fold - Booklet" id="submit_booklet" class="button-primary" />
@@ -44,22 +44,12 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
             </div>
             <h3 class="help-accordian">Multiple Meeting Lists</h3>
             <div>
-                <p>Currently, this tool supports one meeting list per site.</p>
-                <p>The following methods could be used to get additional meeting lists.</p>
-                <p>Method 1. Install additional Wordpress installations on your server.  For example:</p>
-                <ol>
-                <li>Add a sub-domain for each meeting list. For example:</li>
-                <ul>
-                <li>area1.region.org</li>
-                <li>area2.region.org</li>
-                <li>area3.region.org</li>
-                </ul>
-                <li>Install Wordpress on each sub-domain.</li>
-                <li>Install the bread plugin on each sub-domain.</li>
-                <li>Provide the login to each Wordpress installation to each local web-servant.</li>
-                </ol>
-                <p>Method 2. Create a Wordpress multi-site installation.</p>
-                <p>Method 3. Contribute to this project so that multiple meeting lists could be configured in this plugin.</p>
+                <p>This tool supports multiple meeting lists per site.</p>
+                <p>This feature is configured from the Configuration Tab.  There, each concurrent meeting list can be given a
+                    name, and the system gives the meeting list a numberic identifier.  The meeting list can then be generated using </p>
+                    a link of the form http://[host]?current-meeting-list=[id]</p>
+                <p>After switching to another concurrent meeting list, any changes in the admin UI impact the currently selected meeting list</p>
+                <p>If you want to give another user access to bread you can give that use the "manage_bread" capability using a custom role editor.</p>
             </div>
 	        <h3 class="help-accordian">Reusable Templating</h3>
 	        <div>

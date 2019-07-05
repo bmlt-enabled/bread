@@ -363,10 +363,8 @@ var $ml = jQuery.noConflict
 	$ml("#container").removeClass('hide');
 	var meeting_sort_val = $ml("#meeting_sort").val();
 	if (meeting_sort_val === 'day' || meeting_sort_val === 'weekday_area' || meeting_sort_val === 'weekday_city' ||  meeting_sort_val === 'weekday_county') {
-		$ml('.weekday_language_div').show();
 		$ml('.weekday_start_div').show();
 	} else {
-		$ml('.weekday_language_div').hide();
         $ml('.weekday_start_div').hide();
 	}
      $ml('.borough_by_suffix').hide();
@@ -392,10 +390,8 @@ var $ml = jQuery.noConflict
         $ml('.neighborhood_by_suffix').hide();
         $ml('.city_by_suffix').hide();
 		if (meeting_sort_val === 'day' || meeting_sort_val === 'weekday_area' || meeting_sort_val === 'weekday_city' ||  meeting_sort_val === 'weekday_county') {
-			$ml('.weekday_language_div').show()
             $ml('.weekday_start_div').show();
 		} else {
-			$ml('.weekday_language_div').hide();
             $ml('.weekday_start_div').hide();
 		}
 		if (meeting_sort_val === 'borough_county') {
@@ -517,6 +513,7 @@ var $ml = jQuery.noConflict
 		$ml('#pagenodiv').hide();
 		$ml("#5inch, label[for=5inch]").hide();
 		$ml("#A5, label[for=A5]").hide();
+		$ml("#A6, label[for=A6]").hide();
 		$ml("#meeting-list-tabs ul li:eq(5)").hide();
 		$ml("#meeting-list-tabs ul li:eq(6)").show();
 		$ml('#meeting-list-tabs').tabs('disable', 5);
@@ -528,6 +525,7 @@ var $ml = jQuery.noConflict
 	} else {
 		$ml("#5inch, label[for=5inch]").hide();
 		$ml("#A5, label[for=A5]").hide();
+		$ml("#A6, label[for=A6]").hide();
 		$ml('#meeting-list-tabs').tabs('disable', 6);
 		$ml("#meeting-list-tabs ul li:eq(6)").hide();
 	}
@@ -545,6 +543,7 @@ var $ml = jQuery.noConflict
 			$ml('input[name=page_orientation]').val(['L']);
 			$ml("#5inch, label[for=5inch]").show();
 			$ml("#A5, label[for=A5]").show();
+			$ml("#A6, label[for=A6]").show();
 			$ml("#letter, label[for=letter]").hide();
 			$ml("#legal, label[for=legal]").hide();
 			$ml("#ledger, label[for=ledger]").hide();
@@ -596,6 +595,7 @@ var $ml = jQuery.noConflict
 			$ml('input[name=page_orientation]').val(['L']);
 			$ml("#5inch, label[for=5inch]").hide();
 			$ml("#A5, label[for=A5]").hide();
+			$ml("#A6, label[for=A6]").hide();
 			$ml("#letter, label[for=letter]").show();
 			$ml("#legal, label[for=legal]").show();
 			$ml("#ledger, label[for=ledger]").show();
@@ -697,6 +697,18 @@ var $ml = jQuery.noConflict
 		$ml(".ctrl_key").show();
 	});	
 	$ml('#extra_meetings').on('chosen:hiding_dropdown', function(evt, params) {
+		$ml(".ctrl_key").hide();
+	});	
+	$ml("#author_chosen").chosen({
+		no_results_text: "Oops, nothing found!",
+		width: "100%",
+		placeholder_text_multiple: "Select authors",
+		search_contains: true
+	});
+	$ml('#author_chosen').on('chosen:showing_dropdown', function(evt, params) {
+		$ml(".ctrl_key").show();
+	});	
+	$ml('#author_chosen').on('chosen:hiding_dropdown', function(evt, params) {
 		$ml(".ctrl_key").hide();
 	});	
 /* 

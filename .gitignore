@@ -2,3 +2,4 @@
 .idea
 logs
 mpdf/vendor
+.vscode/*

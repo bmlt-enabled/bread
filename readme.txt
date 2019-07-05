@@ -4,8 +4,8 @@ Contributors: odathp, radius314, pjaudiomv, klgrimley, jbraswell, otrok7
 Tags: meeting list, bmlt, narcotics anonymous, na
 Requires at least: 4.0
 Requires PHP: 5.6
-Tested up to: 5.2.1
-Stable tag: 1.10.1
+Tested up to: 5.2.2
+Stable tag: 2.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 A web-based tool that creates, maintains and generates a PDF meeting list from BMLT.
@@ -54,8 +54,15 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 
 == Changelog ==
 
-= 1.10.1 =
-* Fix for detailed formats not rendering [#82]
+= 2.0.0 =
+* Support for multiple configurations. [#36]
+* Access to configure is now controlled with a custom capability called `manage_bread`.  This is automatically added to the `Administrator` role.
+* Generalized ASM functionality to other formats, and user-defined templates.  Now called "Additional List".
+* German and Farsi support.
+* New layout options
+  - A6 Booklet (fits more meetings than flyer, but more convenient to carry around than A5).
+  - Watermarks (typically the NA Logo, but you can specify a URL to another image).
+  - Page Headers (good when generating posters).
 
 = 1.10.0 =
 * Limiting query size to needed fields.
