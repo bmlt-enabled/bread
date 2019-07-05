@@ -49,6 +49,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     name, and the system gives the meeting list a numberic identifier.  The meeting list can then be generated using </p>
                     a link of the form http://[host]?current-meeting-list=[id]</p>
                 <p>After switching to another concurrent meeting list, any changes in the admin UI impact the currently selected meeting list</p>
+                <p>If you want to give another user access to bread you can give that use the "manage_bread" capability using a custom role editor.</p>
             </div>
 	        <h3 class="help-accordian">Reusable Templating</h3>
 	        <div>
