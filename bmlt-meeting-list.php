@@ -115,7 +115,6 @@ if (!class_exists("Bread")) {
 		function __construct() {
             // Register hooks
             register_activation_hook(__FILE__, array(__CLASS__, 'activation'));
-            register_deactivation_hook(__FILE__, array(__CLASS__, 'deactivation'));
 
 			$this->protocol = (strpos(strtolower(home_url()), "https") !== false ? "https" : "http") . "://";
 
@@ -144,33 +143,31 @@ if (!class_exists("Bread")) {
                 add_action("admin_enqueue_scripts", array(&$this, "enqueue_backend_files"));
                 add_action("wp_default_editor", array(&$this, "ml_default_editor"));
                 add_filter('tiny_mce_version', array(__CLASS__, 'force_mce_refresh'));
-                self::add_cap();
+                Bread::add_cap();
             }
+
+            register_deactivation_hook(__FILE__, array(__CLASS__, 'deactivation'));
 		}
 
         public function activation() {
-            self::add_cap();
+            Bread::add_cap();
         }
 
         private static function add_cap() {
-            $roles = get_editable_roles();
-            foreach ($GLOBALS['wp_roles']->role_objects as $key => $role) {
-                if (isset($roles[$key]) && $key == 'administrator' && !$role->has_cap('manage_bread')) {
-                    $role->add_cap('manage_bread');
-                }
+            $role = $GLOBALS['wp_roles']->role_objects['administrator'];
+            if (isset($role) && !$role->has_cap('manage_bread')) {
+                $role->add_cap('manage_bread');
             }
         }
 
         public function deactivation() {
-            self::remove_cap();
+            Bread::remove_cap();
         }
 
         private static function remove_cap() {
-            $roles = get_editable_roles();
-            foreach ($GLOBALS['wp_roles']->role_objects as $key => $role) {
-                if (isset($roles[$key]) && $key == 'administrator' && $role->has_cap('manage_bread')) {
-                    $role->remove_cap('manage_bread');
-                }
+            $role = $GLOBALS['wp_roles']->role_objects['administrator'];
+            if (isset($role) && $role->has_cap('manage_bread')) {
+                $role->remove_cap('manage_bread');
             }
         }
 
