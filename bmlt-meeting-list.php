@@ -116,7 +116,6 @@ if (!class_exists("Bread")) {
             // Register hooks
             register_activation_hook(__FILE__, array(__CLASS__, 'activation'));
             register_deactivation_hook(__FILE__, array(__CLASS__, 'deactivation'));
-            add_action('upgrader_process_complete', 'activation');
 
 			$this->protocol = (strpos(strtolower(home_url()), "https") !== false ? "https" : "http") . "://";
 
@@ -145,6 +144,7 @@ if (!class_exists("Bread")) {
                 add_action("admin_enqueue_scripts", array(&$this, "enqueue_backend_files"));
                 add_action("wp_default_editor", array(&$this, "ml_default_editor"));
                 add_filter('tiny_mce_version', array(__CLASS__, 'force_mce_refresh'));
+                self::add_cap();
             }
 		}
 
@@ -165,7 +165,6 @@ if (!class_exists("Bread")) {
             self::remove_cap();
         }
 
-        // Remove the plugin-specific custom capability
         private static function remove_cap() {
             $roles = get_editable_roles();
             foreach ($GLOBALS['wp_roles']->role_objects as $key => $role) {
