@@ -7,7 +7,7 @@ $specific_users = array();
 
 foreach($all_users as $user){
 
-    if($user->has_cap('manage_options')){
+    if($user->has_cap('manage_bread')){
         $specific_users[] = $user;
     }
 

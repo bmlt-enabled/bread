@@ -113,6 +113,10 @@ if (!class_exists("Bread")) {
 			return $ret;
 		}
 		function __construct() {
+            // Register hooks
+            register_activation_hook(__FILE__, array(__CLASS__, 'activation'));
+            register_deactivation_hook(__FILE__, array(__CLASS__, 'deactivation'));
+
 			$this->protocol = (strpos(strtolower(home_url()), "https") !== false ? "https" : "http") . "://";
 
 			$this->loadAllSettings();
@@ -142,6 +146,34 @@ if (!class_exists("Bread")) {
                 add_filter('tiny_mce_version', array(__CLASS__, 'force_mce_refresh'));
             }
 		}
+
+        public function activation() {
+            self::add_cap();
+        }
+
+        private static function add_cap() {
+            $roles = get_editable_roles();
+            foreach ($GLOBALS['wp_roles']->role_objects as $key => $role) {
+                if (isset($roles[$key]) && $key == 'administrator' && !$role->has_cap('manage_bread')) {
+                    $role->add_cap('manage_bread');
+                }
+            }
+        }
+
+        public function deactivation() {
+            self::remove_cap();
+        }
+
+        // Remove the plugin-specific custom capability
+        private static function remove_cap() {
+            $roles = get_editable_roles();
+            foreach ($GLOBALS['wp_roles']->role_objects as $key => $role) {
+                if (isset($roles[$key]) && $key == 'administrator' && $role->has_cap('manage_bread')) {
+                    $role->remove_cap('manage_bread');
+                }
+            }
+        }
+
 		function ml_default_editor() {
 			global $my_admin_page;
 			$screen = get_current_screen();
@@ -877,10 +909,10 @@ if (!class_exists("Bread")) {
             $data_field_keys = implode(',', $meeting_fields);
 			if (isset($this->options['pageheader_text'])) {
 			    $this->mpdf->SetHTMLHeader('
-<div style="vertical-align: top; text-align: center; font-weight: bold; font-size:'.$this->options['pageheader_fontsize'].'pt; line-height:25pt">
-    '.$this->options['pageheader_text'].'
-</div>',
-			        'O');
+                    <div style="vertical-align: top; text-align: center; font-weight: bold; font-size:'.$this->options['pageheader_fontsize'].'pt; line-height:25pt">
+                        '.$this->options['pageheader_text'].'
+                    </div>',
+                'O');
 			}
 			if (isset($this->options['watermark'])) {
 			    $this->mpdf->SetWatermarkImage($this->options['watermark'],0.2,'F');
@@ -1853,7 +1885,7 @@ if (!class_exists("Bread")) {
 		*/
 		function admin_menu_link() 	{
 			global $my_admin_page;
-			$my_admin_page = add_menu_page( 'Meeting List', 'Meeting List', 'manage_options', basename(__FILE__), array(&$this, 'admin_options_page'), 'dashicons-admin-page');
+			$my_admin_page = add_menu_page( 'Meeting List', 'Meeting List', 'manage_bread', basename(__FILE__), array(&$this, 'admin_options_page'), 'dashicons-admin-page');
 		}
 
 		function bmltrootserverurl_meta_box() {
@@ -2348,7 +2380,7 @@ if (!class_exists("Bread")) {
                 return;
             if( ! wp_verify_nonce( $_POST['pwsix_export_nonce'], 'pwsix_export_nonce' ) )
                 return;
-            if( ! current_user_can( 'manage_options' ) )  // TODO: Is this necessary? Why not let him make a copy
+            if( ! current_user_can( 'manage_bread' ) )  // TODO: Is this necessary? Why not let the user make a copy
                 return;
 
 			$blogname = str_replace(" - ", " ", get_option('blogname'));
@@ -2371,7 +2403,7 @@ if (!class_exists("Bread")) {
 			exit;
 		}
 		function current_user_can_modify() {
-			if( ! current_user_can( 'manage_options' ) ) {
+			if( ! current_user_can( 'manage_bread' ) ) {
 				return false;
 			}
 			$user = wp_get_current_user();
@@ -2387,7 +2419,7 @@ if (!class_exists("Bread")) {
 			return false;
 		}
 		function current_user_can_create() {
-			if( ! current_user_can( 'manage_options' ) ) {
+			if( ! current_user_can( 'manage_bread' ) ) {
 				return false;
 			}
 			return true;
@@ -2402,7 +2434,7 @@ if (!class_exists("Bread")) {
 				return;
 			if( empty( $_REQUEST['pwsix_import_nonce']) || !wp_verify_nonce( $_REQUEST['pwsix_import_nonce'], 'pwsix_import_nonce' ) )
 				return;
-			if( ! current_user_can( 'manage_options' ) )
+			if( ! current_user_can( 'manage_bread' ) )
 				return;
             $file_name = $_FILES['import_file']['name'];
             $tmp = explode( '.',  $file_name);
@@ -2431,7 +2463,7 @@ if (!class_exists("Bread")) {
 		 * Process a default settings
 		 */
 		function pwsix_process_default_settings() {
-			if ( ! current_user_can( 'manage_options' ) ||
+			if ( ! current_user_can( 'manage_bread' ) ||
 				(isset($_POST['bmltmeetinglistsave']) && $_POST['bmltmeetinglistsave'] == 'Save Changes' )) {
 				return;
 			} elseif ( isset($_REQUEST['pwsix_action']) && 'three_column_default_settings' == $_REQUEST['pwsix_action'] ) {
@@ -2541,4 +2573,3 @@ if (!class_exists("Bread")) {
 if (class_exists("Bread")) {
 	$BMLTMeetinglist_instance = new Bread();
 }
-?>
