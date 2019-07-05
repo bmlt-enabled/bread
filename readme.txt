@@ -1,6 +1,6 @@
 === bread ===
 
-Contributors: odathp, radius314, pjaudiomv, klgrimley, jbraswell
+Contributors: odathp, radius314, pjaudiomv, klgrimley, jbraswell, otrok7
 Tags: meeting list, bmlt, narcotics anonymous, na
 Requires at least: 4.0
 Requires PHP: 5.6
