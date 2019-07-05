@@ -105,7 +105,9 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 								"both_po" => "English/Spanish/Portuguese",
 								"fr_en" => "French/English",
 								"se" => "Swedish",
-                                "dk" => "Danish"
+                                "dk" => "Danish",
+                                "de" => "German",
+                                "farsi" => "Farsi"
 						];
 					?>
 					<div class="weekday_language_div">
@@ -298,19 +300,49 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
             <?php
                 $connected = '';
                 $logged_in = wp_remote_retrieve_body($this->authenticate_root_server()); ?>
+            <input type="hidden" name="asm_logged_in" id="asm_logged_in" value="<?php $logged_in ? 1 : 0 ; ?>">
             <?php $connected = "<p><div style='color: #f00;font-size: 16px;vertical-align: middle;' class='dashicons dashicons-unlock'></div><span style='color: #f00;'>Login ID or Password Incorrect</span></p>"; ?>
             <?php if ( $logged_in == 'OK') { ?>
                 <?php $connected = "<p><div style='color: #00AD00;font-size: 16px;vertical-align: middle;' class='dashicons dashicons-lock'></div><span style='color: #00AD00;'>Login OK</span></p>"; ?>
             <?php } ?>
             <div class="postbox">
-                <h3 class="hndle">Special Features<span title='You must login with an service body administrator account to use these features.' class="top-tooltip"></span></h3>
+                <h3 class="hndle">Additional List</h3>
                 <div class="inside">
                     <p>
+                    This section allows the definition of an additional meeting list, containing meetings that should not be included in the main
+                    list.  This is typically service meetings, but it can be any group of meetings identified by a format.
+                    </p><p>
+                    <label for="asm_format">Format of meetings in the additional list: </label>
+                    <select id="adm_format" name="asm_format_key">
+                    <?php if ($this_connected) { ?>
+                        <option value="">Not Used</option>
+                        <?php $countmax = count ( $used_formats ); ?>
+                        <?php for ( $count = 0; $count < $countmax; $count++ ) { ?>
+                            <?php if ( $used_formats[$count]['key_string'] == $this->options['asm_format_key'] ) { ?>
+                                <option selected="selected" value="<?php echo esc_html($used_formats[$count]['key_string']) ?>"><?php echo esc_html($used_formats[$count]['name_string']) ?></option>
+                            <?php } else { ?>
+                                <option value="<?php echo esc_html($used_formats[$count]['key_string']) ?>"><?php echo esc_html($used_formats[$count]['name_string']) ?></option>
+                            <?php } ?>
+                        <?php } ?>
+                    <?php } else { ?>
+                        <option selected="selected" value="<?php echo $this->options['asm_format_key']; ?>"><?php echo 'ASM'; ?></option>
+                    <?php } ?>
+                    </select>
+                    </p><p>
+                    <label for="asm_sort_order">Select sort order for the additional list</label>
+                    <select id="asm_sort_order" name="asm_sort_order">
+                        <option value="meeting_name">By Name</option>
+                        <option value="time">By Day and Time</option>
+                     </select>
+                     </p><p>
+                    The additional list may include fields that might be used for say "service meetings".  To access these fields
+                    you must login with an service body administrator account.
+                    <br>
                         <label for="bmlt_login_id">Login ID: </label>
                         <input class="bmlt-login" id="bmlt_login_id" type="text" name="bmlt_login_id" value="<?php echo esc_html($this->options['bmlt_login_id']) ;?>" />&nbsp;&nbsp;&nbsp;&nbsp;
                         <label for="bmlt_login_password">Password: </label>
                         <input class="bmlt-login" id="bmlt_login_password" type="password" name="bmlt_login_password" value="<?php echo esc_html($this->options['bmlt_login_password']) ;?>" />  <?php echo $connected; ?>
-                    </p>
+                    <br>
                     <?php if ($logged_in == 'OK') { ?>
                         <div id="includeemaildiv" class="inside">
                             <?php $title = '
@@ -323,20 +355,29 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                             <b>Meeting Email Contact<span title='<?php echo $title; ?>' class="top-tooltip"></span></b>
                             <input name="include_meeting_email" value="0" type="hidden"><p><input type="checkbox" name="include_meeting_email" value="1" <?php echo ($this->options['include_meeting_email'] == '1' ? 'checked' : '') ?>>Enable</p>
                         </div>
-                     <?php } ?>
-                        <div id="includeasmdiv" class="inside">
-                            <?php $title = '
-                                <p>Show <strong>Area Service Meetings</strong> (ASM) in the meeting list.</p>
-                                <p>In BMLT a meeting can have the format code ASM indicating it is a service meeting.</p>
-                                <p>Typically Areas show their Area Service Meetings separately on the meeting list</p>
-                                <p>and may not want to show the Area Service Meetings again in the list of regular meetings.</p>
-                                <p>To list the Area Service Meetings in the list of regular meetings enable this check-box.</p>
-                                <p>If you login, you can use unpublished meetings with the ASM format.</p>
-                                ';
-                            ?>
-                            <b>Show Area Service Meetings<span title='<?php echo $title; ?>' class="top-tooltip"></span></b>
-                            <input name="include_asm" value="0" type="hidden">
-                            <p><input type="checkbox" name="include_asm" value="1" <?php echo ($this->options['include_asm'] == '1' ? 'checked' : '') ?>>Enable</p>
+                    <?php } ?>
+                    <input name="include_asm" value="0" type="hidden">
+                    <p><input type="checkbox" name="include_asm" value="1" <?php echo ($this->options['include_asm'] == '1' ? 'checked' : '') ?>>Include meetings with this format in the main list</p>
+                    The default format for the additional list is ASM.  If you wish to define a different format for the additional list, use this template.
+                    <div style="margin-top:0px; margin-bottom:20px; max-width:100%; width:100%;">
+                        <?php
+                        $editor_id = "asm_template_content";
+                        $settings    = array (
+                            'tabindex'      => FALSE,
+                            'editor_height'	=> 110,
+                            'resize'        => TRUE,
+                            "media_buttons"	=> FALSE,
+                            "drag_drop_upload" => TRUE,
+                            "editor_css"	=> "<style>.aligncenter{display:block!important;margin-left:auto!important;margin-right:auto!important;}</style>",
+                            "teeny"			=> FALSE,
+                            'quicktags'		=> TRUE,
+                            'wpautop'		=> FALSE,
+                            'textarea_name' => $editor_id,
+                            'tinymce'=> array('toolbar1' => 'bold,italic,underline,strikethrough,bullist,numlist,alignleft,aligncenter,alignright,alignjustify,link,unlink,table,undo,redo,fullscreen', 'toolbar2' => 'formatselect,fontsizeselect,fontselect,forecolor,backcolor,indent,outdent,pastetext,removeformat,charmap,code', 'toolbar3' => 'custom_template_button_1,custom_template_button_2')
+                        );
+                        wp_editor( stripslashes($this->options['asm_template_content']), $editor_id, $settings );
+                        ?>
+                    </div>
                             <div class="inside">
                                 <div style="margin-bottom: 10px; padding:0;" id="accordion_asm">
                                     <h3 class="help-accordian">Instructions</h3>
@@ -348,12 +389,13 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                                     </div>
                                 </div>
                             </div>
-                        </div>
                 </div>
             </div>
         </div>
     </div>
-    <input type="submit" value="Save Changes" id="bmltmeetinglistsave4" name="bmltmeetinglistsave" class="button-primary" />
+    <?php if ($this->current_user_can_modify()) echo '
+    <input type="submit" value="Save Changes" id="bmltmeetinglistsave1" name="bmltmeetinglistsave" class="button-primary" />
+ ';?>
     <?php echo '<p style="display: inline; margin-top:.5em;margin-bottom:1.0em;margin-left:.2em;"><a target="_blank" class="button-primary" href="'.home_url() . '/?current-meeting-list=1">Generate Meeting List</a></p>'; ?>
     <div style="display:inline;"><i>&nbsp;&nbsp;Save Changes before Generate Meeting List.</i></div>
     <br class="clear">
