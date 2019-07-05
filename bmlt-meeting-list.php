@@ -524,10 +524,10 @@ if (!class_exists("Bread")) {
 			$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults&data_field_key=weekday_tinyint,start_time,service_body_bigint,id_bigint,meeting_name,location_text,email_contact&sort_keys=meeting_name,service_body_bigint,weekday_tinyint,start_time");
 			$result = json_decode(wp_remote_retrieve_body($results),true);
 			
-			$unique_areas = $this->get_areas();	
+			$this->unique_areas = $this->get_areas();	
 			$all_meetings = array();
 			foreach ($result as $value) {
-				foreach($unique_areas as $unique_area){
+				foreach($this->unique_areas as $unique_area){
 					$area_data = explode(',',$unique_area);
 					$area_id = $area_data[1];
 					if ( $area_id === $value['service_body_bigint'] ) {
@@ -901,6 +901,7 @@ if (!class_exists("Bread")) {
 			}
 			//let's leave the enhancement mechanism open for now.
 			//apply_filters is one option, perhaps we will think of something better.
+			$meeting_fields = $this->meeting_fields;
 			//$meeting_fields = apply_filters("Bread_Meeting_Fields", $this->meeting_fields);
             $data_field_keys = implode(',', $meeting_fields);
 			if (isset($this->options['pageheader_text'])) {
@@ -1029,7 +1030,7 @@ if (!class_exists("Bread")) {
 			$this->uniqueFormat($this->formats_used, 'key_string');
             $this->uniqueFormat($this->formats_all, 'key_string');
 			$this->meeting_count = count($result_meetings);
-			$unique_areas = $this->get_areas();			
+			$this->unique_areas = $this->get_areas();			
 			$unique_states = array();
 			$unique_data = array();
 
@@ -1065,7 +1066,7 @@ if (!class_exists("Bread")) {
 				} elseif ( $this->options['meeting_sort'] === 'group' ) {
 					$unique_data[] = $value['meeting_name'];
 				} elseif ( $this->options['meeting_sort'] === 'weekday_area' ) {
-					foreach($unique_areas as $unique_area){
+					foreach($this->unique_areas as $unique_area){
 						$area_data = explode(',',$unique_area);
 						$area_name = $area_data[0];
 						$area_id = $area_data[1];
@@ -1126,7 +1127,7 @@ if (!class_exists("Bread")) {
 			);
 			//let's leave the enhancement mechanism open for now.
 			//apply_filters is one option, perhaps we will think of something better.
-			//$this->section_shortcodes = apply_filters("Bread_Section_Shortcodes",$this->section_shortcodes, $unique_areas, $this->formats_used);
+			//$this->section_shortcodes = apply_filters("Bread_Section_Shortcodes",$this->section_shortcodes, $this->unique_areas, $this->formats_used);
 
 			$this->mpdf->SetColumns($num_columns, '', $this->options['column_gap']);
 			$header_style = "color:".$this->options['header_text_color'].";";
@@ -1196,13 +1197,7 @@ if (!class_exists("Bread")) {
 								if ( $meeting_value['weekday_tinyint'] . ',' . $meeting_value['service_body_bigint'] !== $weekday_tinyint . ',' . $service_body_bigint ) { continue; }
 							}
 						} else {
-							foreach($unique_areas as $unique_area){
-								$area_data = explode(',',$unique_area);
-								$area_id = $area_data[1];
-								if ( $area_id === $meeting_value['service_body_bigint'] ) {
-									$area_name = $area_data[0];
-								}
-							}							
+							$area_name = $this->get_area_name($meeting_value);							
 						}
 						if ( $this->options['meeting_sort'] === 'state' && $meeting_value['location_municipality'] . ', ' . $meeting_value['location_province'] !== $this_unique_value ) { continue; }
 						if ( $this->options['meeting_sort'] === 'group' && $meeting_value['meeting_name'] !== $this_unique_value ) { continue; }
@@ -1359,7 +1354,7 @@ if (!class_exists("Bread")) {
 						$newCol = false;
 
 						if ( $this->options['page_fold'] !== 'full' ) {
-							$data = $this->write_single_meeting($meeting_value, $this->options['meeting_template_content']);
+							$data = $this->write_single_meeting($meeting_value, $this->options['meeting_template_content'],$area_name);
 						} else {
 							$data = '<tr>';
 							if ( $this->options['meeting_sort'] == 'group' ) {
@@ -1517,7 +1512,17 @@ if (!class_exists("Bread")) {
 			$this->mpdf->Output($FilePath,'I');
 			exit;
 		}
-		function write_single_meeting($meeting_value, $template) {
+		function get_area_name($meeting_value) {
+			foreach($this->unique_areas as $unique_area){
+				$area_data = explode(',',$unique_area);
+				$area_id = $area_data[1];
+				if ( $area_id === $meeting_value['service_body_bigint'] ) {
+					return $area_data[0];
+				}
+			}
+			return '';
+		}
+		function write_single_meeting($meeting_value, $template, $area_name) {
 			$duration = explode(':', $meeting_value['duration_time']);
 			$minutes = intval($duration[0])*60 + intval($duration[1]) + intval($duration[2]);
 			$meeting_value['duration_m'] = $minutes;
@@ -1830,8 +1835,9 @@ if (!class_exists("Bread")) {
 				if ( ! in_array ( $this->options['asm_format_key'], $enFormats )  ) {
 					continue;
 				}
+				$area_name = $this->get_area_name($meeting_value);
 				if ($template != '') {
-					$data .= $this->write_single_meeting($value, $template);
+					$data .= $this->write_single_meeting($value, $template, $area_name);
 					continue;
 				}
 				$display_string = '<strong>'.$value['meeting_name'].'</strong>';
