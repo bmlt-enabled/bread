@@ -116,6 +116,7 @@ if (!class_exists("Bread")) {
             // Register hooks
             register_activation_hook(__FILE__, array(__CLASS__, 'activation'));
             register_deactivation_hook(__FILE__, array(__CLASS__, 'deactivation'));
+            add_action('upgrader_process_complete', 'activation');
 
 			$this->protocol = (strpos(strtolower(home_url()), "https") !== false ? "https" : "http") . "://";
 
