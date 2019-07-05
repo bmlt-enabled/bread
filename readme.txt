@@ -56,6 +56,7 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 
 = 2.0.0 =
 * Support for multiple configurations. [#36]
+* Access to configure is now controlled with a custom capability called `manage_bread`.  This is automatically added to the `Administrator` role.
 * Generalized ASM functionality to other formats, and user-defined templates.  Now called "Additional List".
 * German and Farsi support.
 * New layout options
