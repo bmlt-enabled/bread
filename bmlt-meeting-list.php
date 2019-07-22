@@ -639,54 +639,11 @@ if (!class_exists("Bread")) {
 				$services = '&services[]='.$service_body_id;
 				$services_service_body_1 = '&services[]='.$service_body_id;
 			}
-			if ( false === ( $this->options['service_body_2'] == 'Not Used' ) ) {
-				$area_data = explode(',',$this->options['service_body_2']);
-				$area = $area_data[0];
-				$this->options['service_body_2'] = ($area == 'NOT USED' ? '' : $area);
-				$service_body_id = $area_data[1];
-				$parent_body_id = $area_data[2];
-                if ( $this->options['recurse_service_bodies'] == 1 ) {
-					$services .= '&recursive=1&services[]=' . $service_body_id;
-				} else {
-					$services .= '&services[]='.$service_body_id;
-				}
-			}
-			if ( false === ( $this->options['service_body_3'] == 'Not Used' ) ) {
-				$area_data = explode(',',$this->options['service_body_3']);
-				$area = $area_data[0];
-				$this->options['service_body_3'] = ($area == 'NOT USED' ? '' : $area);
-				$service_body_id = $area_data[1];
-				$parent_body_id = $area_data[2];
-                if ( $this->options['recurse_service_bodies'] == 1 ) {
-					$services .= '&recursive=1&services[]=' . $service_body_id;
-				} else {
-					$services .= '&services[]='.$service_body_id;
-				}
-			}
-			if ( false === ( $this->options['service_body_4'] == 'Not Used' ) ) {
-				$area_data = explode(',',$this->options['service_body_4']);
-				$area = $area_data[0];
-				$this->options['service_body_4'] = ($area == 'NOT USED' ? '' : $area);
-				$service_body_id = $area_data[1];
-				$parent_body_id = $area_data[2];
-                if ( $this->options['recurse_service_bodies'] == 1 ) {
-					$services .= '&recursive=1&services[]=' . $service_body_id;
-				} else {
-					$services .= '&services[]='.$service_body_id;
-				}
-			}
-			if ( false === ( $this->options['service_body_5'] == 'Not Used' ) ) {
-				$area_data = explode(',',$this->options['service_body_5']);
-				$area = $area_data[0];
-				$this->options['service_body_5'] = ($area == 'NOT USED' ? '' : $area);
-				$service_body_id = $area_data[1];
-				$parent_body_id = $area_data[2];
-                if ( $this->options['recurse_service_bodies'] == 1 ) {
-					$services .= '&recursive=1&services[]=' . $service_body_id;
-				} else {
-					$services .= '&services[]='.$service_body_id;
-				}
-			}
+			$services .= $this->addServiceBody('service_body_2');
+			$services .= $this->addServiceBody('service_body_3');
+			$services .= $this->addServiceBody('service_body_4');
+			$services .= $this->addServiceBody('service_body_5');
+
 			if (isset($_GET['custom_query'])) {
 				$services = $_GET['custom_query'];
 			} elseif ( false === ( $this->options['custom_query'] == '' )) {
@@ -711,6 +668,7 @@ if (!class_exists("Bread")) {
             if ( !isset($this->options['margin_header']) ) {$this->options['margin_header'] = 3;}
 			if ( !isset($this->options['page_size']) ) {$this->options['page_size'] = 'legal';}
 			if ( !isset($this->options['page_orientation']) ) {$this->options['page_orientation'] = 'L';}
+			if ( !isset($this->options['booklet_pages']) ) {$this->options['booklet_pages'] = false;}
 			if ( !isset($this->options['page_fold']) ) {$this->options['page_fold'] = 'quad';}
 			if ( !isset($this->options['meeting_sort']) ) {$this->options['meeting_sort'] = 'day';}
 			if ( !isset($this->options['borough_suffix']) ) {$this->options['borough_suffix'] = 'Borough';}
@@ -758,19 +716,33 @@ if (!class_exists("Bread")) {
 					exit;
 				}
 			}
-
-			if ( $this->options['page_fold'] == 'half' && $this->options['page_size'] == '5inch' ) {
-			    $page_type_settings = ['format' => array(197.2,279.4), 'margin_footer' => 5];
-			} elseif ( $this->options['page_fold'] == 'half' && $this->options['page_size'] == 'A5' ) {
-				$page_type_settings = ['format' => 'A5', 'margin_footer' => 5];
-			} elseif ( $this->options['page_fold'] == 'half' && $this->options['page_size'] == 'A6' ) {
-			    $page_type_settings = ['format' => 'A6', 'margin_footer' => 5];
-			} elseif ( $this->options['page_size'] . '-' .$this->options['page_orientation'] == 'ledger-L' ) {
-                $page_type_settings = ['format' => array(432,279), 'margin_footer' => 0];
-			} elseif ( $this->options['page_size'] . '-' .$this->options['page_orientation'] == 'ledger-P' ) {
-                $page_type_settings = ['format' => array(279,432), 'margin_footer' => 0];
+			// TODO: The page number is always 5 from botton...this should be adjustable
+			if ( $this->options['page_fold'] == 'half')  {
+				if ( $this->options['page_size'] == 'letter' ) {
+					$page_type_settings = ['format' => array(139.7,215.9), 'margin_footer' => 5];
+				} elseif ($this->options['page_size'] == 'legal' ) {
+					$page_type_settings = ['format' => array(177.8,215.9), 'margin_footer' => 5];
+				} elseif ($this->options['page_size'] == 'ledger' ) {
+					$page_type_settings = ['format' => 'letter-P', 'margin_footer' => 5];
+				} elseif ($this->options['page_size'] == 'A4' ) {
+					$page_type_settings = ['format' => 'A5-P', 'margin_footer' => 5];
+				} elseif ($this->options['page_size'] == 'A5' ) {
+					$page_type_settings = ['format' => 'A6-P', 'margin_footer' => 5];
+				}
+			} elseif ( $this->options['page_fold'] == 'flyer')  {
+				if ( $this->options['page_size'] == 'letter' ) {
+					$page_type_settings = ['format' => array(93.13,215.9), 'margin_footer' => 5];
+				} elseif ($this->options['page_size'] == 'legal' ) {
+					$page_type_settings = ['format' => array(118.53,215.9), 'margin_footer' => 5];
+				} elseif ($this->options['page_size'] == 'ledger' ) {
+					$page_type_settings = ['format' => array(143.93,279.4), 'margin_footer' => 5];
+				} elseif ($this->options['page_size'] == 'A4' ) {
+					$page_type_settings = ['format' => array(99.0,210.0), 'margin_footer' => 5];
+				}
+			} elseif ( $this->options['page_fold'] == 'full')  {
+				$page_type_settings = ['format' => $this->options['page_size']."-".$this->options['page_orientation'], 'margin_footer' => 5];
 			} else {
-                $page_type_settings = ['format' => $this->options['page_size']."-".$this->options['page_orientation'], 'margin_footer' => 0];
+				$page_type_settings = ['format' => $this->options['page_size']."-".$this->options['page_orientation'], 'margin_footer' => 0];
 			}
 
             $default_font = $this->options['base_font'] == "freesans" ? "dejavusanscondensed" : $this->options['base_font'];
@@ -832,9 +804,8 @@ if (!class_exists("Bread")) {
             $this->mpdf->setAutoBottomMargin = 'pad';
 
             // TODO: Adding a page number really could just be an option or tag.
-            if ( $this->options['page_fold'] == 'half' &&
-				 ($this->options['page_size'] == '5inch' || $this->options['page_size'] == 'A5' || $this->options['page_size'] == 'A6')) {
-					$page_string = "Page";
+			if ( $this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full' )  {
+				$page_string = "Page";
 					if ($this->options['weekday_language']=='de') {
 						$page_string = "Seite";
 					} //TODO: Other Languages
@@ -1089,7 +1060,7 @@ if (!class_exists("Bread")) {
 			}
 
 			$unique_data = array_unique($unique_data);
-			if ( $this->options['page_fold'] === 'full' || $this->options['page_fold'] === 'half' ) {
+			if ( $this->options['page_fold'] === 'full' || $this->options['page_fold'] === 'half' || $this->options['page_fold'] === 'flyer') {
 				$num_columns = 0;
 			} elseif ( $this->options['page_fold'] === 'tri' ) {
 				$num_columns = 3;
@@ -1145,16 +1116,13 @@ if (!class_exists("Bread")) {
 			if ( $this->options['header_bold'] == 1 ) {
 				$header_style .= 'font-weight: bold;';
 			}
-			if ( $this->options['page_fold'] == 'half' ) {
+			if ( $this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full') {
 				$this->write_front_page();
 			}
 			$x = 0;
 			$this->mpdf->WriteHTML('td{font-size: '.$this->options['content_font_size']."pt;line-height:".$this->options['content_line_height'].';}',1);
 			$this->mpdf->SetDefaultBodyCSS('font-size', $this->options['content_font_size'] . 'pt');			
 			$this->mpdf->SetDefaultBodyCSS('line-height', $this->options['content_line_height']);
-			if ( $this->options['page_fold'] == 'full' ) {
-				$this->mpdf->WriteHTML("<table style='border-collapse:separate; width:100%;'>");
-			}
 			if ( $unique_states == null ) {
 				$unique_states[] = 'null';
 			}			
@@ -1233,151 +1201,126 @@ if (!class_exists("Bread")) {
 							$cont = '(cont)';
 						}
 
-						if ( $this->options['page_fold'] !== 'full' ) {
-							if ( $this->options['meeting_sort'] === 'county' || $this->options['meeting_sort'] === 'borough' ) {
-								if ( $this->options['borough_suffix'] ) {$this->options['borough_suffix'] = ' ' . $this->options['borough_suffix'];}
-								if ( $this->options['county_suffix'] ) {$this->options['county_suffix'] = ' ' . $this->options['county_suffix'];}
-								$header_suffix = '';
+						if ( $this->options['meeting_sort'] === 'county' || $this->options['meeting_sort'] === 'borough' ) {
+							if ( $this->options['borough_suffix'] ) {$this->options['borough_suffix'] = ' ' . $this->options['borough_suffix'];}
+							if ( $this->options['county_suffix'] ) {$this->options['county_suffix'] = ' ' . $this->options['county_suffix'];}
+							$header_suffix = '';
 
-								if ( $this->options['meeting_sort'] === 'borough' ) {
-									if ( $this_unique_value == '' ) {
-										$this_unique_data = '[NO BOROUGH DATA]';
-									} else {
-										$this_unique_data = $this_unique_value;
-									}
-									$header_suffix = $this->options['borough_suffix'];
+							if ( $this->options['meeting_sort'] === 'borough' ) {
+								if ( $this_unique_value == '' ) {
+									$this_unique_data = '[NO BOROUGH DATA]';
+								} else {
+									$this_unique_data = $this_unique_value;
 								}
-								if ( $this->options['meeting_sort'] === 'county' ) {
-									if ( $this_unique_value == '' ) {
-										$this_unique_data = '[NO COUNTY DATA]';
-									} else {
-										$this_unique_data = $this_unique_value;
-									}
-									$header_suffix = $this->options['county_suffix'];
-								}
-								if ( $newVal ) {
-									$header .= "<div style='".$header_style."'>".$this_unique_data.''.$header_suffix."</div>";
-								} elseif ( $newCol ) {
-									$header .= "<div style='".$header_style."'>".$this_unique_data.''.$header_suffix." " . $cont . "</div>";
-								}
+								$header_suffix = $this->options['borough_suffix'];
 							}
-							if ( $this->options['meeting_sort'] === 'neighborhood_city' ) {
-								if ( $this->options['neighborhood_suffix'] ) {$this->options['neighborhood_suffix'] = ' ' . $this->options['neighborhood_suffix'];}
-								if ( $this->options['city_suffix'] ) {$this->options['city_suffix'] = ' ' . $this->options['city_suffix'];}
+							if ( $this->options['meeting_sort'] === 'county' ) {
+								if ( $this_unique_value == '' ) {
+									$this_unique_data = '[NO COUNTY DATA]';
+								} else {
+									$this_unique_data = $this_unique_value;
+								}
+								$header_suffix = $this->options['county_suffix'];
+							}
+							if ( $newVal ) {
+								$header .= "<div style='".$header_style."'>".$this_unique_data.''.$header_suffix."</div>";
+							} elseif ( $newCol ) {
+								$header .= "<div style='".$header_style."'>".$this_unique_data.''.$header_suffix." " . $cont . "</div>";
+							}
+						}
+						if ( $this->options['meeting_sort'] === 'neighborhood_city' ) {
+							if ( $this->options['neighborhood_suffix'] ) {$this->options['neighborhood_suffix'] = ' ' . $this->options['neighborhood_suffix'];}
+							if ( $this->options['city_suffix'] ) {$this->options['city_suffix'] = ' ' . $this->options['city_suffix'];}
 
-								if ( $newVal ) {
-									if ( $meeting_value['location_neighborhood'] !== '' ) {
-										$header .= "<div style='".$header_style."'>".$meeting_value['location_neighborhood'].''.$this->options['neighborhood_suffix']."</div>";
-									} elseif ( $meeting_value['location_municipality'] !== '' ) {
-										$header .= "<div style='".$header_style."'>".$meeting_value['location_municipality'].''.$this->options['city_suffix']."</div>";
-									} else {
-										$header .= "<div style='".$header_style."'>[NO NEIGHBORHOOD OR CITY DATA]</div>";
-									}
-								} elseif ( $newCol ) {
-									if ( $meeting_value['location_neighborhood'] !== '' ) {
-										$header .= "<div style='".$header_style."'>".$meeting_value['location_neighborhood'].''.$this->options['neighborhood_suffix']." " . $cont . "</div>";
-									} elseif ( $meeting_value['location_municipality'] !== '' ) {
-										$header .= "<div style='".$header_style."'>".$meeting_value['location_municipality'].''.$this->options['city_suffix']." " . $cont . "</div>";
-									} else {
-										$header .= "<div style='".$header_style."'>[NO NEIGHBORHOOD OR CITY DATA] " . $cont . "</div>";
-									}
+							if ( $newVal ) {
+								if ( $meeting_value['location_neighborhood'] !== '' ) {
+									$header .= "<div style='".$header_style."'>".$meeting_value['location_neighborhood'].''.$this->options['neighborhood_suffix']."</div>";
+								} elseif ( $meeting_value['location_municipality'] !== '' ) {
+									$header .= "<div style='".$header_style."'>".$meeting_value['location_municipality'].''.$this->options['city_suffix']."</div>";
+								} else {
+									$header .= "<div style='".$header_style."'>[NO NEIGHBORHOOD OR CITY DATA]</div>";
 								}
-							}
-							if ( $this->options['meeting_sort'] === 'weekday_area' || $this->options['meeting_sort'] === 'weekday_city' || $this->options['meeting_sort'] === 'weekday_county' ) {
-								if ( $newVal ) {
-									if ( $show_first_weekday === true ) {
-										if ( $current_weekday === $this->options['weekday_start'] ) {
-											$header .= "<div style='".$header_style."'>".$this->getday($meeting_value['weekday_tinyint'], false, $this->options['weekday_language'])."</div>";
-										} else {
-											$header .= "<div style='".$header_style."margin-top:2pt;'>".$this->getday($meeting_value['weekday_tinyint'], false, $this->options['weekday_language'])."</div>";
-										}
-										$show_first_weekday = false;
-									} elseif ( utf8_encode($this->mpdf->y) == $this->options['margin_top'] ) {
-										$header .= "<div style='".$header_style."'>".$this->getday($meeting_value['weekday_tinyint'], false, $this->options['weekday_language'])." " . $cont . "</div>";
-									}
-									
-									$header .= $this->options['sub_header_shown'] == 1 ? "<p style='margin-top:1pt; padding-top:1pt; font-weight:bold;'>".$area_name."</p>" : "";
-									
-                                } elseif ( utf8_encode($this->mpdf->y) == $this->options['margin_top'] ) {
-									$header .= "<div style='".$header_style."'>".$this->getday($meeting_value['weekday_tinyint'], false, $this->options['weekday_language'])." " . $cont . "</div>";
-									$header .= $this->options['sub_header_shown'] == 1 ? "<p style='margin-top:1pt; padding-top:1pt; font-weight:bold;'>".$area_name."</p>" : "";
-								}
-							}
-							if ( $this->options['meeting_sort'] === 'city' || $this->options['meeting_sort'] === 'state' ) {
-								if ( $meeting_value['location_municipality'] == '' ) {
-									$meeting_value['location_municipality'] = '[NO CITY DATA IN BMLT]';
-								}
-								if ( $newVal ) {
-									$header .= "<div style='".$header_style."'>".$meeting_value['location_municipality']."</div>";
-								} elseif ( $newCol ) {
-									$header .= "<div style='".$header_style."'>".$meeting_value['location_municipality']." " . $cont . "</div>";
-								}
-							}
-							if ( $this->options['meeting_sort'] === 'group' ) {
-								if ( $newVal ) {
-									$header .= "<div style='".$header_style."'>".$meeting_value['meeting_name']."</div>";
-								} elseif ( $newCol ) {
-									$header .= "<div style='".$header_style."'>".$meeting_value['meeting_name']." " . $cont . "</div>";
-								}
-							}
-							if ( $this->options['meeting_sort'] === 'day' ) {
-								if ( $newVal ) {
-									$header .= "<div style='".$header_style."'>".$this->getday($this_unique_value, false, $this->options['weekday_language'])."</div>";
-								} elseif ( $newCol ) {
-									$header .= "<div style='".$header_style."'>".$this->getday($meeting_value['weekday_tinyint'], false, $this->options['weekday_language'])." " . $cont . "</div>";
-								}
-							}
-							if ( $this->options['meeting_sort'] === 'borough_county' ) {
-								if ( $this->options['borough_suffix'] ) {$this->options['borough_suffix'] = ' ' . $this->options['borough_suffix'];}
-								if ( $this->options['county_suffix'] ) {$this->options['county_suffix'] = ' ' . $this->options['county_suffix'];}
-									
-								if ( $newVal ) {
-									if ( $meeting_value['location_city_subsection'] !== '' ) {
-										$header .= "<div style='".$header_style."'>".$meeting_value['location_city_subsection'].''.$this->options['borough_suffix']."</div>";
-									} elseif ( $meeting_value['location_sub_province'] !== '' ) {
-										$header .= "<div style='".$header_style."'>".$meeting_value['location_sub_province'].''.$this->options['county_suffix']."</div>";
-									} else {
-										$header .= "<div style='".$header_style."'>[NO BOROUGH OR COUNTY DATA]</div>";
-									}
-								} elseif ( $newCol ) {
-									if ( $meeting_value['location_city_subsection'] !== '' ) {
-										$header .= "<div style='".$header_style."'>".$meeting_value['location_city_subsection'].''.$this->options['borough_suffix']." " . $cont . "</div>";
-									} elseif ( $meeting_value['location_sub_province'] !== '' ) {
-										$header .= "<div style='".$header_style."'>".$meeting_value['location_sub_province'].''.$this->options['county_suffix']." " . $cont . "</div>";
-									} else {
-										$header .= "<div style='".$header_style."'>[NO BOROUGH OR COUNTY DATA] " . $cont . "</div>";
-									}
+							} elseif ( $newCol ) {
+								if ( $meeting_value['location_neighborhood'] !== '' ) {
+									$header .= "<div style='".$header_style."'>".$meeting_value['location_neighborhood'].''.$this->options['neighborhood_suffix']." " . $cont . "</div>";
+								} elseif ( $meeting_value['location_municipality'] !== '' ) {
+									$header .= "<div style='".$header_style."'>".$meeting_value['location_municipality'].''.$this->options['city_suffix']." " . $cont . "</div>";
+								} else {
+									$header .= "<div style='".$header_style."'>[NO NEIGHBORHOOD OR CITY DATA] " . $cont . "</div>";
 								}
 							}
 						}
+						if ( $this->options['meeting_sort'] === 'weekday_area' || $this->options['meeting_sort'] === 'weekday_city' || $this->options['meeting_sort'] === 'weekday_county' ) {
+							if ( $newVal ) {
+								if ( $show_first_weekday === true ) {
+									if ( $current_weekday === $this->options['weekday_start'] ) {
+										$header .= "<div style='".$header_style."'>".$this->getday($meeting_value['weekday_tinyint'], false, $this->options['weekday_language'])."</div>";
+									} else {
+										$header .= "<div style='".$header_style."margin-top:2pt;'>".$this->getday($meeting_value['weekday_tinyint'], false, $this->options['weekday_language'])."</div>";
+									}
+									$show_first_weekday = false;
+								} elseif ( utf8_encode($this->mpdf->y) == $this->options['margin_top'] ) {
+									$header .= "<div style='".$header_style."'>".$this->getday($meeting_value['weekday_tinyint'], false, $this->options['weekday_language'])." " . $cont . "</div>";
+								}
+									
+								$header .= $this->options['sub_header_shown'] == 1 ? "<p style='margin-top:1pt; padding-top:1pt; font-weight:bold;'>".$area_name."</p>" : "";
+									
+                            } elseif ( utf8_encode($this->mpdf->y) == $this->options['margin_top'] ) {
+								$header .= "<div style='".$header_style."'>".$this->getday($meeting_value['weekday_tinyint'], false, $this->options['weekday_language'])." " . $cont . "</div>";
+								$header .= $this->options['sub_header_shown'] == 1 ? "<p style='margin-top:1pt; padding-top:1pt; font-weight:bold;'>".$area_name."</p>" : "";
+							}
+						}
+						if ( $this->options['meeting_sort'] === 'city' || $this->options['meeting_sort'] === 'state' ) {
+							if ( $meeting_value['location_municipality'] == '' ) {
+								$meeting_value['location_municipality'] = '[NO CITY DATA IN BMLT]';
+							}
+							if ( $newVal ) {
+								$header .= "<div style='".$header_style."'>".$meeting_value['location_municipality']."</div>";
+							} elseif ( $newCol ) {
+								$header .= "<div style='".$header_style."'>".$meeting_value['location_municipality']." " . $cont . "</div>";
+							}
+						}
+						if ( $this->options['meeting_sort'] === 'group' ) {
+							if ( $newVal ) {
+								$header .= "<div style='".$header_style."'>".$meeting_value['meeting_name']."</div>";
+							} elseif ( $newCol ) {
+								$header .= "<div style='".$header_style."'>".$meeting_value['meeting_name']." " . $cont . "</div>";
+							}
+						}
+						if ( $this->options['meeting_sort'] === 'day' ) {
+							if ( $newVal ) {
+								$header .= "<div style='".$header_style."'>".$this->getday($this_unique_value, false, $this->options['weekday_language'])."</div>";
+							} elseif ( $newCol ) {
+								$header .= "<div style='".$header_style."'>".$this->getday($meeting_value['weekday_tinyint'], false, $this->options['weekday_language'])." " . $cont . "</div>";
+							}
+						}
+						if ( $this->options['meeting_sort'] === 'borough_county' ) {
+							if ( $this->options['borough_suffix'] ) {$this->options['borough_suffix'] = ' ' . $this->options['borough_suffix'];}
+							if ( $this->options['county_suffix'] ) {$this->options['county_suffix'] = ' ' . $this->options['county_suffix'];}
+								
+							if ( $newVal ) {
+								if ( $meeting_value['location_city_subsection'] !== '' ) {
+									$header .= "<div style='".$header_style."'>".$meeting_value['location_city_subsection'].''.$this->options['borough_suffix']."</div>";
+								} elseif ( $meeting_value['location_sub_province'] !== '' ) {
+									$header .= "<div style='".$header_style."'>".$meeting_value['location_sub_province'].''.$this->options['county_suffix']."</div>";
+								} else {
+									$header .= "<div style='".$header_style."'>[NO BOROUGH OR COUNTY DATA]</div>";
+								}
+							} elseif ( $newCol ) {
+								if ( $meeting_value['location_city_subsection'] !== '' ) {
+									$header .= "<div style='".$header_style."'>".$meeting_value['location_city_subsection'].''.$this->options['borough_suffix']." " . $cont . "</div>";
+								} elseif ( $meeting_value['location_sub_province'] !== '' ) {
+									$header .= "<div style='".$header_style."'>".$meeting_value['location_sub_province'].''.$this->options['county_suffix']." " . $cont . "</div>";
+								} else {
+									$header .= "<div style='".$header_style."'>[NO BOROUGH OR COUNTY DATA] " . $cont . "</div>";
+								}
+							}
+						}
+
 						$newVal = false;
 						$newCol = false;
 
-						if ( $this->options['page_fold'] !== 'full' ) {
-							$data = $this->write_single_meeting($meeting_value, $this->options['meeting_template_content'],$area_name);
-						} else {
-							$data = '<tr>';
-							if ( $this->options['meeting_sort'] == 'group' ) {
-								$data .= "<td style='padding-right:0px;vertical-align:top;'>".$meeting_value['meeting_name']."</td>";
-								$data .= "<td style='padding-right:0px;vertical-align:top;'>".$this->getday($meeting_value['weekday_tinyint'], false, $this->lang)."</td>".$meeting_value['start_time'];
-								$data .= "<td style='padding-right:0px;vertical-align:top;'>".$meeting_value['location_text']."</td>";
-								$data .= "<td style='padding-right:0px;vertical-align:top;'>".$meeting_value['location_street']."</td>";
-								$data .= "<td style='vertical-align:top;'>".$meeting_value['location_municipality']."</td>";
-							} elseif ( $this->options['meeting_sort'] == 'city' || $this->options['meeting_sort'] == 'state' || $this->options['meeting_sort'] == 'borough' || $this->options['meeting_sort'] == 'county' || $this->options['meeting_sort'] == 'borough_county' || $this->options['meeting_sort'] == 'neighborhood_city' ) {
-								$data .= "<td style='padding-right:0px;vertical-align:top;'>".$meeting_value['location_municipality']."</td>";
-								$data .= "<td style='padding-right:0px;vertical-align:top;'>".$this->getday($meeting_value['weekday_tinyint'], false, $this->lang)."</td>".$meeting_value['start_time'];
-								$data .= "<td style='padding-right:0px;vertical-align:top;'>".$meeting_value['meeting_name']."</td>";
-								$data .= "<td style='padding-right:0px;vertical-align:top;'>".$meeting_value['location_text']."</td>";
-								$data .= "<td style='vertical-align:top;'>".$meeting_value['location_street']."</td>";
-							} else {
-								$data .= "<td style='padding-right:0px;vertical-align:top;'>".$this->getday($meeting_value['weekday_tinyint'], false, $this->lang)."</td>".$meeting_value['start_time'];
-								$data .= "<td style='padding-right:0px;vertical-align:top;'>".$meeting_value['location_municipality']."</td>";
-								$data .= "<td style='padding-right:0px;vertical-align:top;'>".$meeting_value['meeting_name']."</td>";
-								$data .= "<td style='padding-right:0px;vertical-align:top;'>".$meeting_value['location_text']."</td>";
-								$data .= "<td style='vertical-align:top;'>".$meeting_value['location_street']."</td>";
-							}
-							$data .= '</tr>';
-						}
+						$data = $this->write_single_meeting($meeting_value, $this->options['meeting_template_content'], $area_name);
 
 						$data = $header . $data;
 											
@@ -1408,7 +1351,7 @@ if (!class_exists("Bread")) {
 
 						if ( $ph + $PH_FOOTER_MM >= $this->mpdf->h  ) {
 							$newCol = true;
-							if ( $this->options['page_fold'] === 'half' ) {
+							if ( $this->options['page_fold'] === 'half' || $this->options['page_fold'] === 'full' ) {
 								$this->mpdf->WriteHTML("<pagebreak>");
 							} else {
 								$this->mpdf->WriteHTML("<columnbreak />");
@@ -1419,14 +1362,10 @@ if (!class_exists("Bread")) {
 				if ( $this->options['meeting_sort'] !== 'state' ) { break; }
 			}
 
-			if ( $this->options['page_fold'] == 'full' ) {
-				$this->mpdf->WriteHTML('</table>');
-			}
 			if ( $this->options['page_fold'] !== 'half' && $this->options['page_fold'] !== 'full' ) {
 				$this->write_custom_section();
 				$this->write_front_page();
-			}
-			if ( $this->options['page_fold'] == 'half' ) {
+			} else {
 				if ( trim($this->options['last_page_content']) !== '' ) {
 					$this->write_last_page();
 				}
@@ -1436,45 +1375,20 @@ if (!class_exists("Bread")) {
 			$FilePath = ABSPATH . "current_meeting_list_".strtolower( date ( "njYghis" ) ).".pdf";
 			if ( $this->options['page_fold'] == 'half' ) {
 				$this->mpdf->Output($FilePath,'F');
-				if ( $this->options['page_size'] == '5inch' ) {
-					$this->mpdftmp=new mPDF([
+				$mpdfOptions = [
                         'mode' => $mode,
                         'tempDir' => get_temp_dir(),
-                        'format' => array(197.2,279.4),
                         'default_font_size' => '',
                         'margin_left' => 0,
                         'margin_right' => 0,
                         'margin_top' => 0,
                         'margin_bottom' => 0,
-                        'margin_footer' => 6,
-                        'orientation' => 'L'
-					]);
-				} else if ( $this->options['page_size'] == 'A6' ) {
-				    $this->mpdftmp=new mPDF([
-				        'mode' => $mode,
-				        'format' => 'A5-L',
-				        'default_font_size' => '7',
-				        'margin_left' => 0,
-				        'margin_right' => 0,
-				        'margin_top' => 0,
-				        'margin_bottom' => 0,
-				        'margin_footer' => 0,
-				        'orientation' => 'P'
-				    ]);
-				} else {
-					$this->mpdftmp=new mPDF([
-                        'mode' => $mode,
-                        'tempDir' => get_temp_dir(),
-                        'format' => 'A4-L',
-                        'default_font_size' => '7',
-                        'margin_left' => 0,
-                        'margin_right' => 0,
-                        'margin_top' => 0,
-                        'margin_bottom' => 0,
                         'margin_footer' => 0,
-                        'orientation' => 'P'
-                    ]);
-				}
+                        'orientation' => 'L'
+					];
+				
+				$mpdfOptions['format'] = $this->options['page_size'].'-L';
+				$this->mpdftmp=new mPDF($mpdfOptions);
 
 				$ow = $this->mpdftmp->h;
 				$oh = $this->mpdftmp->w;
@@ -1496,6 +1410,75 @@ if (!class_exists("Bread")) {
 				unlink($FilePath);
 				$FilePath = ABSPATH . "current_meeting_list_".strtolower( date ( "njYghis" ) ).".pdf";
 				$this->mpdf = $this->mpdftmp;
+			} else if ($this->options['page_fold'] == 'full' && $this->options['booklet_pages']) {
+				$this->mpdf->Output($FilePath,'F');
+				$mpdfOptions = [
+					'mode' => $mode,
+					'tempDir' => get_temp_dir(),
+					'default_font_size' => '',
+					'margin_left' => 0,
+					'margin_right' => 0,
+					'margin_top' => 0,
+					'margin_bottom' => 0,
+					'margin_footer' => 6,
+					'orientation' => $this->options['page_orientation']
+				];
+				$mpdfOptions['format'] =  $this->options['page_size']."-".$this->options['page_orientation'];
+				$this->mpdftmp=new mPDF($mpdfOptions);
+
+				//$this->mpdftmp->SetImportUse(); 
+				$np = $this->mpdftmp->SetSourceFile($FilePath);
+				$pp = 4*ceil($np/4);
+				for ($i=1; $i<$np; $i++) {
+					$this->mpdftmp->AddPage(); 
+					$tplIdx = $this->mpdftmp->ImportPage($i);
+					$this->mpdftmp->UseTemplate($tplIdx);
+				}
+				for ($i=$np; $i<$pp; $i++) {
+					$this->mpdftmp->AddPage();
+				}
+				$this->mpdftmp->AddPage();
+				$tplIdx = $this->mpdftmp->ImportPage($np);
+				$this->mpdftmp->UseTemplate($tplIdx);					
+				unlink($FilePath);
+				$FilePath = ABSPATH . "current_meeting_list_".strtolower( date ( "njYghis" ) ).".pdf";
+				$this->mpdf = $this->mpdftmp;
+			} else if ($this->options['page_fold'] == 'flyer' ) {
+				$this->mpdf->Output($FilePath,'F');
+				$mpdfOptions = [
+					'mode' => $mode,
+					'tempDir' => get_temp_dir(),
+					'default_font_size' => '',
+					'margin_left' => 0,
+					'margin_right' => 0,
+					'margin_top' => 0,
+					'margin_bottom' => 0,
+					'margin_footer' => 6,
+					'format' => $this->options['page_size'].'-L',
+					'orientation' => 'L'
+				];
+				$this->mpdftmp=new mPDF($mpdfOptions); 
+				//$this->mpdftmp->SetImportUse();
+
+				$np = $this->mpdftmp->SetSourceFile($FilePath);
+				$ow = $this->mpdftmp->w;
+				$oh = $this->mpdftmp->h;
+				$fw = $ow / 3;
+				$this->mpdftmp->AddPage(); 
+				$tplIdx = $this->mpdftmp->importPage(1);
+				$this->mpdftmp->UseTemplate($tplIdx,0,0);
+				$this->mpdftmp->UseTemplate($tplIdx,$fw,0);
+				$this->mpdftmp->UseTemplate($tplIdx,$fw+$fw,0);
+				$this->addColumnSeparators($oh);
+				$this->mpdftmp->AddPage();
+				$tplIdx = $this->mpdftmp->ImportPage(2);
+				$this->mpdftmp->UseTemplate($tplIdx,0,0);
+				$this->mpdftmp->UseTemplate($tplIdx,$fw,0);
+				$this->mpdftmp->UseTemplate($tplIdx,$fw+$fw,0);	
+				$this->addColumnSeparators($oh);				
+				unlink($FilePath);
+				$FilePath = ABSPATH . "current_meeting_list_".strtolower( date ( "njYghis" ) ).".pdf";
+				$this->mpdf = $this->mpdftmp;
 			}
 			if ( $this->options['include_protection'] == 1 ) {
 				// 'copy','print','modify','annot-forms','fill-forms','extract','assemble','print-highres'
@@ -1511,6 +1494,20 @@ if (!class_exists("Bread")) {
 				
 			$this->mpdf->Output($FilePath,'I');
 			exit;
+		}
+		function addColumnSeparators($oh) {
+			if ( $this->options['column_line'] == 1 ) {
+				$this->mpdftmp->WriteHTML('<body style="background:none;">
+				<table style="background: none;width: 100%; height:'.$oh.'mm border-collapse: collapse;">
+					<tbody>
+					<tr>
+					<td style="width: 33.33%; border-right: 1px solid '.$this->options['col_color']. '; height: '.$oh.'mm;">&nbsp;</td>
+					<td style="width: 33.33%; border-right: 1px solid '.$this->options['col_color']. '; height: '.$oh.'mm;">&nbsp;</td>
+					<td style="width: 33.33%; height: 100%;">&nbsp;</td>
+					</tr>
+					</tbody>
+					</table>');
+			}
 		}
 		function get_area_name($meeting_value) {
 			foreach($this->unique_areas as $unique_area){
@@ -1976,6 +1973,7 @@ if (!class_exists("Bread")) {
 				$this->options['page_size'] = sanitize_text_field($_POST['page_size']);
 				$this->options['page_orientation'] = validate_page_orientation($_POST['page_orientation']);
 				$this->options['page_fold'] = sanitize_text_field($_POST['page_fold']);
+				$this->options['booklet_pages'] = boolval($_POST['booklet_pages']);
 				$this->options['meeting_sort'] = sanitize_text_field($_POST['meeting_sort']);
 				$this->options['borough_suffix'] = sanitize_text_field($_POST['borough_suffix']);
 				$this->options['county_suffix'] = sanitize_text_field($_POST['county_suffix']);
@@ -2112,6 +2110,9 @@ if (!class_exists("Bread")) {
 			}
 			if ( !isset($this->options['meeting_sort']) || strlen(trim($this->options['meeting_sort'])) == 0 ) {
 				$this->options['meeting_sort'] = 'day';
+			}
+			if ( !isset($this->options['booklet_pages']) ) {
+				$this->options['booklet_pages'] = false;
 			}
 			if ( !isset($this->options['borough_suffix']) ) {
 				$this->options['borough_suffix'] = 'Borough';
@@ -2541,7 +2542,20 @@ if (!class_exists("Bread")) {
         {
             return Bread::OPTIONS_NAME . '_' . $current_setting;
 		}
-
+		private function addServiceBody($service_body_name ) {
+			if ( false === ( $this->options[$service_body_name] == 'Not Used' ) ) {
+				$area_data = explode(',',$this->options[$service_body_name]);
+				$area = $area_data[0];
+				$this->options[$service_body_name] = ($area == 'NOT USED' ? '' : $area);
+				$service_body_id = $area_data[1];
+				$parent_body_id = $area_data[2];
+                if ( $this->options['recurse_service_bodies'] == 1 ) {
+					return '&recursive=1&services[]=' . $service_body_id;
+				} else {
+					return '&services[]='.$service_body_id;
+				}
+			}
+		}
 		/**
 		* Saves the admin options to the database.
 		*/
@@ -2579,3 +2593,4 @@ if (!class_exists("Bread")) {
 if (class_exists("Bread")) {
 	$BMLTMeetinglist_instance = new Bread();
 }
+?>

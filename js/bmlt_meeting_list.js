@@ -496,24 +496,39 @@ var $ml = jQuery.noConflict
 		}
 	});
 	var page_fold_val = $ml('input[name=page_fold]:checked').val();
-	if (page_fold_val == 'half') {
+	console.log("got a page_fold_val="+page_fold_val);
+	function bookletControlsShowHide() {
+		console.log("in halfpage2");
 		$ml('#pagenodiv').show();
 		$ml('#columngapdiv').hide();
 		$ml('#columnseparatordiv').hide();
-		$ml("#letter, label[for=letter]").hide();
-		$ml("#legal, label[for=legal]").hide();
-		$ml("#ledger, label[for=ledger]").hide();
-		$ml("#A4, label[for=A4]").hide();
+		$ml("#portrait, label[for=portrait]").hide();
+		$ml("#letter, label[for=letter]").show();
+		$ml("#legal, label[for=legal]").show();
+		$ml("#ledger, label[for=ledger]").show();
+		$ml("#booklet_pages, label[for=booklet_pages]").hide();
+		$ml("#A4, label[for=A4]").show();
+		$ml("#A5, label[for=A5]").show();
+		$ml("#A6, label[for=A6]").hide();
 		$ml("#portrait, label[for=portrait]").hide();
 		$ml("#meeting-list-tabs ul li:eq(5)").hide();
 		$ml("#meeting-list-tabs ul li:eq(6)").show();
 		$ml('#meeting-list-tabs').tabs('disable', 5);
 		$ml('#meeting-list-tabs').tabs('enable', 6);
-	} else if (page_fold_val == 'full') {
+		$ml("#half-fold").css({
+			"display": "inline-block"
+		});
+		$ml("#tri-fold").css({
+			"display": "none"
+		});
+	}
+	function fullPageControlsShowHide() {
 		$ml('#pagenodiv').hide();
-		$ml("#5inch, label[for=5inch]").hide();
-		$ml("#A5, label[for=A5]").hide();
-		$ml("#A6, label[for=A6]").hide();
+		$ml("#A4, label[for=A4]").show();
+		$ml("#A5, label[for=A5]").show();
+		$ml("#A6, label[for=A6]").show();
+		$ml("#portrait, label[for=portrait]").show();
+		$ml("#booklet_pages, label[for=booklet_pages]").show();
 		$ml("#meeting-list-tabs ul li:eq(5)").hide();
 		$ml("#meeting-list-tabs ul li:eq(6)").show();
 		$ml('#meeting-list-tabs').tabs('disable', 5);
@@ -522,165 +537,54 @@ var $ml = jQuery.noConflict
 		$ml('#pageheightdiv').hide();
 		$ml('#columngapdiv').hide();
 		$ml('#columnseparatordiv').hide();
-	} else {
-		$ml("#5inch, label[for=5inch]").hide();
+		$ml("#half-fold").css({
+			"display": "inline-block"
+		});
+		$ml("#tri-fold").css({
+			"display": "none"
+		});
+	}
+	function foldControlsShowHide(fold) {
+		$ml("#letter, label[for=letter]").show();
+		$ml("#legal, label[for=legal]").show();
+		$ml("#ledger, label[for=ledger]").show();
+		$ml("#booklet_pages, label[for=booklet_pages]").hide();
+		$ml("#A4, label[for=A4]").show();
 		$ml("#A5, label[for=A5]").hide();
 		$ml("#A6, label[for=A6]").hide();
+		if (fold=='quad')
+			$ml("#portrait, label[for=portrait]").show();
+		else
+			$ml("#portrait, label[for=portrait]").hide();
+		$ml("#meeting-list-tabs ul li:eq(5)").hide();
+		$ml("#booklet_pages, label[for=booklet_pages]").hide();
 		$ml('#meeting-list-tabs').tabs('disable', 6);
 		$ml("#meeting-list-tabs ul li:eq(6)").hide();
 	}
+	if (page_fold_val == 'half') {
+		bookletControlsShowHide();
+	} else if (page_fold_val == 'full') {
+		fullPageControlsShowHide();
+	} else {
+		foldControlsShowHide(page_fold_val);
+	}
 	$ml('input[name=page_fold]:radio').click(function() {
+		console.log('clicked');
 		var page_fold_val = $ml('input[name=page_fold]:checked').val();
 		var page_orientation_val = $ml('input[name=page_orientation]:checked').val();
 		var page_size_val = $ml('input[name=page_size]:checked').val();
+		console.log("page_fold="+page_fold_val);
 		if (page_fold_val == 'half') {
-			$ml('#pagenodiv').show();
-			$ml('#pageheightdiv').show();
-			$ml('#columngapdiv').hide();
-			$ml('#columnseparatordiv').hide();
-			$ml('input[name=page_height]').val([250]);
-			$ml('input[name=page_size]').val(['5inch']);
-			$ml('input[name=page_orientation]').val(['L']);
-			$ml("#5inch, label[for=5inch]").show();
-			$ml("#A5, label[for=A5]").show();
-			$ml("#A6, label[for=A6]").show();
-			$ml("#letter, label[for=letter]").hide();
-			$ml("#legal, label[for=legal]").hide();
-			$ml("#ledger, label[for=ledger]").hide();
-			$ml("#A4, label[for=A4]").hide();
-			$ml("#portrait, label[for=portrait]").hide();
-			$ml("#meeting-list-tabs ul li:eq(5)").hide();
-			$ml("#meeting-list-tabs ul li:eq(6)").show();
-			$ml('#meeting-list-tabs').tabs('disable', 5);
-			$ml('#meeting-list-tabs').tabs('enable', 6);
-			$ml("#half-fold").css({
-				"display": "inline-block"
-			});
-			$ml("#tri-fold").css({
-				"display": "none"
-			});
-		};
-		if (page_fold_val == 'full') {
-			$ml('#pagenodiv').hide();
-			$ml('#pageheightdiv').hide();
-			$ml('#columngapdiv').hide();
-			$ml('#columnseparatordiv').hide();
-			$ml('input[name=page_size]').val(['letter']);
-			$ml('input[name=page_orientation]').val(['P']);
-			$ml("#5inch, label[for=5inch]").hide();
-			$ml("#A5, label[for=A5]").hide();
-			$ml("#letter, label[for=letter]").show();
-			$ml("#legal, label[for=legal]").show();
-			$ml("#ledger, label[for=ledger]").show();
-			$ml("#A4, label[for=A4]").show();
-			$ml("#portrait, label[for=portrait]").show();
-			$ml("#meeting-list-tabs ul li:eq(5)").hide();
-			$ml("#meeting-list-tabs ul li:eq(6)").show();
-			$ml('#meeting-list-tabs').tabs('disable', 5);
-			$ml('#meeting-list-tabs').tabs('enable', 6);
-			$ml("#half-fold").css({
-				"display": "inline-block"
-			});
-			$ml("#tri-fold").css({
-				"display": "none"
-			});
-		};
-		if (page_fold_val === 'tri' || page_fold_val === 'quad') {
-			$ml('#pagenodiv').hide();
-			$ml('#pageheightdiv').show();
-			$ml('#columngapdiv').show();
-			$ml('#columnseparatordiv').show();
-			$ml('input[name=page_height]').val([195]);
-			$ml('input[name=page_size]').val(['legal']);
-			$ml('input[name=page_orientation]').val(['L']);
-			$ml("#5inch, label[for=5inch]").hide();
-			$ml("#A5, label[for=A5]").hide();
-			$ml("#A6, label[for=A6]").hide();
-			$ml("#letter, label[for=letter]").show();
-			$ml("#legal, label[for=legal]").show();
-			$ml("#ledger, label[for=ledger]").show();
-			$ml("#A4, label[for=A4]").show();
-			$ml("#portrait, label[for=portrait]").show();
-			$ml("#meeting-list-tabs ul li:eq(5)").show();
-			$ml('#meeting-list-tabs').tabs('enable', 5);
-			$ml("#meeting-list-tabs ul li:eq(6)").hide();
-			$ml('#meeting-list-tabs').tabs('disable', 6);
-			$ml('label[for=letter]').html('Letter (11" X 8.5")&nbsp;&nbsp;');
-			$ml('label[for=legal]').html('Legal (14" X 8.5")&nbsp;&nbsp;');
-			$ml('label[for=ledger]').html('Ledger (17" X 11")&nbsp;&nbsp;');
-			$ml('label[for=A4]').html('A4 (297mm X 210mm)&nbsp;&nbsp;');
+			bookletControlsShowHide();
+		}
+		else if (page_fold_val == 'full') {
+			fullPageControlsShowHide();
+		}
+		else {
+			foldControlsShowHide(page_fold_val);
 		};
 		if (page_fold_val === 'tri') {
 			$ml('input[name=page_size]').val(['letter']);
-		};
-	});
-	var page_orientation_val = $ml('input[name=page_orientation]:checked').val();
-	if (page_orientation_val == 'P') {
-		$ml('label[for=letter]').html('Letter (8.5" X 11")&nbsp;&nbsp;');
-		$ml('label[for=legal]').html('Legal (8.5" X 14")&nbsp;&nbsp;');
-		$ml('label[for=ledger]').html('Tabloid (11" X 17")&nbsp;&nbsp;');
-		$ml('label[for=A4]').html('A4 (210mm X 297mm)&nbsp;&nbsp;');
-	};
-	if (page_orientation_val == 'L') {
-		$ml('label[for=letter]').html('Letter (11" X 8.5")&nbsp;&nbsp;');
-		$ml('label[for=legal]').html('Legal (14" X 8.5")&nbsp;&nbsp;');
-		$ml('label[for=ledger]').html('Ledger (17" X 11")&nbsp;&nbsp;');
-		$ml('label[for=A4]').html('A4 (297mm X 210mm)&nbsp;&nbsp;');
-	};
-	$ml('input[name=page_orientation]:radio').click(function() {
-		var page_orientation_val = $ml('input[name=page_orientation]:checked').val();
-		var page_size_val = $ml('input[name=page_size]:checked').val();
-		if (page_orientation_val == 'P') {
-			if (page_size_val == 'A4') {
-				$ml('input[name=page_height]').val([270]);
-			} else {
-				$ml('input[name=page_height]').val([260]);
-			}
-			$ml('label[for=letter]').html('Letter (8.5" X 11")&nbsp;&nbsp;');
-			$ml('label[for=legal]').html('Legal (8.5" X 14")&nbsp;&nbsp;');
-			$ml('label[for=ledger]').html('Tabloid (11" X 17")&nbsp;&nbsp;');
-			$ml('label[for=A4]').html('A4 (210mm X 297mm)&nbsp;&nbsp;');
-		};
-		if (page_orientation_val == 'L') {
-			if (page_size_val == 'A4') {
-				$ml('input[name=page_height]').val([180]);
-			} else if (page_size_val == 'letter') {
-				$ml('input[name=page_height]').val([195]);
-			} else if (page_size_val == 'legal') {
-				$ml('input[name=page_height]').val([195]);
-			} else if (page_size_val == '5inch') {
-				$ml('input[name=page_height]').val([250]);
-			} else if (page_size_val == 'A5') {
-				$ml('input[name=page_height]').val([260]);
-			};
-			$ml('label[for=letter]').html('Letter (11" X 8.5")&nbsp;&nbsp;');
-			$ml('label[for=legal]').html('Legal (14" X 8.5")&nbsp;&nbsp;');
-			$ml('label[for=ledger]').html('Ledger (17" X 11")&nbsp;&nbsp;');
-			$ml('label[for=A4]').html('A4 (297mm X 210mm)&nbsp;&nbsp;');
-		};
-	});
-	$ml('input[name=page_size]:radio').click(function() {
-		var page_orientation_val = $ml('input[name=page_orientation]:checked').val();
-		var page_size_val = $ml('input[name=page_size]:checked').val();
-		if (page_orientation_val == 'P') {
-			if (page_size_val == 'A4') {
-				$ml('input[name=page_height]').val([270]);
-			} else {
-				$ml('input[name=page_height]').val([260]);
-			};
-		};
-		if (page_orientation_val == 'L') {
-			if (page_size_val == 'A4') {
-				$ml('input[name=page_height]').val([180]);
-			} else if (page_size_val == 'letter') {
-				$ml('input[name=page_height]').val([195]);
-			} else if (page_size_val == 'legal') {
-				$ml('input[name=page_height]').val([195]);
-			} else if (page_size_val == '5inch') {
-				$ml('input[name=page_height]').val([250]);
-			} else if (page_size_val == 'A5') {
-				$ml('input[name=page_height]').val([260]);
-			};
 		};
 	});
 	$ml(".service_body_select").chosen({

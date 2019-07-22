@@ -53,6 +53,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                 <h3 class="hndle">Page Layout<span title='<?php echo $title; ?>' class="bottom-tooltip"></span></h3>
                 <div class="inside">
                     <p>
+                    <input class="mlg" id="flyer" type="radio" name="page_fold" value="flyer" <?php echo ($this->options['page_fold'] == 'flyer' ? 'checked' : '') ?>><label for="flyer">Flyer&nbsp;&nbsp;&nbsp;</label>
                     <input class="mlg" id="tri" type="radio" name="page_fold" value="tri" <?php echo ($this->options['page_fold'] == 'tri' ? 'checked' : '') ?>><label for="tri">Tri-Fold&nbsp;&nbsp;&nbsp;</label>
                     <input class="mlg" id="quad" type="radio" name="page_fold" value="quad" <?php echo ($this->options['page_fold'] == 'quad' ? 'checked' : '') ?>><label for="quad">Quad-Fold&nbsp;&nbsp;&nbsp;</label>
                     <input class="mlg" id="half" type="radio" name="page_fold" value="half" <?php echo ($this->options['page_fold'] == 'half' ? 'checked' : '') ?>><label for="half">Half-Fold&nbsp;&nbsp;&nbsp;</label>
@@ -61,14 +62,14 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     <p>
                     <input class="mlg" id="portrait" type="radio" name="page_orientation" value="P" <?php echo ($this->options['page_orientation'] == 'P' ? 'checked' : '') ?>><label for="portrait">Portrait&nbsp;&nbsp;&nbsp;</label>
                     <input class="mlg" id="landscape" type="radio" name="page_orientation" value="L" <?php echo ($this->options['page_orientation'] == 'L' ? 'checked' : '') ?>><label for="landscape">Landscape</label>
+                    <input class="mlg" id="booklet_pages" type="checkbox" name="booklet_pages" value="1" <?php echo ($this->options['booklet_pages'] == '1' ? 'checked' : '') ?> /><label for="booklet_pages">Add extra pages for booklet</label>
                     <p>
-                    <input class="mlg" id="5inch" type="radio" name="page_size" value="5inch" <?php echo ($this->options['page_size'] == '5inch' ? 'checked' : '') ?>><label for="5inch">Booklet (11" X 8.5")&nbsp;&nbsp;&nbsp;</label>
-                    <input class="mlg" id="A5" type="radio" name="page_size" value="A5" <?php echo ($this->options['page_size'] == 'A5' ? 'checked' : '') ?>><label for="A5">Booklet-A5 (297mm X 210mm)&nbsp;&nbsp;&nbsp;</label>
-                    <input class="mlg" id="A6" type="radio" name="page_size" value="A6" <?php echo ($this->options['page_size'] == 'A6' ? 'checked' : '') ?>><label for="A6">Booklet-A6 (210mm X 142mm)&nbsp;&nbsp;&nbsp;</label>
-                    <input class="mlg" id="letter" type="radio" name="page_size" value="letter" <?php echo ($this->options['page_size'] == 'letter' ? 'checked' : '') ?>><label for="letter">Letter (8.5" X 11")&nbsp;&nbsp;&nbsp;</label>
-                    <input class="mlg" id="legal" type="radio" name="page_size" value="legal" <?php echo ($this->options['page_size'] == 'legal' ? 'checked' : '') ?>><label for="legal">Legal (8.5" X 14")&nbsp;&nbsp;&nbsp;</label>
-                    <input class="mlg" id="ledger" type="radio" name="page_size" value="ledger" <?php echo ($this->options['page_size'] == 'ledger' ? 'checked' : '') ?>><label for="ledger">Ledger (17" X 11")&nbsp;&nbsp;&nbsp;</label>
-                    <input class="mlg" id="A4" type="radio" name="page_size" value="A4" <?php echo ($this->options['page_size'] == 'A4' ? 'checked' : '') ?>><label for="A4">A4 (210mm X 297mm)</label>
+                    <input class="mlg" id="letter" type="radio" name="page_size" value="letter" <?php echo ($this->options['page_size'] == 'letter' ? 'checked' : '') ?>><label for="letter">Letter&nbsp;&nbsp;&nbsp;</label>
+                    <input class="mlg" id="legal" type="radio" name="page_size" value="legal" <?php echo ($this->options['page_size'] == 'legal' ? 'checked' : '') ?>><label for="legal">Legal&nbsp;&nbsp;&nbsp;</label>
+                    <input class="mlg" id="ledger" type="radio" name="page_size" value="ledger" <?php echo ($this->options['page_size'] == 'ledger' ? 'checked' : '') ?>><label for="ledger">Ledger&nbsp;&nbsp;&nbsp;</label>
+                    <input class="mlg" id="A4" type="radio" name="page_size" value="A4" <?php echo ($this->options['page_size'] == 'A4' ? 'checked' : '') ?>><label for="A4">A4&nbsp;&nbsp;&nbsp;</label>
+                    <input class="mlg" id="A5" type="radio" name="page_size" value="A5" <?php echo ($this->options['page_size'] == 'A5' ? 'checked' : '') ?>><label for="A5">A5&nbsp;&nbsp;&nbsp;</label>
+                    <input class="mlg" id="A6" type="radio" name="page_size" value="A6" <?php echo ($this->options['page_size'] == 'A6' ? 'checked' : '') ?>><label for="A6">A6&nbsp;&nbsp;&nbsp;</label>
                     </p>
                     </p>
                     <div id="marginsdiv" style="border-top: 1px solid #EEE;">
