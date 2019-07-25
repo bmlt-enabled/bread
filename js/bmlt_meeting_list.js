@@ -122,6 +122,24 @@ var $ml = jQuery.noConflict
 	$ml("#header_background_color").click(function() {
 		$ml("#triggerSet").spectrum("set", $("#header_background_color").val());
 	});
+	$ml("#pageheader_textcolor").spectrum({
+		preferredFormat: "hex",
+		showInput: true,
+		showInitial: true,
+		theme: "sp-light"
+	});
+	$ml("#pageheader_textcolor").click(function() {
+		$ml("#triggerSet").spectrum("set", $("#pageheader_textcolor").val());
+	});
+	$ml("#pageheader_backgroundcolor").spectrum({
+		preferredFormat: "hex",
+		showInput: true,
+		showInitial: true,
+		theme: "sp-light"
+	});
+	$ml("#pageheader_backgroundcolor").click(function() {
+		$ml("#triggerSet").spectrum("set", $("#pageheader_backgroundcolor").val());
+	});
 	$ml("#bmlt_meeting_list_options").on("keypress", function(event) {
 		if (event.which == 13 && !event.shiftKey) {
 			event.preventDefault();
@@ -496,13 +514,13 @@ var $ml = jQuery.noConflict
 		}
 	});
 	var page_fold_val = $ml('input[name=page_fold]:checked').val();
-	console.log("got a page_fold_val="+page_fold_val);
 	function bookletControlsShowHide() {
 		console.log("in halfpage2");
 		$ml('#pagenodiv').show();
 		$ml('#columngapdiv').hide();
 		$ml('#columnseparatordiv').hide();
 		$ml("#portrait, label[for=portrait]").hide();
+		$ml('#landscape').prop("checked",true);
 		$ml("#letter, label[for=letter]").show();
 		$ml("#legal, label[for=legal]").show();
 		$ml("#ledger, label[for=ledger]").show();
@@ -554,8 +572,10 @@ var $ml = jQuery.noConflict
 		$ml("#A6, label[for=A6]").hide();
 		if (fold=='quad')
 			$ml("#portrait, label[for=portrait]").show();
-		else
+		else {
 			$ml("#portrait, label[for=portrait]").hide();
+			$ml('#landscape').prop("checked",true);
+		}
 		$ml("#meeting-list-tabs ul li:eq(5)").hide();
 		$ml("#booklet_pages, label[for=booklet_pages]").hide();
 		$ml('#meeting-list-tabs').tabs('disable', 6);
@@ -569,11 +589,9 @@ var $ml = jQuery.noConflict
 		foldControlsShowHide(page_fold_val);
 	}
 	$ml('input[name=page_fold]:radio').click(function() {
-		console.log('clicked');
 		var page_fold_val = $ml('input[name=page_fold]:checked').val();
 		var page_orientation_val = $ml('input[name=page_orientation]:checked').val();
 		var page_size_val = $ml('input[name=page_size]:checked').val();
-		console.log("page_fold="+page_fold_val);
 		if (page_fold_val == 'half') {
 			bookletControlsShowHide();
 		}

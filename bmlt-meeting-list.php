@@ -662,6 +662,8 @@ if (!class_exists("Bread")) {
 			if ( !isset($this->options['header_font_size']) ) {$this->options['header_font_size'] = $this->options['content_font_size'];}
 			if ( !isset($this->options['header_text_color']) ) {$this->options['header_text_color'] = '#ffffff';}
 			if ( !isset($this->options['header_background_color']) ) {$this->options['header_background_color'] = '#000000';}
+			if ( !isset($this->options['pageheader_textcolor']) ) {$this->options['pageheader_textcolor'] = '#000000';}
+			if ( !isset($this->options['pageheader_backgroundcolor']) ) {$this->options['pageheader_backgroundcolor'] = '#ffffff';}
 			if ( !isset($this->options['margin_left']) ) {$this->options['margin_left'] = 3;}
 			if ( !isset($this->options['margin_bottom']) ) {$this->options['margin_bottom'] = 3;}
 			if ( !isset($this->options['margin_top']) ) {$this->options['margin_top'] = 3;}
@@ -876,8 +878,14 @@ if (!class_exists("Bread")) {
 			//$meeting_fields = apply_filters("Bread_Meeting_Fields", $this->meeting_fields);
             $data_field_keys = implode(',', $meeting_fields);
 			if (isset($this->options['pageheader_text'])) {
+				$header_style = "vertical-align: top; text-align: center; font-weight: bold;margin-top:3px;margin-bottom:3px;";
+				$header_style .= "color:".$this->options['pageheader_textcolor'].";";
+				$header_style .= "background-color:".$this->options['pageheader_backgroundcolor'].";";
+				$header_style .= "font-size:".$this->options['pageheader_fontsize']."pt;";
+				$header_style .= "line-height:".$this->options['content_line_height'].";";
+
 			    $this->mpdf->SetHTMLHeader('
-                    <div style="vertical-align: top; text-align: center; font-weight: bold; font-size:'.$this->options['pageheader_fontsize'].'pt; line-height:25pt">
+                    <div style="'.$header_style.'">
                         '.$this->options['pageheader_text'].'
                     </div>',
                 'O');
@@ -1125,6 +1133,7 @@ if (!class_exists("Bread")) {
 				$groupByLevels = 2;
 				$current_major = '???';
 			}
+			$analysedTemplate = $this->analyseTemplate($this->options['meeting_template_content']);
 			$first_meeting = true;
 			$newMajorHeading = false;
 			$header_string = '';
@@ -1183,7 +1192,7 @@ if (!class_exists("Bread")) {
 					$newVal = false;
 					$newCol = false;
 
-					$data = $header . $this->write_single_meeting($meeting_value, $this->options['meeting_template_content'], $area_name);											
+					$data = $header . $this->write_single_meeting($meeting_value, $this->options['meeting_template_content'], $analysedTemplate, $area_name);											
 					$data = mb_convert_encoding($data, 'HTML-ENTITIES');						
 					$data = utf8_encode($data);
 					$this->mpdf->WriteHTML($data);
@@ -1424,7 +1433,25 @@ if (!class_exists("Bread")) {
 			}
 			return '';
 		}
-		function write_single_meeting($meeting_value, $template, $area_name) {
+		function analyseTemplate($template) {
+			$arr = preg_split('/\W+/',$template,0,PREG_SPLIT_OFFSET_CAPTURE);
+			$arr = array_reverse($arr,true);
+			$ret = array();
+			foreach ($arr as $item) {
+				if (strlen($item[0])<3) continue;
+				if ($item[0]=='table') continue;
+				if ($item[0]=='tbody') continue;
+				if ($item[0]=='strong') continue;
+				if ($item[0]=='left') continue;
+				if ($item[0]=='right') continue;
+				if ($item[0]=='top') continue;
+				if ($item[0]=='bottom') continue;
+				if ($item[0]=='align') continue;
+				$ret[] = $item; 
+			}
+			return $ret;
+		}
+		function write_single_meeting($meeting_value, $template, $analysedTemplate, $area_name) {
 			$duration = explode(':', $meeting_value['duration_time']);
 			$minutes = intval($duration[0])*60 + intval($duration[1]) + intval($duration[2]);
 			$meeting_value['duration_m'] = $minutes;
@@ -1488,16 +1515,20 @@ if (!class_exists("Bread")) {
 			//$meeting_value = apply_filters("Bread_Enrich_Meeting_Data", $meeting_value, $this->formats_by_key);
 			$data = $template;
 			$data = str_replace("&nbsp;", " ", $data);
-			$search_strings = array();
-			$replacements = array();
+			$namedValues = array();
 			foreach($meeting_value as $field=>$notUsed) {
-				$search_strings[] = $field;
-				$replacements[] = $this->get_field($meeting_value,$field);
+				$namedValues[$field] = $this->get_field($meeting_value,$field);
 			}
 			foreach($this->legacy_synonyms as $syn=>$field) {
-				$search_strings[] = $syn;
-				$replacements[] = $this->get_field($meeting_value,$field);
+				$namedValues[$syn] = $namedValues[$field];
 			}
+			foreach ($analysedTemplate as $item) {
+				if (isset($namedValues[$item[0]])) {
+					$data = substr_replace($data,$namedValues[$item[0]],$item[1],strlen($item[0]));
+				}
+			}
+			$search_strings = array();
+			$replacements = array();
 			$clean_up = array(
 				'<p></p>'		=> '',
 				'<em></em>'		=> '',
@@ -1739,7 +1770,7 @@ if (!class_exists("Bread")) {
 				}
 				$area_name = $this->get_area_name($meeting_value);
 				if ($template != '') {
-					$data .= $this->write_single_meeting($value, $template, $area_name);
+					$data .= $this->write_single_meeting($value, $template, $this->analyseTemplate($template), $area_name);
 					continue;
 				}
 				$display_string = '<strong>'.$value['meeting_name'].'</strong>';
@@ -1872,8 +1903,10 @@ if (!class_exists("Bread")) {
 				$this->options['margin_bottom'] = intval($_POST['margin_bottom']);
 				$this->options['margin_top'] = intval($_POST['margin_top']);
                 $this->options['margin_header'] = intval($_POST['margin_header']);
-				$this->options['pageheader_fontsize'] = intval($_POST['pageheader_fontsize']);
-				$this->options['pageheader_text'] = sanitize_text_field($_POST['pageheader_text']);
+				$this->options['pageheader_fontsize'] = floatval($_POST['pageheader_fontsize']);
+				$this->options['pageheader_textcolor'] = validate_hex_color($_POST['pageheader_textcolor']);
+				$this->options['pageheader_backgroundcolor'] = validate_hex_color($_POST['pageheader_backgroundcolor']);
+				$this->options['pageheader_text'] = wp_kses_post($_POST['pageheader_text']);
 				$this->options['watermark'] = sanitize_text_field($_POST['watermark']);	
 				$this->options['page_size'] = sanitize_text_field($_POST['page_size']);
 				$this->options['page_orientation'] = validate_page_orientation($_POST['page_orientation']);
@@ -1970,6 +2003,12 @@ if (!class_exists("Bread")) {
 			}
 			if ( !isset($this->options['header_background_color']) || strlen(trim($this->options['header_background_color'])) == 0 ) {
 				$this->options['header_background_color'] = '#000000';
+			}
+			if ( !isset($this->options['pageheader_textcolor']) || strlen(trim($this->options['pageheader_textcolor'])) == 0 ) {
+				$this->options['pageheader_textcolor'] = '#000000';
+			}
+			if ( !isset($this->options['pageheader_backgroundcolor']) || strlen(trim($this->options['pageheader_backgroundcolor'])) == 0 ) {
+				$this->options['pageheader_backgroundcolor'] = '#ffffff';
 			}
 			if ( !isset($this->options['header_uppercase']) || strlen(trim($this->options['header_uppercase'])) == 0 ) {
 				$this->options['header_uppercase'] = '0';
