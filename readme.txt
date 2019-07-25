@@ -60,9 +60,14 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 * Generalized ASM functionality to other formats, and user-defined templates.  Now called "Additional List".
 * German and Farsi support.
 * New layout options
+  - Full-Page Layout now full functional
   - A6 Booklet (fits more meetings than flyer, but more convenient to carry around than A5).
   - Watermarks (typically the NA Logo, but you can specify a URL to another image).
-  - Page Headers (good when generating posters).
+  - Page Headers (good when generating posters)
+  - Flyer Layout (instead of a tri-fold meeting list, 3 identical meeting lists on a single
+    sheet, good for special interest meeting lists)
+* More robust and efficient handling of short codes in meeting templates.
+* Corrections to the meeting group-by mechanism.
 
 = 1.10.0 =
 * Limiting query size to needed fields.
