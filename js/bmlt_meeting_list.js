@@ -400,7 +400,15 @@ var $ml = jQuery.noConflict
      if (meeting_sort_val === 'neighborhood_city') {
          $ml('.neighborhood_by_suffix').show();
          $ml('.city_by_suffix').show();
-     }
+	 }
+	 $ml("#suppress_heading").click(function() {
+		var val = $ml("#suppress_heading:checked").val();
+		if (val == 1) {
+			$ml("#header_options_div").hide();
+		} else {
+			$ml("#header_options_div").show();
+		}
+	});
 	$ml("#meeting_sort").click(function() {
 		var meeting_sort_val = $ml("#meeting_sort").val();
         $ml('.borough_by_suffix').hide();
@@ -515,7 +523,6 @@ var $ml = jQuery.noConflict
 	});
 	var page_fold_val = $ml('input[name=page_fold]:checked').val();
 	function bookletControlsShowHide() {
-		console.log("in halfpage2");
 		$ml('#pagenodiv').show();
 		$ml('#columngapdiv').hide();
 		$ml('#columnseparatordiv').hide();

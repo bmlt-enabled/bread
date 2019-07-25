@@ -659,6 +659,7 @@ if (!class_exists("Bread")) {
 			}
 
 			$num_columns = 0;
+			if ( !isset($this->options['suppress_heading']) ) {$this->options['suppress_heading'] = 0;}
 			if ( !isset($this->options['header_font_size']) ) {$this->options['header_font_size'] = $this->options['content_font_size'];}
 			if ( !isset($this->options['header_text_color']) ) {$this->options['header_text_color'] = '#ffffff';}
 			if ( !isset($this->options['header_background_color']) ) {$this->options['header_background_color'] = '#000000';}
@@ -876,18 +877,48 @@ if (!class_exists("Bread")) {
 			//apply_filters is one option, perhaps we will think of something better.
 			$meeting_fields = $this->meeting_fields;
 			//$meeting_fields = apply_filters("Bread_Meeting_Fields", $this->meeting_fields);
-            $data_field_keys = implode(',', $meeting_fields);
+			$data_field_keys = implode(',', $meeting_fields);
+			
+			$this->section_shortcodes = array(
+				'[meeting_count]' 				=> $this->meeting_count,
+				'<h2>'							=> '<h2 style="font-size:'.$this->options['front_page_font_size'] . 'pt!important;">',
+				'<div>[page_break]</div>'		=>  '<pagebreak />',
+				'<p>[page_break]</p>'			=>  '<pagebreak />',
+				'[page_break]'					=>  '<pagebreak />',
+				'<!--nextpage-->'				=>  '<pagebreak />',
+				"[area]"						=>  strtoupper($this->options['service_body_1']),
+				'<div>[new_column]</div>'		=>  '<columnbreak />',
+				'<p>[new_column]</p>'			=>  '<columnbreak />',
+				'[new_column]'					=>  '<columnbreak />',
+				'[page_break no_page_number]'	=> '<sethtmlpagefooter name="" value="0" /><pagebreak />',
+				'[start_page_numbers]'			=> '<sethtmlpagefooter name="MyFooter" page="ALL" value="1" />',
+				"[month_lower]"					=> date ( "F" ),
+				"[month_upper]"					=> strtoupper( date ( "F" ) ),
+				"[month]"						=> strtoupper( date ( "F" ) ),
+				"[day]"							=> strtoupper( date ( "j" ) ),
+				"[year]"						=> strtoupper( date ( "Y" ) ),
+				"[service_body]"				=> strtoupper($this->options['service_body_1']),
+				"[service_body_1]"				=> strtoupper($this->options['service_body_1']),
+				"[service_body_2]"				=> strtoupper($this->options['service_body_2']),
+				"[service_body_3]"				=> strtoupper($this->options['service_body_3']), 
+				"[service_body_4]"				=> strtoupper($this->options['service_body_4']),
+				"[service_body_5]"				=> strtoupper($this->options['service_body_5']),
+		
+			);
+			//let's leave the enhancement mechanism open for now.
+			//apply_filters is one option, perhaps we will think of something better.
+			//$this->section_shortcodes = apply_filters("Bread_Section_Shortcodes",$this->section_shortcodes, $this->unique_areas, $this->formats_used);
+
 			if (isset($this->options['pageheader_text'])) {
+				$data = $this->options['pageheader_text'];
+				$this->standard_shortcode_replacement($data, null);
 				$header_style = "vertical-align: top; text-align: center; font-weight: bold;margin-top:3px;margin-bottom:3px;";
 				$header_style .= "color:".$this->options['pageheader_textcolor'].";";
 				$header_style .= "background-color:".$this->options['pageheader_backgroundcolor'].";";
 				$header_style .= "font-size:".$this->options['pageheader_fontsize']."pt;";
 				$header_style .= "line-height:".$this->options['content_line_height'].";";
 
-			    $this->mpdf->SetHTMLHeader('
-                    <div style="'.$header_style.'">
-                        '.$this->options['pageheader_text'].'
-                    </div>',
+			    $this->mpdf->SetHTMLHeader('<div style="'.$header_style.'">'.$data.'</div>',
                 'O');
 			}
 			if (isset($this->options['watermark'])) {
@@ -1059,35 +1090,6 @@ if (!class_exists("Bread")) {
 				$this->options['page_fold'] = 'quad';
 				$num_columns = 4;
 			}
-			$this->section_shortcodes = array(
-				'[meeting_count]' 				=> $this->meeting_count,
-				'<h2>'							=> '<h2 style="font-size:'.$this->options['front_page_font_size'] . 'pt!important;">',
-				'<div>[page_break]</div>'		=>  '<pagebreak />',
-				'<p>[page_break]</p>'			=>  '<pagebreak />',
-				'[page_break]'					=>  '<pagebreak />',
-				'<!--nextpage-->'				=>  '<pagebreak />',
-				"[area]"						=>  strtoupper($this->options['service_body_1']),
-				'<div>[new_column]</div>'		=>  '<columnbreak />',
-				'<p>[new_column]</p>'			=>  '<columnbreak />',
-				'[new_column]'					=>  '<columnbreak />',
-				'[page_break no_page_number]'	=> '<sethtmlpagefooter name="" value="0" /><pagebreak />',
-				'[start_page_numbers]'			=> '<sethtmlpagefooter name="MyFooter" page="ALL" value="1" />',
-				"[month_lower]"					=> date ( "F" ),
-				"[month_upper]"					=> strtoupper( date ( "F" ) ),
-				"[month]"						=> strtoupper( date ( "F" ) ),
-				"[day]"							=> strtoupper( date ( "j" ) ),
-				"[year]"						=> strtoupper( date ( "Y" ) ),
-				"[service_body]"				=> strtoupper($this->options['service_body_1']),
-				"[service_body_1]"				=> strtoupper($this->options['service_body_1']),
-				"[service_body_2]"				=> strtoupper($this->options['service_body_2']),
-				"[service_body_3]"				=> strtoupper($this->options['service_body_3']), 
-				"[service_body_4]"				=> strtoupper($this->options['service_body_4']),
-				"[service_body_5]"				=> strtoupper($this->options['service_body_5']),
-		
-			);
-			//let's leave the enhancement mechanism open for now.
-			//apply_filters is one option, perhaps we will think of something better.
-			//$this->section_shortcodes = apply_filters("Bread_Section_Shortcodes",$this->section_shortcodes, $this->unique_areas, $this->formats_used);
 
 			$this->mpdf->SetColumns($num_columns, '', $this->options['column_gap']);
 			$header_style = "color:".$this->options['header_text_color'].";";
@@ -1191,7 +1193,9 @@ if (!class_exists("Bread")) {
 					$first_meeting = false;
 					$newVal = false;
 					$newCol = false;
-
+					if ($this->options['suppress_heading']==1) {
+						$header = '';
+					}
 					$data = $header . $this->write_single_meeting($meeting_value, $this->options['meeting_template_content'], $analysedTemplate, $area_name);											
 					$data = mb_convert_encoding($data, 'HTML-ENTITIES');						
 					$data = utf8_encode($data);
@@ -1890,6 +1894,7 @@ if (!class_exists("Bread")) {
 				$this->options['last_page_font_size'] = floatval($_POST['last_page_font_size']);
 				$this->options['last_page_line_height'] = floatval($_POST['last_page_line_height']);
 				$this->options['content_font_size'] = floatval($_POST['content_font_size']);
+				$this->options['suppress_heading'] = floatval($_POST['suppress_heading']);
 				$this->options['header_font_size'] = floatval($_POST['header_font_size']);
 				$this->options['header_text_color'] = validate_hex_color($_POST['header_text_color']);
 				$this->options['header_background_color'] = validate_hex_color($_POST['header_background_color']);
@@ -1997,6 +2002,9 @@ if (!class_exists("Bread")) {
 			}
 			if ( !isset($this->options['header_font_size']) || strlen(trim($this->options['header_font_size'])) == 0 ) {
 				$this->options['header_font_size'] = $this->options['content_font_size'];
+			}
+			if ( !isset($this->options['suppress_heading']) || strlen(trim($this->options['suppress_heading'])) == 0 ) {
+				$this->options['suppress_heading'] = 0;
 			}
 			if ( !isset($this->options['header_text_color']) || strlen(trim($this->options['header_text_color'])) == 0 ) {
 				$this->options['header_text_color'] = '#ffffff';
