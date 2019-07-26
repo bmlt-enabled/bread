@@ -694,7 +694,7 @@ if (!class_exists("Bread")) {
 			if ( !isset($this->options['asm_sort_order']) ) {$this->options['asm_sort_order'] = 'name';}
 			if ( !isset($this->options['header_uppercase']) ) {$this->options['header_uppercase'] = '0';}
 			if ( !isset($this->options['header_bold']) ) {$this->options['header_bold'] = '1';}
-			if ( !isset($this->options['sub_header_shown']) ) {$this->options['sub_header_shown'] = '1';}
+			if ( !isset($this->options['sub_header_shown']) ) {$this->options['sub_header_shown'] = '0';}
 			if ( !isset($this->options['bmlt_login_id']) ) {$this->options['bmlt_login_id'] = '';}
 			if ( !isset($this->options['bmlt_login_password']) ) {$this->options['bmlt_login_password'] = '';}
 			if ( !isset($this->options['protection_password']) ) {$this->options['protection_password'] = '';}
@@ -719,6 +719,9 @@ if (!class_exists("Bread")) {
 					exit;
 				}
 			}
+			// upgrade
+			if ($this->options['page_size'] == '5inch')
+				$this->options['page_size'] = 'letter';
 			// TODO: The page number is always 5 from botton...this should be adjustable
 			if ( $this->options['page_fold'] == 'half')  {
 				if ( $this->options['page_size'] == 'letter' ) {
@@ -743,9 +746,17 @@ if (!class_exists("Bread")) {
 					$page_type_settings = ['format' => array(99.0,210.0), 'margin_footer' => 5];
 				}
 			} elseif ( $this->options['page_fold'] == 'full')  {
-				$page_type_settings = ['format' => $this->options['page_size']."-".$this->options['page_orientation'], 'margin_footer' => 5];
+				$ps = $this->options['page_size'];
+				if ($ps=='ledger') {
+					$ps = 'tabloid';
+				}
+				$page_type_settings = ['format' => $ps."-".$this->options['page_orientation'], 'margin_footer' => 5];
 			} else {
-				$page_type_settings = ['format' => $this->options['page_size']."-".$this->options['page_orientation'], 'margin_footer' => 0];
+				$ps = $this->options['page_size'];
+				if ($ps=='ledger') {
+					$ps = 'tabloid';
+				}
+				$page_type_settings = ['format' => $ps."-".$this->options['page_orientation'], 'margin_footer' => 0];
 			}
 
             $default_font = $this->options['base_font'] == "freesans" ? "dejavusanscondensed" : $this->options['base_font'];
@@ -785,7 +796,6 @@ if (!class_exists("Bread")) {
 					'margin_top' => $this->options['margin_top'],
 					'margin_bottom' => $this->options['margin_bottom'],
 					'margin_header' => $this->options['margin_header'],
-					'orientation' => 'P'
 				];
             }
             else {
@@ -799,7 +809,6 @@ if (!class_exists("Bread")) {
 					'margin_top' => $this->options['margin_top'],
 					'margin_bottom' => $this->options['margin_bottom'],
 					'margin_header' => $this->options['margin_header'],
-					'orientation' => 'P'
 				];
             }
    
@@ -880,7 +889,6 @@ if (!class_exists("Bread")) {
 			$data_field_keys = implode(',', $meeting_fields);
 			
 			$this->section_shortcodes = array(
-				'[meeting_count]' 				=> $this->meeting_count,
 				'<h2>'							=> '<h2 style="font-size:'.$this->options['front_page_font_size'] . 'pt!important;">',
 				'<div>[page_break]</div>'		=>  '<pagebreak />',
 				'<p>[page_break]</p>'			=>  '<pagebreak />',
@@ -1051,7 +1059,7 @@ if (!class_exists("Bread")) {
 			);
 
 			foreach ($result_meetings as $value) {
-				$enFormats = explode ( ",", $meeting_value['formats'] );
+				$enFormats = explode ( ",", $value['formats'] );
 				if ( $this->options['include_asm'] == 0 && in_array ( $this->options['asm_format_key'], $enFormats ) ) { continue; }
 				$header_data = $this->getHeaderData($value);
 				if (!isset($headerMeetings[$header_data])) {
@@ -1135,6 +1143,7 @@ if (!class_exists("Bread")) {
 				$groupByLevels = 2;
 				$current_major = '???';
 			}
+			$this->options['meeting_template_content'] = str_replace("&nbsp;", " ", $this->options['meeting_template_content']);
 			$analysedTemplate = $this->analyseTemplate($this->options['meeting_template_content']);
 			$first_meeting = true;
 			$newMajorHeading = false;
@@ -1153,7 +1162,11 @@ if (!class_exists("Bread")) {
 					$subheader = $area_data[1];
 				} elseif ($groupByLevels == 2) {
 					$area_data = explode(',',$this_heading);
-					if ( $area_data[0] !== $current_major ) {
+					if ($this->options['meeting_sort'] === 'state') {
+						$header_string = $area_data[1].', '.$area_data[0];
+						$newMajorHeading = true;
+					}
+					elseif ( $area_data[0] !== $current_major ) {
 						$current_major = $area_data[0];
 						$header_string = $area_data[0];
 						$newMajorHeading = true;
@@ -1255,8 +1268,11 @@ if (!class_exists("Bread")) {
                         'margin_footer' => 0,
                         'orientation' => 'L'
 					];
-				
-				$mpdfOptions['format'] = $this->options['page_size'].'-L';
+				$ps = $this->options['page_size'];
+				if ($ps=='ledger') {
+					$ps = 'tabloid';
+				}
+				$mpdfOptions['format'] = $ps.'-L';
 				$this->mpdftmp=new mPDF($mpdfOptions);
 
 				$ow = $this->mpdftmp->h;
@@ -1451,6 +1467,9 @@ if (!class_exists("Bread")) {
 				if ($item[0]=='top') continue;
 				if ($item[0]=='bottom') continue;
 				if ($item[0]=='align') continue;
+				if ($item[0]=='font') continue;
+				if ($item[0]=='size') continue;
+				if ($item[0]=='text') continue;
 				$ret[] = $item; 
 			}
 			return $ret;
@@ -1518,7 +1537,6 @@ if (!class_exists("Bread")) {
 			//apply_filters is one option, perhaps we will think of something better.
 			//$meeting_value = apply_filters("Bread_Enrich_Meeting_Data", $meeting_value, $this->formats_by_key);
 			$data = $template;
-			$data = str_replace("&nbsp;", " ", $data);
 			$namedValues = array();
 			foreach($meeting_value as $field=>$notUsed) {
 				$namedValues[$field] = $this->get_field($meeting_value,$field);
@@ -1591,52 +1609,7 @@ if (!class_exists("Bread")) {
 			$this->mpdf->SetDefaultBodyCSS('font-size', $this->options['front_page_font_size'] . 'pt');
 			$this->standard_shortcode_replacement($this->options['front_page_content'], 'front_page');
 
-			if ( strpos($this->options['front_page_content'], '[month_lower_fr') !== false ) {
-				setlocale( LC_TIME, 'fr_FR' );
-				$month = ucfirst(utf8_encode(strftime("%B")));
-				setlocale(LC_TIME,NULL);
-				$this->options['front_page_content'] = str_replace("[month_lower_fr]", $month, $this->options['front_page_content']);
-			}
-			
-			if ( strpos($this->options['front_page_content'], '[month_upper_fr') !== false ) {
-				setlocale( LC_TIME, 'fr_FR' );
-				$month = utf8_encode(strftime("%^B"));
-				setlocale(LC_TIME,NULL);;
-				$this->options['front_page_content'] = str_replace("[month_upper_fr]", $month, $this->options['front_page_content']);
-			}
-			
-			if ( strpos($this->options['front_page_content'], '[month_lower_es') !== false ) {
-				setlocale( LC_TIME, 'es_ES' );
-				$month = ucfirst(utf8_encode(strftime("%B")));
-				setlocale(LC_TIME,NULL);
-				$this->options['front_page_content'] = str_replace("[month_lower_es]", $month, $this->options['front_page_content']);
-			}
-			
-			if ( strpos($this->options['front_page_content'], '[month_upper_es') !== false ) {
-				setlocale( LC_TIME, 'es_ES' );
-				$month = utf8_encode(strftime("%^B"));
-				setlocale(LC_TIME,NULL);
-				$this->options['front_page_content'] = str_replace("[month_upper_es]", $month, $this->options['front_page_content']);
-			}
-			if ( strpos($this->options['front_page_content'], '[month_lower_de') !== false ) {
-			    setlocale( LC_TIME, 'de_DE' );
-			    $month = ucfirst(utf8_encode(strftime("%B")));
-			    setlocale(LC_TIME,NULL);
-			    $this->options['front_page_content'] = str_replace("[month_lower_de]", $month, $this->options['front_page_content']);
-			}
-			
-			if ( strpos($this->options['front_page_content'], '[month_upper_de') !== false ) {
-			    setlocale( LC_TIME, "de_DE.utf8" );
-			    $month = utf8_encode(strftime("%B"));
-			    setlocale(LC_TIME,NULL);
-			    $this->options['front_page_content'] = str_replace("[month_upper_de]", $month, $this->options['front_page_content']);
-			}
-			if ( strpos($this->options['front_page_content'], '[month_lower_fa]') !== false ) {
-			    setlocale( LC_TIME, 'fa_IR' );
-			    $month = mb_convert_encoding (strftime("%B"), 'HTML-ENTITIES');
-			    setlocale(LC_TIME,NULL);
-			    $this->options['front_page_content'] = str_replace("[month_lower_fa]", $month, $this->options['front_page_content']);
-			}
+
 			$querystring_custom_items = array();
 			preg_match_all('/(\[querystring_custom_\d+\])/', $this->options['front_page_content'], $querystring_custom_items);
 			foreach ($querystring_custom_items[0] as $querystring_custom_item) {
@@ -1671,6 +1644,56 @@ if (!class_exists("Bread")) {
 			foreach($this->section_shortcodes as $key=>$value) {
 				$search_strings[] = $key;
 				$replacements[] = $value;
+			}
+
+			$search_strings[] = '[meeting_count]';
+			$replacements[] =  $this->meeting_count;
+
+			if ( strpos($this->options[$page.'_content'], '[month_lower_fr') !== false ) {
+				setlocale( LC_TIME, 'fr_FR' );
+				$month = ucfirst(utf8_encode(strftime("%B")));
+				setlocale(LC_TIME,NULL);
+				$this->options[$page.'_content'] = str_replace("[month_lower_fr]", $month, $this->options[$page.'_content']);
+			}
+			
+			if ( strpos($this->options[$page.'_content'], '[month_upper_fr') !== false ) {
+				setlocale( LC_TIME, 'fr_FR' );
+				$month = utf8_encode(strftime("%^B"));
+				setlocale(LC_TIME,NULL);;
+				$this->options[$page.'_content'] = str_replace("[month_upper_fr]", $month, $this->options[$page.'_content']);
+			}
+			
+			if ( strpos($this->options[$page.'_content'], '[month_lower_es') !== false ) {
+				setlocale( LC_TIME, 'es_ES' );
+				$month = ucfirst(utf8_encode(strftime("%B")));
+				setlocale(LC_TIME,NULL);
+				$this->options[$page.'_content'] = str_replace("[month_lower_es]", $month, $this->options[$page.'_content']);
+			}
+			
+			if ( strpos($this->options[$page.'_content'], '[month_upper_es') !== false ) {
+				setlocale( LC_TIME, 'es_ES' );
+				$month = utf8_encode(strftime("%^B"));
+				setlocale(LC_TIME,NULL);
+				$this->options[$page.'_content'] = str_replace("[month_upper_es]", $month, $this->options[$page.'_content']);
+			}
+			if ( strpos($this->options[$page.'_content'], '[month_lower_de') !== false ) {
+			    setlocale( LC_TIME, 'de_DE' );
+			    $month = ucfirst(utf8_encode(strftime("%B")));
+			    setlocale(LC_TIME,NULL);
+			    $this->options[$page.'_content'] = str_replace("[month_lower_de]", $month, $this->options[$page.'_content']);
+			}
+			
+			if ( strpos($this->options[$page.'_content'], '[month_upper_de') !== false ) {
+			    setlocale( LC_TIME, "de_DE.utf8" );
+			    $month = utf8_encode(strftime("%B"));
+			    setlocale(LC_TIME,NULL);
+			    $this->options[$page.'_content'] = str_replace("[month_upper_de]", $month, $this->options[$page.'_content']);
+			}
+			if ( strpos($this->options[$page.'_content'], '[month_lower_fa]') !== false ) {
+			    setlocale( LC_TIME, 'fa_IR' );
+			    $month = mb_convert_encoding (strftime("%B"), 'HTML-ENTITIES');
+			    setlocale(LC_TIME,NULL);
+			    $this->options[$page.'_content'] = str_replace("[month_lower_fa]", $month, $this->options[$page.'_content']);
 			}
 			$data = str_replace($search_strings,$replacements,$data);
 			$this->replace_format_shortcodes($data, $page);
@@ -1774,6 +1797,7 @@ if (!class_exists("Bread")) {
 				}
 				$area_name = $this->get_area_name($meeting_value);
 				if ($template != '') {
+					$template = str_replace("&nbsp;", " ", $template);
 					$data .= $this->write_single_meeting($value, $template, $this->analyseTemplate($template), $area_name);
 					continue;
 				}
@@ -1988,6 +2012,97 @@ if (!class_exists("Bread")) {
 				$url = plugin_dir_url(__FILE__) . "includes/default_nalogo.jpg";
 				media_sideload_image( $url, 0 );
 			}
+			$this->fillUnsetOptions();
+			
+			$this->authors_safe = $this->options['authors'];
+			?>
+			<?php include 'partials/_help_videos.php'; ?>
+			<div class="hide wrap" id="meeting-list-tabs-wrapper">
+                <div id="tallyBannerContainer">
+                    <img id="tallyBannerImage" src="<?php echo plugin_dir_url( __FILE__ )?>css/images/banner.png">
+                </div>
+				<div id="meeting-list-tabs">
+					<ul class="nav">
+						<li><a href="#setup"><?php _e('Meeting List Setup', 'root-server'); ?></a></li>
+						<li><a href="#tabs-first"><?php _e('BMLT Server', 'root-server'); ?></a></li>
+						<li><a href="#layout"><?php _e('Page Layout', 'root-server'); ?></a></li>
+						<li><a href="#front-page"><?php _e('Front Page', 'root-server'); ?></a></li>
+						<li><a href="#meetings"><?php _e('Meetings', 'root-server'); ?></a></li>
+						<li><a href="#custom-section"><?php _e('Custom Content', 'root-server'); ?></a></li>
+						<li><a href="#last-page"><?php _e('Last Page', 'root-server'); ?></a></li>
+						<li><a href="#import-export"><?php _e('Configuration', 'root-server'); ?></a></li>
+					</ul>
+					<form style=" display:inline!important;" method="POST" id="bmlt_meeting_list_options">
+					<input type="hidden" name="current-meeting-list" value="<?php echo $this->loaded_setting?>" />
+					<?php wp_nonce_field('closedpostboxes', 'closedpostboxesnonce', false ); ?>
+					<?php wp_nonce_field('meta-box-order', 'meta-box-order-nonce', false ); ?>
+					<?php
+					wp_nonce_field('bmltmeetinglistupdate-options');
+					$this_connected = $this->testRootServer();
+					$bmlt_version = $this_connected;
+					if ($bmlt_version == "5.0.0") {
+						$ThisVersion = "<span style='color: #00AD00;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-admin-site'></div>Using Tomato Server</span>";
+                    } else {
+                        $this_version = intval(str_replace(".", "", $this_connected));
+                        $source_of_truth = $this->getLatestRootVersion();
+                        $source_of_truth_version = intval(str_replace(".", "", $source_of_truth));
+                        $connect = "<p><div style='color: #f00;font-size: 16px;vertical-align: middle;' class='dashicons dashicons-no'></div><span style='color: #f00;'>Connection to BMLT Server Failed.  Check spelling or try again.  If you are certain spelling is correct, BMLT Server could be down.</span></p>";
+                        if ( $this_connected ) {
+                            $ThisVersion = "<span style='color: #0A8ADD;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-smiley'></div>Your BMLT Server is running the latest Version ".$bmlt_version."</span>";
+                            if ( $this_version !== $source_of_truth_version ) {
+                                $ThisVersion = "<span style='color: #f00;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-dismiss'></div>Notice: BMLT Server Update Available! Your Version = ".$bmlt_version.". </span>";
+                                $ThisVersion .= "<span style='color: #7AD03A;'><i>Updated version = " . $source_of_truth . "</i></span><br />";
+                            }
+                        }
+					}
+					?>
+					<div id="setup">						
+						<?php include 'partials/_meeting_list_setup.php'; ?>
+					</div>
+					<div id="tabs-first">						
+						<?php include 'partials/_bmlt_server_setup.php'; ?>
+					</div>
+					<div id="layout">
+						<?php include 'partials/_layout_setup.php'; ?>
+					</div>
+					<div id="front-page">
+						<?php include 'partials/_front_page_setup.php'; ?>
+					</div>
+					<div id="meetings">
+						<?php include 'partials/_meetings_setup.php'; ?>
+					</div>
+					<div id="custom-section">
+						<?php include 'partials/_custom_section_setup.php'; ?>
+					</div>
+					<div id="last-page">
+						<?php include 'partials/_last_page_setup.php'; ?>
+					</div>
+					</form>
+					<div id="import-export">
+						<?php include 'partials/_backup_restore_setup.php'; ?>						
+					</div>
+				</div>
+			</div>
+			<div id="dialog" title="TinyMCE dialog" style="display: none">
+				<textarea>test</textarea>
+			</div>
+<?php
+		}
+		function toPersianNum($number)
+		{
+		    $number = str_replace("1","۱",$number);
+		    $number = str_replace("2","۲",$number);
+		    $number = str_replace("3","۳",$number);
+		    $number = str_replace("4","۴",$number);
+		    $number = str_replace("5","۵",$number);
+		    $number = str_replace("6","۶",$number);
+		    $number = str_replace("7","۷",$number);
+		    $number = str_replace("8","۸",$number);
+		    $number = str_replace("9","۹",$number);
+		    $number = str_replace("0","۰",$number);
+		    return $number;
+		}
+		function fillUnsetOptions() {
 			if ( !isset($this->options['front_page_line_height']) || strlen(trim($this->options['front_page_line_height'])) == 0 ) {
 				$this->options['front_page_line_height'] = '1.0';
 			}
@@ -2002,6 +2117,9 @@ if (!class_exists("Bread")) {
 			}
 			if ( !isset($this->options['header_font_size']) || strlen(trim($this->options['header_font_size'])) == 0 ) {
 				$this->options['header_font_size'] = $this->options['content_font_size'];
+			}
+			if ( !isset($this->options['pageheader_fontsize']) || strlen(trim($this->options['pageheader_fontsize'])) == 0 ) {
+				$this->options['pageheader_fontsize'] = $this->options['header_font_size'];
 			}
 			if ( !isset($this->options['suppress_heading']) || strlen(trim($this->options['suppress_heading'])) == 0 ) {
 				$this->options['suppress_heading'] = 0;
@@ -2025,7 +2143,7 @@ if (!class_exists("Bread")) {
 				$this->options['header_bold'] = '1';
 			}
 			if ( !isset($this->options['sub_header_shown']) || strlen(trim($this->options['sub_header_shown'])) == 0 ) {
-				$this->options['sub_header_shown'] = '1';
+				$this->options['sub_header_shown'] = '0';
 			}
 			if ( !isset($this->options['margin_top']) || strlen(trim($this->options['margin_top'])) == 0 ) {
 				$this->options['margin_top'] = 3;
@@ -2165,96 +2283,7 @@ if (!class_exists("Bread")) {
 					$this->options['asm_logged_in'] = false;
 				}
 			}
-			
-			$this->authors_safe = $this->options['authors'];
-			?>
-			<?php include 'partials/_help_videos.php'; ?>
-			<div class="hide wrap" id="meeting-list-tabs-wrapper">
-                <div id="tallyBannerContainer">
-                    <img id="tallyBannerImage" src="<?php echo plugin_dir_url( __FILE__ )?>css/images/banner.png">
-                </div>
-				<div id="meeting-list-tabs">
-					<ul class="nav">
-						<li><a href="#setup"><?php _e('Meeting List Setup', 'root-server'); ?></a></li>
-						<li><a href="#tabs-first"><?php _e('BMLT Server', 'root-server'); ?></a></li>
-						<li><a href="#layout"><?php _e('Page Layout', 'root-server'); ?></a></li>
-						<li><a href="#front-page"><?php _e('Front Page', 'root-server'); ?></a></li>
-						<li><a href="#meetings"><?php _e('Meetings', 'root-server'); ?></a></li>
-						<li><a href="#custom-section"><?php _e('Custom Content', 'root-server'); ?></a></li>
-						<li><a href="#last-page"><?php _e('Last Page', 'root-server'); ?></a></li>
-						<li><a href="#import-export"><?php _e('Configuration', 'root-server'); ?></a></li>
-					</ul>
-					<form style=" display:inline!important;" method="POST" id="bmlt_meeting_list_options">
-					<input type="hidden" name="current-meeting-list" value="<?php echo $this->loaded_setting?>" />
-					<?php wp_nonce_field('closedpostboxes', 'closedpostboxesnonce', false ); ?>
-					<?php wp_nonce_field('meta-box-order', 'meta-box-order-nonce', false ); ?>
-					<?php
-					wp_nonce_field('bmltmeetinglistupdate-options');
-					$this_connected = $this->testRootServer();
-					$bmlt_version = $this_connected;
-					if ($bmlt_version == "5.0.0") {
-						$ThisVersion = "<span style='color: #00AD00;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-admin-site'></div>Using Tomato Server</span>";
-                    } else {
-                        $this_version = intval(str_replace(".", "", $this_connected));
-                        $source_of_truth = $this->getLatestRootVersion();
-                        $source_of_truth_version = intval(str_replace(".", "", $source_of_truth));
-                        $connect = "<p><div style='color: #f00;font-size: 16px;vertical-align: middle;' class='dashicons dashicons-no'></div><span style='color: #f00;'>Connection to BMLT Server Failed.  Check spelling or try again.  If you are certain spelling is correct, BMLT Server could be down.</span></p>";
-                        if ( $this_connected ) {
-                            $ThisVersion = "<span style='color: #0A8ADD;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-smiley'></div>Your BMLT Server is running the latest Version ".$bmlt_version."</span>";
-                            if ( $this_version !== $source_of_truth_version ) {
-                                $ThisVersion = "<span style='color: #f00;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-dismiss'></div>Notice: BMLT Server Update Available! Your Version = ".$bmlt_version.". </span>";
-                                $ThisVersion .= "<span style='color: #7AD03A;'><i>Updated version = " . $source_of_truth . "</i></span><br />";
-                            }
-                        }
-					}
-					?>
-					<div id="setup">						
-						<?php include 'partials/_meeting_list_setup.php'; ?>
-					</div>
-					<div id="tabs-first">						
-						<?php include 'partials/_bmlt_server_setup.php'; ?>
-					</div>
-					<div id="layout">
-						<?php include 'partials/_layout_setup.php'; ?>
-					</div>
-					<div id="front-page">
-						<?php include 'partials/_front_page_setup.php'; ?>
-					</div>
-					<div id="meetings">
-						<?php include 'partials/_meetings_setup.php'; ?>
-					</div>
-					<div id="custom-section">
-						<?php include 'partials/_custom_section_setup.php'; ?>
-					</div>
-					<div id="last-page">
-						<?php include 'partials/_last_page_setup.php'; ?>
-					</div>
-					</form>
-					<div id="import-export">
-						<?php include 'partials/_backup_restore_setup.php'; ?>						
-					</div>
-				</div>
-			</div>
-			<div id="dialog" title="TinyMCE dialog" style="display: none">
-				<textarea>test</textarea>
-			</div>
-<?php
 		}
-		function toPersianNum($number)
-		{
-		    $number = str_replace("1","۱",$number);
-		    $number = str_replace("2","۲",$number);
-		    $number = str_replace("3","۳",$number);
-		    $number = str_replace("4","۴",$number);
-		    $number = str_replace("5","۵",$number);
-		    $number = str_replace("6","۶",$number);
-		    $number = str_replace("7","۷",$number);
-		    $number = str_replace("8","۸",$number);
-		    $number = str_replace("9","۹",$number);
-		    $number = str_replace("0","۰",$number);
-		    return $number;
-		}
-
 		/**
 		 * Deletes transient cache
 		 */
@@ -2486,6 +2515,7 @@ if (!class_exists("Bread")) {
 				update_option( $this->optionsName, $theOptions );
 			}
 			$this->options = $theOptions;
+			$this->fillUnsetOptions();
 			$this->authors_safe = $theOptions['authors'];
 			$this->loaded_setting = $current_setting;
 		}

@@ -585,8 +585,10 @@ var $ml = jQuery.noConflict
 		}
 		$ml("#meeting-list-tabs ul li:eq(5)").hide();
 		$ml("#booklet_pages, label[for=booklet_pages]").hide();
-		$ml('#meeting-list-tabs').tabs('disable', 6);
+		$ml("#meeting-list-tabs ul li:eq(5)").show();
 		$ml("#meeting-list-tabs ul li:eq(6)").hide();
+		$ml('#meeting-list-tabs').tabs('enable', 5);
+		$ml('#meeting-list-tabs').tabs('disable', 6);
 	}
 	if (page_fold_val == 'half') {
 		bookletControlsShowHide();
