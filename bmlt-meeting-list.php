@@ -720,8 +720,18 @@ if (!class_exists("Bread")) {
 				}
 			}
 			// upgrade
-			if ($this->options['page_size'] == '5inch')
+			if ($this->options['page_size']=='5inch') {
 				$this->options['page_size'] = 'letter';
+				$this->options['page_orientation'] = 'L';
+			}
+			if (!isset($this->options['bread_version'])) {
+				if (!($this->options['meeting_sort'] === 'weekday_area' 
+				   || $this->options['meeting_sort'] === 'weekday_city' 
+				   || $this->options['meeting_sort'] === 'weekday_county'
+				   || $this->options['meeting_sort'] === 'day')) {
+					   $this->options['weekday_language'] = $this->lang;
+				}
+			}
 			// TODO: The page number is always 5 from botton...this should be adjustable
 			if ( $this->options['page_fold'] == 'half')  {
 				if ( $this->options['page_size'] == 'letter' ) {
@@ -834,7 +844,8 @@ if (!class_exists("Bread")) {
 			$this->mpdf->WriteHTML($header_stylesheet,1); // The parameter 1 tells that this is css/style only and no body/html/text
 			$this->mpdf->SetDefaultBodyCSS('line-height', $this->options['content_line_height']);
 			$this->mpdf->SetDefaultBodyCSS('background-color', 'transparent');
-			if ( $this->options['column_line'] == 1 ) {
+			if ( $this->options['column_line'] == 1 && 
+				($this->options['page_fold'] == 'tri' || $this->options['page_fold'] == 'quad') ) {
 				$html = '<body style="background-color:#fff;">';
 				if ( $this->options['page_fold'] == 'tri' ) {
 					$html .= '<table style="background-color: #fff;width: 100%; border-collapse: collapse;">
@@ -859,7 +870,6 @@ if (!class_exists("Bread")) {
 					</tbody>
 					</table>';
 				}
-
 				$this->mpdf_column=new mPDF([
                     'mode' => $mode,
                     'tempDir' => get_temp_dir(),
@@ -1271,8 +1281,9 @@ if (!class_exists("Bread")) {
 				$ps = $this->options['page_size'];
 				if ($ps=='ledger') {
 					$ps = 'tabloid';
+				} else {
+					$mpdfOptions['format'] = $ps.'-L';
 				}
-				$mpdfOptions['format'] = $ps.'-L';
 				$this->mpdftmp=new mPDF($mpdfOptions);
 
 				$ow = $this->mpdftmp->h;
@@ -1466,10 +1477,13 @@ if (!class_exists("Bread")) {
 				if ($item[0]=='right') continue;
 				if ($item[0]=='top') continue;
 				if ($item[0]=='bottom') continue;
+				if ($item[0]=='center') continue;
 				if ($item[0]=='align') continue;
 				if ($item[0]=='font') continue;
 				if ($item[0]=='size') continue;
 				if ($item[0]=='text') continue;
+				if ($item[0]=='style') continue;
+				if ($item[0]=='family') continue;
 				$ret[] = $item; 
 			}
 			return $ret;
@@ -1607,6 +1621,7 @@ if (!class_exists("Bread")) {
 			$this->mpdf->WriteHTML('td{font-size: '.$this->options['front_page_font_size']."pt;line-height:".$this->options['front_page_line_height'].';}',1);
 			$this->mpdf->SetDefaultBodyCSS('line-height', $this->options['front_page_line_height']);
 			$this->mpdf->SetDefaultBodyCSS('font-size', $this->options['front_page_font_size'] . 'pt');
+			$this->options['front_page_content'] = wp_unslash($this->options['front_page_content']);
 			$this->standard_shortcode_replacement($this->options['front_page_content'], 'front_page');
 
 
@@ -2438,7 +2453,10 @@ if (!class_exists("Bread")) {
 			if( $file_size > 500000 ) {
 				wp_die( __( 'File size greater than 500k' ) );
 			}
-            $encode_options = file_get_contents($import_file);
+			$encode_options = file_get_contents($import_file);
+			if (0 === strpos(bin2hex($encode_options),'efbbbf')) {
+				$encode_options = substr($encode_options,3);
+			}
 			$settings = json_decode($encode_options, true);
 			$settings['authors'] = $this->authors_safe;
 			update_option( $this->optionsName, $settings );

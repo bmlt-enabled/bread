@@ -53,6 +53,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                 <h3 class="hndle">Page Layout<span title='<?php echo $title; ?>' class="bottom-tooltip"></span></h3>
                 <div class="inside">
                     <p>
+                    <input name="bread_version" value="2.0" type="hidden">
                     <input class="mlg" id="flyer" type="radio" name="page_fold" value="flyer" <?php echo ($this->options['page_fold'] == 'flyer' ? 'checked' : '') ?>><label for="flyer">Flyer&nbsp;&nbsp;&nbsp;</label>
                     <input class="mlg" id="tri" type="radio" name="page_fold" value="tri" <?php echo ($this->options['page_fold'] == 'tri' ? 'checked' : '') ?>><label for="tri">Tri-Fold&nbsp;&nbsp;&nbsp;</label>
                     <input class="mlg" id="quad" type="radio" name="page_fold" value="quad" <?php echo ($this->options['page_fold'] == 'quad' ? 'checked' : '') ?>><label for="quad">Quad-Fold&nbsp;&nbsp;&nbsp;</label>
