@@ -720,16 +720,20 @@ if (!class_exists("Bread")) {
 				}
 			}
 			// upgrade
-			if ($this->options['page_size']=='5inch') {
-				$this->options['page_size'] = 'letter';
-				$this->options['page_orientation'] = 'L';
-			}
 			if (!isset($this->options['bread_version'])) {
 				if (!($this->options['meeting_sort'] === 'weekday_area' 
 				   || $this->options['meeting_sort'] === 'weekday_city' 
 				   || $this->options['meeting_sort'] === 'weekday_county'
 				   || $this->options['meeting_sort'] === 'day')) {
 					   $this->options['weekday_language'] = $this->lang;
+				}
+				if ($this->options['page_fold']=='half') {
+					if ($this->options['page_size']=='5inch') {
+						$this->options['page_size'] = 'letter';					
+					} elseif ($this->options['page_size']=='A5') {
+						$this->options['page_size'] = 'A4';
+					}
+					$this->options['page_orientation'] = 'L';
 				}
 			}
 			// TODO: The page number is always 5 from botton...this should be adjustable
