@@ -209,10 +209,10 @@ if (!class_exists("Bread")) {
 
 		function my_custom_plugins () {
 			global $my_admin_page;
+			$plugins_array = array();
 			$screen = get_current_screen();
 			if ( $screen->id == $my_admin_page ) {
 				$plugins = array('table', 'code', 'contextmenu' ); //Add any more plugins you want to load here
-				$plugins_array = array();
 				//Build the response - the key is the plugin name, value is the URL to the plugin JS
 				foreach ($plugins as $plugin ) {
 				  $plugins_array[ $plugin ] = plugins_url('tinymce/', __FILE__) . $plugin . '/plugin.min.js';
@@ -2290,7 +2290,7 @@ if (!class_exists("Bread")) {
 			if ( !isset($this->options['cache_time']) || strlen(trim($this->options['cache_time'])) == 0 ) {
 				$this->options['cache_time'] = 0;
 			}
-			if ( !isset($this->options['extra_meetings']) || count($this->options['extra_meetings']) == 0 || $this->options['extra_meetings'] == '') {
+			if ( !isset($this->options['extra_meetings']) || $this->options['extra_meetings'] == '' || count($this->options['extra_meetings']) == 0 ) {
 				$this->options['extra_meetings'] = '';
 			} else {
 				$this->options['extra_meetings_enabled'] = 1;
