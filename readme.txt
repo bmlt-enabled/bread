@@ -58,7 +58,7 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 * Support for multiple configurations. [#36]
 * Access to configure is now controlled with a custom capability called `manage_bread`.  This is automatically added to the `Administrator` role.
 * Generalized ASM functionality to other formats, and user-defined templates.  Now called "Additional List".
-* German and Farsi support.
+* Italian, German and Farsi support.
 * New layout options
   - Full-Page Layout now full functional
   - A6 Booklet (fits more meetings than flyer, but more convenient to carry around than A5).
