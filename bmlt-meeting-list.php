@@ -735,6 +735,9 @@ if (!class_exists("Bread")) {
 					}
 					$this->options['page_orientation'] = 'L';
 				}
+				if (substr($this->options['meeting_sort'],0,8) == 'weekday_') {
+						$this->options['sub_header_shown'] = true;
+				}
 			}
 			// TODO: The page number is always 5 from botton...this should be adjustable
 			if ( $this->options['page_fold'] == 'half')  {
@@ -825,8 +828,8 @@ if (!class_exists("Bread")) {
 					'margin_header' => $this->options['margin_header'],
 				];
             }
-   
-            $this->mpdf = new mPDF(array_merge($mpdf_init_options, $page_type_settings));
+			$mpdf_init_options = array_merge($mpdf_init_options, $page_type_settings);
+            $this->mpdf = new mPDF($mpdf_init_options);
             $this->mpdf->setAutoBottomMargin = 'pad';
 
             // TODO: Adding a page number really could just be an option or tag.
@@ -877,7 +880,7 @@ if (!class_exists("Bread")) {
 				$this->mpdf_column=new mPDF([
                     'mode' => $mode,
                     'tempDir' => get_temp_dir(),
-                    'format' => $this->options['page_size']."-".$this->options['page_orientation'],
+                    'format' => $mpdf_init_options['format'],
                     'default_font_size' => 7,
                     'default_font' => $default_font,
                     'margin_left' => $this->options['margin_left'],
