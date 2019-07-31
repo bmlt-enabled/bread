@@ -53,6 +53,8 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                 <h3 class="hndle">Page Layout<span title='<?php echo $title; ?>' class="bottom-tooltip"></span></h3>
                 <div class="inside">
                     <p>
+                    <input name="bread_version" value="2.0" type="hidden">
+                    <input class="mlg" id="flyer" type="radio" name="page_fold" value="flyer" <?php echo ($this->options['page_fold'] == 'flyer' ? 'checked' : '') ?>><label for="flyer">Flyer&nbsp;&nbsp;&nbsp;</label>
                     <input class="mlg" id="tri" type="radio" name="page_fold" value="tri" <?php echo ($this->options['page_fold'] == 'tri' ? 'checked' : '') ?>><label for="tri">Tri-Fold&nbsp;&nbsp;&nbsp;</label>
                     <input class="mlg" id="quad" type="radio" name="page_fold" value="quad" <?php echo ($this->options['page_fold'] == 'quad' ? 'checked' : '') ?>><label for="quad">Quad-Fold&nbsp;&nbsp;&nbsp;</label>
                     <input class="mlg" id="half" type="radio" name="page_fold" value="half" <?php echo ($this->options['page_fold'] == 'half' ? 'checked' : '') ?>><label for="half">Half-Fold&nbsp;&nbsp;&nbsp;</label>
@@ -61,14 +63,14 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     <p>
                     <input class="mlg" id="portrait" type="radio" name="page_orientation" value="P" <?php echo ($this->options['page_orientation'] == 'P' ? 'checked' : '') ?>><label for="portrait">Portrait&nbsp;&nbsp;&nbsp;</label>
                     <input class="mlg" id="landscape" type="radio" name="page_orientation" value="L" <?php echo ($this->options['page_orientation'] == 'L' ? 'checked' : '') ?>><label for="landscape">Landscape</label>
+                    <input class="mlg" id="booklet_pages" type="checkbox" name="booklet_pages" value="1" <?php echo ($this->options['booklet_pages'] == '1' ? 'checked' : '') ?> /><label for="booklet_pages">Add extra pages for booklet</label>
                     <p>
-                    <input class="mlg" id="5inch" type="radio" name="page_size" value="5inch" <?php echo ($this->options['page_size'] == '5inch' ? 'checked' : '') ?>><label for="5inch">Booklet (11" X 8.5")&nbsp;&nbsp;&nbsp;</label>
-                    <input class="mlg" id="A5" type="radio" name="page_size" value="A5" <?php echo ($this->options['page_size'] == 'A5' ? 'checked' : '') ?>><label for="A5">Booklet-A5 (297mm X 210mm)&nbsp;&nbsp;&nbsp;</label>
-                    <input class="mlg" id="A6" type="radio" name="page_size" value="A6" <?php echo ($this->options['page_size'] == 'A6' ? 'checked' : '') ?>><label for="A6">Booklet-A6 (210mm X 142mm)&nbsp;&nbsp;&nbsp;</label>
-                    <input class="mlg" id="letter" type="radio" name="page_size" value="letter" <?php echo ($this->options['page_size'] == 'letter' ? 'checked' : '') ?>><label for="letter">Letter (8.5" X 11")&nbsp;&nbsp;&nbsp;</label>
-                    <input class="mlg" id="legal" type="radio" name="page_size" value="legal" <?php echo ($this->options['page_size'] == 'legal' ? 'checked' : '') ?>><label for="legal">Legal (8.5" X 14")&nbsp;&nbsp;&nbsp;</label>
-                    <input class="mlg" id="ledger" type="radio" name="page_size" value="ledger" <?php echo ($this->options['page_size'] == 'ledger' ? 'checked' : '') ?>><label for="ledger">Ledger (17" X 11")&nbsp;&nbsp;&nbsp;</label>
-                    <input class="mlg" id="A4" type="radio" name="page_size" value="A4" <?php echo ($this->options['page_size'] == 'A4' ? 'checked' : '') ?>><label for="A4">A4 (210mm X 297mm)</label>
+                    <input class="mlg" id="letter" type="radio" name="page_size" value="letter" <?php echo ($this->options['page_size'] == 'letter' ? 'checked' : '') ?>><label for="letter">Letter&nbsp;&nbsp;&nbsp;</label>
+                    <input class="mlg" id="legal" type="radio" name="page_size" value="legal" <?php echo ($this->options['page_size'] == 'legal' ? 'checked' : '') ?>><label for="legal">Legal&nbsp;&nbsp;&nbsp;</label>
+                    <input class="mlg" id="ledger" type="radio" name="page_size" value="ledger" <?php echo ($this->options['page_size'] == 'ledger' ? 'checked' : '') ?>><label for="ledger">Ledger&nbsp;&nbsp;&nbsp;</label>
+                    <input class="mlg" id="A4" type="radio" name="page_size" value="A4" <?php echo ($this->options['page_size'] == 'A4' ? 'checked' : '') ?>><label for="A4">A4&nbsp;&nbsp;&nbsp;</label>
+                    <input class="mlg" id="A5" type="radio" name="page_size" value="A5" <?php echo ($this->options['page_size'] == 'A5' ? 'checked' : '') ?>><label for="A5">A5&nbsp;&nbsp;&nbsp;</label>
+                    <input class="mlg" id="A6" type="radio" name="page_size" value="A6" <?php echo ($this->options['page_size'] == 'A6' ? 'checked' : '') ?>><label for="A6">A6&nbsp;&nbsp;&nbsp;</label>
                     </p>
                     </p>
                     <div id="marginsdiv" style="border-top: 1px solid #EEE;">
@@ -80,9 +82,22 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         </p>
                     </div>
                     <div id="watermarkandheaderdiv" style="border-top: 1px solid #EEE;">
-                        <p>
+                    <p>
+                    The page header is a title that goes across the entire page above the meetings.
+                    <br><table><tr>
+                    <td style="padding-right: 10px;">Font Size: <input min="4" max="18" step=".1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="pageheader_fontsize" name="pageheader_fontsize" value="<?php echo $this->options['pageheader_fontsize']; ?>" /></td>
+                    <td style="padding-right: 10px;">
+                        <div class="theme" id="sp-light">
+                            <label for="pageheader_textcolor">Text Color:</label>  <input style="display: inline-block !important; width: 70px; margin-right: 5px;" type='text' id="pageheader_textcolor" name="pageheader_textcolor" value="<?php echo $this->options['pageheader_textcolor']; ?>" />
+                        </div>
+                    </td>
+                    <td style="padding-right: 10px;">
+                        <div class="theme" id="sp-light">
+                            <label for="pageheader_backgroundcolor">Background Color:</label>  <input style="display: inline-block !important; width: 70px; margin-right: 5px;" type='text' id="pageheader_backgroundcolor" name="pageheader_backgroundcolor" value="<?php echo $this->options['pageheader_backgroundcolor']; ?>" />
+                        </div>
+                    </td>
+                    </tr></table><br>
                         Header Margin Top: <input min="0" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="margin_header" name="margin_header" value="<?php echo esc_html($this->options['margin_header']); ?>" />&nbsp;&nbsp;&nbsp;
-                        Header Fontsize: <input min="0" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="pageheader_fontsize" name="pageheader_fontsize" value="<?php echo esc_html($this->options['pageheader_fontsize']); ?>" />&nbsp;&nbsp;&nbsp;
                         <br>Header Text: <input size="100" type="text" id="pageheader_text" name="pageheader_text" value="<?php echo isset($this->options['pageheader_text']) ? esc_html($this->options['pageheader_text']) : ''; ?>" />&nbsp;&nbsp;&nbsp;
                         <br>Watermark: <input size="100" type="text" id="watermark" name="watermark" autocomplete="off" value="<?php echo isset($this->options['watermark']) ? esc_html($this->options['watermark']) : ''; ?>" />&nbsp;&nbsp;&nbsp;
                         </p>
