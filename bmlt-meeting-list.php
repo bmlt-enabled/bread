@@ -930,9 +930,8 @@ if (!class_exists("Bread")) {
 				"[service_body_5]"				=> strtoupper($this->options['service_body_5']),
 		
 			);
-			//let's leave the enhancement mechanism open for now.
-			//apply_filters is one option, perhaps we will think of something better.
-			//$this->section_shortcodes = apply_filters("Bread_Section_Shortcodes",$this->section_shortcodes, $this->unique_areas, $this->formats_used);
+			// Extensions
+			$this->section_shortcodes = apply_filters("Bread_Section_Shortcodes",$this->section_shortcodes, $this->unique_areas, $this->formats_used);
 
 			if (isset($this->options['pageheader_text'])) {
 				$data = $this->options['pageheader_text'];
@@ -950,6 +949,8 @@ if (!class_exists("Bread")) {
 			    $this->mpdf->SetWatermarkImage($this->options['watermark'],0.2,'F');
 			    $this->mpdf->showWatermarkImage = true;
 			}
+			// TODO:  I'm pretty sure that we can live when we sort only by day and time.
+			// There rest is taken care of when we group under the headings.
 			if ( $this->options['meeting_sort'] == 'state' ) {
 				$sort_keys = 'location_province,location_municipality,weekday_tinyint,start_time,meeting_name';
 			} elseif ( $this->options['meeting_sort'] == 'city' ) {
@@ -974,15 +975,20 @@ if (!class_exists("Bread")) {
 				$this->options['meeting_sort'] = 'day';
 				$sort_keys = 'weekday_tinyint,start_time,meeting_name';
 			}
+			// End of TODO.
+			$get_used_formats = '&get_used_formats';
 
-            $get_used_formats = '&get_used_formats';
+			$data_field_option = "&data_field_key=$data_field_keys";
+			if ($this->options['retrieve_all_fields'] == 1) {
+				$data_field_option = '';
+			}
 
             if ( $this->options['used_format_1'] == '' && $this->options['used_format_2'] == '' ) {
-                $results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=$sort_keys&data_field_key=$data_field_keys$get_used_formats");
+                $results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=$sort_keys$data_field_option$get_used_formats");
             } elseif ( $this->options['used_format_1'] != '' ) {
-                $results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=$sort_keys&data_field_key=$data_field_keys&get_used_formats&formats[]=".$this->options['used_format_1'] );
+                $results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=$sort_keys$data_field_option&get_used_formats&formats[]=".$this->options['used_format_1'] );
             } elseif ( $this->options['used_format_2'] != '' ) {
-                $results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=$sort_keys&data_field_key=$data_field_keys&get_used_formats&formats[]=".$this->options['used_format_2'] );
+                $results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=$sort_keys$data_field_option&get_used_formats&formats[]=".$this->options['used_format_2'] );
             }
 
             $result = json_decode(wp_remote_retrieve_body($results), true);
@@ -1554,9 +1560,8 @@ if (!class_exists("Bread")) {
 			$meeting_value['day'] = $this->getday($meeting_value['weekday_tinyint'], false, $this->options['weekday_language']);
 			$meeting_value['area_name'] = $area_name;
 			$meeting_value['area_i'] = substr($area_name, 0, 1);
-			//let's leave the enhancement mechanism open for now.
-			//apply_filters is one option, perhaps we will think of something better.
-			//$meeting_value = apply_filters("Bread_Enrich_Meeting_Data", $meeting_value, $this->formats_by_key);
+			// Extensions.
+			$meeting_value = apply_filters("Bread_Enrich_Meeting_Data", $meeting_value, $this->formats_by_key);
 			$data = $template;
 			$namedValues = array();
 			foreach($meeting_value as $field=>$notUsed) {
@@ -1979,6 +1984,7 @@ if (!class_exists("Bread")) {
 				$this->options['used_format_1'] = sanitize_text_field($_POST['used_format_1']);
 				$this->options['include_meeting_email'] = isset($_POST['include_meeting_email']) ? boolval($_POST['include_meeting_email']) : false;
 				$this->options['recurse_service_bodies'] = intval($_POST['recurse_service_bodies']);
+				$this->options['retrieve_all_fields'] = intval($_POST['retrieve_all_fields']);
 				$this->options['extra_meetings_enabled'] = isset($_POST['extra_meetings_enabled']) ? intval($_POST['extra_meetings_enabled']) : 0;
 				$this->options['include_protection'] = boolval($_POST['include_protection']);
 				$this->options['weekday_language'] = sanitize_text_field($_POST['weekday_language']);
@@ -2256,6 +2262,9 @@ if (!class_exists("Bread")) {
             }
             if ( !isset($this->options['recurse_service_bodies']) || strlen(trim($this->options['recurse_service_bodies'])) == 0) {
                 $this->options['recurse_service_bodies'] = 1;
+			}
+			if ( !isset($this->options['retrieve_all_fields']) || strlen(trim($this->options['retrieve_all_fields'])) == 0) {
+                $this->options['retrieve_all_fields'] = 0;
             }
 			if ( !isset($this->options['extra_meetings_enabled']) || strlen(trim($this->options['extra_meetings_enabled'])) == 0) {
 				$this->options['extra_meetings_enabled'] = 0;
