@@ -73,7 +73,7 @@ if (!class_exists("Bread")) {
 			"area"			=> 'area_name',
 		);
 		var $section_shortcodes;
-		var $service_meeting_result ='';
+		var $service_meeting_result = null;
 		const SETTINGS = 'bmlt_meeting_list_settings';
 		const OPTIONS_NAME = 'bmlt_meeting_list_options';
 		var $optionsName = Bread::OPTIONS_NAME;
@@ -587,9 +587,6 @@ if (!class_exists("Bread")) {
 			$results = $results["serverVersion"]["readableString"];
 			return $results;
 		}
-		function require_service_meetings() {
-			return strpos($this->options['custom_section_content'].$this->options['front_page_content'].$this->options['last_page_content'], "[service_meetings]") !== false;
-		}
 		function getUsedFormats() {
             if ( !isset($this->options['recurse_service_bodies']) ) {$this->options['recurse_service_bodies'] = 1;}
 			$area_data = explode(',',$this->options['service_body_1']);
@@ -737,6 +734,10 @@ if (!class_exists("Bread")) {
 				}
 				if (substr($this->options['meeting_sort'],0,8) == 'weekday_') {
 						$this->options['sub_header_shown'] = true;
+				}
+				if (isset($this->options['pageheader_text'])) {
+					$this->options['pageheader_content'] = $this->options['pageheader_text'];
+					unset($this->options['pageheader_text']);
 				}
 			}
 			// TODO: The page number is always 5 from botton...this should be adjustable
@@ -930,12 +931,13 @@ if (!class_exists("Bread")) {
 				"[service_body_5]"				=> strtoupper($this->options['service_body_5']),
 		
 			);
+			$this->unique_areas = $this->get_areas();	
 			// Extensions
 			$this->section_shortcodes = apply_filters("Bread_Section_Shortcodes",$this->section_shortcodes, $this->unique_areas, $this->formats_used);
 
-			if (isset($this->options['pageheader_text'])) {
-				$data = $this->options['pageheader_text'];
-				$this->standard_shortcode_replacement($data, null);
+			if (isset($this->options['pageheader_content'])) {
+				$data = $this->options['pageheader_content'];
+				$this->standard_shortcode_replacement($data, 'pageheader');
 				$header_style = "vertical-align: top; text-align: center; font-weight: bold;margin-top:3px;margin-bottom:3px;";
 				$header_style .= "color:".$this->options['pageheader_textcolor'].";";
 				$header_style .= "background-color:".$this->options['pageheader_backgroundcolor'].";";
@@ -1027,17 +1029,7 @@ if (!class_exists("Bread")) {
 				echo '<div style="font-size: 20px;text-align:center;font-weight:normal;color:#F00;margin:0 auto;margin-top: 30px;"><p>No Meetings Found</p><p>Or</p><p>Internet or Server Problem</p><p>'.$this->options['root_server'].'</p><p>Please try again or contact your BMLT Administrator</p></div>';
 				exit;
 			}
-			if (  $this->require_service_meetings() ) {
-				// Why not add a query string that limits to meetings having the desired format????
-				$asm_query = "client_interface/json/?switcher=GetSearchResults$services_service_body_1&sort_keys=$this->options['asm_sort_order']";
-				// I'm not sure we need this, but for now we need to emulate the old behavior
-				if ($this->options['asm_format_key']==='ASM') {
-					$asm_query .= "&advanced_published=0";
-				}
-				$results = $this->get_configured_root_server_request( $asm_query );
-				$this->service_meeting_result = json_decode(wp_remote_retrieve_body($results), true);
-			}
-			$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetFormats&lang_enum=$this->options['weekday_language']");
+			$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetFormats&lang_enum=".$this->options['weekday_language']);
 			$this->formats_all = json_decode(wp_remote_retrieve_body($results), true);
 			if ( strpos($this->options['custom_section_content'].$this->options['front_page_content'].$this->options['last_page_content'], '[format_codes_used_basic_es') !== false ) {
 				if ( $this->options['used_format_1'] == '' && $this->options['used_format_2'] == '' ) {
@@ -1070,8 +1062,7 @@ if (!class_exists("Bread")) {
 			}
 			$this->uniqueFormat($this->formats_used, 'key_string');
             $this->uniqueFormat($this->formats_all, 'key_string');
-			$this->meeting_count = count($result_meetings);
-			$this->unique_areas = $this->get_areas();			
+			$this->meeting_count = count($result_meetings);		
 			$unique_heading = array();
 
 			$days = array_column($result_meetings, 'weekday_tinyint');
@@ -1658,6 +1649,10 @@ if (!class_exists("Bread")) {
 		}
 
 		function write_custom_section() {
+			$this->mpdf->SetHTMLHeader();
+			if (isset($this->options['pageheader_content']) && trim($this->options['pageheader_content'])) {
+				$this->mpdf->SetTopMargin($this->options['margin_header']);
+			}
 			$this->mpdf->SetDefaultBodyCSS('line-height', $this->options['custom_section_line_height']);
 			$this->mpdf->SetDefaultBodyCSS('font-size', $this->options['custom_section_font_size'] . 'pt');
 			$this->standard_shortcode_replacement($this->options['custom_section_content'], 'custom_section');
@@ -1682,7 +1677,6 @@ if (!class_exists("Bread")) {
 				setlocale(LC_TIME,NULL);
 				$this->options[$page.'_content'] = str_replace("[month_lower_fr]", $month, $this->options[$page.'_content']);
 			}
-			
 			if ( strpos($this->options[$page.'_content'], '[month_upper_fr') !== false ) {
 				setlocale( LC_TIME, 'fr_FR' );
 				$month = utf8_encode(strftime("%^B"));
@@ -1725,9 +1719,13 @@ if (!class_exists("Bread")) {
 			$data = str_replace($search_strings,$replacements,$data);
 			$this->replace_format_shortcodes($data, $page);
 			$data = str_replace("[date]", strtoupper( date ( "F Y" ) ), $data);
-			$data = str_replace('<p>[service_meetings]</p>', $this->write_service_meetings($this->options[$page.'_font_size'], $this->options[$page.'_line_height'] ), $data);
-			$data = str_replace('[service_meetings]', $this->write_service_meetings($this->options[$page.'_font_size'], $this->options[$page.'_line_height']), $data);
-
+			if (strpos($data,'[service_meetings]') || strpos($data,'[additional_meetings]')) {
+				$str = $this->write_service_meetings($this->options[$page.'_font_size'], $this->options[$page.'_line_height'] );
+				$data = str_replace('<p>[service_meetings]</p>', $str, $data);
+				$data = str_replace('[service_meetings]', $str, $data);
+				$data = str_replace('<p>[additional_meetings]</p>', $str, $data);
+				$data = str_replace('[additional_meetings]', $str, $data);
+			}
 		}
 		function replace_format_shortcodes(&$data, $page_name) {
 			
@@ -1796,8 +1794,15 @@ if (!class_exists("Bread")) {
 			return $value;
 		}
 		function write_service_meetings($font_size, $line_height) {
-			if ( $this->service_meeting_result == null ) {
-				return '';
+			if (  $this->service_meeting_result == null ) {
+				// Why not add a query string that limits to meetings having the desired format????
+				$asm_query = "client_interface/json/?switcher=GetSearchResults$services_service_body_1&sort_keys=$this->options['asm_sort_order']";
+				// I'm not sure we need this, but for now we need to emulate the old behavior
+				if ($this->options['asm_format_key']==='ASM') {
+					$asm_query .= "&advanced_published=0";
+				}
+				$results = $this->get_configured_root_server_request( $asm_query );
+				$this->service_meeting_result = json_decode(wp_remote_retrieve_body($results), true);
 			}
 			$data = '';
 			$x = 0;
@@ -1962,7 +1967,7 @@ if (!class_exists("Bread")) {
 				$this->options['pageheader_fontsize'] = floatval($_POST['pageheader_fontsize']);
 				$this->options['pageheader_textcolor'] = validate_hex_color($_POST['pageheader_textcolor']);
 				$this->options['pageheader_backgroundcolor'] = validate_hex_color($_POST['pageheader_backgroundcolor']);
-				$this->options['pageheader_text'] = wp_kses_post($_POST['pageheader_text']);
+				$this->options['pageheader_content'] = wp_kses_post($_POST['pageheader_content']);
 				$this->options['watermark'] = sanitize_text_field($_POST['watermark']);	
 				$this->options['page_size'] = sanitize_text_field($_POST['page_size']);
 				$this->options['page_orientation'] = validate_page_orientation($_POST['page_orientation']);
