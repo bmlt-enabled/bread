@@ -333,6 +333,8 @@ if (!class_exists("Bread")) {
 				    $data = ($abbreviate ? 'So.' : "Sonntag");
 				} elseif ( $language == 'fa' ) {
 				    $data = ($abbreviate ? '' : mb_convert_encoding ('یَکشَنبه', 'HTML-ENTITIES'));
+				} elseif ( $language == 'it') {
+					$data = ($abbreviate ? "Do" : "Domenica");
 				}
 			} elseif ( $day == 2 ) {
 				if ( $language == 'en' || $language == 'en' ) {
@@ -357,6 +359,8 @@ if (!class_exists("Bread")) {
 				    $data = ($abbreviate ? 'Mo.' : "Montag");
 				} elseif ( $language == 'fa' ) {
 				    $data = ($abbreviate ? '' : mb_convert_encoding ('دوشَنبه', 'HTML-ENTITIES'));
+				} elseif ( $language == 'it') {
+					$data = ($abbreviate ? "Lun" : "Luned&igrave;");
 				}
 			} elseif ( $day == 3 ) {
 				if ( $language == 'en' || $language == 'en' ) {
@@ -381,6 +385,8 @@ if (!class_exists("Bread")) {
 				    $data = ($abbreviate ? 'Di.' : "Dienstag");
 				} elseif ( $language == 'fa' ) {
 				    $data = ($abbreviate ? '' : mb_convert_encoding('سه‌شنبه', 'HTML-ENTITIES'));
+				} elseif ( $language == 'it') {
+					$data = ($abbreviate ? "Mar" : "Marted&igrave;");
 				}
 			} elseif ( $day == 4 ) {
 				if ( $language == 'en' || $language == 'en' ) {
@@ -405,6 +411,8 @@ if (!class_exists("Bread")) {
 				    $data = ($abbreviate ? 'Mi.' : "Mittwoch");
 				} elseif ( $language == 'fa' ) {
 				    $data = ($abbreviate ? '' : mb_convert_encoding('چهار شنبه', 'HTML-ENTITIES'));
+				} elseif ( $language == 'it') {
+					$data = ($abbreviate ? "Mer" : "Mercoled&igrave;");
 				}
 			} elseif ( $day == 5 ) {
 				if ( $language == 'en' || $language == 'en' ) {
@@ -429,6 +437,8 @@ if (!class_exists("Bread")) {
 				    $data = ($abbreviate ? 'Do.' : "Donnerstag");
 				} elseif ( $language == 'fa' ) {
 				    $data = ($abbreviate ? '' : mb_convert_encoding ('پَنج شَنبه', 'HTML-ENTITIES'));
+				} elseif ( $language == 'it') {
+					$data = ($abbreviate ? "Gio" : "Gioved&igrave;");
 				}
 			} elseif ( $day == 6 ) {
 				if ( $language == 'en' || $language == 'en' ) {
@@ -453,6 +463,8 @@ if (!class_exists("Bread")) {
 				    $data = ($abbreviate ? 'Fr.' : "Freitag");
 				} elseif ( $language == 'fa' ) {
 				    $data = ($abbreviate ? '' : mb_convert_encoding ('جُمعه', 'HTML-ENTITIES'));
+				} elseif ( $language == 'it') {
+					$data = ($abbreviate ? "Ven" : "Venerd&igrave;");
 				}
 			} elseif ( $day == 7 ) {
 				if ( $language == 'en' || $language == 'en' ) {
@@ -477,6 +489,8 @@ if (!class_exists("Bread")) {
 				    $data = ($abbreviate ? 'Sa.' : "Samstag");
 				} elseif ( $language == 'fa' ) {
 				    $data = ($abbreviate ? '' : mb_convert_encoding ('شَنبه', 'HTML-ENTITIES'));
+				} elseif ( $language == 'it') {
+					$data = ($abbreviate ? "Sab" : "Sabato");
 				}
 			}
 			
@@ -836,9 +850,11 @@ if (!class_exists("Bread")) {
             // TODO: Adding a page number really could just be an option or tag.
 			if ( $this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full' )  {
 				$page_string = "Page";
-					if ($this->options['weekday_language']=='de') {
-						$page_string = "Seite";
-					} //TODO: Other Languages
+				if ($this->options['weekday_language']=='de') {
+					$page_string = "Seite";
+				} elseif ($this->options['weekday_language']=='it') {
+					$page_string = "Pagina";
+				} //TODO: Other Languages
                 $this->mpdf->DefHTMLFooterByName('MyFooter','<div style="text-align:center;font-size:' . $this->options['pagenumbering_font_size'] . 'pt;font-style: italic;">'.$page_string.' {PAGENO}</div>');
             }
 
@@ -1135,6 +1151,8 @@ if (!class_exists("Bread")) {
 				$cont = '(weiter)';
 			} else if ( $this->options['weekday_language'] === 'se' || $this->options['weekday_language'] === 'dk' ) {
 				$cont = '(forts)';
+			} else if ( $this->options['weekday_language'] == 'it') {
+				$cont = '(continua)';
 			} else {
 				$cont = '(cont)';
 			}
