@@ -110,7 +110,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 								"se" => "Swedish",
                                 "dk" => "Danish",
                                 "de" => "German",
-                                "farsi" => "Farsi"
+                                "fa" => "Farsi"
 						];
 					?>
 					<div class="weekday_language_div">

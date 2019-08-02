@@ -1943,6 +1943,7 @@ if (!class_exists("Bread")) {
 				if (!$this->current_user_can_modify()) {
 					return;
 				}
+				$this->options['bread_version'] = sanitize_text_field($_POST['bread_version']);	
 				$this->options['front_page_content'] = wp_kses_post($_POST['front_page_content']);
 				$this->options['last_page_content'] = wp_kses_post($_POST['last_page_content']);
 				$this->options['front_page_line_height'] = $_POST['front_page_line_height'];   
