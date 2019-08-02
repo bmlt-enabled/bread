@@ -108,10 +108,9 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 								"both_po" => "English/Spanish/Portuguese",
 								"fr_en" => "French/English",
 								"se" => "Swedish",
-                "dk" => "Danish",
+                                "dk" => "Danish",
                                 "de" => "German",
-                                "fa" => "Farsi"
-                                "farsi" => "Farsi",
+                                "fa" => "Farsi",
                                 "it" => "Italian"
 						];
 					?>
