@@ -2476,7 +2476,7 @@ if (!class_exists("Bread")) {
 				wp_die( __( 'File size greater than 500k' ) );
 			}
 			$encode_options = file_get_contents($import_file);
-			if (0 === strpos(bin2hex($encode_options),'efbbbf')) {
+			while (0 === strpos(bin2hex($encode_options),'efbbbf')) {
 				$encode_options = substr($encode_options,3);
 			}
 			$settings = json_decode($encode_options, true);
