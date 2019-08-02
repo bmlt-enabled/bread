@@ -66,6 +66,10 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
   - Page Headers (good when generating posters)
   - Flyer Layout (instead of a tri-fold meeting list, 3 identical meeting lists on a single
     sheet, good for special interest meeting lists)
+* Extensibility 
+  - Site specific BMLT Meeting fields may be used in templates
+  - Sites can defined their own complex fields, calculated from other fields,
+    that can then be used in templates.
 * More robust and efficient handling of short codes in meeting templates.
 * Corrections to the meeting group-by mechanism.
 
