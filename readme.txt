@@ -55,9 +55,12 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 == Changelog ==
 
 = 2.0.0 =
-* Support for multiple configurations. [#36]
+* Support for multiple configurations.
 * Access to configure is now controlled with a custom capability called `manage_bread`.  This is automatically added to the `Administrator` role.
-* Generalized ASM functionality to other formats, and user-defined templates.  Now called "Additional List".
+* Include additional (secondary) meeting list.  This can be used to provide a seperate list
+  of special interest or foreign language meetings, or to list meetings that for some
+  reason are not included in the main list.  This is a generalized version of Bread 1's "ASM" functionality,
+  which was used to list area service meetings. 
 * Italian, German and Farsi support.
 * New layout options
   - Full-Page Layout now full functional
