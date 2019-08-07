@@ -753,6 +753,12 @@ if (!class_exists("Bread")) {
 					$this->options['pageheader_content'] = $this->options['pageheader_text'];
 					unset($this->options['pageheader_text']);
 				}
+				if (substr($this->options['root_server'],-1) == '/') {
+					$this->options['root_server'] = substr($this->options['root_server'],0,strlen($this->options['root_server'])-1);
+				}
+				if (substr($this->options['root_server'],0,4) !== 'http') {
+					$this->options['root_server'] = 'http://'.$this->options['root_server'];
+				}
 			}
 			// TODO: The page number is always 5 from botton...this should be adjustable
 			if ( $this->options['page_fold'] == 'half')  {
