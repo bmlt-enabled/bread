@@ -5,10 +5,11 @@ Plugin URI: http://wordpress.org/extend/plugins/bread/
 Description: Maintains and generates a PDF Meeting List from BMLT.
 Author: bmlt-enabled
 Author URI: https://bmlt.app
-Version: 2.0.0
+Version: 2.1.0
 */
 /* Disallow direct access to the plugin file */
 use Mpdf\Mpdf;
+use function DeepCopy\deep_copy;
 error_reporting(1);
 if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 	die('Sorry, but you cannot access this page directly.');
@@ -850,6 +851,7 @@ if (!class_exists("Bread")) {
 				];
             }
 			$mpdf_init_options = array_merge($mpdf_init_options, $page_type_settings);
+			ob_clean();
             $this->mpdf = new mPDF($mpdf_init_options);
             $this->mpdf->setAutoBottomMargin = 'pad';
 
@@ -866,7 +868,6 @@ if (!class_exists("Bread")) {
 
 			$this->mpdf->simpleTables = false;
 			$this->mpdf->useSubstitutions = false;
-			$blog = get_bloginfo( "name" );
 			$this->mpdf->mirrorMargins = false;
 			$this->mpdf->list_indent_first_level = 1; // 1 or 0 - whether to indent the first level of a list
 			// LOAD a stylesheet
@@ -1188,6 +1189,9 @@ if (!class_exists("Bread")) {
 			$header_string = '';
 			$current_major = '';
 			$current_weekday = 0;
+			$empty_copy = deep_copy($this->mpdf);
+			$y_startpos = $empty_copy->y;
+			$this->writeBreak($empty_copy);
 			foreach ($unique_heading as $this_heading) {
 				if ( $this->options['meeting_sort'] === 'weekday_area' || $this->options['meeting_sort'] === 'weekday_city' || $this->options['meeting_sort'] === 'weekday_county' ) {
 					$area_data = explode(',',$this_heading);
@@ -1224,8 +1228,6 @@ if (!class_exists("Bread")) {
 							}
 							$header .= '<div style="'.$header_style.$xtraMargin.'">'.$header_string."</div>";
 							$newMajorHeading = false;
-						} elseif ( utf8_encode($this->mpdf->y) == $this->options['margin_top'] ) {
-							$header .= "<div style='".$header_style."'>".$header_string." " . $cont . "</div>";
 						}
 						if ($newVal && $this->options['sub_header_shown']==1) {
 							$header .= "<p style='margin-top:1pt; padding-top:1pt; font-weight:bold;'>".$subheader."</p>";
@@ -1237,48 +1239,28 @@ if (!class_exists("Bread")) {
 						} 
 						if ( $newVal ) {
 							$header .= "<div style='".$header_style."'>".$header_string."</div>";
-						} elseif ( $newCol ) {
-							$header .= "<div style='".$header_style."'>".$header_string." " . $cont . "</div>";
 						}
 					}
-					$first_meeting = false;
-					$newVal = false;
-					$newCol = false;
 					if ($this->options['suppress_heading']==1) {
 						$header = '';
 					}
 					$data = $header . $this->write_single_meeting($meeting_value, $this->options['meeting_template_content'], $analysedTemplate, $area_name);											
 					$data = mb_convert_encoding($data, 'HTML-ENTITIES');						
 					$data = utf8_encode($data);
-					$this->mpdf->WriteHTML($data);
-					$ph = intval($this->options['margin_bottom']) + intval($this->options['margin_top']) + $this->mpdf->y + -intval($this->options['page_height_fix']);
-
-                    $ph_footer_fix_top = 0;
-                    $ph_footer_fix_bot = 0;
-
-					if (intval($this->options['margin_bottom']) < 5) {
-						$ph_footer_fix_bot = 5 - intval($this->options['margin_bottom']);
-					}
-
-                    if (intval($this->options['margin_top']) < 5) {
-                        $ph_footer_fix_top = isset($this->options['top']) ? 5 - intval($this->options['top']) : 5;
-                    }
-
-					$DAY_HEADER_HEIGHT = 5;
-					$PH_FOOTER_MM = $DAY_HEADER_HEIGHT + $ph_footer_fix_top + $ph_footer_fix_bot;
-
-					if ( strpos($this->options['front_page_content'], 'sethtmlpagefooter') !== false ) {
-						$ph += $PH_FOOTER_MM;
-					}
-
-					if ( $ph + $PH_FOOTER_MM >= $this->mpdf->h  ) {
-						$newCol = true;
-						if ( $this->options['page_fold'] === 'half' || $this->options['page_fold'] === 'full' ) {
-							$this->mpdf->WriteHTML("<pagebreak>");
-						} else {
-							$this->mpdf->WriteHTML("<columnbreak />");
+					$this->writeBreak($empty_copy);
+					$y_startpos = $empty_copy->y;
+					$empty_copy->WriteHTML($data);
+					$y_diff = $empty_copy->y - $y_startpos;
+					if ($this->mpdf->y + $y_diff + $this->options['margin_bottom'] >= $this->mpdf->h) {
+						$this->writeBreak($this->mpdf);
+						if (!$newVal) {
+							$header .= "<div style='".$header_style."'>".$header_string." " . $cont . "</div>";
+							$data = $header.$data;
 						}
 					}
+					$this->mpdf->WriteHTML($data);
+					$first_meeting = false;
+					$newVal = false;
 				}
 			}
 
@@ -1418,6 +1400,13 @@ if (!class_exists("Bread")) {
 				
 			$this->mpdf->Output($FilePath,'I');
 			exit;
+		}
+		function writeBreak($mpdf) {
+			if ( $this->options['page_fold'] === 'half' || $this->options['page_fold'] === 'full' ) {
+				$mpdf->WriteHTML("<pagebreak>");
+			} else {
+				$mpdf->WriteHTML("<columnbreak />");
+			}
 		}
 		function addColumnSeparators($oh) {
 			if ( $this->options['column_line'] == 1 ) {
@@ -1982,7 +1971,6 @@ if (!class_exists("Bread")) {
 				$this->options['header_uppercase'] = intval($_POST['header_uppercase']);
 				$this->options['header_bold'] = intval($_POST['header_bold']);
 				$this->options['sub_header_shown'] = intval($_POST['sub_header_shown']);
-				$this->options['page_height_fix'] = intval($_POST['page_height_fix']);
 				$this->options['column_gap'] = intval($_POST['column_gap']);
 				$this->options['margin_right'] = intval($_POST['margin_right']);
 				$this->options['margin_left'] = intval($_POST['margin_left']);
@@ -2214,9 +2202,6 @@ if (!class_exists("Bread")) {
 			}
 			if ( !isset($this->options['margin_right']) || strlen(trim($this->options['margin_right'])) == 0 ) {
 				$this->options['margin_right'] = 3;
-			}
-			if ( !isset($this->options['page_height_fix']) || strlen(trim($this->options['page_height_fix'])) == 0 ) {
-				$this->options['page_height_fix'] = 0;
 			}
 			if ( !isset($this->options['column_gap']) || strlen(trim($this->options['column_gap'])) == 0 ) {
 				$this->options['column_gap'] = "5";
@@ -2639,4 +2624,3 @@ if (!class_exists("Bread")) {
 if (class_exists("Bread")) {
 	$BMLTMeetinglist_instance = new Bread();
 }
-?>

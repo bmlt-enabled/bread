@@ -558,8 +558,6 @@ var $ml = jQuery.noConflict
 		$ml("#meeting-list-tabs ul li:eq(6)").show();
 		$ml('#meeting-list-tabs').tabs('disable', 5);
 		$ml('#meeting-list-tabs').tabs('enable', 6);
-		$ml('input[name=page_height]').val(['']);
-		$ml('#pageheightdiv').hide();
 		$ml('#columngapdiv').hide();
 		$ml('#columnseparatordiv').hide();
 		$ml("#half-fold").css({

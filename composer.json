@@ -3,6 +3,10 @@
     {
       "type": "git",
       "url": "https://github.com/mpdf/mpdf"
+    },
+    {
+      "type": "git",
+      "url": "https://github.com/myclabs/DeepCopy"
     }
   ],
   "require": {

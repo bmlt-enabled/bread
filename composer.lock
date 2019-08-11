@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2ac4b49bb34d290ac490bbd36c3deaf7",
+    "content-hash": "8a64634ef088784292ca6a383147a1a8",
     "packages": [
         {
             "name": "mpdf/mpdf",
@@ -88,17 +88,11 @@
         },
         {
             "name": "myclabs/deep-copy",
-            "version": "1.9.1",
+            "version": "1.9.3",
             "source": {
                 "type": "git",
-                "url": "https://github.com/myclabs/DeepCopy.git",
-                "reference": "e6828efaba2c9b79f4499dae1d66ef8bfa7b2b72"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/e6828efaba2c9b79f4499dae1d66ef8bfa7b2b72",
-                "reference": "e6828efaba2c9b79f4499dae1d66ef8bfa7b2b72",
-                "shasum": ""
+                "url": "https://github.com/myclabs/DeepCopy",
+                "reference": "007c053ae6f31bba39dfa19a7726f56e9763bbea"
             },
             "require": {
                 "php": "^7.1"
@@ -120,7 +114,12 @@
                     "src/DeepCopy/deep_copy.php"
                 ]
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "psr-4": {
+                    "DeepCopy\\": "fixtures/",
+                    "DeepCopyTest\\": "tests/DeepCopyTest/"
+                }
+            },
             "license": [
                 "MIT"
             ],
@@ -132,7 +131,7 @@
                 "object",
                 "object graph"
             ],
-            "time": "2019-04-07T13:18:21+00:00"
+            "time": "2019-08-09T12:45:53+00:00"
         },
         {
             "name": "paragonie/random_compat",
