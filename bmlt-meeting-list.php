@@ -1189,9 +1189,7 @@ if (!class_exists("Bread")) {
 			$header_string = '';
 			$current_major = '';
 			$current_weekday = 0;
-			$empty_copy = deep_copy($this->mpdf);
-			$y_startpos = $empty_copy->y;
-			$this->writeBreak($empty_copy);
+			$test_pages = deep_copy($this->mpdf);
 			foreach ($unique_heading as $this_heading) {
 				if ( $this->options['meeting_sort'] === 'weekday_area' || $this->options['meeting_sort'] === 'weekday_city' || $this->options['meeting_sort'] === 'weekday_county' ) {
 					$area_data = explode(',',$this_heading);
@@ -1247,10 +1245,10 @@ if (!class_exists("Bread")) {
 					$data = $header . $this->write_single_meeting($meeting_value, $this->options['meeting_template_content'], $analysedTemplate, $area_name);											
 					$data = mb_convert_encoding($data, 'HTML-ENTITIES');						
 					$data = utf8_encode($data);
-					$this->writeBreak($empty_copy);
-					$y_startpos = $empty_copy->y;
-					$empty_copy->WriteHTML($data);
-					$y_diff = $empty_copy->y - $y_startpos;
+					$this->writeBreak($test_pages);
+					$y_startpos = $test_pages->y;
+					$test_pages->WriteHTML($data);
+					$y_diff = $test_pages->y - $y_startpos;
 					if ($this->mpdf->y + $y_diff + $this->options['margin_bottom'] >= $this->mpdf->h) {
 						$this->writeBreak($this->mpdf);
 						if (!$newVal) {
