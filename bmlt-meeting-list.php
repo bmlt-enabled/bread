@@ -1311,6 +1311,16 @@ if (!class_exists("Bread")) {
 				if ($item[0]=='text') continue;
 				if ($item[0]=='style') continue;
 				if ($item[0]=='family') continue;
+				if ($item[0]=='vertical') continue;
+				if ($item[0]=='color') continue;
+				if ($item[1]>0 && $template[$item[1]-1]=='['
+				    && $template[$item[1]+strlen($item[0])]==']') {
+						$item[0] = '['.$item[0].']';
+						$item[1] = $item[1] - 1;
+						$item[2] = true;
+				} else {
+					$item[2] = false;
+				}
 				$ret[] = $item; 
 			}
 			return $ret;
@@ -1385,8 +1395,12 @@ if (!class_exists("Bread")) {
 				$namedValues[$syn] = $namedValues[$field];
 			}
 			foreach ($analysedTemplate as $item) {
-				if (isset($namedValues[$item[0]])) {
-					$data = substr_replace($data,$namedValues[$item[0]],$item[1],strlen($item[0]));
+				$name = $item[0];
+				if ($item[2]) {
+					$name = substr($name,1,strlen($name)-2);
+				}
+				if (isset($namedValues[$name])) {
+					$data = substr_replace($data,$namedValues[$name],$item[1],strlen($item[0]));
 				}
 			}
 			$search_strings = array();
@@ -2230,11 +2244,11 @@ if (!class_exists("Bread")) {
             if( ! current_user_can( 'manage_bread' ) )  // TODO: Is this necessary? Why not let the user make a copy
                 return;
 
-			$blogname = str_replace(" - ", " ", get_option('blogname'));
+			$blogname = str_replace(" - ", " ", get_option('blogname').'-'.$this->allSettings[$this->loaded_setting]);
 			$blogname = str_replace(" ", "-", $blogname);
 			$date = date("m-d-Y");
 			$blogname = trim(preg_replace('/[^a-z0-9]+/', '-', strtolower($blogname)), '-');
-			$json_name = $blogname."-meeting-list-settings-".$date.".json"; // Naming the filename will be generated.
+			$json_name = $blogname.$date.".json"; // Naming the filename will be generated.
 			$settings = get_option( $this->optionsName );
 			foreach ($settings as $key => $value) {
 
