@@ -99,30 +99,15 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 
                         </p>
                     </div>
-					<?php
-                    $languages = [
-								"en" => "English",
-								"fr" => "French",
-								"po" => "Portuguese",
-								"both" => "English/Spanish",
-								"both_po" => "English/Spanish/Portuguese",
-								"fr_en" => "French/English",
-								"se" => "Swedish",
-                                "dk" => "Danish",
-                                "de" => "German",
-                                "fa" => "Farsi",
-                                "it" => "Italian"
-						];
-					?>
 					<div class="weekday_language_div">
 						<label for="weekday_language">Weekday Language: </label>
 						<select name="weekday_language">
 						<?php
-							foreach ($languages as $key => $value) {
+							foreach ($this->translate as $key => $value) {
 								if ($this->options['weekday_language'] == $key || $this->options['weekday_language'] == '' ) {
-									echo "<option value=\"$key\" selected=\"selected\">$value</option>";
+									echo "<option value=\"$key\" selected=\"selected\">".$value['LANG_NAME']."</option>";
 								} else {
-									echo "<option value=\"$key\">$value</option>";
+									echo "<option value=\"$key\">".$value['LANG_NAME']."</option>";
 								}
 							}
 						?>
