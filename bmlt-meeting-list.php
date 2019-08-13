@@ -26,6 +26,7 @@ if (!class_exists("Bread")) {
 		var $formats_by_key = '';
 		var $formats_spanish = '';
 		var $formats_all = '';
+		var $translate = array();
 		var $meeting_fields = array (
 			'id_bigint',
 			'service_body_bigint',
@@ -125,7 +126,7 @@ if (!class_exists("Bread")) {
             $current_settings = isset($holder['current-meeting-list']) ? intval($holder['current-meeting-list']) : 1;
             $this->getMLOptions($current_settings);
             $this->lang = $this->get_bmlt_server_lang();
-
+			$this->load_translations();
 			if (isset($holder['current-meeting-list']) && !is_admin()) {
                 $this->bmlt_meeting_list();
             } else if (is_admin()) {
@@ -308,194 +309,20 @@ if (!class_exists("Bread")) {
 				add_editor_style( plugin_dir_url(__FILE__) . "css/editor-style.css" );
 			}
 		}
-
-		function getday( $day, $abbreviate = false, $language = '') {
-			$data = '';
-			if ( $day == 1 ) {
-				if ( $language == 'en' || $language == 'en' ) {
-					$data = ($abbreviate ? 'Sun' : "Sunday");
-				} elseif ( $language == 'es' ) {
-					$data = ($abbreviate ? 'Dom' : "Domingo");
-				} elseif ( $language == 'fr' ) {
-					$data = ($abbreviate ? 'Dim' : "Dimanche");
-				} elseif ( $language == 'both_po' ) {
-					$data = ($abbreviate ? 'Sun / Dom' : "Sunday / Domingo");
-				} elseif ( $language == 'po' ) {
-					$data = ($abbreviate ? 'Dom' : "Domingo");
-				} elseif ( $language == 'both' ) {
-					$data = ($abbreviate ? 'Sun / Dom' : "Sunday / Domingo");
-				} elseif ( $language == 'fr_en' ) {
-					$data = ($abbreviate ? 'Dim / Sun' : "Dimanche / Sunday");
-				} elseif ( $language == 'se') {
-					$data = ($abbreviate ? "S&#246;n" : "S&#246;ndag");
-				} elseif ( $language == 'dk') {
-                    $data = ($abbreviate ? "S&#248;" : "S&#248;ndag");
-				} elseif ( $language == 'de' ) {
-				    $data = ($abbreviate ? 'So.' : "Sonntag");
-				} elseif ( $language == 'fa' ) {
-				    $data = ($abbreviate ? '' : mb_convert_encoding ('یَکشَنبه', 'HTML-ENTITIES'));
-				} elseif ( $language == 'it') {
-					$data = ($abbreviate ? "Do" : "Domenica");
-				}
-			} elseif ( $day == 2 ) {
-				if ( $language == 'en' || $language == 'en' ) {
-					$data = ($abbreviate ? 'Mon' : "Monday");
-				} elseif ( $language == 'es' ) {
-					$data = ($abbreviate ? 'Lun' : "Lunes");
-				} elseif ( $language == 'fr' ) {
-					$data = ($abbreviate ? 'Lun' : "Lundi");
-				} elseif ( $language == 'both_po' ) {
-					$data = ($abbreviate ? 'Mon / Lun / Seg' : "Monday / Lunes / Segunda-feira");
-				} elseif ( $language == 'po' ) {
-					$data = ($abbreviate ? 'Seq' : "Segunda-feira");
-				} elseif ( $language == 'both' ) {
-					$data = ($abbreviate ? 'Mon / Lun' : "Monday / Lunes");
-				} elseif ( $language == 'fr_en' ) {
-					$data = ($abbreviate ? 'Lun / Mon' : "Lundi / Monday");
-				} elseif ( $language == 'se') {
-					$data = ($abbreviate ? "M&#229;n" : "M&#229;ndag");
-				} elseif ( $language == 'dk') {
-                    $data = ($abbreviate ? "Ma" : "Mandag");
-				} elseif ( $language == 'de' ) {
-				    $data = ($abbreviate ? 'Mo.' : "Montag");
-				} elseif ( $language == 'fa' ) {
-				    $data = ($abbreviate ? '' : mb_convert_encoding ('دوشَنبه', 'HTML-ENTITIES'));
-				} elseif ( $language == 'it') {
-					$data = ($abbreviate ? "Lun" : "Luned&igrave;");
-				}
-			} elseif ( $day == 3 ) {
-				if ( $language == 'en' || $language == 'en' ) {
-					$data = ($abbreviate ? 'Tue' : "Tuesday");
-				} elseif ( $language == 'es' ) {
-					$data = ($abbreviate ? 'Mar' : "Martes");
-				} elseif ( $language == 'fr' ) {
-					$data = ($abbreviate ? 'Mar' : "Mardi");
-				} elseif ( $language == 'both_po' ) {
-					$data = ($abbreviate ? 'Tue / Mar / Ter' : "Tuesday / Martes / Terça-feira");
-				} elseif ( $language == 'po' ) {
-					$data = ($abbreviate ? 'Ter' : "Terça-feira");
-				} elseif ( $language == 'both' ) {
-					$data = ($abbreviate ? 'Tue / Mar' : "Tuesday / Martes");
-				} elseif ( $language == 'fr_en' ) {
-					$data = ($abbreviate ? 'Mar / Tues' : "Mardi / Tuesday");
-				} elseif ( $language == 'se') {
-					$data = ($abbreviate ? "Tis" : "Tisdag");
-				} elseif ( $language == 'dk') {
-                    $data = ($abbreviate ? "Ti" : "Tirsdag");
-				} elseif ( $language == 'de' ) {
-				    $data = ($abbreviate ? 'Di.' : "Dienstag");
-				} elseif ( $language == 'fa' ) {
-				    $data = ($abbreviate ? '' : mb_convert_encoding('سه‌شنبه', 'HTML-ENTITIES'));
-				} elseif ( $language == 'it') {
-					$data = ($abbreviate ? "Mar" : "Marted&igrave;");
-				}
-			} elseif ( $day == 4 ) {
-				if ( $language == 'en' || $language == 'en' ) {
-					$data = ($abbreviate ? 'Wed' : "Wednesday");
-				} elseif ( $language == 'es' ) {
-					$data = ($abbreviate ? 'Mi&eacute;' : "Mi&eacute;rcoles");
-				} elseif ( $language == 'fr' ) {
-					$data = ($abbreviate ? 'Mer' : "Mercredi");
-				} elseif ( $language == 'both_po' ) {
-					$data = ($abbreviate ? 'Wed / Mi&eacute; / Qua' : "Wednesday / Mi&eacute;rcoles / Quarta-feira");
-				} elseif ( $language == 'po' ) {
-					$data = ($abbreviate ? 'Qua' : "Quarta-feira");
-				} elseif ( $language == 'both' ) {
-					$data = ($abbreviate ? 'Wed / Mi&eacute;' : "Wednesday / Mi&eacute;rcoles");
-				} elseif ( $language == 'fr_en' ) {
-					$data = ($abbreviate ? 'Mer / Wed' : "Mercredi / Wednesday");
-				} elseif ( $language == 'se') {
-					$data = ($abbreviate ? "Ons" : "Onsdag");
-				} elseif ( $language == 'dk') {
-                    $data = ($abbreviate ? "On" : "Onsdag");
-				} elseif ( $language == 'de' ) {
-				    $data = ($abbreviate ? 'Mi.' : "Mittwoch");
-				} elseif ( $language == 'fa' ) {
-				    $data = ($abbreviate ? '' : mb_convert_encoding('چهار شنبه', 'HTML-ENTITIES'));
-				} elseif ( $language == 'it') {
-					$data = ($abbreviate ? "Mer" : "Mercoled&igrave;");
-				}
-			} elseif ( $day == 5 ) {
-				if ( $language == 'en' || $language == 'en' ) {
-					$data = ($abbreviate ? 'Thu' : "Thursday");
-				} elseif ( $language == 'es' ) {
-					$data = ($abbreviate ? 'Jue' : "Jueves");
-				} elseif ( $language == 'fr' ) {
-					$data = ($abbreviate ? 'Jeu' : "Jeudi");
-				} elseif ( $language == 'both_po' ) {
-					$data = ($abbreviate ? 'Thu / Jue / Qui' : "Thursday / Jueves / Quinta-feira");
-				} elseif ( $language == 'po' ) {
-					$data = ($abbreviate ? 'Qui' : "Quinta-feira");
-				} elseif ( $language == 'both' ) {
-					$data = ($abbreviate ? 'Thu / Jue' : "Thursday / Jueves");
-				} elseif ( $language == 'fr_en' ) {
-					$data = ($abbreviate ? 'Jeu / Thu' : "Jeudi / Thursday");
-				} elseif ( $language == 'se') {
-					$data = ($abbreviate ? "Tors" : "Torsdag");
-				} elseif ( $language == 'dk') {
-                    $data = ($abbreviate ? "To" : "Torsdag");
-				} elseif ( $language == 'de' ) {
-				    $data = ($abbreviate ? 'Do.' : "Donnerstag");
-				} elseif ( $language == 'fa' ) {
-				    $data = ($abbreviate ? '' : mb_convert_encoding ('پَنج شَنبه', 'HTML-ENTITIES'));
-				} elseif ( $language == 'it') {
-					$data = ($abbreviate ? "Gio" : "Gioved&igrave;");
-				}
-			} elseif ( $day == 6 ) {
-				if ( $language == 'en' || $language == 'en' ) {
-					$data = ($abbreviate ? 'Fri' : "Friday");
-				} elseif ( $language == 'es' ) {
-					$data = ($abbreviate ? 'Vie' : "Viernes");
-				} elseif ( $language == 'fr' ) {
-					$data = ($abbreviate ? 'Ven' : "Vendredi");
-				} elseif ( $language == 'both_po' ) {
-					$data = ($abbreviate ? 'Fri / Vie / Sex' : "Friday / Viernes / Sexta-feira");
-				} elseif ( $language == 'po' ) {
-					$data = ($abbreviate ? 'Sex' : "Sexta-feira");
-				} elseif ( $language == 'both' ) {
-					$data = ($abbreviate ? 'Fri / Vie' : "Friday / Viernes");
-				} elseif ( $language == 'fr_en' ) {
-					$data = ($abbreviate ? 'Ven / Fri' : "Vendredi / Friday");
-				} elseif ( $language == 'se') {
-					$data = ($abbreviate ? "Fre" : "Fredag");
-				} elseif ( $language == 'dk') {
-                    $data = ($abbreviate ? "Fr" : "Fredag");
-				} elseif ( $language == 'de' ) {
-				    $data = ($abbreviate ? 'Fr.' : "Freitag");
-				} elseif ( $language == 'fa' ) {
-				    $data = ($abbreviate ? '' : mb_convert_encoding ('جُمعه', 'HTML-ENTITIES'));
-				} elseif ( $language == 'it') {
-					$data = ($abbreviate ? "Ven" : "Venerd&igrave;");
-				}
-			} elseif ( $day == 7 ) {
-				if ( $language == 'en' || $language == 'en' ) {
-					$data = ($abbreviate ? 'Sat' : "Saturday");
-				} elseif ( $language == 'es' ) {
-					$data = ($abbreviate ? 'S&aacute;b' : "S&aacute;bado");
-				} elseif ( $language == 'fr' ) {
-					$data = ($abbreviate ? 'Sam' : "Samedi");
-				} elseif ( $language == 'both_po' ) {
-					$data = ($abbreviate ? 'Sat / S&aacute;b' : "Saturday / S&aacute;bado");
-				} elseif ( $language == 'po' ) {
-					$data = ($abbreviate ? 'S&aacute;b' : "S&aacute;bado");
-				} elseif ( $language == 'both' ) {
-					$data = ($abbreviate ? 'Sat / S&aacute;b' : "Saturday / S&aacute;bado");
-				} elseif ( $language == 'fr_en' ) {
-					$data = ($abbreviate ? 'Sam / Sat' : "Samedi / Saturday");
-				} elseif ( $language == 'se') {
-					$data = ($abbreviate ? "L&#246;r" : "L&#246;rdag");
-				} elseif ( $language == 'dk') {
-                    $data = ($abbreviate ? "L&#248;" : "L&#248;rdag");
-				} elseif ( $language == 'de' ) {
-				    $data = ($abbreviate ? 'Sa.' : "Samstag");
-				} elseif ( $language == 'fa' ) {
-				    $data = ($abbreviate ? '' : mb_convert_encoding ('شَنبه', 'HTML-ENTITIES'));
-				} elseif ( $language == 'it') {
-					$data = ($abbreviate ? "Sab" : "Sabato");
-				}
+		function load_translations() {
+			$files = scandir(dirname(__FILE__)."/lang");
+			foreach ($files as $file) {
+				if (strpos($file,"translate_")!==0) continue;
+				include(dirname(__FILE__)."/lang/".$file);
+				$key = substr($file,10,-4);
+				$this->translate[$key] = $translate;
 			}
-			
-			Return utf8_encode($data);
+		}
+		function getday( $day, $abbreviate = false, $language = 'en') {
+			$data = '';
+			$key = "WEEKDAYS";
+			if ($abbreviate) $key = "WKDYS";
+			return utf8_encode($this->translate[$language][$key][$day]);
 		}
 
 		function authenticate_root_server() {
@@ -857,12 +684,7 @@ if (!class_exists("Bread")) {
 
             // TODO: Adding a page number really could just be an option or tag.
 			if ( $this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full' )  {
-				$page_string = "Page";
-				if ($this->options['weekday_language']=='de') {
-					$page_string = "Seite";
-				} elseif ($this->options['weekday_language']=='it') {
-					$page_string = "Pagina";
-				} //TODO: Other Languages
+				$page_string = $this->translate[$this->options['weekday_language']]['PAGE'];
                 $this->mpdf->DefHTMLFooterByName('MyFooter','<div style="text-align:center;font-size:' . $this->options['pagenumbering_font_size'] . 'pt;font-style: italic;">'.$page_string.' {PAGENO}</div>');
             }
 
@@ -1052,7 +874,7 @@ if (!class_exists("Bread")) {
 				echo '<div style="font-size: 20px;text-align:center;font-weight:normal;color:#F00;margin:0 auto;margin-top: 30px;"><p>No Meetings Found</p><p>Or</p><p>Internet or Server Problem</p><p>'.$this->options['root_server'].'</p><p>Please try again or contact your BMLT Administrator</p></div>';
 				exit;
 			}
-			$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetFormats&lang_enum=".$this->options['weekday_language']);
+			$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetFormats&lang_enum=".$this->getSingleLanguage());
 			$this->formats_all = json_decode(wp_remote_retrieve_body($results), true);
 			if ( strpos($this->options['custom_section_content'].$this->options['front_page_content'].$this->options['last_page_content'], '[format_codes_used_basic_es') !== false ) {
 				if ( $this->options['used_format_1'] == '' && $this->options['used_format_2'] == '' ) {
@@ -1152,17 +974,7 @@ if (!class_exists("Bread")) {
 			if ( $this->options['header_bold'] == 1 ) {
 				$header_style .= 'font-weight: bold;';
 			}
-			if ( $this->options['weekday_language'] === 'fr' ) {
-				$cont = '(suite)';							
-			} else if ( $this->options['weekday_language'] == 'de') {
-				$cont = '(weiter)';
-			} else if ( $this->options['weekday_language'] === 'se' || $this->options['weekday_language'] === 'dk' ) {
-				$cont = '(forts)';
-			} else if ( $this->options['weekday_language'] == 'it') {
-				$cont = '(continua)';
-			} else {
-				$cont = '(cont)';
-			}
+			$cont = '('.$this->translate[$this->options['weekday_language']]['CONT'].')';							
 			
 			if ( $this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full') {
 				$this->write_front_page();
@@ -2131,6 +1943,9 @@ if (!class_exists("Bread")) {
 				<textarea>test</textarea>
 			</div>
 <?php
+		}
+		function getSingleLanguage() {
+			return substr($this->options['weekday_language'],0,2);
 		}
 		function toPersianNum($number)
 		{
