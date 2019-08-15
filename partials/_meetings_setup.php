@@ -292,8 +292,8 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     This section allows the definition of an additional meeting list, containing meetings that should not be included in the main
                     list.  This is typically service meetings, but it can be any group of meetings identified by a format.
                     </p><p>
-                    <label for="asm_format">Format of meetings in the additional list: </label>
-                    <select id="adm_format" name="asm_format_key">
+                    <label for="asm_format_key">Format of meetings in the additional list: </label>
+                    <select id="asm_format_key" name="asm_format_key">
                     <?php if ($this_connected) { ?>
                         <option value="">Not Used</option>
                         <?php $countmax = count ( $used_formats ); ?>
@@ -313,6 +313,24 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     <select id="asm_sort_order" name="asm_sort_order">
                         <option value="meeting_name">By Name</option>
                         <option value="time">By Day and Time</option>
+                     </select>
+                     </p><p>
+                    <label for="asm_language">Select language for the additional list</label>
+                    <select id="asm_language" name="asm_language">
+						<?php
+                        	if ($this->options['asm_language'] == '' ) {
+                                echo "<option value=\"\" selected=\"selected\">Same as main list</option>";
+                            } else {
+                                echo "<option value=\"\">Same as main list</option>";
+                            }
+							foreach ($this->translate as $key => $value) {
+								if ($this->options['asm_language'] == $key ) {
+									echo "<option value=\"$key\" selected=\"selected\">".$value['LANG_NAME']."</option>";
+								} else {
+									echo "<option value=\"$key\">".$value['LANG_NAME']."</option>";
+								}
+							}
+						?>
                      </select>
                      </p><p>
                     The additional list may include fields that might be used for say "service meetings".  To access these fields

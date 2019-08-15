@@ -23,10 +23,11 @@ if (!class_exists("Bread")) {
 		var $mpdf = '';
 		var $meeting_count = 0;
 		var $formats_used = '';
-		var $formats_by_key = '';
+		var $formats_by_key = array();
 		var $formats_spanish = '';
 		var $formats_all = '';
 		var $translate = array();
+		var $services = '';
 		var $meeting_fields = array (
 			'id_bigint',
 			'service_body_bigint',
@@ -429,6 +430,8 @@ if (!class_exists("Bread")) {
 			$results = $results["serverVersion"]["readableString"];
 			return $results;
 		}
+		// This is used from the AdminUI, not to generate the
+		// meeting list.
 		function getUsedFormats() {
             if ( !isset($this->options['recurse_service_bodies']) ) {$this->options['recurse_service_bodies'] = 1;}
 			$area_data = explode(',',$this->options['service_body_1']);
@@ -462,32 +465,24 @@ if (!class_exists("Bread")) {
 			}
 			array_multisort($keys, $sortType, $array);
 		}
-
 		function bmlt_meeting_list($atts = null, $content = null) {
 			ini_set('max_execution_time', 600); // tomato server can take a long time to generate a schedule, override the server setting
 			$area_data = explode(',',$this->options['service_body_1']);
 			$area = $area_data[0];
-			$this->options['service_body_1'] = $area;
-			$service_body_id = $area_data[1];
-			$parent_body_id = $area_data[2];
-            if ( !isset($this->options['recurse_service_bodies']) ) {$this->options['recurse_service_bodies'] = 1;}
-            if ( $this->options['recurse_service_bodies'] == 1 ) {
-				$services = '&recursive=1&services[]=' . $service_body_id;
-				$services_service_body_1 = '&recursive=1&services[]=' . $service_body_id;
-			} else {
-				$services = '&services[]='.$service_body_id;
-				$services_service_body_1 = '&services[]='.$service_body_id;
-			}
-			$services .= $this->addServiceBody('service_body_2');
-			$services .= $this->addServiceBody('service_body_3');
-			$services .= $this->addServiceBody('service_body_4');
-			$services .= $this->addServiceBody('service_body_5');
+
 
 			if (isset($_GET['custom_query'])) {
 				$services = $_GET['custom_query'];
-			} elseif ( false === ( $this->options['custom_query'] == '' )) {
+			} elseif ( $this->options['custom_query'] !== '' ) {
 				$services = $this->options['custom_query'];
+			} else {
+				$services = $this->addServiceBody('service_body_1');
+				$services .= $this->addServiceBody('service_body_2');
+				$services .= $this->addServiceBody('service_body_3');
+				$services .= $this->addServiceBody('service_body_4');
+				$services .= $this->addServiceBody('service_body_5');
 			}
+			$this->services = $services;
 			if ( $this->options['root_server'] == '' ) {
 				echo '<p><strong>bread Error: BMLT Server missing.<br/><br/>Please go to Settings -> bread and verify BMLT Server</strong></p>';
 				exit;
@@ -527,6 +522,7 @@ if (!class_exists("Bread")) {
 			if ( !isset($this->options['include_protection']) ) {$this->options['include_protection'] = 0;}
 			if ( !isset($this->options['base_font']) ) {$this->options['base_font'] = 'dejavusanscondensed';}
 			if ( !isset($this->options['weekday_language']) ) {$this->options['weekday_language'] = 'en';}
+			if ( !isset($this->options['asm_language']) ) {$this->options['asm_language'] = '';}
 			if ( !isset($this->options['weekday_start']) ) {$this->options['weekday_start'] = '1';}
 			if ( !isset($this->options['include_asm']) ) {$this->options['include_asm'] = '0';}
 			if ( !isset($this->options['asm_format_key']) ) {$this->options['asm_format_key'] = 'ASM';}
@@ -541,7 +537,6 @@ if (!class_exists("Bread")) {
 			if ( !isset($this->options['extra_meetings']) ) {$this->options['extra_meetings'] = '';}
 			if ( !isset($this->options['custom_query']) ) {$this->options['custom_query'] = '';}
 			if ( !isset($this->options['used_format_1']) ) {$this->options['used_format_1'] = '';}
-			if ( !isset($this->options['used_format_2']) ) {$this->options['used_format_2'] = '';}
 			if ( intval($this->options['cache_time']) > 0 && ! isset($_GET['nocache']) ) {
 				$transient_key = 'bmlt_ml_'.md5($this->options['root_server'].$services);
 				if ( false !== ( $content = get_transient( $transient_key ) ) ) {
@@ -830,12 +825,10 @@ if (!class_exists("Bread")) {
 				$data_field_option = '';
 			}
 
-            if ( $this->options['used_format_1'] == '' && $this->options['used_format_2'] == '' ) {
+            if ( $this->options['used_format_1'] == '' ) {
                 $results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=$sort_keys$data_field_option$get_used_formats");
             } elseif ( $this->options['used_format_1'] != '' ) {
                 $results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=$sort_keys$data_field_option&get_used_formats&formats[]=".$this->options['used_format_1'] );
-            } elseif ( $this->options['used_format_2'] != '' ) {
-                $results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=$sort_keys$data_field_option&get_used_formats&formats[]=".$this->options['used_format_2'] );
             }
 
             $result = json_decode(wp_remote_retrieve_body($results), true);
@@ -874,15 +867,26 @@ if (!class_exists("Bread")) {
 				echo '<div style="font-size: 20px;text-align:center;font-weight:normal;color:#F00;margin:0 auto;margin-top: 30px;"><p>No Meetings Found</p><p>Or</p><p>Internet or Server Problem</p><p>'.$this->options['root_server'].'</p><p>Please try again or contact your BMLT Administrator</p></div>';
 				exit;
 			}
-			$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetFormats&lang_enum=".$this->getSingleLanguage());
+			$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetFormats&lang_enum=".$this->getSingleLanguage($this->options['weekday_language']));
 			$this->formats_all = json_decode(wp_remote_retrieve_body($results), true);
+			if ($this->options['asm_language']=='') {
+				$this->options['asm_language'] = $this->options['weekday_language'];
+			}
+			if (strlen($this->options['asm_format_key'])>0 &&
+				$this->options['weekday_language'] != $this->options['asm_language']) {
+					$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetFormats&lang_enum=".$this->getSingleLanguage($this->options['asm_language']));
+					$formats_all = json_decode(wp_remote_retrieve_body($results), true);
+					$this->sortBySubkey($formats_all, 'key_string');
+					$this->formats_by_key[$this->options['asm_language']] = array();
+					foreach($formats_all as $thisFormat) {
+			   			 $this->formats_by_key[$this->options['asm_language']][$thisFormat['key_string']] = $thisFormat;
+					}
+				}
 			if ( strpos($this->options['custom_section_content'].$this->options['front_page_content'].$this->options['last_page_content'], '[format_codes_used_basic_es') !== false ) {
-				if ( $this->options['used_format_1'] == '' && $this->options['used_format_2'] == '' ) {
+				if ( $this->options['used_format_1'] == '' ) {
 					$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=time$get_used_formats&lang_enum=es" );
-				} elseif ( $this->options['used_format_1'] != '' ) {
+				} else {
 					$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=time&get_used_formats&lang_enum=es&formats[]=".$this->options['used_format_1'] );
-				} elseif ( $this->options['used_format_2'] != '' ) {
-					$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=time&get_used_formats&lang_enum=es&formats[]=".$this->options['used_format_2'] );
 				}
 				$result_es = json_decode(wp_remote_retrieve_body($results), true);
 				$this->formats_spanish = $result_es['formats'];
@@ -901,12 +905,12 @@ if (!class_exists("Bread")) {
 			$this->sortBySubkey($this->formats_used, 'key_string');
 			$this->sortBySubkey($this->formats_all, 'key_string');
 
-			$this->formats_by_key = array();
+			$this->formats_by_key[$this->options['weekday_language']] = array();
 			foreach($this->formats_all as $thisFormat) {
-			    $this->formats_by_key[$thisFormat['key_string']] = $thisFormat;
+			    $this->formats_by_key[$this->options['weekday_language']][$thisFormat['key_string']] = $thisFormat;
 			}
-			$this->uniqueFormat($this->formats_used, 'key_string');
-            $this->uniqueFormat($this->formats_all, 'key_string');
+			//$this->uniqueFormat($this->formats_used, 'key_string');
+            //$this->uniqueFormat($this->formats_all, 'key_string');
 			$this->meeting_count = count($result_meetings);		
 			$unique_heading = array();
 
@@ -1054,7 +1058,9 @@ if (!class_exists("Bread")) {
 					if ($this->options['suppress_heading']==1) {
 						$header = '';
 					}
-					$data = $header . $this->write_single_meeting($meeting_value, $this->options['meeting_template_content'], $analysedTemplate, $area_name);											
+					$data = $header . $this->write_single_meeting($meeting_value, 
+						$this->options['meeting_template_content'], $analysedTemplate,
+						$area_name, $this->options['weekday_language']);											
 					$data = mb_convert_encoding($data, 'HTML-ENTITIES');						
 					$data = utf8_encode($data);
 					$this->writeBreak($test_pages);
@@ -1325,7 +1331,7 @@ if (!class_exists("Bread")) {
 			}
 			return $ret;
 		}
-		function write_single_meeting($meeting_value, $template, $analysedTemplate, $area_name) {
+		function write_single_meeting($meeting_value, $template, $analysedTemplate, $area_name, $lang) {
 			$duration = explode(':', $meeting_value['duration_time']);
 			$minutes = intval($duration[0])*60 + intval($duration[1]) + intval($duration[2]);
 			$meeting_value['duration_m'] = $minutes;
@@ -1351,7 +1357,7 @@ if (!class_exists("Bread")) {
 				$addtime = '+ ' . $minutes . ' minutes';
 				$end_time = date ($time_format,strtotime($meeting_value['start_time'] . ' ' . $addtime));
 				$meeting_value['start_time'] = date($time_format,strtotime($meeting_value['start_time']));
-				if ($this->options['weekday_language']=='fa') {
+				if ($lang=='fa') {
 					$meeting_value['start_time'] = $this->toPersianNum($end_time).$space.'-'.$space.$this->toPersianNum($meeting_value['start_time']);
 				} else {
 					$meeting_value['start_time'] = $meeting_value['start_time'].$space.'-'.$space.$end_time;
@@ -1380,12 +1386,12 @@ if (!class_exists("Bread")) {
 				$meeting_value['start_time'] = $start_time.$space.'-'.$space.$end_time;
 			}
 
-			$meeting_value['day_abbr'] = $this->getday($meeting_value['weekday_tinyint'], true, $this->options['weekday_language']);
-			$meeting_value['day'] = $this->getday($meeting_value['weekday_tinyint'], false, $this->options['weekday_language']);
+			$meeting_value['day_abbr'] = $this->getday($meeting_value['weekday_tinyint'], true, $lang);
+			$meeting_value['day'] = $this->getday($meeting_value['weekday_tinyint'], false, $lang);
 			$meeting_value['area_name'] = $area_name;
 			$meeting_value['area_i'] = substr($area_name, 0, 1);
 			// Extensions.
-			$meeting_value = apply_filters("Bread_Enrich_Meeting_Data", $meeting_value, $this->formats_by_key);
+			$meeting_value = apply_filters("Bread_Enrich_Meeting_Data", $meeting_value, $this->formats_by_key[$lang]);
 			$data = $template;
 			$namedValues = array();
 			foreach($meeting_value as $field=>$notUsed) {
@@ -1556,7 +1562,7 @@ if (!class_exists("Bread")) {
 			$data = str_replace($search_strings,$replacements,$data);
 			$this->replace_format_shortcodes($data, $page);
 			$data = str_replace("[date]", strtoupper( date ( "F Y" ) ), $data);
-			if (strpos($data,'[service_meetings]') || strpos($data,'[additional_meetings]')) {
+			if ($this->asm_required($data)) {
 				$str = $this->write_service_meetings($this->options[$page.'_font_size'], $this->options[$page.'_line_height'] );
 				$data = str_replace('<p>[service_meetings]</p>', $str, $data);
 				$data = str_replace('[service_meetings]', $str, $data);
@@ -1600,7 +1606,9 @@ if (!class_exists("Bread")) {
 			$data .= "</table>";
 			return $data;
 		}
-
+		function asm_required($data) {
+			return strpos($data,'[service_meetings]') || strpos($data,'[additional_meetings]');
+		}
 		function write_detailed_formats($formats, $page) {
 			if ( $formats == null ) { return ''; }
 			$this->mpdf->WriteHTML('td{font-size: '.$this->options[$page.'_font_size']."pt;line-height:".$this->options[$page.'_line_height'].';}',1);
@@ -1633,7 +1641,7 @@ if (!class_exists("Bread")) {
 		function write_service_meetings($font_size, $line_height) {
 			if (  $this->service_meeting_result == null ) {
 				// Why not add a query string that limits to meetings having the desired format????
-				$asm_query = "client_interface/json/?switcher=GetSearchResults$services_service_body_1&sort_keys=$this->options['asm_sort_order']";
+				$asm_query = "client_interface/json/?switcher=GetSearchResults$this->services&sort_keys=$this->options['asm_sort_order']";
 				// I'm not sure we need this, but for now we need to emulate the old behavior
 				if ($this->options['asm_format_key']==='ASM') {
 					$asm_query .= "&advanced_published=0";
@@ -1667,7 +1675,8 @@ if (!class_exists("Bread")) {
 				$area_name = $this->get_area_name($meeting_value);
 				if ($template != '') {
 					$template = str_replace("&nbsp;", " ", $template);
-					$data .= $this->write_single_meeting($value, $template, $this->analyseTemplate($template), $area_name);
+					$data .= $this->write_single_meeting($value, $template, $this->analyseTemplate($template),
+						$area_name, $this->options['asm_language']);
 					continue;
 				}
 				$display_string = '<strong>'.$value['meeting_name'].'</strong>';
@@ -1830,6 +1839,7 @@ if (!class_exists("Bread")) {
 				$this->options['extra_meetings_enabled'] = isset($_POST['extra_meetings_enabled']) ? intval($_POST['extra_meetings_enabled']) : 0;
 				$this->options['include_protection'] = boolval($_POST['include_protection']);
 				$this->options['weekday_language'] = sanitize_text_field($_POST['weekday_language']);
+				$this->options['asm_language'] = sanitize_text_field($_POST['asm_language']);
 				$this->options['weekday_start'] = sanitize_text_field($_POST['weekday_start']);
 				$this->options['include_asm'] = boolval($_POST['include_asm']);
 				$this->options['asm_format_key'] = sanitize_text_field($_POST['asm_format_key']);
@@ -1958,8 +1968,8 @@ if (!class_exists("Bread")) {
 			</div>
 <?php
 		}
-		function getSingleLanguage() {
-			return substr($this->options['weekday_language'],0,2);
+		function getSingleLanguage($lang) {
+			return substr($lang,0,2);
 		}
 		function toPersianNum($number)
 		{
@@ -2093,9 +2103,6 @@ if (!class_exists("Bread")) {
 			if ( !isset($this->options['used_format_1']) || strlen(trim($this->options['used_format_1'])) == 0 ) {
 				$this->options['used_format_1'] = '';
 			}
-			if ( !isset($this->options['used_format_2']) || strlen(trim($this->options['used_format_2'])) == 0 ) {
-				$this->options['used_format_2'] = '';
-			}
 			if ( !isset($this->options['include_meeting_email']) || strlen(trim($this->options['include_meeting_email'])) == 0 ) {
 				$this->options['include_meeting_email'] = 0;
 			}
@@ -2116,6 +2123,9 @@ if (!class_exists("Bread")) {
 			}			
 			if ( !isset($this->options['weekday_language']) || strlen(trim($this->options['weekday_language'])) == 0 ) {
 				$this->options['weekday_language'] = 'en';
+			}
+			if ( !isset($this->options['asm_language']) ) {
+				$this->options['asm_language'] = '';  // same as main language
 			}
 			if ( !isset($this->options['weekday_start']) || strlen(trim($this->options['weekday_start'])) == 0 ) {
 				$this->options['weekday_start'] = '1';
@@ -2421,7 +2431,7 @@ if (!class_exists("Bread")) {
 			update_option($this->optionsName, $this->options);
 			return;
 		}
-
+/*
         public function uniqueFormat(&$array_of_formats, $subkey) {
             $lastFormat = "";
             for ( $i = 0; $i < count( $array_of_formats ); $i++ ) {
@@ -2433,7 +2443,7 @@ if (!class_exists("Bread")) {
                 }
             }
         }
-
+*/
 		public function getLatestRootVersion() {
 			$results = $this->get("https://api.github.com/repos/bmlt-enabled/bmlt-root-server/releases/latest");
 			$httpcode = wp_remote_retrieve_response_code( $results );
