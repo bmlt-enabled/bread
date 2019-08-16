@@ -44,8 +44,8 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         <input name="header_bold" value="0" type="hidden">
                     <td><label for="header_bold">Bold: </label><input type="checkbox" name="header_bold" value="1" <?php echo ($this->options['header_bold'] == '1' ? 'checked' : '') ?>></td>
                     <td style="padding-right: 10px;">
-                        <input name="sub_header_shown" value="0" type="hidden">
-                    <td><label for="sub_header_shown">Display Sub Heading: </label><input type="checkbox" name="sub_header_shown" value="1" <?php echo ($this->options['sub_header_shown'] == '1' ? 'checked' : '') ?>></td>
+                        <input name="cont_header_shown" value="0" type="hidden">
+                    <td><label for="cont_header_shown">Display (Cont) Header: </label><input type="checkbox" name="cont_header_shown" value="1" <?php echo ($this->options['cont_header_shown'] == '1' ? 'checked' : '') ?>></td>
                     </tr></table></div>
                     <p>
                         <div class="group_by" style="margin-right: 10px; display: inline;">
@@ -97,6 +97,12 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                             <label for="county_suffix">City Suffix: </label>
                             <input class="city-by-suffix" id="city_suffix" type="text" name="city_suffix" value="<?php echo $this->options['city_suffix']; ?>" />
 
+                        </p>
+                    </div>
+                    <div class="show_subheader">
+                        <p>
+                            <input name="sub_header_shown" value="0" type="hidden">
+                            <label for="sub_header_shown">Display Sub Heading: </label><input type="checkbox" name="sub_header_shown" value="1" <?php echo ($this->options['sub_header_shown'] == '1' ? 'checked' : '') ?>>
                         </p>
                     </div>
 					<div class="weekday_language_div">
@@ -292,8 +298,8 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     This section allows the definition of an additional meeting list, containing meetings that should not be included in the main
                     list.  This is typically service meetings, but it can be any group of meetings identified by a format.
                     </p><p>
-                    <label for="asm_format">Format of meetings in the additional list: </label>
-                    <select id="adm_format" name="asm_format_key">
+                    <label for="asm_format_key">Format of meetings in the additional list: </label>
+                    <select id="asm_format_key" name="asm_format_key">
                     <?php if ($this_connected) { ?>
                         <option value="">Not Used</option>
                         <?php $countmax = count ( $used_formats ); ?>
@@ -313,6 +319,24 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     <select id="asm_sort_order" name="asm_sort_order">
                         <option value="meeting_name">By Name</option>
                         <option value="time">By Day and Time</option>
+                     </select>
+                     </p><p>
+                    <label for="asm_language">Select language for the additional list</label>
+                    <select id="asm_language" name="asm_language">
+						<?php
+                        	if ($this->options['asm_language'] == '' ) {
+                                echo "<option value=\"\" selected=\"selected\">Same as main list</option>";
+                            } else {
+                                echo "<option value=\"\">Same as main list</option>";
+                            }
+							foreach ($this->translate as $key => $value) {
+								if ($this->options['asm_language'] == $key ) {
+									echo "<option value=\"$key\" selected=\"selected\">".$value['LANG_NAME']."</option>";
+								} else {
+									echo "<option value=\"$key\">".$value['LANG_NAME']."</option>";
+								}
+							}
+						?>
                      </select>
                      </p><p>
                     The additional list may include fields that might be used for say "service meetings".  To access these fields

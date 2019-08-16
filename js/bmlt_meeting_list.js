@@ -401,6 +401,14 @@ var $ml = jQuery.noConflict
          $ml('.neighborhood_by_suffix').show();
          $ml('.city_by_suffix').show();
 	 }
+	 if (meeting_sort_val == 'weekday_area'
+	 ||  meeting_sort_val == 'weekday_city'
+	 ||  meeting_sort_val == 'weekday_county' 
+	 ||  meeting_sort_val == 'state') {
+		 $ml('.show_subheader').show();
+	 } else {
+		 $ml('.show_subheader').hide();
+	 }
 	 $ml("#suppress_heading").click(function() {
 		var val = $ml("#suppress_heading:checked").val();
 		if (val == 1) {
@@ -431,6 +439,14 @@ var $ml = jQuery.noConflict
 		if (meeting_sort_val === 'neighborhood_city') {
 			$ml('.neighborhood_by_suffix').show();
 			$ml('.city_by_suffix').show();
+		}
+		if (meeting_sort_val == 'weekday_area'
+		||  meeting_sort_val == 'weekday_city'
+		||  meeting_sort_val == 'weekday_county' 
+		||  meeting_sort_val == 'state') {
+			$ml('.show_subheader').show();
+		} else {
+			$ml('.show_subheader').hide();
 		}
 	});
 	var time_clock_val = $ml('input[name=time_clock]:checked').val();
