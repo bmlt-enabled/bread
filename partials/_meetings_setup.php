@@ -44,8 +44,8 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         <input name="header_bold" value="0" type="hidden">
                     <td><label for="header_bold">Bold: </label><input type="checkbox" name="header_bold" value="1" <?php echo ($this->options['header_bold'] == '1' ? 'checked' : '') ?>></td>
                     <td style="padding-right: 10px;">
-                        <input name="sub_header_shown" value="0" type="hidden">
-                    <td><label for="sub_header_shown">Display Sub Heading: </label><input type="checkbox" name="sub_header_shown" value="1" <?php echo ($this->options['sub_header_shown'] == '1' ? 'checked' : '') ?>></td>
+                        <input name="cont_header_shown" value="0" type="hidden">
+                    <td><label for="cont_header_shown">Display (Cont) Header: </label><input type="checkbox" name="cont_header_shown" value="1" <?php echo ($this->options['cont_header_shown'] == '1' ? 'checked' : '') ?>></td>
                     </tr></table></div>
                     <p>
                         <div class="group_by" style="margin-right: 10px; display: inline;">
@@ -97,6 +97,12 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                             <label for="county_suffix">City Suffix: </label>
                             <input class="city-by-suffix" id="city_suffix" type="text" name="city_suffix" value="<?php echo $this->options['city_suffix']; ?>" />
 
+                        </p>
+                    </div>
+                    <div class="show_subheader">
+                        <p>
+                            <input name="sub_header_shown" value="0" type="hidden">
+                            <label for="sub_header_shown">Display Sub Heading: </label><input type="checkbox" name="sub_header_shown" value="1" <?php echo ($this->options['sub_header_shown'] == '1' ? 'checked' : '') ?>>
                         </p>
                     </div>
 					<div class="weekday_language_div">

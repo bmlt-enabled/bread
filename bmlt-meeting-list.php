@@ -465,6 +465,24 @@ if (!class_exists("Bread")) {
 			}
 			array_multisort($keys, $sortType, $array);
 		}
+		function upgrade_settings() {
+			if (!isset($this->options['cont_header_shown'])
+				&& isset($this->options['page_height_fix'])) {
+				$fix = intval($this->options['page_height_fix']);
+				if ($fix <= 0) {
+					$this->options['cont_header_shown'] = true;
+				} else {
+					$this->options['cont_header_shown'] = false;
+				}
+				unset($this->options['page_height_fix']);
+			}
+			if ($this->options['weekday_language'] == 'both') {
+				$this->options['weekday_language'] = "en_es";
+			} 
+			if ($this->options['weekday_language'] == 'both_po') {
+				$this->options['weekday_language'] = "en_po";
+			}
+		}
 		function bmlt_meeting_list($atts = null, $content = null) {
 			ini_set('max_execution_time', 600); // tomato server can take a long time to generate a schedule, override the server setting
 			$area_data = explode(',',$this->options['service_body_1']);
@@ -583,6 +601,7 @@ if (!class_exists("Bread")) {
 					$this->options['root_server'] = 'http://'.$this->options['root_server'];
 				}
 			}
+			$this->upgrade_settings();
 			// TODO: The page number is always 5 from botton...this should be adjustable
 			if ( $this->options['page_fold'] == 'half')  {
 				if ( $this->options['page_size'] == 'letter' ) {
@@ -680,7 +699,7 @@ if (!class_exists("Bread")) {
             // TODO: Adding a page number really could just be an option or tag.
 			if ( $this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full' )  {
 				$page_string = $this->translate[$this->options['weekday_language']]['PAGE'];
-                $this->mpdf->DefHTMLFooterByName('MyFooter','<div style="text-align:center;font-size:' . $this->options['pagenumbering_font_size'] . 'pt;font-style: italic;">'.$page_string.' {PAGENO}</div>');
+				$this->mpdf->DefHTMLFooterByName('MyFooter','<div style="text-align:center;font-size:' . $this->options['pagenumbering_font_size'] . 'pt;font-style: italic;">'.$page_string.' {PAGENO}</div>');
             }
 
 			$this->mpdf->simpleTables = false;
@@ -1021,8 +1040,7 @@ if (!class_exists("Bread")) {
 					if ($this->options['meeting_sort'] === 'state') {
 						$header_string = $area_data[1].', '.$area_data[0];
 						$newMajorHeading = true;
-					}
-					elseif ( $area_data[0] !== $current_major ) {
+					} elseif ( $area_data[0] !== $current_major ) {
 						$current_major = $area_data[0];
 						$header_string = $area_data[0];
 						$newMajorHeading = true;
@@ -1067,9 +1085,9 @@ if (!class_exists("Bread")) {
 					$y_startpos = $test_pages->y;
 					$test_pages->WriteHTML($data);
 					$y_diff = $test_pages->y - $y_startpos;
-					if ($this->mpdf->y + $y_diff + $this->options['margin_bottom'] >= $this->mpdf->h) {
+					if ($y_diff >= $this->mpdf->h - ($this->mpdf->y + $this->mpdf->bMargin + 5) - $this->mpdf->kwt_height) {
 						$this->writeBreak($this->mpdf);
-						if (!$newVal) {
+						if (!$newVal && $this->options['cont_header_shown']) {
 							$header .= "<div style='".$header_style."'>".$header_string." " . $cont . "</div>";
 							$data = $header.$data;
 						}
@@ -1804,7 +1822,7 @@ if (!class_exists("Bread")) {
 				$this->options['header_uppercase'] = intval($_POST['header_uppercase']);
 				$this->options['header_bold'] = intval($_POST['header_bold']);
 				$this->options['sub_header_shown'] = intval($_POST['sub_header_shown']);
-				$this->options['column_gap'] = intval($_POST['column_gap']);
+				$this->options['cont_header_shown'] = intval($_POST['cont_header_shown']);				$this->options['column_gap'] = intval($_POST['column_gap']);
 				$this->options['margin_right'] = intval($_POST['margin_right']);
 				$this->options['margin_left'] = intval($_POST['margin_left']);
 				$this->options['margin_bottom'] = intval($_POST['margin_bottom']);
@@ -2402,6 +2420,7 @@ if (!class_exists("Bread")) {
 			}
 			$this->options = $theOptions;
 			$this->fillUnsetOptions();
+			$this->upgrade_settings();
 			$this->authors_safe = $theOptions['authors'];
 			$this->loaded_setting = $current_setting;
 		}
