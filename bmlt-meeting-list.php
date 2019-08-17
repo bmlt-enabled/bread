@@ -468,8 +468,11 @@ if (!class_exists("Bread")) {
 		function upgrade_settings() {
 			if (!isset($this->options['cont_header_shown'])
 				&& isset($this->options['page_height_fix'])) {
-				$fix = intval($this->options['page_height_fix']);
-				if ($fix <= 0) {
+				$fix = floatval($this->options['page_height_fix']);
+				// say, the height of 2 lines
+				$x = floatval($this->options['content_font_size']) *
+				floatval($this->options['content_line_height']) * 2.0 * 0.35; // pt to mm
+				if ($fix < $x) {
 					$this->options['cont_header_shown'] = true;
 				} else {
 					$this->options['cont_header_shown'] = false;
@@ -1052,6 +1055,7 @@ if (!class_exists("Bread")) {
 				foreach ($headerMeetings[$this_heading] as $meeting_value) {	
 					$area_name = $this->get_area_name($meeting_value);		
 					$header = '';
+					$has_major_header = false;
 					if ( $groupByLevels == 2 ) {
 						if ( $newMajorHeading === true ) {
 							$xtraMargin = '';
@@ -1060,6 +1064,7 @@ if (!class_exists("Bread")) {
 							}
 							$header .= '<div style="'.$header_style.$xtraMargin.'">'.$header_string."</div>";
 							$newMajorHeading = false;
+							$has_major_header = true;
 						}
 						if ($newVal && $this->options['sub_header_shown']==1) {
 							$header .= "<p style='margin-top:1pt; padding-top:1pt; font-weight:bold;'>".$subheader."</p>";
@@ -1071,6 +1076,7 @@ if (!class_exists("Bread")) {
 						} 
 						if ( $newVal ) {
 							$header .= "<div style='".$header_style."'>".$header_string."</div>";
+							$has_major_header = true;
 						}
 					}
 					if ($this->options['suppress_heading']==1) {
@@ -1087,8 +1093,8 @@ if (!class_exists("Bread")) {
 					$y_diff = $test_pages->y - $y_startpos;
 					if ($y_diff >= $this->mpdf->h - ($this->mpdf->y + $this->mpdf->bMargin + 5) - $this->mpdf->kwt_height) {
 						$this->writeBreak($this->mpdf);
-						if (!$newVal && $this->options['cont_header_shown']) {
-							$header .= "<div style='".$header_style."'>".$header_string." " . $cont . "</div>";
+						if (!$has_major_header && $this->options['cont_header_shown']) {
+							$header = "<div style='".$header_style."'>".$header_string." " . $cont . "</div>";
 							$data = $header.$data;
 						}
 					}
