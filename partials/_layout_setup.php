@@ -133,6 +133,19 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                                     </select>
                                 </td>
                             </tr>
+                            <tr>
+                            <input class="mlg" name="colorspace" value="0" type="hidden">
+                                <td style="padding-right: 10px;">
+                                    <label for="colorspace">Color space: </label>
+                                    <select id="colorspace" name="colorspace">
+                                        <option value="0"<?php echo $this->options['colorspace'] == '0' ? "selected=\"selected\"" : ""?>>Unrestricted</option>
+                                        <option value="1"<?php echo $this->options['colorspace'] == '1' ? "selected=\"selected\"" : ""?>>Greyscale</option>
+                                        <option value="2"<?php echo $this->options['colorspace'] == '2' ? "selected=\"selected\"" : ""?>>RGB</option>
+                                        <option value="3"<?php echo $this->options['colorspace'] == '3' ? "selected=\"selected\"" : ""?>>CMYK</option>
+                                    </select>
+                                </td>
+
+                            </tr>
                         </table>
                         </p>
                     </div>

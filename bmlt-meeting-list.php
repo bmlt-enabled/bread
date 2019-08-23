@@ -542,6 +542,7 @@ if (!class_exists("Bread")) {
 			if ( !isset($this->options['include_meeting_email']) ) {$this->options['include_meeting_email'] = 0;}
 			if ( !isset($this->options['include_protection']) ) {$this->options['include_protection'] = 0;}
 			if ( !isset($this->options['base_font']) ) {$this->options['base_font'] = 'dejavusanscondensed';}
+			if ( !isset($this->options['colorspace']) ) {$this->options['colorspace'] = 0;}
 			if ( !isset($this->options['weekday_language']) ) {$this->options['weekday_language'] = 'en';}
 			if ( !isset($this->options['asm_language']) ) {$this->options['asm_language'] = '';}
 			if ( !isset($this->options['weekday_start']) ) {$this->options['weekday_start'] = '1';}
@@ -693,7 +694,8 @@ if (!class_exists("Bread")) {
 					'margin_bottom' => $this->options['margin_bottom'],
 					'margin_header' => $this->options['margin_header'],
 				];
-            }
+			}
+			$mpdf_init_options['restrictColorSpace'] = $this->options['colorspace'];
 			$mpdf_init_options = array_merge($mpdf_init_options, $page_type_settings);
 			ob_clean();
             $this->mpdf = new mPDF($mpdf_init_options);
@@ -751,7 +753,8 @@ if (!class_exists("Bread")) {
                     'margin_top' => $this->options['margin_top'],
                     'margin_bottom' => $this->options['margin_bottom'],
                     'margin_footer' => 0,
-                    'orientation' => 'P'
+					'orientation' => 'P',
+					'restrictColorSpace' => $this->options['colorspace'],
                 ]);
 				
 				$this->mpdf_column->WriteHTML($html);
@@ -1126,7 +1129,8 @@ if (!class_exists("Bread")) {
                         'margin_top' => 0,
                         'margin_bottom' => 0,
                         'margin_footer' => 0,
-                        'orientation' => 'L'
+						'orientation' => 'L',
+						'restrictColorSpace' => $this->options['colorspace'],
 					];
 				$ps = $this->options['page_size'];
 				if ($ps=='ledger') {
@@ -1167,7 +1171,8 @@ if (!class_exists("Bread")) {
 					'margin_top' => 0,
 					'margin_bottom' => 0,
 					'margin_footer' => 6,
-					'orientation' => $this->options['page_orientation']
+					'orientation' => $this->options['page_orientation'],
+					'restrictColorSpace' => $this->options['colorspace'],
 				];
 				$mpdfOptions['format'] =  $this->options['page_size']."-".$this->options['page_orientation'];
 				$this->mpdftmp=new mPDF($mpdfOptions);
@@ -1201,7 +1206,8 @@ if (!class_exists("Bread")) {
 					'margin_bottom' => 0,
 					'margin_footer' => 6,
 					'format' => $this->options['page_size'].'-L',
-					'orientation' => 'L'
+					'orientation' => 'L',
+					'restrictColorSpace' => $this->options['colorspace'],
 				];
 				$this->mpdftmp=new mPDF($mpdfOptions); 
 				//$this->mpdftmp->SetImportUse();
@@ -1843,6 +1849,7 @@ if (!class_exists("Bread")) {
 				$this->options['bmlt_login_id'] = sanitize_text_field($_POST['bmlt_login_id']);
 				$this->options['bmlt_login_password'] = sanitize_text_field($_POST['bmlt_login_password']);
 				$this->options['base_font'] = sanitize_text_field($_POST['base_font']);
+				$this->options['colorspace'] = sanitize_text_field($_POST['colorspace']);
 				$this->options['protection_password'] = sanitize_text_field($_POST['protection_password']);
 				$this->options['time_clock'] = sanitize_text_field($_POST['time_clock']);
 				$this->options['time_option'] = intval($_POST['time_option']);
@@ -2103,6 +2110,9 @@ if (!class_exists("Bread")) {
 			}
             if ( !isset($this->options['base_font']) || strlen(trim($this->options['base_font'])) == 0 ) {
                 $this->options['base_font'] = 'dejavusanscondensed';
+			}
+			if ( !isset($this->options['colorspace']) || strlen(trim($this->options['base_font'])) == 0 ) {
+                $this->options['colorspace'] = 0;
             }
             if ( !isset($this->options['recurse_service_bodies']) || strlen(trim($this->options['recurse_service_bodies'])) == 0) {
                 $this->options['recurse_service_bodies'] = 1;
