@@ -778,7 +778,7 @@ if (!class_exists("Bread")) {
 				'<div>[new_column]</div>'		=>  '<columnbreak />',
 				'<p>[new_column]</p>'			=>  '<columnbreak />',
 				'[new_column]'					=>  '<columnbreak />',
-				'[page_break no_page_number]'	=> '<sethtmlpagefooter name="" value="0" /><pagebreak />',
+				'[page_break no_page_number]'	=> '<pagebreak /><sethtmlpagefooter name="" value="0" />',
 				'[start_page_numbers]'			=> '<sethtmlpagefooter name="MyFooter" page="ALL" value="1" />',
 				"[month_lower]"					=> date ( "F" ),
 				"[month_upper]"					=> strtoupper( date ( "F" ) ),
@@ -1527,6 +1527,20 @@ if (!class_exists("Bread")) {
 			$this->options['custom_section_content'] = mb_convert_encoding($this->options['custom_section_content'], 'HTML-ENTITIES');
 			$this->mpdf->WriteHTML(utf8_encode(wpautop(stripslashes($this->options['custom_section_content']))));
 		}
+		function locale_month_replacement($data, $case, $sym) {
+			$strpos = strpos($data, "[month_$case_");
+			if ( $strpos !== false ) {
+				$locLang = substr($data,$strpos+13,2);
+				if (!isset($this->translate[$locLang])) {
+					$locLang = 'en';
+				}
+				setlocale( LC_TIME, $this->translate[$locLang]['LOCALE'] );
+				$month = ucfirst(utf8_encode(strftime($sym)));
+				setlocale(LC_TIME,NULL);
+				return substr_replace($data,$month,$strpos,16);
+			}
+			return $data;
+		}
 		function standard_shortcode_replacement(&$data, $page) {
 			$search_strings = array();
 			$replacements = array();
@@ -1537,52 +1551,9 @@ if (!class_exists("Bread")) {
 
 			$search_strings[] = '[meeting_count]';
 			$replacements[] =  $this->meeting_count;
-
-			if ( strpos($this->options[$page.'_content'], '[month_lower_fr') !== false ) {
-				setlocale( LC_TIME, 'fr_FR' );
-				$month = ucfirst(utf8_encode(strftime("%B")));
-				setlocale(LC_TIME,NULL);
-				$this->options[$page.'_content'] = str_replace("[month_lower_fr]", $month, $this->options[$page.'_content']);
-			}
-			if ( strpos($this->options[$page.'_content'], '[month_upper_fr') !== false ) {
-				setlocale( LC_TIME, 'fr_FR' );
-				$month = utf8_encode(strftime("%^B"));
-				setlocale(LC_TIME,NULL);;
-				$this->options[$page.'_content'] = str_replace("[month_upper_fr]", $month, $this->options[$page.'_content']);
-			}
-			
-			if ( strpos($this->options[$page.'_content'], '[month_lower_es') !== false ) {
-				setlocale( LC_TIME, 'es_ES' );
-				$month = ucfirst(utf8_encode(strftime("%B")));
-				setlocale(LC_TIME,NULL);
-				$this->options[$page.'_content'] = str_replace("[month_lower_es]", $month, $this->options[$page.'_content']);
-			}
-			
-			if ( strpos($this->options[$page.'_content'], '[month_upper_es') !== false ) {
-				setlocale( LC_TIME, 'es_ES' );
-				$month = utf8_encode(strftime("%^B"));
-				setlocale(LC_TIME,NULL);
-				$this->options[$page.'_content'] = str_replace("[month_upper_es]", $month, $this->options[$page.'_content']);
-			}
-			if ( strpos($this->options[$page.'_content'], '[month_lower_de') !== false ) {
-			    setlocale( LC_TIME, 'de_DE' );
-			    $month = ucfirst(utf8_encode(strftime("%B")));
-			    setlocale(LC_TIME,NULL);
-			    $this->options[$page.'_content'] = str_replace("[month_lower_de]", $month, $this->options[$page.'_content']);
-			}
-			
-			if ( strpos($this->options[$page.'_content'], '[month_upper_de') !== false ) {
-			    setlocale( LC_TIME, "de_DE.utf8" );
-			    $month = utf8_encode(strftime("%B"));
-			    setlocale(LC_TIME,NULL);
-			    $this->options[$page.'_content'] = str_replace("[month_upper_de]", $month, $this->options[$page.'_content']);
-			}
-			if ( strpos($this->options[$page.'_content'], '[month_lower_fa]') !== false ) {
-			    setlocale( LC_TIME, 'fa_IR' );
-			    $month = mb_convert_encoding (strftime("%B"), 'HTML-ENTITIES');
-			    setlocale(LC_TIME,NULL);
-			    $this->options[$page.'_content'] = str_replace("[month_lower_fa]", $month, $this->options[$page.'_content']);
-			}
+			$data = $this->options[$page.'_content'];
+			$data = $this->locale_month_replacement($data, 'lower', "%B");
+			$data = $this->locale_month_replacement($data, 'upper', "%^B");
 			$data = str_replace($search_strings,$replacements,$data);
 			$this->replace_format_shortcodes($data, $page);
 			$data = str_replace("[date]", strtoupper( date ( "F Y" ) ), $data);

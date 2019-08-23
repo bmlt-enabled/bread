@@ -1,6 +1,7 @@
 ﻿<?php
 $translate = array (
     "LANG_NAME"			    => "Farsi",
+    "LOCALE"                => "fa_IR",
     "WEEKDAYS"                      =>  array( 'ERROR', 
     mb_convert_encoding ('یَکشَنبه', 'HTML-ENTITIES'),
     mb_convert_encoding ('دوشَنبه', 'HTML-ENTITIES'),
