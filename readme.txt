@@ -62,6 +62,7 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
   Simply add a file in the appropriate directory.
 * Shortcodes in the meeting template can be set off with square brackets ({}).
 * Additional List can be in a different language from the main list.
+* User can restrict the colorspace to Greyscale, RGB or CMYK.
 
 = 2.0.0 =
 * Support for multiple configurations.
