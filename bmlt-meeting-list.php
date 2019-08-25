@@ -816,33 +816,7 @@ if (!class_exists("Bread")) {
 			    $this->mpdf->SetWatermarkImage($this->options['watermark'],0.2,'F');
 			    $this->mpdf->showWatermarkImage = true;
 			}
-			// TODO:  I'm pretty sure that we can live when we sort only by day and time.
-			// There rest is taken care of when we group under the headings.
-			if ( $this->options['meeting_sort'] == 'state' ) {
-				$sort_keys = 'location_province,location_municipality,weekday_tinyint,start_time,meeting_name';
-			} elseif ( $this->options['meeting_sort'] == 'city' ) {
-				$sort_keys = 'location_municipality,weekday_tinyint,start_time,meeting_name';
-			} elseif ( $this->options['meeting_sort'] == 'borough' ) {
-				$sort_keys = 'location_city_subsection,weekday_tinyint,start_time,meeting_name';
-			} elseif ( $this->options['meeting_sort'] == 'county' ) {
-				$sort_keys = 'location_sub_province,weekday_tinyint,start_time,meeting_name';
-			} elseif ( $this->options['meeting_sort'] == 'borough_county' ) {
-				$sort_keys = 'location_city_subsection,location_sub_province,weekday_tinyint,start_time,meeting_name';
-			} elseif ( $this->options['meeting_sort'] == 'neighborhood_city' ) {
-				$sort_keys = 'location_neighborhood,location_municipality,weekday_tinyint,start_time,meeting_name';
-			} elseif ( $this->options['meeting_sort'] == 'group' ) {
-				$sort_keys = 'meeting_name,weekday_tinyint,start_time';
-			} elseif ( $this->options['meeting_sort'] == 'weekday_area' ) {
-				$sort_keys = 'weekday_tinyint,service_body_bigint,start_time';
-			} elseif ( $this->options['meeting_sort'] == 'weekday_city' ) {
-				$sort_keys = 'weekday_tinyint,location_municipality,start_time';
-            } elseif ( $this->options['meeting_sort'] == 'weekday_county' ) {
-                $sort_keys = 'weekday_tinyint,location_sub_province,location_municipality,start_time';
-			} else {
-				$this->options['meeting_sort'] = 'day';
-				$sort_keys = 'weekday_tinyint,start_time,meeting_name';
-			}
-			// End of TODO.
+			$sort_keys = 'weekday_tinyint,start_time,meeting_name';
 			$get_used_formats = '&get_used_formats';
 
 			$data_field_option = "&data_field_key=$data_field_keys";
@@ -1987,182 +1961,79 @@ if (!class_exists("Bread")) {
 		    $number = str_replace("0","۰",$number);
 		    return $number;
 		}
+		function fillUnsetOption($option, $default) {
+			if ( !isset($this->options[$option]) || strlen(trim($this->options[$option])) == 0 ) {
+				$this->options[$option] = $default;
+			}			
+		}
+		function fillUnsetStringOption($option, $default) {
+			if ( !isset($this->options[$option]) ) {
+				$this->options[$option] = $default;
+			}			
+		}
 		function fillUnsetOptions() {
-			if ( !isset($this->options['front_page_line_height']) || strlen(trim($this->options['front_page_line_height'])) == 0 ) {
-				$this->options['front_page_line_height'] = '1.0';
-			}
-			if ( !isset($this->options['front_page_font_size']) || strlen(trim($this->options['front_page_font_size'])) == 0 ) {
-				$this->options['front_page_font_size'] = '10';
-			}
-			if ( !isset($this->options['last_page_font_size']) || strlen(trim($this->options['last_page_font_size'])) == 0 ) {
-				$this->options['last_page_font_size'] = '10';
-			}
-			if ( !isset($this->options['content_font_size']) || strlen(trim($this->options['content_font_size'])) == 0 ) {
-				$this->options['content_font_size'] = '9';
-			}
-			if ( !isset($this->options['header_font_size']) || strlen(trim($this->options['header_font_size'])) == 0 ) {
-				$this->options['header_font_size'] = $this->options['content_font_size'];
-			}
-			if ( !isset($this->options['pageheader_fontsize']) || strlen(trim($this->options['pageheader_fontsize'])) == 0 ) {
-				$this->options['pageheader_fontsize'] = $this->options['header_font_size'];
-			}
-			if ( !isset($this->options['suppress_heading']) || strlen(trim($this->options['suppress_heading'])) == 0 ) {
-				$this->options['suppress_heading'] = 0;
-			}
-			if ( !isset($this->options['header_text_color']) || strlen(trim($this->options['header_text_color'])) == 0 ) {
-				$this->options['header_text_color'] = '#ffffff';
-			}
-			if ( !isset($this->options['header_background_color']) || strlen(trim($this->options['header_background_color'])) == 0 ) {
-				$this->options['header_background_color'] = '#000000';
-			}
-			if ( !isset($this->options['pageheader_textcolor']) || strlen(trim($this->options['pageheader_textcolor'])) == 0 ) {
-				$this->options['pageheader_textcolor'] = '#000000';
-			}
-			if ( !isset($this->options['pageheader_backgroundcolor']) || strlen(trim($this->options['pageheader_backgroundcolor'])) == 0 ) {
-				$this->options['pageheader_backgroundcolor'] = '#ffffff';
-			}
-			if ( !isset($this->options['header_uppercase']) || strlen(trim($this->options['header_uppercase'])) == 0 ) {
-				$this->options['header_uppercase'] = '0';
-			}
-			if ( !isset($this->options['header_bold']) || strlen(trim($this->options['header_bold'])) == 0 ) {
-				$this->options['header_bold'] = '1';
-			}
-			if ( !isset($this->options['sub_header_shown']) || strlen(trim($this->options['sub_header_shown'])) == 0 ) {
-				$this->options['sub_header_shown'] = '0';
-			}
-			if ( !isset($this->options['margin_top']) || strlen(trim($this->options['margin_top'])) == 0 ) {
-				$this->options['margin_top'] = 3;
-			}
-			if ( !isset($this->options['margin_bottom']) || strlen(trim($this->options['margin_bottom'])) == 0 ) {
-				$this->options['margin_bottom'] = 3;
-			}
-			if ( !isset($this->options['margin_left']) || strlen(trim($this->options['margin_left'])) == 0 ) {
-				$this->options['margin_left'] = 3;
-			}
-			if ( !isset($this->options['margin_right']) || strlen(trim($this->options['margin_right'])) == 0 ) {
-				$this->options['margin_right'] = 3;
-			}
-			if ( !isset($this->options['column_gap']) || strlen(trim($this->options['column_gap'])) == 0 ) {
-				$this->options['column_gap'] = "5";
-			}
-			if ( !isset($this->options['content_line_height']) || strlen(trim($this->options['content_line_height'])) == 0 ) {
-				$this->options['content_line_height'] = '1.0';
-			}
-			if ( !isset($this->options['last_page_line_height']) || strlen(trim($this->options['last_page_line_height'])) == 0 ) {
-				$this->options['last_page_line_height'] = '1.0';
-			}
-			if ( !isset($this->options['page_size']) || strlen(trim($this->options['page_size'])) == 0 ) {
-				$this->options['page_size'] = 'legal';
-			}
-			if ( !isset($this->options['page_orientation']) || strlen(trim($this->options['page_orientation'])) == 0 ) {
-				$this->options['page_orientation'] = 'L';
-			}
-			if ( !isset($this->options['page_fold']) || strlen(trim($this->options['page_fold'])) == 0 ) {
-				$this->options['page_fold'] = 'quad';
-			}
-			if ( !isset($this->options['meeting_sort']) || strlen(trim($this->options['meeting_sort'])) == 0 ) {
-				$this->options['meeting_sort'] = 'day';
-			}
-			if ( !isset($this->options['booklet_pages']) ) {
-				$this->options['booklet_pages'] = false;
-			}
-			if ( !isset($this->options['borough_suffix']) ) {
-				$this->options['borough_suffix'] = 'Borough';
-			}
-			if ( !isset($this->options['county_suffix']) ) {
-				$this->options['county_suffix'] = 'County';
-			}
-			if ( !isset($this->options['neighborhood_suffix']) ) {
-				$this->options['neighborhood_suffix'] = 'Neighborhood';
-			}
-			if ( !isset($this->options['city_suffix']) ) {
-				$this->options['city_suffix'] = 'City';
-			}
-			if ( !isset($this->options['meeting_template_content']) || strlen(trim($this->options['meeting_template_content'])) == 0 ) {
-				$this->options['meeting_template_content'] = '';
-			}
-			if ( !isset($this->options['asm_template_content']) || strlen(trim($this->options['asm_template_content'])) == 0 ) {
-				$this->options['asm_template_content'] = '';
-			}
-			if ( !isset($this->options['column_line']) || strlen(trim($this->options['column_line'])) == 0 ) {
-				$this->options['column_line'] = 0;
-			}
-			if ( !isset($this->options['col_color']) || strlen(trim($this->options['col_color'])) == 0 ) {
-				$this->options['col_color'] = '#bfbfbf';
-			}
-			if ( !isset($this->options['custom_section_content']) || strlen(trim($this->options['custom_section_content'])) == 0 ) {
-				$this->options['custom_section_content'] = '';
-			}
-			if ( !isset($this->options['custom_section_line_height']) || strlen(trim($this->options['custom_section_line_height'])) == 0 ) {
-				$this->options['custom_section_line_height'] = '1';
-			}
-			if ( !isset($this->options['custom_section_font_size']) || strlen(trim($this->options['custom_section_font_size'])) == 0 ) {
-				$this->options['custom_section_font_size'] = '9';
-			}
-			if ( !isset($this->options['pagenumbering_font_size']) || strlen(trim($this->options['pagenumbering_font_size'])) == 0 ) {
-				$this->options['pagenumbering_font_size'] = '9';
-			}
-			if ( !isset($this->options['used_format_1']) || strlen(trim($this->options['used_format_1'])) == 0 ) {
-				$this->options['used_format_1'] = '';
-			}
-			if ( !isset($this->options['include_meeting_email']) || strlen(trim($this->options['include_meeting_email'])) == 0 ) {
-				$this->options['include_meeting_email'] = 0;
-			}
-            if ( !isset($this->options['base_font']) || strlen(trim($this->options['base_font'])) == 0 ) {
-                $this->options['base_font'] = 'dejavusanscondensed';
-			}
-			if ( !isset($this->options['colorspace']) || strlen(trim($this->options['base_font'])) == 0 ) {
-                $this->options['colorspace'] = 0;
-            }
-            if ( !isset($this->options['recurse_service_bodies']) || strlen(trim($this->options['recurse_service_bodies'])) == 0) {
-                $this->options['recurse_service_bodies'] = 1;
-			}
-			if ( !isset($this->options['retrieve_all_fields']) || strlen(trim($this->options['retrieve_all_fields'])) == 0) {
-                $this->options['retrieve_all_fields'] = 0;
-            }
-			if ( !isset($this->options['extra_meetings_enabled']) || strlen(trim($this->options['extra_meetings_enabled'])) == 0) {
-				$this->options['extra_meetings_enabled'] = 0;
-			}
-            if ( !isset($this->options['include_protection']) || strlen(trim($this->options['include_protection'])) == 0 ) {
-				$this->options['include_protection'] = 0;
-			}			
-			if ( !isset($this->options['weekday_language']) || strlen(trim($this->options['weekday_language'])) == 0 ) {
-				$this->options['weekday_language'] = 'en';
-			}
-			if ( !isset($this->options['asm_language']) ) {
-				$this->options['asm_language'] = '';  // same as main language
-			}
-			if ( !isset($this->options['weekday_start']) || strlen(trim($this->options['weekday_start'])) == 0 ) {
-				$this->options['weekday_start'] = '1';
-			}
-			if ( !isset($this->options['include_asm']) || strlen(trim($this->options['include_asm'])) == 0 ) {
-				$this->options['include_asm'] = '0';
-			}
-			if ( !isset($this->options['asm_format_key']) || strlen(trim($this->options['asm_format_key'])) == 0 ) {
-				$this->options['asm_format_key'] = 'ASM';
-			}	
-			if ( !isset($this->options['asm_sort_order']) || strlen(trim($this->options['asm_sort_order'])) == 0 ) {
-				$this->options['asm_sort_order'] = 'name';
-			}						
-			if ( !isset($this->options['bmlt_login_id']) || strlen(trim($this->options['bmlt_login_id'])) == 0 ) {
-				$this->options['bmlt_login_id'] = '';
-			}			
-			if ( !isset($this->options['bmlt_login_password']) || strlen(trim($this->options['bmlt_login_password'])) == 0 ) {
-				$this->options['bmlt_login_password'] = '';
-			}			
-			if ( !isset($this->options['protection_password']) || strlen(trim($this->options['protection_password'])) == 0 ) {
-				$this->options['protection_password'] = '';
-			}
-			if ( !isset($this->options['custom_query']) || strlen(trim($this->options['custom_query'])) == 0 ) {
-				$this->options['custom_query'] = '';
-			}			
-			if ( !isset($this->options['cache_time']) || strlen(trim($this->options['cache_time'])) == 0 ) {
-				$this->options['cache_time'] = 0;
-			}
-			if ( !isset($this->options['extra_meetings']) || $this->options['extra_meetings'] == '' || count($this->options['extra_meetings']) == 0 ) {
-				$this->options['extra_meetings'] = '';
-			} else {
+			$this->fillUnsetOption('front_page_line_height', '1.0');
+			$this->fillUnsetOption('front_page_font_size', '10');
+			$this->fillUnsetOption('last_page_font_size', '10');
+			$this->fillUnsetOption('content_font_size', '9');
+			$this->fillUnsetOption('header_font_size', $this->options['content_font_size']);
+			$this->fillUnsetOption('pageheader_fontsize', $this->options['header_font_size']);
+			$this->fillUnsetOption('suppress_heading', 0);
+			$this->fillUnsetOption('header_text_color', '#ffffff');
+			$this->fillUnsetOption('header_background_color', '#000000');
+			$this->fillUnsetOption('pageheader_textcolor', '#000000');
+			$this->fillUnsetOption('pageheader_backgroundcolor', '#ffffff');
+			$this->fillUnsetOption('header_uppercase', '0');
+			$this->fillUnsetOption('header_bold', '1');
+			$this->fillUnsetOption('sub_header_shown', '0');
+			$this->fillUnsetOption('margin_top', 3);
+			$this->fillUnsetOption('margin_bottom', 3);
+			$this->fillUnsetOption('margin_left', 3);
+			$this->fillUnsetOption('margin_right', 3);
+			$this->fillUnsetOption('column_gap', "5");
+			$this->fillUnsetOption('content_line_height', '1.0');
+			$this->fillUnsetOption('last_page_line_height', '1.0');
+			$this->fillUnsetOption('page_size', 'legal');
+			$this->fillUnsetOption('page_orientation', 'L');
+			$this->fillUnsetOption('page_fold', 'quad');
+			$this->fillUnsetOption('meeting_sort', 'day');
+			$this->fillUnsetStringOption('booklet_pages', false);
+			$this->fillUnsetStringOption('borough_suffix', 'Borough');
+			$this->fillUnsetStringOption('county_suffix', 'County');
+			$this->fillUnsetStringOption('neighborhood_suffix', 'Neighborhood');
+			$this->fillUnsetStringOption('city_suffix', 'City');
+			$this->fillUnsetStringOption('meeting_template_content','');
+			$this->fillUnsetStringOption('asm_template_content','');
+			$this->fillUnsetOption('column_line', 0);
+			$this->fillUnsetOption('col_color', '#bfbfbf');
+			$this->fillUnsetStringOption('custom_section_content', '');
+			$this->fillUnsetOption('custom_section_line_height', '1');
+			$this->fillUnsetOption('custom_section_font_size', '9');
+			$this->fillUnsetOption('pagenumbering_font_size', '9');
+			$this->fillUnsetStringOption('used_format_1', '');
+			$this->fillUnsetOption('include_meeting_email', 0);
+            $this->fillUnsetOption('base_font', 'dejavusanscondensed');
+			$this->fillUnsetOption('colorspace', 0);
+            $this->fillUnsetOption('recurse_service_bodies', 1);
+			$this->fillUnsetOption('retrieve_all_fields', 0);
+			$this->fillUnsetOption('extra_meetings_enabled', 0);
+            $this->fillUnsetOption('include_protection', 0);			
+			$this->fillUnsetOption('weekday_language', 'en');
+			$this->fillUnsetStringOption('asm_language', '');  // same as main language
+			$this->fillUnsetOption('weekday_start', '1');
+			$this->fillUnsetOption('include_asm', '0');
+			$this->fillUnsetOption('asm_format_key', 'ASM');
+			$this->fillUnsetOption('asm_sort_order', 'name');
+			$this->fillUnsetStringOption('bmlt_login_id', '');
+			$this->fillUnsetStringOption('bmlt_login_password', '');
+			$this->fillUnsetStringOption('protection_password', '');
+			$this->fillUnsetStringOption('custom_query','');
+			$this->fillUnsetOption('cache_time', 0);
+			$this->fillUnsetStringOption('extra_meetings', '');
+			if (strlen($this->options[extra_meetings])>0) {
 				$this->options['extra_meetings_enabled'] = 1;
+			}else{
+				$this->options['extra_meetings_enabled'] = 0;				
 			}
 			if ( !isset($this->options['asm_logged_in']) ) {
 				if (strlen ($this->options['bmlt_login_password']) > 0 &&  strlen ($this->options['bmlt_login_password']) > 0) {
@@ -2437,19 +2308,6 @@ if (!class_exists("Bread")) {
 			update_option($this->optionsName, $this->options);
 			return;
 		}
-/*
-        public function uniqueFormat(&$array_of_formats, $subkey) {
-            $lastFormat = "";
-            for ( $i = 0; $i < count( $array_of_formats ); $i++ ) {
-                if ( strtoupper($lastFormat) == strtoupper($array_of_formats[$i][$subkey]) ) {
-                    array_splice($array_of_formats, $i, 1);
-                    $i--;
-                } else {
-                    $lastFormat = $array_of_formats[$i][$subkey];
-                }
-            }
-        }
-*/
 		public function getLatestRootVersion() {
 			$results = $this->get("https://api.github.com/repos/bmlt-enabled/bmlt-root-server/releases/latest");
 			$httpcode = wp_remote_retrieve_response_code( $results );
