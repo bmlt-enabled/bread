@@ -54,6 +54,16 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 
 == Changelog ==
 
+= 2.1.0 =
+* Bread now automatically calculates how many meetings fit in a column or on a page.
+  This eliminates the need to guess an appropriate value for Page-Height-adjustment
+  and also makes a more efficient use of the space.
+* Support for languages has been refactored to make adding new languages easier.
+  Simply add a file in the appropriate directory.
+* Shortcodes in the meeting template can be set off with square brackets ({}).
+* Additional List can be in a different language from the main list.
+* User can restrict the colorspace to Greyscale, RGB or CMYK.
+
 = 2.0.0 =
 * Support for multiple configurations.
 * Access to configure is now controlled with a custom capability called `manage_bread`.  This is automatically added to the `Administrator` role.

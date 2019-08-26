@@ -44,8 +44,8 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         <input name="header_bold" value="0" type="hidden">
                     <td><label for="header_bold">Bold: </label><input type="checkbox" name="header_bold" value="1" <?php echo ($this->options['header_bold'] == '1' ? 'checked' : '') ?>></td>
                     <td style="padding-right: 10px;">
-                        <input name="sub_header_shown" value="0" type="hidden">
-                    <td><label for="sub_header_shown">Display Sub Heading: </label><input type="checkbox" name="sub_header_shown" value="1" <?php echo ($this->options['sub_header_shown'] == '1' ? 'checked' : '') ?>></td>
+                        <input name="cont_header_shown" value="0" type="hidden">
+                    <td><label for="cont_header_shown">Display (Cont) Header: </label><input type="checkbox" name="cont_header_shown" value="1" <?php echo ($this->options['cont_header_shown'] == '1' ? 'checked' : '') ?>></td>
                     </tr></table></div>
                     <p>
                         <div class="group_by" style="margin-right: 10px; display: inline;">
@@ -99,30 +99,21 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 
                         </p>
                     </div>
-					<?php
-                    $languages = [
-								"en" => "English",
-								"fr" => "French",
-								"po" => "Portuguese",
-								"both" => "English/Spanish",
-								"both_po" => "English/Spanish/Portuguese",
-								"fr_en" => "French/English",
-								"se" => "Swedish",
-                                "dk" => "Danish",
-                                "de" => "German",
-                                "fa" => "Farsi",
-                                "it" => "Italian"
-						];
-					?>
+                    <div class="show_subheader">
+                        <p>
+                            <input name="sub_header_shown" value="0" type="hidden">
+                            <label for="sub_header_shown">Display Sub Heading: </label><input type="checkbox" name="sub_header_shown" value="1" <?php echo ($this->options['sub_header_shown'] == '1' ? 'checked' : '') ?>>
+                        </p>
+                    </div>
 					<div class="weekday_language_div">
 						<label for="weekday_language">Weekday Language: </label>
 						<select name="weekday_language">
 						<?php
-							foreach ($languages as $key => $value) {
+							foreach ($this->translate as $key => $value) {
 								if ($this->options['weekday_language'] == $key || $this->options['weekday_language'] == '' ) {
-									echo "<option value=\"$key\" selected=\"selected\">$value</option>";
+									echo "<option value=\"$key\" selected=\"selected\">".$value['LANG_NAME']."</option>";
 								} else {
-									echo "<option value=\"$key\">$value</option>";
+									echo "<option value=\"$key\">".$value['LANG_NAME']."</option>";
 								}
 							}
 						?>
@@ -174,15 +165,6 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     <p>
                     Default Font Size: <input min="4" max="18" step=".1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="content_font_size" name="content_font_size" value="<?php echo $this->options['content_font_size'] ;?>" />&nbsp;&nbsp;
                     Line Height: <input min="1" max="3" step=".1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="content_line_height" type="text" maxlength="3" size="3" name="content_line_height" value="<?php echo $this->options['content_line_height'] ;?>" />&nbsp;&nbsp
-                    <?php $title = '
-                    <p>Page Height Adjust will add or remove space at the bottom of the meeting list.</p>
-                    <p>1. Decrease value if a Group Header is missing at the top of the meeting list (-5, -10, etc).</p>
-                    <p>2. increase value when using a small meeting font to fit more meetings (+5, +10, etc).</p>
-                    ';
-                    ?>
-                    Page Height Adjust: <input min="-50" max="50" step="1" size="4" maxlength="4" type="number" class="bmlt-input-field" style="display:inline;" name="page_height_fix" value="<?php echo $this->options['page_height_fix'] ;?>" /><span title='<?php echo $title; ?>' class="top-middle-tooltip"></span>
-                    </p>
-                    <div><i>Decrease Page Height Adjust if <strong>MEETING GROUP HEADER</strong> is missing.</i></div>
                     <div><i>Avoid using tables which will greatly slow down the generation time.  Use CSS instead to get table-like effects if need be.</i></div>
                     <div style="margin-top:0px; margin-bottom:20px; max-width:100%; width:100%;">
                         <?php
@@ -316,8 +298,8 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     This section allows the definition of an additional meeting list, containing meetings that should not be included in the main
                     list.  This is typically service meetings, but it can be any group of meetings identified by a format.
                     </p><p>
-                    <label for="asm_format">Format of meetings in the additional list: </label>
-                    <select id="adm_format" name="asm_format_key">
+                    <label for="asm_format_key">Format of meetings in the additional list: </label>
+                    <select id="asm_format_key" name="asm_format_key">
                     <?php if ($this_connected) { ?>
                         <option value="">Not Used</option>
                         <?php $countmax = count ( $used_formats ); ?>
@@ -337,6 +319,24 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     <select id="asm_sort_order" name="asm_sort_order">
                         <option value="meeting_name">By Name</option>
                         <option value="time">By Day and Time</option>
+                     </select>
+                     </p><p>
+                    <label for="asm_language">Select language for the additional list</label>
+                    <select id="asm_language" name="asm_language">
+						<?php
+                        	if ($this->options['asm_language'] == '' ) {
+                                echo "<option value=\"\" selected=\"selected\">Same as main list</option>";
+                            } else {
+                                echo "<option value=\"\">Same as main list</option>";
+                            }
+							foreach ($this->translate as $key => $value) {
+								if ($this->options['asm_language'] == $key ) {
+									echo "<option value=\"$key\" selected=\"selected\">".$value['LANG_NAME']."</option>";
+								} else {
+									echo "<option value=\"$key\">".$value['LANG_NAME']."</option>";
+								}
+							}
+						?>
                      </select>
                      </p><p>
                     The additional list may include fields that might be used for say "service meetings".  To access these fields
