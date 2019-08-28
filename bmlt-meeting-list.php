@@ -432,7 +432,13 @@ if (!class_exists("Bread")) {
 		}
 		// This is used from the AdminUI, not to generate the
 		// meeting list.
-		function getUsedFormats() {
+		function getFormatsForSelect($all=false) {
+			if ($all) {
+				$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetFormats");
+				$results = json_decode(wp_remote_retrieve_body($results), true);
+				$this->sortBySubkey($results, 'key_string');
+				return $results;
+			}
             if ( !isset($this->options['recurse_service_bodies']) ) {$this->options['recurse_service_bodies'] = 1;}
 			$area_data = explode(',',$this->options['service_body_1']);
 			$service_body_id = $area_data[1];
@@ -1508,7 +1514,7 @@ if (!class_exists("Bread")) {
 			$this->mpdf->WriteHTML(utf8_encode(wpautop(stripslashes($this->options['custom_section_content']))));
 		}
 		function locale_month_replacement($data, $case, $sym) {
-			$strpos = strpos($data, "[month_$case_");
+			$strpos = strpos($data, "[month_$case"."_");
 			if ( $strpos !== false ) {
 				$locLang = substr($data,$strpos+13,2);
 				if (!isset($this->translate[$locLang])) {
@@ -2030,17 +2036,16 @@ if (!class_exists("Bread")) {
 			$this->fillUnsetStringOption('custom_query','');
 			$this->fillUnsetOption('cache_time', 0);
 			$this->fillUnsetStringOption('extra_meetings', '');
-			if (strlen($this->options[extra_meetings])>0) {
+			if (strlen($this->options['extra_meetings'])>0) {
 				$this->options['extra_meetings_enabled'] = 1;
 			}else{
 				$this->options['extra_meetings_enabled'] = 0;				
 			}
-			if ( !isset($this->options['asm_logged_in']) ) {
-				if (strlen ($this->options['bmlt_login_password']) > 0 &&  strlen ($this->options['bmlt_login_password']) > 0) {
-					$this->options['asm_logged_in'] = wp_remote_retrieve_body($this->authenticate_root_server());
-				} else {
-					$this->options['asm_logged_in'] = false;
-				}
+			
+			if (strlen ($this->options['bmlt_login_password']) > 0 &&  strlen ($this->options['bmlt_login_password']) > 0) {
+				$this->options['asm_logged_in'] = wp_remote_retrieve_body($this->authenticate_root_server());
+			} else {
+				$this->options['asm_logged_in'] = false;
 			}
 		}
 		/**

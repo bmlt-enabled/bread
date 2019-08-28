@@ -263,7 +263,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                 <h3 class="hndle">Include Only This Meeting Format<span title='<?php echo $title; ?>' class="top-tooltip"></span></h3>
                 <div class="inside">
                     <?php if ($this_connected) { ?>
-                        <?php $used_formats = $this->getUsedFormats(); ?>
+                        <?php $used_formats = $this->getFormatsForSelect(false); ?>
                     <?php } ?>
                     <label for="used_format_1">Meeting Format: </label>
                     <select id="used_format_1" name="used_format_1">
@@ -302,16 +302,20 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     <select id="asm_format_key" name="asm_format_key">
                     <?php if ($this_connected) { ?>
                         <option value="">Not Used</option>
-                        <?php $countmax = count ( $used_formats ); ?>
-                        <?php for ( $count = 0; $count < $countmax; $count++ ) { ?>
-                            <?php if ( $used_formats[$count]['key_string'] == $this->options['asm_format_key'] ) { ?>
-                                <option selected="selected" value="<?php echo esc_html($used_formats[$count]['key_string']) ?>"><?php echo esc_html($used_formats[$count]['name_string']) ?></option>
-                            <?php } else { ?>
-                                <option value="<?php echo esc_html($used_formats[$count]['key_string']) ?>"><?php echo esc_html($used_formats[$count]['name_string']) ?></option>
-                            <?php } ?>
-                        <?php } ?>
-                    <?php } else { ?>
-                        <option selected="selected" value="<?php echo $this->options['asm_format_key']; ?>"><?php echo 'ASM'; ?></option>
+                        <?php
+                            if ($this_connected) {
+                            	$used_formats = $this->getFormatsForSelect(true);
+                            }
+                            $countmax = count ( $used_formats );
+                            for ( $count = 0; $count < $countmax; $count++ ) {
+                                if ( $used_formats[$count]['key_string'] == $this->options['asm_format_key'] ) { ?>
+                                    <option selected="selected" value="<?php echo esc_html($used_formats[$count]['key_string']) ?>"><?php echo esc_html($used_formats[$count]['name_string']) ?></option>
+                        <?php   } else { ?>
+                                    <option value="<?php echo esc_html($used_formats[$count]['key_string']) ?>"><?php echo esc_html($used_formats[$count]['name_string']) ?></option>
+                        <?php   }
+                            }
+                        } else { ?>
+                            <option selected="selected" value="<?php echo $this->options['asm_format_key']; ?>"><?php echo 'ASM'; ?></option>
                     <?php } ?>
                     </select>
                     </p><p>
