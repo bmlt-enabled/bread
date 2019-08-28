@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 $translate = array (
     "LANG_NAME"			    => "German",
     "LOCALE"                => "de_DE",

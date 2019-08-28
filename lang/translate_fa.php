@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 $translate = array (
     "LANG_NAME"			    => "Farsi",
     "LOCALE"                => "fa_IR",
