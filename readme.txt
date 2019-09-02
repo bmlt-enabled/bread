@@ -5,7 +5,7 @@ Tags: meeting list, bmlt, narcotics anonymous, na
 Requires at least: 4.0
 Requires PHP: 5.6
 Tested up to: 5.2.2
-Stable tag: 2.0.0
+Stable tag: 2.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 A web-based tool that creates, maintains and generates a PDF meeting list from BMLT.
@@ -54,7 +54,7 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 
 == Changelog ==
 
-= 2.1.0 =
+= 2.1.1 =
 * Bread now automatically calculates how many meetings fit in a column or on a page.
   This eliminates the need to guess an appropriate value for Page-Height-adjustment
   and also makes a more efficient use of the space.
