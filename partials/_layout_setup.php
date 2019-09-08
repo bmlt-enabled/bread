@@ -65,6 +65,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     <input class="mlg" id="landscape" type="radio" name="page_orientation" value="L" <?php echo ($this->options['page_orientation'] == 'L' ? 'checked' : '') ?>><label for="landscape">Landscape</label>
                     <input class="mlg" id="booklet_pages" type="checkbox" name="booklet_pages" value="1" <?php echo ($this->options['booklet_pages'] == '1' ? 'checked' : '') ?> /><label for="booklet_pages">Add extra pages for booklet</label>
                     <p>
+                    <input class="mlg" id="5inch" type="radio" name="page_size" value="5inch" <?php echo ($this->options['page_size'] == '5inch' ? 'checked' : '') ?>><label for="5inch">5 inch&nbsp;&nbsp;&nbsp;</label>
                     <input class="mlg" id="letter" type="radio" name="page_size" value="letter" <?php echo ($this->options['page_size'] == 'letter' ? 'checked' : '') ?>><label for="letter">Letter&nbsp;&nbsp;&nbsp;</label>
                     <input class="mlg" id="legal" type="radio" name="page_size" value="legal" <?php echo ($this->options['page_size'] == 'legal' ? 'checked' : '') ?>><label for="legal">Legal&nbsp;&nbsp;&nbsp;</label>
                     <input class="mlg" id="ledger" type="radio" name="page_size" value="ledger" <?php echo ($this->options['page_size'] == 'ledger' ? 'checked' : '') ?>><label for="ledger">Ledger&nbsp;&nbsp;&nbsp;</label>

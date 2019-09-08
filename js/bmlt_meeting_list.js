@@ -544,6 +544,7 @@ var $ml = jQuery.noConflict
 		$ml('#columnseparatordiv').hide();
 		$ml("#portrait, label[for=portrait]").hide();
 		$ml('#landscape').prop("checked",true);
+		$ml("#5inch, label[for=5inch]").show();
 		$ml("#letter, label[for=letter]").show();
 		$ml("#legal, label[for=legal]").show();
 		$ml("#ledger, label[for=ledger]").show();
@@ -568,6 +569,7 @@ var $ml = jQuery.noConflict
 		$ml("#A4, label[for=A4]").show();
 		$ml("#A5, label[for=A5]").show();
 		$ml("#A6, label[for=A6]").show();
+		$ml("#5inch, label[for=5inch]").hide();
 		$ml("#portrait, label[for=portrait]").show();
 		$ml("#booklet_pages, label[for=booklet_pages]").show();
 		$ml("#meeting-list-tabs ul li:eq(5)").hide();
@@ -591,6 +593,7 @@ var $ml = jQuery.noConflict
 		$ml("#A4, label[for=A4]").show();
 		$ml("#A5, label[for=A5]").hide();
 		$ml("#A6, label[for=A6]").hide();
+		$ml("#5inch, label[for=5inch]").hide();
 		if (fold=='quad')
 			$ml("#portrait, label[for=portrait]").show();
 		else {

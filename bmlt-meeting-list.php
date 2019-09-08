@@ -5,7 +5,7 @@ Plugin URI: http://wordpress.org/extend/plugins/bread/
 Description: Maintains and generates a PDF Meeting List from BMLT.
 Author: bmlt-enabled
 Author URI: https://bmlt.app
-Version: 2.1.1
+Version: 2.1.2
 */
 /* Disallow direct access to the plugin file */
 use Mpdf\Mpdf;
@@ -590,9 +590,7 @@ if (!class_exists("Bread")) {
 					   $this->options['weekday_language'] = $this->lang;
 				}
 				if ($this->options['page_fold']=='half') {
-					if ($this->options['page_size']=='5inch') {
-						$this->options['page_size'] = 'letter';					
-					} elseif ($this->options['page_size']=='A5') {
+					if ($this->options['page_size']=='A5') {
 						$this->options['page_size'] = 'A4';
 					}
 					$this->options['page_orientation'] = 'L';
@@ -624,6 +622,8 @@ if (!class_exists("Bread")) {
 					$page_type_settings = ['format' => 'A5-P', 'margin_footer' => 5];
 				} elseif ($this->options['page_size'] == 'A5' ) {
 					$page_type_settings = ['format' => 'A6-P', 'margin_footer' => 5];
+				} elseif ($this->options['page_size'] == '5inch' ) {
+					$page_type_settings = ['format' => array(197.2,279.4), 'margin_footer' => 5];
 				}
 			} elseif ( $this->options['page_fold'] == 'flyer')  {
 				if ( $this->options['page_size'] == 'letter' ) {
@@ -1115,6 +1115,8 @@ if (!class_exists("Bread")) {
 				$ps = $this->options['page_size'];
 				if ($ps=='ledger') {
 					$ps = 'tabloid';
+				} elseif ($ps == '5inch') {
+					$mpdfOptions['format'] = array(197.2,279.4);
 				} else {
 					$mpdfOptions['format'] = $ps.'-L';
 				}
