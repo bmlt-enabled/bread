@@ -494,20 +494,21 @@ if (!class_exists("Bread")) {
 		}
 		function bmlt_meeting_list($atts = null, $content = null) {
 			ini_set('max_execution_time', 600); // tomato server can take a long time to generate a schedule, override the server setting
-			$area_data = explode(',',$this->options['service_body_1']);
-			$area = $area_data[0];
 
-
+			// addServiceBody has the side effect that
+			// the service body option is overridden, so that it contains
+			// only the name of the service body.
+			$services = $this->addServiceBody('service_body_1');
+			$services .= $this->addServiceBody('service_body_2');
+			$services .= $this->addServiceBody('service_body_3');
+			$services .= $this->addServiceBody('service_body_4');
+			$services .= $this->addServiceBody('service_body_5');
+			$area = $this->options['service_body_1'];
+			
 			if (isset($_GET['custom_query'])) {
 				$services = $_GET['custom_query'];
 			} elseif ( $this->options['custom_query'] !== '' ) {
 				$services = $this->options['custom_query'];
-			} else {
-				$services = $this->addServiceBody('service_body_1');
-				$services .= $this->addServiceBody('service_body_2');
-				$services .= $this->addServiceBody('service_body_3');
-				$services .= $this->addServiceBody('service_body_4');
-				$services .= $this->addServiceBody('service_body_5');
 			}
 			$this->services = $services;
 			if ( $this->options['root_server'] == '' ) {
@@ -1114,7 +1115,7 @@ if (!class_exists("Bread")) {
 					];
 				$ps = $this->options['page_size'];
 				if ($ps=='ledger') {
-					$ps = 'tabloid';
+					$mpdfOptions['format'] = 'tabloid';
 				} elseif ($ps == '5inch') {
 					$mpdfOptions['format'] = array(197.2,279.4);
 				} else {
