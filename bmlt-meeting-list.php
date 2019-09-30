@@ -1608,9 +1608,10 @@ if (!class_exists("Bread")) {
 		}
 		private function parse_field($text) {
             if ($text!='') {
-                $exploded = explode("#@-@#", $text);
-                if (count($exploded) > 1) {
-                    $text = $exploded[1];
+				$exploded = explode("#@-@#", $text);
+				$knt = count($exploded);
+                if ($knt > 1) {
+                    $text = $exploded[$knt-1];
                 }
             }
             return $text;
