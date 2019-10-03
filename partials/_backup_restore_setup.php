@@ -8,7 +8,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
             <div id="exportdiv" class="postbox">
             <h3 class="hndle">Configuration Manager</h3>
                 <div class="inside">
-                    <p><?php _e( 'bread can support meeting lists.  Each meeting list has an integer ID and a text description that help the user to identify ' ); ?>
+                    <p><?php _e( 'bread can support multiple meeting lists.  Each meeting list has an integer ID and a text description that help the user to identify ' ); ?>
                        <?php _e( 'the configuration (or \'settings\') that will be used to generate the meeting list.  The ID of the configuration is used in the link ' );?>
                        <?php _e( 'that generates the meeting list (eg, ?current-meeting-list=2 generates the meeting list with ID 2.')?></p>
                     <h4>Current Meeting List</h4>

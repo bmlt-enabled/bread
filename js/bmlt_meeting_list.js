@@ -401,10 +401,19 @@ var $ml = jQuery.noConflict
          $ml('.neighborhood_by_suffix').show();
          $ml('.city_by_suffix').show();
 	 }
+	 var user_defined_sub = false;
+	 $ml('.user_defined_headings').hide();
+	 if (meeting_sort_val === 'user_defined') {
+		$ml('.user_defined_headings').show();
+		if ($ml("#heading2").val()!='') {
+			user_defined_sub = true;
+		}
+	}
 	 if (meeting_sort_val == 'weekday_area'
 	 ||  meeting_sort_val == 'weekday_city'
 	 ||  meeting_sort_val == 'weekday_county' 
-	 ||  meeting_sort_val == 'state') {
+	 ||  meeting_sort_val == 'state'
+	 ||  user_defined_sub) {
 		 $ml('.show_subheader').show();
 	 } else {
 		 $ml('.show_subheader').hide();
@@ -440,6 +449,14 @@ var $ml = jQuery.noConflict
 			$ml('.neighborhood_by_suffix').show();
 			$ml('.city_by_suffix').show();
 		}
+		var user_defined_sub = false;
+		$ml('.user_defined_headings').hide();
+		if (meeting_sort_val === 'user_defined') {
+		   $ml('.user_defined_headings').show();
+		   if ($ml("#heading2").val()!='') {
+			   user_defined_sub = true;
+		   }
+	   }
 		if (meeting_sort_val == 'weekday_area'
 		||  meeting_sort_val == 'weekday_city'
 		||  meeting_sort_val == 'weekday_county' 
