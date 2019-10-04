@@ -102,38 +102,38 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     </div>
                     <div class="user_defined_headings">
                         <p>
-                            <label for="heading1">Main Grouping: </label>
-                            <select id="heading1" name="heading1">					
-                                <option <?php echo ($this->options['heading1'] == 'day' ? 'selected="selected"' : '') ?> value="day">Weekday</option>
-                                <option <?php echo ($this->options['heading1'] == 'city' ? 'selected="selected"' : '') ?> value="city">City</option>
-                                <option <?php echo ($this->options['heading1'] == 'group' ? 'selected="selected"' : '') ?> value="group">Group</option>
-                                <option <?php echo ($this->options['heading1'] == 'county' ? 'selected="selected"' : '') ?> value="county">County</option>
-                                <option <?php echo ($this->options['heading1'] == 'borough' ? 'selected="selected"' : '') ?> value="borough">Borough</option>
-                                <option <?php echo ($this->options['heading1'] == 'state' ? 'selected="selected"' : '') ?> value="state">State</option>
+                            <label for="header1">Main Grouping: </label>
+                            <select id="header1" name="header1">					
+                                <option <?php echo ($this->options['header1'] == 'day' ? 'selected="selected"' : '') ?> value="day">Weekday</option>
+                                <option <?php echo ($this->options['header1'] == 'city' ? 'selected="selected"' : '') ?> value="city">City</option>
+                                <option <?php echo ($this->options['header1'] == 'group' ? 'selected="selected"' : '') ?> value="group">Group</option>
+                                <option <?php echo ($this->options['header1'] == 'county' ? 'selected="selected"' : '') ?> value="county">County</option>
+                                <option <?php echo ($this->options['header1'] == 'borough' ? 'selected="selected"' : '') ?> value="borough">Borough</option>
+                                <option <?php echo ($this->options['header1'] == 'state' ? 'selected="selected"' : '') ?> value="state">State</option>
                                 <?php
                                     $fks = $this->get_nonstandard_fieldkeys();
 							        foreach ($fks as $fk) {
                                         $selected = '';
-                                        if ($fk['key']==$this->options['heading1']) {
+                                        if ($fk['key']==$this->options['header1']) {
                                             $selected = ' selected="selected"';
                                         }
 									    echo '<option value="'.$fk['key'].'" '.$selected.'>'.$fk['description'].'</option>';
                                     }
 						        ?>
                             </select>
-                            <label for="heading2">Sub-Grouping: </label>
-                            <select id="heading2" name="heading2">
-                                <option <?php echo (empty($this->options['heading2']) ? 'selected="selected"' : '') ?> value="">None</option>
-                                <option <?php echo ($this->options['heading2'] == 'day' ? 'selected="selected"' : '') ?> value="day">Weekday</option>
-                                <option <?php echo ($this->options['heading2'] == 'city' ? 'selected="selected"' : '') ?> value="city">City</option>
-                                <option <?php echo ($this->options['heading2'] == 'group' ? 'selected="selected"' : '') ?> value="group">Group</option>
-                                <option <?php echo ($this->options['heading2'] == 'county' ? 'selected="selected"' : '') ?> value="county">County</option>
-                                <option <?php echo ($this->options['heading2'] == 'borough' ? 'selected="selected"' : '') ?> value="borough">Borough</option>
-                                <option <?php echo ($this->options['heading2'] == 'state' ? 'selected="selected"' : '') ?> value="state">State</option>
+                            <label for="header2">Sub-Grouping: </label>
+                            <select id="header2" name="header2">
+                                <option <?php echo (empty($this->options['header2']) ? 'selected="selected"' : '') ?> value="">None</option>
+                                <option <?php echo ($this->options['header2'] == 'day' ? 'selected="selected"' : '') ?> value="day">Weekday</option>
+                                <option <?php echo ($this->options['header2'] == 'city' ? 'selected="selected"' : '') ?> value="city">City</option>
+                                <option <?php echo ($this->options['header2'] == 'group' ? 'selected="selected"' : '') ?> value="group">Group</option>
+                                <option <?php echo ($this->options['header2'] == 'county' ? 'selected="selected"' : '') ?> value="county">County</option>
+                                <option <?php echo ($this->options['header2'] == 'borough' ? 'selected="selected"' : '') ?> value="borough">Borough</option>
+                                <option <?php echo ($this->options['header2'] == 'state' ? 'selected="selected"' : '') ?> value="state">State</option>
                                 <?php
 							        foreach ($fks as $fk) {
                                         $selected = '';
-                                        if ($fk['key']==$this->options['heading2']) {
+                                        if ($fk['key']==$this->options['header2']) {
                                             $selected = ' selected="selected"';
                                         }
 									    echo '<option value="'.$fk['key'].'" '.$selected.'>'.$fk['description'].'</option>';

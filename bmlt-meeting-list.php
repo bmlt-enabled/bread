@@ -388,20 +388,24 @@ if (!class_exists("Bread")) {
 			$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetFieldKeys");
 			return json_decode(wp_remote_retrieve_body($results), true);	
 		}
+		var $standard_keys = array(
+			"id_bigint","worldid_mixed","service_body_bigint",
+			"weekday_tinyint","start_time","duration_time","formats",
+			"lang_enum","longitude","latitude","meeting_name"."location_text",
+			"location_info","location_street","location_city_subsection",
+			"location_neighborhood","location_municipality","location_sub_province",
+			"location_province","location_postal_code_1","location_nation","comments","zone");
 		function get_nonstandard_fieldkeys() {
 			$all_fks = $this->get_fieldkeys();
-			$standard_keys = array(
-				"id_bigint","worldid_mixed","service_body_bigint",
-				"weekday_tinyint","start_time","duration_time","formats",
-				"lang_enum","longitude","latitude","meeting_name"."location_text",
-				"location_info","location_street","location_city_subsection",
-				"location_neighborhood","location_municipality","location_sub_province",
-				"location_province","location_postal_code_1","location_nation","comments","zone");
 			$ret = array();
 			foreach ($all_fks as $fk) {
-				if (!in_array($fk['key'],$standard_keys)) {
+				if (!in_array($fk['key'],$this->standard_keys)) {
 					$ret[] = $fk;
 				}
+			}
+			$ext_fields = apply_filters("Bread_Enrich_Meeting_Data", array(), array());
+			foreach ($ext_fields as $key=>$value) {
+				$ret[] = array("key" => $key, "description" => $key);
 			}
 			return $ret;	
 		}
@@ -1022,7 +1026,7 @@ if (!class_exists("Bread")) {
 				asort($unique_subheading, SORT_NATURAL | SORT_FLAG_CASE);
 				foreach ($unique_subheading as $this_subheading_raw) {
 					$newSubHeading = true;		
-					$this_subheading = $this->remove_sort_key($this_heading_raw);
+					$this_subheading = $this->remove_sort_key($this_subheading_raw);
 					foreach ($headerMeetings[$this_heading_raw][$this_subheading_raw] as $meeting_value) {			
 						$header = '';
 						if ( !empty($this->options['combine_headings'])) {
@@ -1270,13 +1274,13 @@ if (!class_exists("Bread")) {
 				if ($day < $off) $day = $day + 7;
 				return '['.str_pad($day, 2, '0', STR_PAD_LEFT).']'.$value['day'];
 			} elseif (isset($value[$this->options[$name]])) {
-				$header1 = $value[$this->options[$name]];
+				$header1 = $this->parse_field($value[$this->options[$name]]);
 			}
 			$alt = '';
 			if ($header1==''
 				&& !empty($this->options[$name.'_alt'])
 			    && isset($value[$this->options[$name.'_alt']])) {
-				$header1 = $value[$this->options[$name.'_alt']];
+				$header1 = $this->parse_field($value[$this->options[$name.'_alt']]);
 				$alt = '_alt';
 			}
 			if (strlen(trim($header1))==0) {
@@ -1288,6 +1292,9 @@ if (!class_exists("Bread")) {
 			return $header1;
 		}
 		function upgradeHeaderData() {
+			if ($this->options['meeting_sort'] === 'user_defined') {
+				return;
+			}
 			if ( $this->options['meeting_sort'] === 'state' ) {
 				$this->options['header1'] = 'location_province';
 				$this->options['header2'] = 'location_municipality';
@@ -1832,6 +1839,8 @@ if (!class_exists("Bread")) {
 				$this->options['page_fold'] = sanitize_text_field($_POST['page_fold']);
 				$this->options['booklet_pages'] = boolval($_POST['booklet_pages']);
 				$this->options['meeting_sort'] = sanitize_text_field($_POST['meeting_sort']);
+				$this->options['header1'] = sanitize_text_field($_POST['header1']);
+				$this->options['header2'] = sanitize_text_field($_POST['header2']);
 				$this->options['borough_suffix'] = sanitize_text_field($_POST['borough_suffix']);
 				$this->options['county_suffix'] = sanitize_text_field($_POST['county_suffix']);
 				$this->options['neighborhood_suffix'] = sanitize_text_field($_POST['neighborhood_suffix']);
