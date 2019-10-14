@@ -365,7 +365,8 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     <label for="asm_sort_order">Select sort order for the additional list</label>
                     <select id="asm_sort_order" name="asm_sort_order">
                         <option value="meeting_name">By Name</option>
-                        <option value="time">By Day and Time</option>
+                        <option value="weekday_tinyint,start_time">By Day and Time</option>
+                        <option value="same">Same as main list</option>
                      </select>
                      </p><p>
                     <label for="asm_language">Select language for the additional list</label>
