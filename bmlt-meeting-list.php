@@ -515,6 +515,12 @@ if (!class_exists("Bread")) {
 			if ($this->options['weekday_language'] == 'both_po') {
 				$this->options['weekday_language'] = "en_po";
 			}
+			if ($this->options['sub_header_shown'] == '0') {
+				$this->options['sub_header_shown'] = 'none';
+			}
+			if ($this->options['sub_header_shown'] == '1') {
+				$this->options['sub_header_shown'] = 'display';
+			}
 		}
 		function bmlt_meeting_list($atts = null, $content = null) {
 			ini_set('max_execution_time', 600); // tomato server can take a long time to generate a schedule, override the server setting
@@ -621,7 +627,7 @@ if (!class_exists("Bread")) {
 					$this->options['page_orientation'] = 'L';
 				}
 				if (substr($this->options['meeting_sort'],0,8) == 'weekday_') {
-						$this->options['sub_header_shown'] = true;
+						$this->options['sub_header_shown'] = 'display';
 				}
 				if (isset($this->options['pageheader_text'])) {
 					$this->options['pageheader_content'] = $this->options['pageheader_text'];
@@ -1163,10 +1169,10 @@ if (!class_exists("Bread")) {
 					$this_subheading = $this->remove_sort_key($this_subheading_raw);
 					foreach ($headerMeetings[$this_heading_raw][$this_subheading_raw] as $meeting_value) {			
 						$header = '';
-						if ( !empty($this->options['combine_headings'])) {
+						if ( $newSubHeading && !empty($this->options['combine_headings'])) {
 							$header_string =  $this->options['combine_headings'];
-							$header_string =  str_replace('header1',$this_heading, $header_string);
-							$header_string =  str_replace('header2',$this_subheading, $header_string);
+							$header_string =  str_replace('main_grouping',$this_heading, $header_string);
+							$header_string =  str_replace('subgrouping',$this_subheading, $header_string);
 							$header .= "<div style='".$header_style."'>".$header_string."</div>";
 						} elseif ( $levels == 2 ) {
 							if ( $newMajorHeading === true ) {
@@ -1176,7 +1182,7 @@ if (!class_exists("Bread")) {
 								}
 								$header .= '<div style="'.$header_style.$xtraMargin.'">'.$this_heading."</div>";
 							}
-							if ($newSubHeading && $this->options['sub_header_shown']==1) {
+							if ($newSubHeading && $this->options['sub_header_shown']=='display') {
 								$header .= "<p style='margin-top:1pt; padding-top:1pt; font-weight:bold;'>".$this_subheading."</p>";
 							}
 						} elseif ( $newMajorHeading === true ) {
@@ -1219,21 +1225,21 @@ if (!class_exists("Bread")) {
 				if ( $include_asm < 0 && in_array ( $this->options['asm_format_key'], $enFormats ) ) { continue; }
 				if ( $include_asm > 0 && !in_array ( $this->options['asm_format_key'], $enFormats ) ) { continue; }
 				$value = $this->enhance_meeting($value, $lang);
-				$header1 = $this->getHeaderItem($value, 'header1');
-				if (!isset($headerMeetings[$header1])) {
-					$headerMeetings[$header1] = array();
+				$main_grouping = $this->getHeaderItem($value, 'main_grouping');
+				if (!isset($headerMeetings[$main_grouping])) {
+					$headerMeetings[$main_grouping] = array();
 					if ($levels == 1) {
-						$headerMeetings[$header1][0] = array();
+						$headerMeetings[$main_grouping][0] = array();
 					}
 				}
 				if ($levels == 2) {
-					$header2 = $this->getHeaderItem($value, 'header2');
-					if (!isset($headerMeetings[$header1][$header2])) {
-						$headerMeetings[$header1][$header2] = array();
+					$subgrouping = $this->getHeaderItem($value, 'subgrouping');
+					if (!isset($headerMeetings[$main_grouping][$subgrouping])) {
+						$headerMeetings[$main_grouping][$subgrouping] = array();
 					}
-					$headerMeetings[$header1][$header2][] = $value;
+					$headerMeetings[$main_grouping][$subgrouping][] = $value;
 				} else {
-					$headerMeetings[$header1][0][] = $value;
+					$headerMeetings[$main_grouping][0][] = $value;
 				}
 			}
 			return $headerMeetings;
@@ -1274,7 +1280,7 @@ if (!class_exists("Bread")) {
 			}
 		}
 		function getHeaderLevels() {
-			if (!empty($this->options['header2'])) {
+			if (!empty($this->options['subgrouping'])) {
 				return 2;
 			}
 			return 1;
@@ -1283,7 +1289,7 @@ if (!class_exists("Bread")) {
 			if (empty($this->options[$name])) {
 					return '';
 			}
-			$header1 = '';
+			$grouping = '';
 			if ($this->options[$name]=='service_body_bigint') {
 				foreach($this->unique_areas as $unique_area){
 					$area_data = explode(',',$unique_area);
@@ -1300,62 +1306,67 @@ if (!class_exists("Bread")) {
 				if ($day < $off) $day = $day + 7;
 				return '['.str_pad($day, 2, '0', STR_PAD_LEFT).']'.$value['day'];
 			} elseif (isset($value[$this->options[$name]])) {
-				$header1 = $this->parse_field($value[$this->options[$name]]);
+				$grouping = $this->parse_field($value[$this->options[$name]]);
 			}
 			$alt = '';
-			if ($header1==''
+			if ($grouping==''
 				&& !empty($this->options[$name.'_alt'])
 			    && isset($value[$this->options[$name.'_alt']])) {
-				$header1 = $this->parse_field($value[$this->options[$name.'_alt']]);
+				$grouping = $this->parse_field($value[$this->options[$name.'_alt']]);
 				$alt = '_alt';
 			}
-			if (strlen(trim($header1))==0) {
+			if (strlen(trim($grouping))==0) {
 				return 'NO DATA';
 			}
 			if (strlen($this->options[$name.$alt.'_suffix'])>0) {
-				return $header1.' '.$this->options[$name.$alt.'_suffix'];
+				return $grouping.' '.$this->options[$name.$alt.'_suffix'];
 			}
-			return $header1;
+			return $grouping;
 		}
 		function upgradeHeaderData() {
+			$this->options['combine_headings'] = '';
 			if ($this->options['meeting_sort'] === 'user_defined') {
+				if ($this->options['sub_header_shown'] == 'combined') {
+					$this->options['combine_headings'] = 'main_grouping - subgrouping';
+				}
 				return;
 			}
+			unset($this->options['subgrouping']);
 			if ( $this->options['meeting_sort'] === 'state' ) {
-				$this->options['header1'] = 'location_province';
-				$this->options['header2'] = 'location_municipality';
-				$this->options['combine_headings'] = 'header2, header1';
+				$this->options['main_grouping'] = 'location_province';
+				$this->options['subgrouping'] = 'location_municipality';
+				$this->options['combine_headings'] = 'subgrouping, main_grouping';
 			} elseif ( $this->options['meeting_sort'] === 'city' ) {
-				$this->options['header1'] = 'location_municipality';
+				$this->options['main_grouping'] = 'location_municipality';
 			} elseif ( $this->options['meeting_sort'] === 'borough' ) {
-				$this->options['header1'] = 'location_city_subsection';
-				$this->options['header1_suffix'] = $this->options['borough_suffix'];
+				$this->options['main_grouping'] = 'location_city_subsection';
+				$this->options['main_grouping_suffix'] = $this->options['borough_suffix'];
 			} elseif ( $this->options['meeting_sort'] === 'county' ) {
-				$this->options['header1'] = 'location_sub_province';
-				$this->options['header1_alt_suffix'] = $this->options['county_suffix'];
+				$this->options['main_grouping'] = 'location_sub_province';
+				$this->options['main_grouping_alt_suffix'] = $this->options['county_suffix'];
 			} elseif ( $this->options['meeting_sort'] === 'borough_county' ) {
-				$this->options['header1'] = 'location_city_subsection';
-				$this->options['header1_suffix'] = $this->options['borough_suffix'];
-				$this->options['header1_alt'] = 'location_sub_province';
-				$this->options['header1_alt_suffix'] = $this->options['county_suffix'];
+				$this->options['main_grouping'] = 'location_city_subsection';
+				$this->options['main_grouping_suffix'] = $this->options['borough_suffix'];
+				$this->options['main_grouping_alt'] = 'location_sub_province';
+				$this->options['main_grouping_alt_suffix'] = $this->options['county_suffix'];
 			} elseif ( $this->options['meeting_sort'] === 'neighborhood_city' ) {
-				$this->options['header1'] = 'location_neighborhood';
-				$this->options['header1_suffix'] = $this->options['neighborhood_suffix'];
-				$this->options['header1_alt'] = 'location_municipality';
-				$this->options['header1_alt_suffix'] = $this->options['city_suffix'];
+				$this->options['main_grouping'] = 'location_neighborhood';
+				$this->options['main_grouping_suffix'] = $this->options['neighborhood_suffix'];
+				$this->options['main_grouping_alt'] = 'location_municipality';
+				$this->options['main_grouping_alt_suffix'] = $this->options['city_suffix'];
 			} elseif ( $this->options['meeting_sort'] === 'group' ) {
-				$this->options['header1'] = 'meeting_name';
+				$this->options['main_grouping'] = 'meeting_name';
 			} elseif ( $this->options['meeting_sort'] === 'weekday_area' ) {
-				$this->options['header1'] = 'day';
-				$this->options['header2'] = 'service_body_bigint';
+				$this->options['main_grouping'] = 'day';
+				$this->options['subgrouping'] = 'service_body_bigint';
 			} elseif ( $this->options['meeting_sort'] === 'weekday_city' ) {
-				$this->options['header1'] = 'day';
-				$this->options['header2'] = 'location_municipality';
+				$this->options['main_grouping'] = 'day';
+				$this->options['subgrouping'] = 'location_municipality';
 			} elseif ( $this->options['meeting_sort'] === 'weekday_county' ) {
-				$this->options['header1'] = 'day';
-				$this->options['header2'] = 'location_sub_province';
+				$this->options['main_grouping'] = 'day';
+				$this->options['subgrouping'] = 'location_sub_province';
 			} else {
-				$this->options['header1'] = 'day';
+				$this->options['main_grouping'] = 'day';
 			}
 		}
 		function get_area_name($meeting_value) {
@@ -1692,7 +1703,6 @@ if (!class_exists("Bread")) {
 		}
 		function write_service_meetings($font_size, $line_height) {
 			if (  $this->service_meeting_result == null ) {
-				// Why not add a query string that limits to meetings having the desired format????
 				$sort_order = $this->options['asm_sort_order'];
 				if ($sort_order=='same') {
 					$sort_order = 'weekday_tinyint,start_time';
@@ -1707,8 +1717,10 @@ if (!class_exists("Bread")) {
 				}
 				$results = $this->get_configured_root_server_request( $asm_query );
 				$this->service_meeting_result = json_decode(wp_remote_retrieve_body($results), true);
+				if ($sort_order == 'weekday_tinyint,start_time') {
+					$this->orderByWeekdayStart($this->service_meeting_result);
+				}
 			}
-
 			if ($this->options['asm_sort_order']=='same') {
 				if (isset($this->options['asm_template_content']) && trim($this->options['asm_template_content'])) {
 					$template = $this->options['asm_template_content'];
@@ -1869,7 +1881,7 @@ if (!class_exists("Bread")) {
 				$this->options['header_background_color'] = validate_hex_color($_POST['header_background_color']);
 				$this->options['header_uppercase'] = intval($_POST['header_uppercase']);
 				$this->options['header_bold'] = intval($_POST['header_bold']);
-				$this->options['sub_header_shown'] = intval($_POST['sub_header_shown']);
+				$this->options['sub_header_shown'] = sanitize_text_field($_POST['sub_header_shown']);
 				$this->options['cont_header_shown'] = intval($_POST['cont_header_shown']);				$this->options['column_gap'] = intval($_POST['column_gap']);
 				$this->options['margin_right'] = intval($_POST['margin_right']);
 				$this->options['margin_left'] = intval($_POST['margin_left']);
@@ -1886,8 +1898,8 @@ if (!class_exists("Bread")) {
 				$this->options['page_fold'] = sanitize_text_field($_POST['page_fold']);
 				$this->options['booklet_pages'] = boolval($_POST['booklet_pages']);
 				$this->options['meeting_sort'] = sanitize_text_field($_POST['meeting_sort']);
-				$this->options['header1'] = sanitize_text_field($_POST['header1']);
-				$this->options['header2'] = sanitize_text_field($_POST['header2']);
+				$this->options['main_grouping'] = sanitize_text_field($_POST['main_grouping']);
+				$this->options['subgrouping'] = sanitize_text_field($_POST['subgrouping']);
 				$this->options['borough_suffix'] = sanitize_text_field($_POST['borough_suffix']);
 				$this->options['county_suffix'] = sanitize_text_field($_POST['county_suffix']);
 				$this->options['neighborhood_suffix'] = sanitize_text_field($_POST['neighborhood_suffix']);
@@ -2078,7 +2090,7 @@ if (!class_exists("Bread")) {
 			$this->fillUnsetOption('pageheader_backgroundcolor', '#ffffff');
 			$this->fillUnsetOption('header_uppercase', '0');
 			$this->fillUnsetOption('header_bold', '1');
-			$this->fillUnsetOption('sub_header_shown', '0');
+			$this->fillUnsetOption('sub_header_shown', 'none');
 			$this->fillUnsetOption('margin_top', 3);
 			$this->fillUnsetOption('margin_bottom', 3);
 			$this->fillUnsetOption('margin_left', 3);
