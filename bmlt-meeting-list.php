@@ -129,7 +129,7 @@ if (!class_exists("Bread")) {
             $this->lang = $this->get_bmlt_server_lang();
 			$this->load_translations();
 			if (isset($holder['current-meeting-list']) && !is_admin()) {
-                $this->bmlt_meeting_list();
+				add_action( 'plugins_loaded', array(&$this, 'bmlt_meeting_list' ));				
             } else if (is_admin()) {
                 add_action("admin_init", array(&$this, 'my_sideload_image'));
                 add_action("admin_menu", array(&$this, "admin_menu_link"));
