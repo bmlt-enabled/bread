@@ -702,4 +702,14 @@ var $ml = jQuery.noConflict
 			dataStore.setItem(index, newIndex)
 		}
 	});
+	 var tomato = "https://tomato.bmltenabled.org/main_server";
+	 $ml('#use_tomato').click(function() {
+		 if($ml(this).is(':checked')) {
+			 $ml("#root_server").val(tomato);
+		 }
+	 });
+	 var rootServerValue = $ml('#root_server').val();
+	 if(~rootServerValue.indexOf(tomato)) {
+		 $ml("#use_tomato").prop("checked", true);
+	 }
 });

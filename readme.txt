@@ -54,6 +54,9 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 
 == Changelog ==
 
+= 2.2.0 =
+* Added checkbox for using tomato as root server.
+
 = 2.1.2 =
 * Brought back 5inch format
  

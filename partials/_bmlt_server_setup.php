@@ -32,6 +32,10 @@ foreach($all_users as $user){
                         echo "<span style='color: #f00;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-dismiss'></div>ERROR: Problem Connecting to BMLT Server</span>";
                     }
                     ?>
+                    <li>
+                        <input type="checkbox" id="use_tomato" name="use_tomato" value="1"/>
+                        <label for="use_tomato">Use Tomato &#127813;<span title='<p>Tomato is a root server aggregator, it collects meeting data <br/>from all known root servers and pretends to be one large server</p><p>This can be useful to use if you want to display meetings outside <br/>of your server, for instance a statewide listing where the state <br/>covers multiple root servers<br/>Another good use case is if you want to display meetings by users<br/> location</p>' class="tooltip"></span></label>
+                    </li>
                     <?php if ($this_connected) { ?>
                         <?php $unique_areas = $this->get_areas(); ?>
                         <?php asort($unique_areas); ?>
