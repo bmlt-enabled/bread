@@ -126,7 +126,6 @@ if (!class_exists("Bread")) {
 
             $current_settings = isset($holder['current-meeting-list']) ? intval($holder['current-meeting-list']) : 1;
             $this->getMLOptions($current_settings);
-            $this->lang = $this->get_bmlt_server_lang();
 			$this->load_translations();
 			if (isset($holder['current-meeting-list']) && !is_admin()) {
 				add_action( 'plugins_loaded', array(&$this, 'bmlt_meeting_list' ));				
@@ -524,7 +523,7 @@ if (!class_exists("Bread")) {
 		}
 		function bmlt_meeting_list($atts = null, $content = null) {
 			ini_set('max_execution_time', 600); // tomato server can take a long time to generate a schedule, override the server setting
-
+			$this->lang = $this->get_bmlt_server_lang();
 			// addServiceBody has the side effect that
 			// the service body option is overridden, so that it contains
 			// only the name of the service body.
@@ -1824,7 +1823,7 @@ if (!class_exists("Bread")) {
 		* Adds settings/options page
 		*/
 		function admin_options_page() {
-			
+			$this->lang = $this->get_bmlt_server_lang();
 		?>		
 			<div class="connecting"></div>
 			<div class="saving"></div>
