@@ -722,4 +722,23 @@ var $ml = jQuery.noConflict
 			dataStore.setItem(index, newIndex)
 		}
 	});
+	var tomato = "https://tomato.bmltenabled.org/main_server";
+	$ml(window).on("load", function () {
+		if($ml('#use_tomato').is(':checked')) {
+			$ml("#root_server").prop("readonly", true);
+		}
+	});
+	$ml('#use_tomato').click(function() {
+		if($ml(this).is(':checked')) {
+			$ml("#root_server").val(tomato);
+			$ml("#root_server").prop("readonly", true);
+		} else {
+			$ml("#root_server").val("");
+			$ml("#root_server").prop("readonly", false);
+		}
+	});
+	var rootServerValue = $ml('#root_server').val();
+	if(~rootServerValue.indexOf(tomato)) {
+		$ml("#use_tomato").prop("checked", true);
+	}
 });
