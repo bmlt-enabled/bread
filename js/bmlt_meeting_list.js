@@ -380,11 +380,6 @@ var $ml = jQuery.noConflict
 	$ml('#meeting-list-tabs').tabs().addClass('ui-tabs-vertical ui-helper-clearfix');
 	$ml("#container").removeClass('hide');
 	var meeting_sort_val = $ml("#meeting_sort").val();
-	if (meeting_sort_val === 'day' || meeting_sort_val === 'weekday_area' || meeting_sort_val === 'weekday_city' ||  meeting_sort_val === 'weekday_county') {
-		$ml('.weekday_start_div').show();
-	} else {
-        $ml('.weekday_start_div').hide();
-	}
      $ml('.borough_by_suffix').hide();
      $ml('.county_by_suffix').hide();
      if (meeting_sort_val === 'borough_county') {
@@ -401,10 +396,19 @@ var $ml = jQuery.noConflict
          $ml('.neighborhood_by_suffix').show();
          $ml('.city_by_suffix').show();
 	 }
+	 var user_defined_sub = false;
+	 $ml('.user_defined_headings').hide();
+	 if (meeting_sort_val === 'user_defined') {
+		$ml('.user_defined_headings').show();
+		if ($ml("#subgrouping").val()!='') {
+			user_defined_sub = true;
+		}
+	}
 	 if (meeting_sort_val == 'weekday_area'
 	 ||  meeting_sort_val == 'weekday_city'
 	 ||  meeting_sort_val == 'weekday_county' 
-	 ||  meeting_sort_val == 'state') {
+	 ||  meeting_sort_val == 'state'
+	 ||  user_defined_sub) {
 		 $ml('.show_subheader').show();
 	 } else {
 		 $ml('.show_subheader').hide();
@@ -423,11 +427,6 @@ var $ml = jQuery.noConflict
         $ml('.county_by_suffix').hide();
         $ml('.neighborhood_by_suffix').hide();
         $ml('.city_by_suffix').hide();
-		if (meeting_sort_val === 'day' || meeting_sort_val === 'weekday_area' || meeting_sort_val === 'weekday_city' ||  meeting_sort_val === 'weekday_county') {
-            $ml('.weekday_start_div').show();
-		} else {
-            $ml('.weekday_start_div').hide();
-		}
 		if (meeting_sort_val === 'borough_county') {
 			$ml('.borough_by_suffix').show();
 			$ml('.county_by_suffix').show();
@@ -440,14 +439,35 @@ var $ml = jQuery.noConflict
 			$ml('.neighborhood_by_suffix').show();
 			$ml('.city_by_suffix').show();
 		}
+		var user_defined_sub = false;
+		$ml('.user_defined_headings').hide();
+		if (meeting_sort_val === 'user_defined') {
+		   $ml('.user_defined_headings').show();
+		   if ($ml("#subgrouping").val()!='') {
+			   user_defined_sub = true;
+		   }
+	   }
 		if (meeting_sort_val == 'weekday_area'
 		||  meeting_sort_val == 'weekday_city'
 		||  meeting_sort_val == 'weekday_county' 
-		||  meeting_sort_val == 'state') {
+		||  meeting_sort_val == 'state'
+		||  user_defined_sub) {
 			$ml('.show_subheader').show();
 		} else {
 			$ml('.show_subheader').hide();
 		}
+	});
+	$ml("#subgrouping").click(function() {
+		var user_defined_sub = false;
+		$ml('.user_defined_headings').hide();
+		if (meeting_sort_val === 'user_defined') {
+		   $ml('.user_defined_headings').show();
+		   if ($ml("#subgrouping").val()!='') {
+				$ml('.show_subheader').show();
+			} else {
+				$ml('.show_subheader').hide();
+		   }
+	   }
 	});
 	var time_clock_val = $ml('input[name=time_clock]:checked').val();
 	if (time_clock_val == '24') {
