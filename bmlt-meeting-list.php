@@ -5,7 +5,7 @@ Plugin URI: http://wordpress.org/extend/plugins/bread/
 Description: Maintains and generates a PDF Meeting List from BMLT.
 Author: bmlt-enabled
 Author URI: https://bmlt.app
-Version: 2.2.0
+Version: 2.2.2
 */
 /* Disallow direct access to the plugin file */
 use Mpdf\Mpdf;
@@ -1173,7 +1173,7 @@ if (!class_exists("Bread")) {
 							$header_string =  str_replace('main_grouping',$this_heading, $header_string);
 							$header_string =  str_replace('subgrouping',$this_subheading, $header_string);
 							$header .= "<div style='".$header_style."'>".$header_string."</div>";
-						} elseif ( $levels == 2 ) {
+						} elseif ( !empty($this->options['subgrouping'] )) {
 							if ( $newMajorHeading === true ) {
 								$xtraMargin = '';
 								if ( !$first_meeting ) {
