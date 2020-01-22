@@ -21,28 +21,30 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         <?php
                         $editor_id = "front_page_content";
                         $settings    = array (
-                            'tabindex'      => FALSE,
-                            'editor_height'	=> 500,
-                            'resize'        => TRUE,
-                            "media_buttons"	=> TRUE,
-                            "drag_drop_upload" => TRUE,
-                            "editor_css"	=> "<style>.aligncenter{display:block!important;margin-left:auto!important;margin-right:auto!important;}</style>",
-                            "teeny"			=> FALSE,
-                            'quicktags'		=> TRUE,
-                            'wpautop'		=> FALSE,
+                            'tabindex'      => false,
+                            'editor_height' => 500,
+                            'resize'        => true,
+                            "media_buttons" => true,
+                            "drag_drop_upload" => true,
+                            "editor_css"    => "<style>.aligncenter{display:block!important;margin-left:auto!important;margin-right:auto!important;}</style>",
+                            "teeny"         => false,
+                            'quicktags'     => true,
+                            'wpautop'       => false,
                             'textarea_name' => $editor_id,
                             'tinymce'=> array('toolbar1' => 'bold,italic,underline,strikethrough,bullist,numlist,alignleft,aligncenter,alignright,alignjustify,link,unlink,table,undo,redo,fullscreen', 'toolbar2' => 'formatselect,fontsizeselect,fontselect,forecolor,backcolor,indent,outdent,pastetext,removeformat,charmap,code', 'toolbar3' => 'front_page_button')
                         );
-                        wp_editor( stripslashes(str_replace("http://", $this->protocol, $this->options['front_page_content'])), $editor_id, $settings );
+                        wp_editor(stripslashes(str_replace("http://", $this->protocol, $this->options['front_page_content'])), $editor_id, $settings);
                         ?>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <?php if ($this->current_user_can_modify()) echo '
+    <?php if ($this->current_user_can_modify()) {
+        echo '
     <input type="submit" value="Save Changes" id="bmltmeetinglistsave1" name="bmltmeetinglistsave" class="button-primary" />
- ';?>
+ ';
+    }?>
     <?php echo '<p style="display: inline; margin-top:.5em;margin-bottom:1.0em;margin-left:.2em;"><a target="_blank" class="button-primary" href="'.home_url() . '/?current-meeting-list='.$this->loaded_setting.'">Generate Meeting List</a></p>'; ?>
     <div style="display:inline;"><i>&nbsp;&nbsp;Save Changes before Generate Meeting List.</i></div>
     <br class="clear">
