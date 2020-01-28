@@ -54,25 +54,25 @@ jobs:
           file: "$DIST_DIR_GITHUB/$GITHUB_RELEASE_FILENAME"
           skip_cleanup: true
           name: "$TRAVIS_TAG"
-          condition: $TRAVIS_TAG !~ /beta/
           on:
             tags: true
+            condition: $TRAVIS_TAG != *beta*
         - provider: releases
           api_key:
             secure: e8x7MjdhEyq929NMebqhDGbCG64OUzIWiBeNb+ZF0xeGjghjljOUEaLm+2bdDZyMLyho94zayp1rq0gfXUz8vBkLgSYOaCuJhsFRoXhWPcvbGcXe3URpDSfUrx8QE46UtATFdBdfT2KFjeyH95g/w/1WFjSqOfQtAyFV+bs4YzOyaXRjo4SQxupfM1+Is/A3FTskXXW2y5M6raIViuz3eZGkJjVIkIV5sCPRloro80q+GonraSLtr2aBElR8CZaNESPJpcLcA467BW3Pf8p5Mm6jYO4rSTFcUN2s/O8S+C8rrKKw9UYL0mFAratrGK/+GXZbbmgZD4Ujw24xOre/x240NHMTF4TpXrLSLmRjycC3IPyKt0wCb//rKl0YoTMo1390+xWnvM3V08L2CXwhFqGH8j0DgKam1+KhtM0hHFT8NNC9CltyKXdGEzo367N+i9JTtoJbwsfXxNGlF7uKGHu9u7WQQ0oE3ARF5SyFE/6F7e5z5hyItfpitHirMSDOjWkVbbb0ukhFhFkLRddmrFmRW0fu+beAcIlmQtTkPIoBUt+rvcr4Vb51uK5VqcnvAqYtvVrMGRmwTOvdqI0tHmSFw3lOcyf0c4BiplysYHSmQz2pBy+eQmPga1GW5xJt43bkz5B35AEMkq6kVRrIar5YiHBccQZff/T0dMxFmjM=
           file: "$DIST_DIR_GITHUB/$GITHUB_RELEASE_FILENAME"
           skip_cleanup: true
           name: "$TRAVIS_TAG"
-          condition: $TRAVIS_TAG =~ /beta/
           prerelease: true
           on:
             tags: true
+            condition: $TRAVIS_TAG =~ "beta"
         - provider: script
           script: ./deploy-wordpress.sh
           skip_cleanup: true
-          condition: $TRAVIS_TAG !~ /beta/
           on:
             tags: true
+            condition: $TRAVIS_TAG != *beta*
 notifications:
   slack:
     rooms:
