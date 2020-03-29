@@ -50,7 +50,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     <p>
                         <div class="group_by" style="margin-right: 10px; display: inline;">
                             <label for="meeting_sort">Group Meetings By: </label>
-                            <select id="meeting_sort" name="meeting_sort">                  
+                            <select id="meeting_sort" name="meeting_sort">					
                                 <option <?php echo ($this->options['meeting_sort'] == 'day' ? 'selected="selected"' : '') ?> value="day">Weekday</option>
                                 <option <?php echo ($this->options['meeting_sort'] == 'city' ? 'selected="selected"' : '') ?> value="city">City</option>
                                 <option <?php echo ($this->options['meeting_sort'] == 'group' ? 'selected="selected"' : '') ?> value="group">Group</option>
@@ -103,7 +103,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     <div class="user_defined_headings">
                         <p>
                             <label for="main_grouping">Main Grouping: </label>
-                            <select id="main_grouping" name="main_grouping">                    
+                            <select id="main_grouping" name="main_grouping">					
                                 <option <?php echo ($this->options['main_grouping'] == 'day' ? 'selected="selected"' : '') ?> value="day">Weekday</option>
                                 <option <?php echo ($this->options['main_grouping'] == 'city' ? 'selected="selected"' : '') ?> value="city">City</option>
                                 <option <?php echo ($this->options['main_grouping'] == 'neighborhood' ? 'selected="selected"' : '') ?> value="neighborhood">Neighborhood</option>
@@ -113,14 +113,14 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                                 <option <?php echo ($this->options['main_grouping'] == 'state' ? 'selected="selected"' : '') ?> value="state">State</option>
                                 <?php
                                     $fks = $this->get_nonstandard_fieldkeys();
-                                foreach ($fks as $fk) {
-                                    $selected = '';
-                                    if ($fk['key']==$this->options['main_grouping']) {
-                                        $selected = ' selected="selected"';
+							        foreach ($fks as $fk) {
+                                        $selected = '';
+                                        if ($fk['key']==$this->options['main_grouping']) {
+                                            $selected = ' selected="selected"';
+                                        }
+									    echo '<option value="'.$fk['key'].'" '.$selected.'>'.$fk['description'].'</option>';
                                     }
-                                    echo '<option value="'.$fk['key'].'" '.$selected.'>'.$fk['description'].'</option>';
-                                }
-                                ?>
+						        ?>
                             </select>
                             <label for="subgrouping">Sub-Grouping: </label>
                             <select id="subgrouping" name="subgrouping">
@@ -132,21 +132,21 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                                 <option <?php echo ($this->options['subgrouping'] == 'borough' ? 'selected="selected"' : '') ?> value="borough">Borough</option>
                                 <option <?php echo ($this->options['subgrouping'] == 'state' ? 'selected="selected"' : '') ?> value="state">State</option>
                                 <?php
-                                foreach ($fks as $fk) {
-                                    $selected = '';
-                                    if ($fk['key']==$this->options['subgrouping']) {
-                                        $selected = ' selected="selected"';
+							        foreach ($fks as $fk) {
+                                        $selected = '';
+                                        if ($fk['key']==$this->options['subgrouping']) {
+                                            $selected = ' selected="selected"';
+                                        }
+									    echo '<option value="'.$fk['key'].'" '.$selected.'>'.$fk['description'].'</option>';
                                     }
-                                    echo '<option value="'.$fk['key'].'" '.$selected.'>'.$fk['description'].'</option>';
-                                }
-                                ?>
+						        ?>
                             </select>
                         </p>
                     </div>
                     <div class="show_subheader">
                         <p>
                             <label for="sub_header_shown">Display Subgrouping: </label>
-                            <select name="sub_header_shown">
+						    <select name="sub_header_shown">
                                 <option value="none" <?php echo ($this->options['sub_header_shown'] == 'none' ? 'selected' : '') ?>>
                                     No header for subgroups
                                 </option>
@@ -159,35 +159,35 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                             </select>
                         </p>
                     </div>
-                    <div class="weekday_language_div">
-                        <label for="weekday_language">Weekday Language: </label>
-                        <select name="weekday_language">
-                        <?php
-                        foreach ($this->translate as $key => $value) {
-                            if ($this->options['weekday_language'] == $key || $this->options['weekday_language'] == '') {
-                                echo "<option value=\"$key\" selected=\"selected\">".$value['LANG_NAME']."</option>";
-                            } else {
-                                echo "<option value=\"$key\">".$value['LANG_NAME']."</option>";
-                            }
-                        }
-                        ?>
-                        </select>
-                    </div>
+					<div class="weekday_language_div">
+						<label for="weekday_language">Weekday Language: </label>
+						<select name="weekday_language">
+						<?php
+							foreach ($this->translate as $key => $value) {
+								if ($this->options['weekday_language'] == $key || $this->options['weekday_language'] == '' ) {
+									echo "<option value=\"$key\" selected=\"selected\">".$value['LANG_NAME']."</option>";
+								} else {
+									echo "<option value=\"$key\">".$value['LANG_NAME']."</option>";
+								}
+							}
+						?>
+						</select>
+					</div>
 
-                    <div class="weekday_start_div">
-                        <label for="weekday_start">Weekday Start: </label>
-                        <select name="weekday_start">
-                            <?php
-                            for ($d = 1; $d <= 7; $d++) {
-                                if ($this->options['weekday_start'] == $d || $this->options['weekday_start'] == '') {
-                                    echo "<option value=\"$d\" selected=\"selected\">" . $this->getday($d, false, $this->options['weekday_language']) . "</option>";
-                                } else {
-                                    echo "<option value=\"$d\">" . $this->getday($d, false, $this->options['weekday_language']) . "</option>";
-                                }
-                            }
-                            ?>
-                        </select>
-                    </div>
+					<div class="weekday_start_div">
+						<label for="weekday_start">Weekday Start: </label>
+						<select name="weekday_start">
+							<?php
+							for ($d = 1; $d <= 7; $d++) {
+								if ($this->options['weekday_start'] == $d || $this->options['weekday_start'] == '' ) {
+									echo "<option value=\"$d\" selected=\"selected\">" . $this->getday($d, false, $this->options['weekday_language']) . "</option>";
+								} else {
+									echo "<option value=\"$d\">" . $this->getday($d, false, $this->options['weekday_language']) . "</option>";
+								}
+							}
+							?>
+						</select>
+					</div>
                     <p>
                 </div>
             </div>
@@ -224,19 +224,19 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         <?php
                         $editor_id = "meeting_template_content";
                         $settings    = array (
-                            'tabindex'      => false,
-                            'editor_height' => 110,
-                            'resize'        => true,
-                            "media_buttons" => false,
-                            "drag_drop_upload" => true,
-                            "editor_css"    => "<style>.aligncenter{display:block!important;margin-left:auto!important;margin-right:auto!important;}</style>",
-                            "teeny"         => false,
-                            'quicktags'     => true,
-                            'wpautop'       => false,
+                            'tabindex'      => FALSE,
+                            'editor_height'	=> 110,
+                            'resize'        => TRUE,
+                            "media_buttons"	=> FALSE,
+                            "drag_drop_upload" => TRUE,
+                            "editor_css"	=> "<style>.aligncenter{display:block!important;margin-left:auto!important;margin-right:auto!important;}</style>",
+                            "teeny"			=> FALSE,
+                            'quicktags'		=> TRUE,
+                            'wpautop'		=> FALSE,
                             'textarea_name' => $editor_id,
                             'tinymce'=> array('toolbar1' => 'bold,italic,underline,strikethrough,bullist,numlist,alignleft,aligncenter,alignright,alignjustify,link,unlink,table,undo,redo,fullscreen', 'toolbar2' => 'formatselect,fontsizeselect,fontselect,forecolor,backcolor,indent,outdent,pastetext,removeformat,charmap,code', 'toolbar3' => 'custom_template_button_1,custom_template_button_2')
                         );
-                        wp_editor(stripslashes($this->options['meeting_template_content']), $editor_id, $settings);
+                        wp_editor( stripslashes($this->options['meeting_template_content']), $editor_id, $settings );
                         ?>
                     </div>
                 </div>
@@ -249,15 +249,15 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                 <h3 class="hndle">Start Time Format<span title='<?php echo $title; ?>' class="top-tooltip"></span></h3>
                 <div class="inside">
                     <?php $space = ' '; ?>
-                    <?php if ($this->options['remove_space'] == '1') { ?>
+                    <?php if ( $this->options['remove_space'] == '1' ) { ?>
                         <?php $space = ''; ?>
                     <?php } ?>
-                    <?php if ($this->options['time_clock'] == '12') { ?>
+                    <?php if ( $this->options['time_clock'] == '12' ) { ?>
                         <?php $start_time = "8:00".$space."PM"; ?>
                         <?php $start_time_2 = "8".$space; ?>
                         <?php $end_time = "9:00".$space."PM"; ?>
                         <?php $end_time_2 = "9".$space."PM"; ?>
-                    <?php } elseif ($this->options['time_clock'] == '24fr') { ?>
+                    <?php } elseif ( $this->options['time_clock'] == '24fr' ) { ?>
                         <?php $start_time = "20h00"; ?>
                         <?php $end_time = "21h00"; ?>
                     <?php } else { ?>
@@ -273,7 +273,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         <div><input class="mlg" id="option1" type="radio" name="time_option" value="1" <?php echo ($this->options['time_option'] == '1' || $this->options['time_option'] == '' ? 'checked' : '') ?>><label for="option1"><?php echo $start_time ?></label></div>
                     </td>
                     <td style="padding-right: 30px;">
-                    <?php if ($this->options['remove_space'] == '0' || $this->options['remove_space'] == '') { ?>
+                    <?php if ( $this->options['remove_space'] == '0' || $this->options['remove_space'] == '' ) { ?>
                         <div><input class="mlg" id="two" type="radio" name="remove_space" value="0" checked><label for="two">Add White Space</label></div>
                     <?php } else { ?>
                         <div><input class="mlg" id="two" type="radio" name="remove_space" value="0"><label for="two">Add White Space</label></div>
@@ -287,12 +287,12 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     <td style="padding-right: 30px;">
                         <div><input class="mlg" id="option2" type="radio" name="time_option" value="2" <?php echo ($this->options['time_option'] == '2' ? 'checked' : '') ?>><label for="option2"><?php echo $start_time ?><?php echo $space ?>-<?php echo $space ?><?php echo $end_time ?></label></div>
                     </td>
-                    <td style="padding-right: 30px;">                               
-                    <?php if ($this->options['remove_space'] == '1') { ?>
+                    <td style="padding-right: 30px;">								
+                    <?php if ( $this->options['remove_space'] == '1' ) { ?>
                         <div><input class="mlg" id="four" type="radio" name="remove_space" value="1" checked><label for="four">Remove White Space</label></div>
                     <?php } else { ?>
                         <div><input class="mlg" id="four" type="radio" name="remove_space" value="1"><label for="four">Remove White Space</label></div>
-                    <?php } ?>                                   
+                    <?php } ?>									 
                     </td>
                     </tr>
                     </tr>
@@ -303,7 +303,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     <td style="padding-right: 30px;">
                         <div><input class="mlg" id="option3" type="radio" name="time_option" value="3" <?php echo ($this->options['time_option'] == '3' ? 'checked' : '') ?>><label for="option3"><?php echo $start_time_2 ?><?php echo $space ?>-<?php echo $space ?><?php echo $end_time_2 ?></label></div>
                     </td>
-                    <td style="padding-right: 30px;">                               
+                    <td style="padding-right: 30px;">								
                     </td>
                     </tr>
                     </table>
@@ -323,9 +323,9 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     <select id="used_format_1" name="used_format_1">
                     <?php if ($this_connected) { ?>
                         <option value="">Not Used</option>
-                        <?php $countmax = count($used_formats); ?>
-                        <?php for ($count = 0; $count < $countmax; $count++) { ?>
-                            <?php if ($used_formats[$count]['id'] == $this->options['used_format_1']) { ?>
+                        <?php $countmax = count ( $used_formats ); ?>
+                        <?php for ( $count = 0; $count < $countmax; $count++ ) { ?>
+                            <?php if ( $used_formats[$count]['id'] == $this->options['used_format_1'] ) { ?>
                                 <option selected="selected" value="<?php echo esc_html($used_formats[$count]['id']) ?>"><?php echo esc_html($used_formats[$count]['name_string']) ?></option>
                             <?php } else { ?>
                                 <option value="<?php echo esc_html($used_formats[$count]['id']) ?>"><?php echo esc_html($used_formats[$count]['name_string']) ?></option>
@@ -342,7 +342,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                 $logged_in = wp_remote_retrieve_body($this->authenticate_root_server()); ?>
             <input type="hidden" name="asm_logged_in" id="asm_logged_in" value="<?php $logged_in ? 1 : 0 ; ?>">
             <?php $connected = "<p><div style='color: #f00;font-size: 16px;vertical-align: middle;' class='dashicons dashicons-unlock'></div><span style='color: #f00;'>Login ID or Password Incorrect</span></p>"; ?>
-            <?php if ($logged_in == 'OK') { ?>
+            <?php if ( $logged_in == 'OK') { ?>
                 <?php $connected = "<p><div style='color: #00AD00;font-size: 16px;vertical-align: middle;' class='dashicons dashicons-lock'></div><span style='color: #00AD00;'>Login OK</span></p>"; ?>
             <?php } ?>
             <div class="postbox">
@@ -357,18 +357,18 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     <?php if ($this_connected) { ?>
                         <option value="">Not Used</option>
                         <?php
-                        if ($this_connected) {
-                            $used_formats = $this->getFormatsForSelect(true);
-                        }
-                            $countmax = count($used_formats);
-                        for ($count = 0; $count < $countmax; $count++) {
-                            if ($used_formats[$count]['key_string'] == $this->options['asm_format_key']) { ?>
+                            if ($this_connected) {
+                            	$used_formats = $this->getFormatsForSelect(true);
+                            }
+                            $countmax = count ( $used_formats );
+                            for ( $count = 0; $count < $countmax; $count++ ) {
+                                if ( $used_formats[$count]['key_string'] == $this->options['asm_format_key'] ) { ?>
                                     <option selected="selected" value="<?php echo esc_html($used_formats[$count]['key_string']) ?>"><?php echo esc_html($used_formats[$count]['name_string']) ?></option>
-                            <?php   } else { ?>
+                        <?php   } else { ?>
                                     <option value="<?php echo esc_html($used_formats[$count]['key_string']) ?>"><?php echo esc_html($used_formats[$count]['name_string']) ?></option>
-                            <?php   }
-                        }
-                    } else { ?>
+                        <?php   }
+                            }
+                        } else { ?>
                             <option selected="selected" value="<?php echo $this->options['asm_format_key']; ?>"><?php echo 'ASM'; ?></option>
                     <?php } ?>
                     </select>
@@ -382,20 +382,20 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                      </p><p>
                     <label for="asm_language">Select language for the additional list</label>
                     <select id="asm_language" name="asm_language">
-                        <?php
-                        if ($this->options['asm_language'] == '') {
-                            echo "<option value=\"\" selected=\"selected\">Same as main list</option>";
-                        } else {
-                            echo "<option value=\"\">Same as main list</option>";
-                        }
-                        foreach ($this->translate as $key => $value) {
-                            if ($this->options['asm_language'] == $key) {
-                                echo "<option value=\"$key\" selected=\"selected\">".$value['LANG_NAME']."</option>";
+						<?php
+                        	if ($this->options['asm_language'] == '' ) {
+                                echo "<option value=\"\" selected=\"selected\">Same as main list</option>";
                             } else {
-                                echo "<option value=\"$key\">".$value['LANG_NAME']."</option>";
+                                echo "<option value=\"\">Same as main list</option>";
                             }
-                        }
-                        ?>
+							foreach ($this->translate as $key => $value) {
+								if ($this->options['asm_language'] == $key ) {
+									echo "<option value=\"$key\" selected=\"selected\">".$value['LANG_NAME']."</option>";
+								} else {
+									echo "<option value=\"$key\">".$value['LANG_NAME']."</option>";
+								}
+							}
+						?>
                      </select>
                      </p><p>
                     The additional list may include fields that might be used for say "service meetings".  To access these fields
@@ -426,19 +426,19 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         <?php
                         $editor_id = "asm_template_content";
                         $settings    = array (
-                            'tabindex'      => false,
-                            'editor_height' => 110,
-                            'resize'        => true,
-                            "media_buttons" => false,
-                            "drag_drop_upload" => true,
-                            "editor_css"    => "<style>.aligncenter{display:block!important;margin-left:auto!important;margin-right:auto!important;}</style>",
-                            "teeny"         => false,
-                            'quicktags'     => true,
-                            'wpautop'       => false,
+                            'tabindex'      => FALSE,
+                            'editor_height'	=> 110,
+                            'resize'        => TRUE,
+                            "media_buttons"	=> FALSE,
+                            "drag_drop_upload" => TRUE,
+                            "editor_css"	=> "<style>.aligncenter{display:block!important;margin-left:auto!important;margin-right:auto!important;}</style>",
+                            "teeny"			=> FALSE,
+                            'quicktags'		=> TRUE,
+                            'wpautop'		=> FALSE,
                             'textarea_name' => $editor_id,
                             'tinymce'=> array('toolbar1' => 'bold,italic,underline,strikethrough,bullist,numlist,alignleft,aligncenter,alignright,alignjustify,link,unlink,table,undo,redo,fullscreen', 'toolbar2' => 'formatselect,fontsizeselect,fontselect,forecolor,backcolor,indent,outdent,pastetext,removeformat,charmap,code', 'toolbar3' => 'custom_template_button_1,custom_template_button_2')
                         );
-                        wp_editor(stripslashes($this->options['asm_template_content']), $editor_id, $settings);
+                        wp_editor( stripslashes($this->options['asm_template_content']), $editor_id, $settings );
                         ?>
                     </div>
                             <div class="inside">
@@ -456,11 +456,9 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
             </div>
         </div>
     </div>
-    <?php if ($this->current_user_can_modify()) {
-        echo '
+    <?php if ($this->current_user_can_modify()) echo '
     <input type="submit" value="Save Changes" id="bmltmeetinglistsave1" name="bmltmeetinglistsave" class="button-primary" />
- ';
-    }?>
+ ';?>
     <?php echo '<p style="display: inline; margin-top:.5em;margin-bottom:1.0em;margin-left:.2em;"><a target="_blank" class="button-primary" href="'.home_url() . '/?current-meeting-list='.$this->loaded_setting.'">Generate Meeting List</a></p>'; ?>
     <div style="display:inline;"><i>&nbsp;&nbsp;Save Changes before Generate Meeting List.</i></div>
     <br class="clear">
