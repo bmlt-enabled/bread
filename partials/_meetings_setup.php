@@ -375,9 +375,9 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     </p><p>
                     <label for="asm_sort_order">Select sort order for the additional list</label>
                     <select id="asm_sort_order" name="asm_sort_order">
-                        <option value="meeting_name">By Name</option>
-                        <option value="weekday_tinyint,start_time">By Day and Time</option>
-                        <option value="same">Same as main list</option>
+                        <option value="meeting_name" <?php echo $this->options['asm_sort_order']=='meeting_name' ? 'selected' : ''; ?> >By Name</option>
+                        <option value="weekday_tinyint,start_time" <?php echo $this->options['asm_sort_order']=='weekday_tinyint,start_time' ? 'selected' : ''; ?> >By Day and Time</option>
+                        <option value="same"<?php echo $this->options['asm_sort_order']=='same' ? 'selected' : ''; ?> >Same as main list</option>
                      </select>
                      </p><p>
                     <label for="asm_language">Select language for the additional list</label>

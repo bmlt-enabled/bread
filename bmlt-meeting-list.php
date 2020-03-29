@@ -5,7 +5,7 @@ Plugin URI: http://wordpress.org/extend/plugins/bread/
 Description: Maintains and generates a PDF Meeting List from BMLT.
 Author: bmlt-enabled
 Author URI: https://bmlt.app
-Version: 2.2.2
+Version: 2.2.3
 */
 /* Disallow direct access to the plugin file */
 use Mpdf\Mpdf;
@@ -1718,7 +1718,7 @@ if (!class_exists("Bread")) {
 				$results = $this->get_configured_root_server_request( $asm_query );
 				$this->service_meeting_result = json_decode(wp_remote_retrieve_body($results), true);
 				if ($sort_order == 'weekday_tinyint,start_time') {
-					$this->orderByWeekdayStart($this->service_meeting_result);
+					$this->service_meeting_result = $this->orderByWeekdayStart($this->service_meeting_result);
 				}
 			}
 			if ($this->options['asm_sort_order']=='same') {
