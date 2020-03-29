@@ -1718,7 +1718,7 @@ if (!class_exists("Bread")) {
 				$results = $this->get_configured_root_server_request( $asm_query );
 				$this->service_meeting_result = json_decode(wp_remote_retrieve_body($results), true);
 				if ($sort_order == 'weekday_tinyint,start_time') {
-					$this->orderByWeekdayStart($this->service_meeting_result);
+					$this->service_meeting_result = $this->orderByWeekdayStart($this->service_meeting_result);
 				}
 			}
 			if ($this->options['asm_sort_order']=='same') {
