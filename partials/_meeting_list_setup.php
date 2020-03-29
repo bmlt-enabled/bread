@@ -51,14 +51,14 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                 <p>After switching to another concurrent meeting list, any changes in the admin UI impact the currently selected meeting list</p>
                 <p>If you want to give another user access to bread you can give that use the "manage_bread" capability using a custom role editor.</p>
             </div>
-	        <h3 class="help-accordian">Reusable Templating</h3>
-	        <div>
-				<p>You can dynamically set some of the options to create a reusable template.</p>
-		        <p>In order to change the meeting information you can pass a dynamic custom query using &custom_query=, ensure you are using URL encoding.</p>
-		        <p>You can also use any combinations of [querystring_custom_*], where * is any digit.  You can then override that specific value using it in querystring as &querystring_custom_1= (for instance).</p>
-		        <p>You can use any HTML characters, including line breaks.</p>
+            <h3 class="help-accordian">Reusable Templating</h3>
+            <div>
+                <p>You can dynamically set some of the options to create a reusable template.</p>
+                <p>In order to change the meeting information you can pass a dynamic custom query using &custom_query=, ensure you are using URL encoding.</p>
+                <p>You can also use any combinations of [querystring_custom_*], where * is any digit.  You can then override that specific value using it in querystring as &querystring_custom_1= (for instance).</p>
+                <p>You can use any HTML characters, including line breaks.</p>
                 <p>Here is a video of it in action: <a target="_blank">https://bmlt.app/reusable-templates-with-bread-1-6-x/</a></p>
-	        </div>
+            </div>
             <h3 class="help-accordian">Support and Help</h3>
             <div>
                 <p>File an issue <a href="https://github.com/radius314/bread/issues">https://github.com/bmlt-enabled/bread/issues</a></p>
@@ -67,7 +67,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                 <li><b>Protocol:</b> <?php echo $this->protocol; ?></li>
                 <li><b>PHP Version:</b> <?php echo phpversion(); ?></li>
                 <li><b>Server Version:</b> <?php echo $_SERVER["SERVER_SOFTWARE"]; ?></li>
-				<li><b>Temporary Directory:</b> <?php echo get_temp_dir(); ?></li>
+                <li><b>Temporary Directory:</b> <?php echo get_temp_dir(); ?></li>
                 </ul>
             </div>
         </div>
