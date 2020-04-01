@@ -53,7 +53,7 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 - Read here for more information: https://github.com/bmlt-enabled/bread/blob/unstable/contribute.md
 
 == Changelog ==
-= 2.3.0 =
+= 2.3.1 =
 * Special Handling for Virtual Meetings as additional list
 
 = 2.2.2 =
