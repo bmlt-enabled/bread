@@ -1214,15 +1214,24 @@ if (!class_exists("Bread")) {
 				}
 			}
 		}
+		function asm_test($value) {
+			$format_key = $this->options['asm_format_key'];
+			if ($format_key == "@Virtual@") {
+				return !empty($value['virtual_meeting_link']) ||
+				!empty($value['phone_meeting_number']);
+			}
+			$enFormats = explode ( ",", $value['formats'] );
+			return in_array ( $format_key, $enFormats );
+		}
 		// include_asm = 0  -  let everything through
 		//               1  -  only meetings with asm format
 		//              -1  -  only meetings without asm format
 		function getHeaderMeetings(&$result_meetings, $lang, $include_asm) {
 			$levels = $this->getHeaderLevels();
 			foreach ($result_meetings as &$value) {
-				$enFormats = explode ( ",", $value['formats'] );
-				if ( $include_asm < 0 && in_array ( $this->options['asm_format_key'], $enFormats ) ) { continue; }
-				if ( $include_asm > 0 && !in_array ( $this->options['asm_format_key'], $enFormats ) ) { continue; }
+				$asm_test = $this->asm_test($value);
+				if ( $include_asm < 0 && $asm_test ) { continue; }
+				if ( $include_asm > 0 && !$asm_test ) { continue; }
 				$value = $this->enhance_meeting($value, $lang);
 				$main_grouping = $this->getHeaderItem($value, 'main_grouping');
 				if (!isset($headerMeetings[$main_grouping])) {
@@ -1732,8 +1741,7 @@ if (!class_exists("Bread")) {
 			}
 			$temp = array();
 			foreach ($this->service_meeting_result as $value) {
-				$enFormats = explode ( ",", $value['formats'] );
-				if ( in_array ( $this->options['asm_format_key'], $enFormats )  ) {
+				if ( $this->asm_test($value)  ) {
 					$temp[] = $value;
 				}
 			}

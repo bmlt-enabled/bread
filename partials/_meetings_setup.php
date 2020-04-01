@@ -356,6 +356,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     <select id="asm_format_key" name="asm_format_key">
                     <?php if ($this_connected) { ?>
                         <option value="">Not Used</option>
+                        <option value="@Virtual@" <?php echo $this->options['asm_format_key']=='@Virtual@' ? 'selected' : '' ?>>Virtual Meetings</option>
                         <?php
                             if ($this_connected) {
                             	$used_formats = $this->getFormatsForSelect(true);
