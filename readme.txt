@@ -5,7 +5,7 @@ Tags: meeting list, bmlt, narcotics anonymous, na
 Requires at least: 4.0
 Requires PHP: 5.6
 Tested up to: 5.3.2
-Stable tag: 2.3.1.0
+Stable tag: 2.4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 A web-based tool that creates, maintains and generates a PDF meeting list from BMLT.
@@ -53,6 +53,9 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 - Read here for more information: https://github.com/bmlt-enabled/bread/blob/unstable/contribute.md
 
 == Changelog ==
+= 2.4.1 =
+* Added QR Code generation from shortcode
+
 = 2.3.1 =
 * Special Handling for Virtual Meetings as additional list
 

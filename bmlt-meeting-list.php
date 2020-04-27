@@ -5,7 +5,7 @@ Plugin URI: http://wordpress.org/extend/plugins/bread/
 Description: Maintains and generates a PDF Meeting List from BMLT.
 Author: bmlt-enabled
 Author URI: https://bmlt.app
-Version: 2.3.1.0
+Version: 2.4.0
 */
 /* Disallow direct access to the plugin file */
 use Mpdf\Mpdf;
@@ -351,13 +351,13 @@ if (!class_exists("Bread")) {
 			return $this->get_root_server_request($this->options['root_server']."/".$url);
 		}
 
-		function get($url, $cookies = null) {
+		function get($url, $cookies = array()) {
 			$args = array(
 				'timeout' => '120',
-				'headers' => array(
+				/***'headers' => array(
 					'User-Agent' => 'Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0) +bread'
-				),
-                'cookies' => isset($cookies) ? $cookies : null
+				),****/
+                'cookies' => $cookies,
 			);
 
             return wp_remote_get($url, $args);
@@ -1409,6 +1409,7 @@ if (!class_exists("Bread")) {
 				if ($item[0]=='family') continue;
 				if ($item[0]=='vertical') continue;
 				if ($item[0]=='color') continue;
+				if ($item[0]=='QRCode') continue;
 				if ($item[1]>0 && $template[$item[1]-1]=='['
 				    && $template[$item[1]+strlen($item[0])]==']') {
 						$item[0] = '['.$item[0].']';
@@ -1500,6 +1501,15 @@ if (!class_exists("Bread")) {
 				if (isset($namedValues[$name])) {
 					$data = substr_replace($data,$namedValues[$name],$item[1],strlen($item[0]));
 				}
+			}
+			$qr_pos = strpos($data,"[QRCode");
+			if ($qr_pos) {
+				$qr_end = strpos($data,']',$qr_pos);
+				$data = substr($data,0,$qr_pos).
+						'<barcode type="QR" disableborder="1" '.
+						substr($data,$qr_pos+8,$qr_end-$qr_pos-8).
+						'/>'.
+				        substr($data, $qr_end+1);
 			}
 			$search_strings = array();
 			$replacements = array();
