@@ -6,11 +6,16 @@
     },
     {
       "type": "git",
+      "url": "https://github.com/mpdf/qrcode"
+    },
+    {
+      "type": "git",
       "url": "https://github.com/myclabs/DeepCopy"
     }
   ],
   "require": {
-    "mpdf/mpdf": "8.0.1"
+    "mpdf/mpdf": "8.0.1",
+    "mpdf/qrcode": "^1.0"
   },
   "require-dev": {
     "squizlabs/php_codesniffer": "3.*"
