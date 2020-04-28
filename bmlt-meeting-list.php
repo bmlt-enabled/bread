@@ -354,12 +354,14 @@ if (!class_exists("Bread")) {
 		function get($url, $cookies = array()) {
 			$args = array(
 				'timeout' => '120',
-				/***'headers' => array(
-					'User-Agent' => 'Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0) +bread'
-				),****/
                 'cookies' => $cookies,
 			);
-
+			if (isset($this->options['user_agent']) &&
+			$this->options['user_agent'] != 'None') {
+				$args['headers'] = array(
+					'User-Agent' => $this->options['user_agent']
+				);
+			}
             return wp_remote_get($url, $args);
 		}
 		function get_all_meetings() {
@@ -594,6 +596,7 @@ if (!class_exists("Bread")) {
 			if ( !isset($this->options['cache_time']) ) {$this->options['cache_time'] = 0;}
 			if ( !isset($this->options['extra_meetings']) ) {$this->options['extra_meetings'] = '';}
 			if ( !isset($this->options['custom_query']) ) {$this->options['custom_query'] = '';}
+			if ( !isset($this->options['user_agent']) ) {$this->options['user_agent'] = 'Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0) +bread';}
 			if ( !isset($this->options['used_format_1']) ) {$this->options['used_format_1'] = '';}
 			if ( intval($this->options['cache_time']) > 0 && ! isset($_GET['nocache']) ) {
 				$transient_key = 'bmlt_ml_'.md5($this->options['root_server'].$services);
@@ -1960,6 +1963,7 @@ if (!class_exists("Bread")) {
 				$this->options['service_body_5'] = sanitize_text_field($_POST['service_body_5']);
 				$this->options['cache_time'] = intval($_POST['cache_time']);
 				$this->options['custom_query'] = sanitize_text_field($_POST['custom_query']);
+				$this->options['user_agent'] = sanitize_text_field($_POST['user_agent']);
 				$this->options['extra_meetings'] = isset($_POST['extra_meetings']) ? wp_kses_post($_POST['extra_meetings']) : '';
 				$authors = $_POST['authors_select'];
 				$this->options['authors'] = array();
@@ -2151,6 +2155,7 @@ if (!class_exists("Bread")) {
 			$this->fillUnsetStringOption('bmlt_login_password', '');
 			$this->fillUnsetStringOption('protection_password', '');
 			$this->fillUnsetStringOption('custom_query','');
+			$this->fillUnsetStringOption('user_agent','Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0) +bread');
 			$this->fillUnsetOption('cache_time', 0);
 			$this->fillUnsetStringOption('extra_meetings', '');
 			if (strlen($this->options['extra_meetings'])>0) {

@@ -53,8 +53,9 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 - Read here for more information: https://github.com/bmlt-enabled/bread/blob/unstable/contribute.md
 
 == Changelog ==
-= 2.4.1 =
+= 2.4.0 =
 * Added QR Code generation from shortcode
+* Made User-Agent confifurable
 
 = 2.3.1 =
 * Special Handling for Virtual Meetings as additional list
