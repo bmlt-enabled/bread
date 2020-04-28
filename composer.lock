@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "34b2285cc432d8429055e39e9ac00319",
+    "content-hash": "f72ff6c9db3f69402e7c06a485f7e5bc",
     "packages": [
         {
             "name": "mpdf/mpdf",
@@ -143,11 +143,11 @@
         },
         {
             "name": "myclabs/deep-copy",
-            "version": "1.9.5",
+            "version": "1.8.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/myclabs/DeepCopy",
-                "reference": "b2c28789e80a97badd14145fda39b545d83ca3ef"
+                "reference": "3e01bdad3e18354c3dce54466b7fbe33a9f9f7f8"
             },
             "require": {
                 "php": "^7.1"
@@ -186,7 +186,7 @@
                 "object",
                 "object graph"
             ],
-            "time": "2020-01-17T21:11:47+00:00"
+            "time": "2018-06-11T23:09:50+00:00"
         },
         {
             "name": "paragonie/random_compat",
