@@ -5,9 +5,11 @@ Plugin URI: http://wordpress.org/extend/plugins/bread/
 Description: Maintains and generates a PDF Meeting List from BMLT.
 Author: bmlt-enabled
 Author URI: https://bmlt.app
-Version: 2.4.2
+Version: 2.5.0
 */
 /* Disallow direct access to the plugin file */
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
 use Mpdf\Mpdf;
 use function DeepCopy\deep_copy;
 error_reporting(1);
@@ -21,6 +23,7 @@ if (!class_exists("Bread")) {
 	class Bread {
 		var $lang = '';
 		var $mpdf = '';
+		var $logger = false;
 		var $meeting_count = 0;
 		var $formats_used = '';
 		var $formats_by_key = array();
@@ -86,7 +89,10 @@ if (!class_exists("Bread")) {
 		var $maxSetting = 1;
 		var $loaded_setting = 1;
 		var $authors_safe = array();
-		
+		function log($level, $message) {
+			if ($this->logger==false) return;
+			$this->logger->log($level, $message);
+		}
 		function loadAllSettings() {
 		    $this->allSettings = get_option( Bread::SETTINGS );
 		    if ($this->allSettings === false) {
@@ -736,10 +742,30 @@ if (!class_exists("Bread")) {
 			}
 			$mpdf_init_options['restrictColorSpace'] = $this->options['colorspace'];
 			$mpdf_init_options = array_merge($mpdf_init_options, $page_type_settings);
-			ob_clean();
+			ob_end_clean();
             $this->mpdf = new mPDF($mpdf_init_options);
-            $this->mpdf->setAutoBottomMargin = 'pad';
-
+			$this->mpdf->setAutoBottomMargin = 'pad';
+			
+			if (isset($_GET['log-level'])) {
+				$level = Logger::DEBUG;
+				switch ($_GET['log-level']) {
+					case 'ERROR':
+						$level = Logger::ERROR;
+						break;
+					default:
+						break;
+				}
+				// create a log channel
+				$this->logger = new Logger('Bread');
+				$temp_dir = get_temp_dir();
+				if (isset($_GET['log-location'])) {
+					$temp_dir = ABSPATH.$_GET['log-location'].'/';
+				}
+				$this->logger->pushHandler(new StreamHandler($temp_dir.'mpdf.log', $level));
+				$this->mpdf->setLogger($this->logger);
+				$this->mpdf->debug = true;
+				$this->log(Logger::INFO,"Begin Logging: current-meeting-list=".$_REQUEST['current-meeting-list']);
+			}
             // TODO: Adding a page number really could just be an option or tag.
 			if ( $this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full' )  {
 				$page_string = $this->translate[$this->options['weekday_language']]['PAGE'];
@@ -797,7 +823,7 @@ if (!class_exists("Bread")) {
                 ]);
 				
 				$this->mpdf_column->WriteHTML($html);
-				$FilePath = ABSPATH . "column_tmp_".strtolower( date ( "njYghis" ) ).".pdf";
+				$FilePath = get_temp_dir() . "column_tmp_".strtolower( date ( "njYghis" ) ).".pdf";
 				$this->mpdf_column->Output($FilePath,'F');
 				$pagecount = $this->mpdf->SetSourceFile($FilePath);
 				$tplId = $this->mpdf->importPage($pagecount);
@@ -835,6 +861,7 @@ if (!class_exists("Bread")) {
 				"[service_body_5]"				=> strtoupper($this->options['service_body_5']),
 		
 			);
+			$this->log(Logger::INFO,"Begin Logging: current-meeting-list=".$_REQUEST['current-meeting-list']);
 			$this->unique_areas = $this->get_areas();	
 			// Extensions
 			$this->section_shortcodes = apply_filters("Bread_Section_Shortcodes",$this->section_shortcodes, $this->unique_areas, $this->formats_used);
@@ -975,9 +1002,9 @@ if (!class_exists("Bread")) {
 			$this->mpdf->SetDefaultBodyCSS('font-size', $this->options['content_font_size'] . 'pt');			
 			$this->mpdf->SetDefaultBodyCSS('line-height', $this->options['content_line_height']);
 			$this->upgradeHeaderData();
-
+			$this->log(Logger::INFO,"Before writeMeetings");
 			$this->writeMeetings($result_meetings,$this->options['meeting_template_content'],$this->options['weekday_language'],$this->options['include_asm']==0 ? -1 : 0);
-
+			$this->log(Logger::INFO,"After writeMeetings");
 			if ( $this->options['page_fold'] !== 'half' && $this->options['page_fold'] !== 'full' ) {
 				$this->write_custom_section();
 				$this->write_front_page();
@@ -986,11 +1013,13 @@ if (!class_exists("Bread")) {
 					$this->write_last_page();
 				}
 			}
+			$this->log(Logger::INFO,"Generation complete...need to repage now.");
 			$this->mpdf->SetDisplayMode('fullpage','two');
-			$upload_dir = wp_upload_dir();
-			$FilePath = ABSPATH . "current_meeting_list_".strtolower( date ( "njYghis" ) ).".pdf";
+			$FilePath = get_temp_dir(). "current_meeting_list_".strtolower( date ( "njYghis" ) ).".pdf";
 			if ( $this->options['page_fold'] == 'half' ) {
+				$this->log(Logger::INFO,"Before Output half-fold");
 				$this->mpdf->Output($FilePath,'F');
+				$this->log(Logger::INFO,"After Output half-fold");
 				$mpdfOptions = [
                         'mode' => $mode,
                         'tempDir' => get_temp_dir(),
@@ -1031,8 +1060,9 @@ if (!class_exists("Bread")) {
 					}
 				}					
 				unlink($FilePath);
-				$FilePath = ABSPATH . "current_meeting_list_".strtolower( date ( "njYghis" ) ).".pdf";
+				$FilePath = get_temp_dir() . "current_meeting_list_".strtolower( date ( "njYghis" ) ).".pdf";
 				$this->mpdf = $this->mpdftmp;
+				if ($this->logger) $this->mpdf->setLogger($this->logger);
 			} else if ($this->options['page_fold'] == 'full' && $this->options['booklet_pages']) {
 				$this->mpdf->Output($FilePath,'F');
 				$mpdfOptions = [
@@ -1065,8 +1095,9 @@ if (!class_exists("Bread")) {
 				$tplIdx = $this->mpdftmp->ImportPage($np);
 				$this->mpdftmp->UseTemplate($tplIdx);					
 				unlink($FilePath);
-				$FilePath = ABSPATH . "current_meeting_list_".strtolower( date ( "njYghis" ) ).".pdf";
+				$FilePath = get_temp_dir() . "current_meeting_list_".strtolower( date ( "njYghis" ) ).".pdf";
 				$this->mpdf = $this->mpdftmp;
+				if ($this->logger) $this->mpdf->setLogger($this->logger);
 			} else if ($this->options['page_fold'] == 'flyer' ) {
 				$this->mpdf->Output($FilePath,'F');
 				$mpdfOptions = [
@@ -1102,9 +1133,11 @@ if (!class_exists("Bread")) {
 				$this->mpdftmp->UseTemplate($tplIdx,$fw+$fw,0);	
 				$this->addColumnSeparators($oh);				
 				unlink($FilePath);
-				$FilePath = ABSPATH . "current_meeting_list_".strtolower( date ( "njYghis" ) ).".pdf";
+				$FilePath = get_temp_dir() . "current_meeting_list_".strtolower( date ( "njYghis" ) ).".pdf";
 				$this->mpdf = $this->mpdftmp;
+				if ($this->logger) $this->mpdf->setLogger($this->logger);
 			}
+			$this->log(Logger::INFO,"Repaging done.");
 			if ( $this->options['include_protection'] == 1 ) {
 				// 'copy','print','modify','annot-forms','fill-forms','extract','assemble','print-highres'
 				$this->mpdf->SetProtection(array('copy','print','print-highres'), '', $this->options['protection_password']);
@@ -1114,10 +1147,16 @@ if (!class_exists("Bread")) {
 				$content = bin2hex($content);
 				$transient_key = 'bmlt_ml_'.md5($this->options['root_server'].$services);
 				set_transient( $transient_key, $content, intval($this->options['cache_time']) * HOUR_IN_SECONDS );
-			}			
-			$FilePath = "current_meeting_list_".strtolower( date ( "njYghis" ) ).".pdf";
-				
-			$this->mpdf->Output($FilePath,'I');
+			}		
+			$FilePath = "final_meeting_list_".strtolower( date ( "njYghis" ) ).".pdf";
+			$this->log(Logger::INFO,"FilePath=$FilePath");
+			$this->mpdf->debug = true;
+			try {
+				$this->mpdf->Output($FilePath,'I');
+			} catch (MpdfException $e) { // Note: safer fully qualified exception name used for catch
+				$this->log(Logger::INFO,$e->getMessage());
+			}
+			$this->log(Logger::INFO,"Success!");
 			exit;
 		}
 		function orderByWeekdayStart(&$result_meetings) {
