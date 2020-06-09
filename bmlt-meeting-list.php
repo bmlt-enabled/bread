@@ -5,7 +5,7 @@ Plugin URI: http://wordpress.org/extend/plugins/bread/
 Description: Maintains and generates a PDF Meeting List from BMLT.
 Author: bmlt-enabled
 Author URI: https://bmlt.app
-Version: 2.4.2
+Version: 2.4.3
 */
 /* Disallow direct access to the plugin file */
 use Mpdf\Mpdf;
@@ -736,7 +736,7 @@ if (!class_exists("Bread")) {
 			}
 			$mpdf_init_options['restrictColorSpace'] = $this->options['colorspace'];
 			$mpdf_init_options = array_merge($mpdf_init_options, $page_type_settings);
-			ob_clean();
+			ob_end_clean();
             $this->mpdf = new mPDF($mpdf_init_options);
             $this->mpdf->setAutoBottomMargin = 'pad';
 
