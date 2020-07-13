@@ -340,7 +340,6 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
             <?php
                 $connected = '';
                 $logged_in = wp_remote_retrieve_body($this->authenticate_root_server()); ?>
-            <input type="hidden" name="asm_logged_in" id="asm_logged_in" value="<?php $logged_in ? 1 : 0 ; ?>">
             <?php $connected = "<p><div style='color: #f00;font-size: 16px;vertical-align: middle;' class='dashicons dashicons-unlock'></div><span style='color: #f00;'>Login ID or Password Incorrect</span></p>"; ?>
             <?php if ( $logged_in == 'OK') { ?>
                 <?php $connected = "<p><div style='color: #00AD00;font-size: 16px;vertical-align: middle;' class='dashicons dashicons-lock'></div><span style='color: #00AD00;'>Login OK</span></p>"; ?>
@@ -357,6 +356,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     <?php if ($this_connected) { ?>
                         <option value="">Not Used</option>
                         <option value="@Virtual@" <?php echo $this->options['asm_format_key']=='@Virtual@' ? 'selected' : '' ?>>Virtual Meetings</option>
+                        <option value="@F2F@" <?php echo $this->options['asm_format_key']=='@F2F@' ? 'selected' : '' ?>>Face-to-Face Meetings</option>
                         <?php
                             if ($this_connected) {
                             	$used_formats = $this->getFormatsForSelect(true);

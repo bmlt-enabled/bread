@@ -28,6 +28,7 @@ if (!class_exists("Bread")) {
 		var $formats_all = '';
 		var $translate = array();
 		var $services = '';
+		var $requested_setting = 1;
 		var $meeting_fields = array (
 			'id_bigint',
 			'service_body_bigint',
@@ -125,17 +126,18 @@ if (!class_exists("Bread")) {
 			$holder = $this->getCurrentMeetingListHolder();
 
             $current_settings = isset($holder['current-meeting-list']) ? intval($holder['current-meeting-list']) : 1;
-            $this->getMLOptions($current_settings);
 			$this->load_translations();
 			if (isset($holder['current-meeting-list']) && !is_admin()) {
+				$this->getMLOptions($current_settings);
 				add_action( 'plugins_loaded', array(&$this, 'bmlt_meeting_list' ));				
             } else if (is_admin()) {
+				$this->requested_setting = $current_settings;
                 add_action("admin_init", array(&$this, 'my_sideload_image'));
                 add_action("admin_menu", array(&$this, "admin_menu_link"));
                 add_filter('tiny_mce_before_init', array(&$this, 'tiny_tweaks'));
                 add_filter('mce_external_plugins', array(&$this, 'my_custom_plugins'));
                 add_filter('mce_buttons', array(&$this, 'my_register_mce_button'));
-                add_action("admin_notices", array(&$this, "is_root_server_missing"));
+                //add_action("admin_notices", array(&$this, "is_root_server_missing"));
                 add_action("admin_init", array(&$this, "pwsix_process_settings_export"));
                 add_action("admin_init", array(&$this, "pwsix_process_settings_import"));
                 add_action("admin_init", array(&$this, "pwsix_process_default_settings"));
@@ -268,10 +270,7 @@ if (!class_exists("Bread")) {
 		}
 
 		function clear_admin_message() {
-			remove_action("admin_notices", array(
-				&$this,
-				"is_root_server_missing"
-			));
+			//remove_action("admin_notices", array(&$this,"is_root_server_missing"));
 		}
 
 		function clear_admin_message2() {
@@ -333,8 +332,7 @@ if (!class_exists("Bread")) {
 			return $this->get($this->options['root_server']."/local_server/server_admin/xml.php?" . $query_string);				
 		} 
 		function requires_authentication() {
-			return $this->options['asm_logged_in'] &&
-				($this->options['include_meeting_email'] == 1 || $this->options['include_asm'] == 1);
+			return ($this->options['include_meeting_email'] == 1 || $this->options['include_asm'] == 1);
 		}
 		function get_root_server_request($url) {
 		    $cookies = null;
@@ -1224,7 +1222,15 @@ if (!class_exists("Bread")) {
 				!empty($value['phone_meeting_number']);
 			}
 			$enFormats = explode ( ",", $value['formats'] );
+			if ($format_key == "@F2F@") {
+				return (empty($value['virtual_meeting_link']) &&
+				empty($value['phone_meeting_number']));
+			}
 			return in_array ( $format_key, $enFormats );
+		}
+		function isNotHybrid($value) {
+			$enFormats = explode ( ",", $value['formats'] );
+			return !is_array('HY',$enFormats);
 		}
 		// include_asm = 0  -  let everything through
 		//               1  -  only meetings with asm format
@@ -1232,10 +1238,14 @@ if (!class_exists("Bread")) {
 		function getHeaderMeetings(&$result_meetings, $lang, $include_asm) {
 			$levels = $this->getHeaderLevels();
 			foreach ($result_meetings as &$value) {
-				$asm_test = $this->asm_test($value);
-				if ( $include_asm < 0 && $asm_test ) { continue; }
-				if ( $include_asm > 0 && !$asm_test ) { continue; }
 				$value = $this->enhance_meeting($value, $lang);
+				$asm_test = $this->asm_test($value);
+				if ((( $include_asm < 0 && $asm_test ) ||
+					( $include_asm > 0 && !$asm_test )) &&
+					$this->isNotHybrid($value) ) {
+						continue;
+				} 
+
 				$main_grouping = $this->getHeaderItem($value, 'main_grouping');
 				if (!isset($headerMeetings[$main_grouping])) {
 					$headerMeetings[$main_grouping] = array();
@@ -1754,6 +1764,7 @@ if (!class_exists("Bread")) {
 			}
 			$temp = array();
 			foreach ($this->service_meeting_result as $value) {
+				$value = $this->enhance_meeting($value, $this->options['asm_language']);
 				if ( $this->asm_test($value)  ) {
 					$temp[] = $value;
 				}
@@ -1773,7 +1784,6 @@ if (!class_exists("Bread")) {
 				$area_name = $this->get_area_name($meeting_value);
 				if ($template != '') {
 					$template = str_replace("&nbsp;", " ", $template);
-					$value = $this->enhance_meeting($value, $this->options['asm_language']);
 					$data .= $this->write_single_meeting($value, $template, $this->analyseTemplate($template),
 						$area_name);
 					continue;
@@ -1845,6 +1855,7 @@ if (!class_exists("Bread")) {
 		* Adds settings/options page
 		*/
 		function admin_options_page() {
+			$this->getMLOptions($this->requested_setting);
 			$this->lang = $this->get_bmlt_server_lang();
 		?>		
 			<div class="connecting"></div>
@@ -1945,7 +1956,6 @@ if (!class_exists("Bread")) {
 				$this->options['include_asm'] = boolval($_POST['include_asm']);
 				$this->options['asm_format_key'] = sanitize_text_field($_POST['asm_format_key']);
 				$this->options['asm_sort_order'] = sanitize_text_field($_POST['asm_sort_order']);
-				$this->options['asm_logged_in'] = isset($_POST['asm_logged_in']) ? boolval($_POST['asm_logged_in']) : false;
 				$this->options['bmlt_login_id'] = sanitize_text_field($_POST['bmlt_login_id']);
 				$this->options['bmlt_login_password'] = sanitize_text_field($_POST['bmlt_login_password']);
 				$this->options['base_font'] = sanitize_text_field($_POST['base_font']);
@@ -2157,12 +2167,6 @@ if (!class_exists("Bread")) {
 			}else{
 				$this->options['extra_meetings_enabled'] = 0;				
 			}
-			
-			if (strlen ($this->options['bmlt_login_password']) > 0 &&  strlen ($this->options['bmlt_login_password']) > 0) {
-				$this->options['asm_logged_in'] = wp_remote_retrieve_body($this->authenticate_root_server());
-			} else {
-				$this->options['asm_logged_in'] = false;
-			}
 		}
 		/**
 		 * Deletes transient cache
@@ -2188,6 +2192,7 @@ if (!class_exists("Bread")) {
 			return $num1 + $num2;
 		}
 		function pwsix_process_settings_admin() {
+			$this->getMLOptions($this->requested_setting);
 		    if ( isset($_POST['bmltmeetinglistsave']) && $_POST['bmltmeetinglistsave'] == 'Save Changes' )
 		        return;
 		    if( empty( $_POST['pwsix_action'] ) || 'settings_admin' != $_POST['pwsix_action'] )
@@ -2226,6 +2231,7 @@ if (!class_exists("Bread")) {
 		    }
 		}
 		function pwsix_process_rename_settings() {
+			$this->getMLOptions($this->requested_setting);
 		    if ( isset($_POST['bmltmeetinglistsave']) && $_POST['bmltmeetinglistsave'] == 'Save Changes' )
 		        return;
 			if( empty( $_POST['pwsix_action'] ) || 'rename_setting' != $_POST['pwsix_action'] )
@@ -2242,6 +2248,7 @@ if (!class_exists("Bread")) {
 		 * Process a settings export that generates a .json file of the shop settings
 		 */
 		function pwsix_process_settings_export() {
+			$this->getMLOptions($this->requested_setting);
             if ( isset($_POST['bmltmeetinglistsave']) && $_POST['bmltmeetinglistsave'] == 'Save Changes' )
                 return;
             if( empty( $_REQUEST['pwsix_action'] ) || 'export_settings' != $_REQUEST['pwsix_action'] )
@@ -2296,6 +2303,7 @@ if (!class_exists("Bread")) {
 		 * Process a settings import from a json file
 		 */
 		function pwsix_process_settings_import() {
+			$this->getMLOptions($this->requested_setting);
 			if ( isset($_POST['bmltmeetinglistsave']) && $_POST['bmltmeetinglistsave'] == 'Save Changes' )
 				return;
 			if( empty( $_REQUEST['pwsix_action'] ) || 'import_settings' != $_REQUEST['pwsix_action'] )
@@ -2334,6 +2342,7 @@ if (!class_exists("Bread")) {
 		 * Process a default settings
 		 */
 		function pwsix_process_default_settings() {
+			$this->getMLOptions($this->requested_setting);
 			if ( ! current_user_can( 'manage_bread' ) ||
 				(isset($_POST['bmltmeetinglistsave']) && $_POST['bmltmeetinglistsave'] == 'Save Changes' )) {
 				return;
