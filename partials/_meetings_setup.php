@@ -399,6 +399,9 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 						?>
                      </select>
                      </p><p>
+                     <label for="asm_custom_query">Custom Query: </label>
+                    <input type="text" id="asm_custom_query" name="asm_custom_query" size="100" value="<?php echo esc_html($this->options['asm_custom_query'])?>" />
+                    </p><p>
                     The additional list may include fields that might be used for say "service meetings".  To access these fields
                     you must login with an service body administrator account.
                     <br>
