@@ -53,6 +53,10 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 - Read here for more information: https://github.com/bmlt-enabled/bread/blob/unstable/contribute.md
 
 == Changelog ==
+= 2.5.0 =
+* Customized query for additional meeting list
+* Bug fixes
+
 = 2.4.4 =
 * Lazy Load Options and Hybrid Meetings
 
