@@ -5,7 +5,7 @@ Plugin URI: http://wordpress.org/extend/plugins/bread/
 Description: Maintains and generates a PDF Meeting List from BMLT.
 Author: bmlt-enabled
 Author URI: https://bmlt.app
-Version: 2.4.4
+Version: 2.5.0
 */
 /* Disallow direct access to the plugin file */
 use Mpdf\Mpdf;
@@ -594,7 +594,7 @@ if (!class_exists("Bread")) {
 			if ( !isset($this->options['cache_time']) ) {$this->options['cache_time'] = 0;}
 			if ( !isset($this->options['extra_meetings']) ) {$this->options['extra_meetings'] = '';}
 			if ( !isset($this->options['custom_query']) ) {$this->options['custom_query'] = '';}
-			if ( !isset($this->options['user_agent']) ) {$this->options['user_agent'] = 'Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0) +bread';}
+			if ( !isset($this->options['asm_custom_query']) ) {$this->options['asm_custom_query'] = '';}			if ( !isset($this->options['user_agent']) ) {$this->options['user_agent'] = 'Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0) +bread';}
 			if ( !isset($this->options['used_format_1']) ) {$this->options['used_format_1'] = '';}
 			if ( intval($this->options['cache_time']) > 0 && ! isset($_GET['nocache']) ) {
 				$transient_key = 'bmlt_ml_'.md5($this->options['root_server'].$services);
@@ -908,8 +908,8 @@ if (!class_exists("Bread")) {
 			if ($this->options['asm_language']=='') {
 				$this->options['asm_language'] = $this->options['weekday_language'];
 			}
-			if (strlen($this->options['asm_format_key'])>0 &&
-				$this->options['weekday_language'] != $this->options['asm_language']) {
+			if (strlen($this->options['asm_format_key'])>0) {
+				if ($this->options['weekday_language'] != $this->options['asm_language']) {
 					$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetFormats&lang_enum=".$this->getSingleLanguage($this->options['asm_language']));
 					$formats_all = json_decode(wp_remote_retrieve_body($results), true);
 					$this->sortBySubkey($formats_all, 'key_string');
@@ -920,7 +920,10 @@ if (!class_exists("Bread")) {
 								$this->options['asm_format_id'] = $thisFormat['id'];
 							}
 					}
+				} elseif (substr($this->options['asm_format_key'],0,1)=='@') {
+					$this->options['asm_format_id'] = $this->formats_by_key($this->options['asm_format_key']);
 				}
+			}
 			if ( strpos($this->options['custom_section_content'].$this->options['front_page_content'].$this->options['last_page_content'], '[format_codes_used_basic_es') !== false ) {
 				if ( $this->options['used_format_1'] == '' ) {
 					$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=time$get_used_formats&lang_enum=es" );
@@ -1739,10 +1742,13 @@ if (!class_exists("Bread")) {
 				if ($sort_order=='same') {
 					$sort_order = 'weekday_tinyint,start_time';
 				}
-				$asm_id = -1;
+				$asm_id = "";
 				if (isset($this->options['asm_format_id']))
-					$asm_id = $this->options['asm_format_id'];
-				$asm_query = "client_interface/json/?switcher=GetSearchResults$this->services&formats=$asm_id&sort_keys=$sort_order";
+					$asm_id = '&formats[]='.$this->options['asm_format_id'];
+				$services = $this->services;
+				if (!empty($this->options['asm_custom_query']))
+					$services = $this->options['asm_custom_query'];
+				$asm_query = "client_interface/json/?switcher=GetSearchResults$services$asm_id&sort_keys=$sort_order";
 				// I'm not sure we need this, but for now we need to emulate the old behavior
 				if ($this->options['asm_format_key']==='ASM') {
 					$asm_query .= "&advanced_published=0";
@@ -1973,6 +1979,7 @@ if (!class_exists("Bread")) {
 				$this->options['service_body_5'] = sanitize_text_field($_POST['service_body_5']);
 				$this->options['cache_time'] = intval($_POST['cache_time']);
 				$this->options['custom_query'] = sanitize_text_field($_POST['custom_query']);
+				$this->options['asm_custom_query'] = sanitize_text_field($_POST['asm_custom_query']);
 				$this->options['user_agent'] = sanitize_text_field($_POST['user_agent']);
 				$this->options['extra_meetings'] = isset($_POST['extra_meetings']) ? wp_kses_post($_POST['extra_meetings']) : '';
 				$authors = $_POST['authors_select'];
@@ -2159,6 +2166,7 @@ if (!class_exists("Bread")) {
 			$this->fillUnsetStringOption('bmlt_login_password', '');
 			$this->fillUnsetStringOption('protection_password', '');
 			$this->fillUnsetStringOption('custom_query','');
+			$this->fillUnsetStringOption('asm_custom_query','');
 			$this->fillUnsetStringOption('user_agent','Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0) +bread');
 			$this->fillUnsetOption('cache_time', 0);
 			$this->fillUnsetStringOption('extra_meetings', '');
