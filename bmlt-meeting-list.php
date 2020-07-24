@@ -920,7 +920,7 @@ if (!class_exists("Bread")) {
 								$this->options['asm_format_id'] = $thisFormat['id'];
 							}
 					}
-				} elseif (substr($this->options['asm_format_key'],0,1)=='@') {
+				} elseif (substr($this->options['asm_format_key'],0,1)!='@') {
 					$this->options['asm_format_id'] = $this->formats_by_key($this->options['asm_format_key']);
 				}
 			}
