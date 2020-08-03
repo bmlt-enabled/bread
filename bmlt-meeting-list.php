@@ -921,7 +921,7 @@ if (!class_exists("Bread")) {
 							}
 					}
 				} elseif (substr($this->options['asm_format_key'],0,1)!='@') {
-					$this->options['asm_format_id'] = $this->formats_by_key($this->options['asm_format_key']);
+					$this->options['asm_format_id'] = $this->formats_by_key[$this->options['asm_format_key']];
 				}
 			}
 			if ( strpos($this->options['custom_section_content'].$this->options['front_page_content'].$this->options['last_page_content'], '[format_codes_used_basic_es') !== false ) {
