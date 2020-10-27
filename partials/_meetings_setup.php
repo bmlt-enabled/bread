@@ -105,12 +105,12 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                             <label for="main_grouping">Main Grouping: </label>
                             <select id="main_grouping" name="main_grouping">					
                                 <option <?php echo ($this->options['main_grouping'] == 'day' ? 'selected="selected"' : '') ?> value="day">Weekday</option>
-                                <option <?php echo ($this->options['main_grouping'] == 'city' ? 'selected="selected"' : '') ?> value="city">City</option>
-                                <option <?php echo ($this->options['main_grouping'] == 'neighborhood' ? 'selected="selected"' : '') ?> value="neighborhood">Neighborhood</option>
+                                <option <?php echo ($this->options['main_grouping'] == 'location_municipality' ? 'selected="selected"' : '') ?> value="location_municipality">City</option>
+                                <option <?php echo ($this->options['main_grouping'] == 'location_neighborhood' ? 'selected="selected"' : '') ?> value="location_neighborhood">Neighborhood</option>
                                 <option <?php echo ($this->options['main_grouping'] == 'group' ? 'selected="selected"' : '') ?> value="group">Group</option>
-                                <option <?php echo ($this->options['main_grouping'] == 'county' ? 'selected="selected"' : '') ?> value="county">County</option>
-                                <option <?php echo ($this->options['main_grouping'] == 'borough' ? 'selected="selected"' : '') ?> value="borough">Borough</option>
-                                <option <?php echo ($this->options['main_grouping'] == 'state' ? 'selected="selected"' : '') ?> value="state">State</option>
+                                <option <?php echo ($this->options['main_grouping'] == 'location_sub_province' ? 'selected="selected"' : '') ?> value="location_sub_province">County</option>
+                                <option <?php echo ($this->options['main_grouping'] == 'location_city_subsection' ? 'selected="selected"' : '') ?> value="location_city_subsection">Borough</option>
+                                <option <?php echo ($this->options['main_grouping'] == 'location_province' ? 'selected="selected"' : '') ?> value="location_province">State</option>
                                 <?php
                                     $fks = $this->get_nonstandard_fieldkeys();
 							        foreach ($fks as $fk) {
@@ -126,11 +126,12 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                             <select id="subgrouping" name="subgrouping">
                                 <option <?php echo (empty($this->options['subgrouping']) ? 'selected="selected"' : '') ?> value="">None</option>
                                 <option <?php echo ($this->options['subgrouping'] == 'day' ? 'selected="selected"' : '') ?> value="day">Weekday</option>
-                                <option <?php echo ($this->options['subgrouping'] == 'city' ? 'selected="selected"' : '') ?> value="city">City</option>
+                                <option <?php echo ($this->options['subgrouping'] == 'location_municipality' ? 'selected="selected"' : '') ?> value="location_municipality">City</option>
+                                <option <?php echo ($this->options['subgrouping'] == 'location_neighborhood' ? 'selected="selected"' : '') ?> value="location_neighborhood">Neighborhood</option>
                                 <option <?php echo ($this->options['subgrouping'] == 'group' ? 'selected="selected"' : '') ?> value="group">Group</option>
-                                <option <?php echo ($this->options['subgrouping'] == 'county' ? 'selected="selected"' : '') ?> value="county">County</option>
-                                <option <?php echo ($this->options['subgrouping'] == 'borough' ? 'selected="selected"' : '') ?> value="borough">Borough</option>
-                                <option <?php echo ($this->options['subgrouping'] == 'state' ? 'selected="selected"' : '') ?> value="state">State</option>
+                                <option <?php echo ($this->options['subgrouping'] == 'location_sub_province' ? 'selected="selected"' : '') ?> value="location_sub_province">County</option>
+                                <option <?php echo ($this->options['subgrouping'] == 'location_city_subsection' ? 'selected="selected"' : '') ?> value="location_city_subsection">Borough</option>
+                                <option <?php echo ($this->options['subgrouping'] == 'location_province' ? 'selected="selected"' : '') ?> value="location_province">State</option>
                                 <?php
 							        foreach ($fks as $fk) {
                                         $selected = '';
