@@ -5,7 +5,7 @@ Plugin URI: http://wordpress.org/extend/plugins/bread/
 Description: Maintains and generates a PDF Meeting List from BMLT.
 Author: bmlt-enabled
 Author URI: https://bmlt.app
-Version: 2.5.4
+Version: 2.5.5
 */
 /* Disallow direct access to the plugin file */
 use Mpdf\Mpdf;
@@ -20,7 +20,7 @@ include 'partials/_helpers.php';
 if (!class_exists("Bread")) {
 	class Bread {
 		var $lang = '';
-		var $mpdf = '';
+		var $mpdf = null;
 		var $meeting_count = 0;
 		var $formats_used = '';
 		var $formats_by_key = array();
@@ -1224,16 +1224,16 @@ if (!class_exists("Bread")) {
 				return !empty($value['virtual_meeting_link']) ||
 				!empty($value['phone_meeting_number']);
 			}
-			$enFormats = explode ( ",", $value['formats'] );
 			if ($format_key == "@F2F@") {
-				return (empty($value['virtual_meeting_link']) &&
-				empty($value['phone_meeting_number']));
+				return (empty($value['virtual_meeting_link']) && empty($value['phone_meeting_number']) )
+					|| $this->isHybrid($value);
 			}
+			$enFormats = explode ( ",", $value['formats'] );
 			return in_array ( $format_key, $enFormats );
 		}
-		function isNotHybrid($value) {
+		function isHybrid($value) {
 			$enFormats = explode ( ",", $value['formats'] );
-			return !is_array('HY',$enFormats);
+			return in_array('HY',$enFormats);
 		}
 		// include_asm = 0  -  let everything through
 		//               1  -  only meetings with asm format
@@ -1244,8 +1244,7 @@ if (!class_exists("Bread")) {
 				$value = $this->enhance_meeting($value, $lang);
 				$asm_test = $this->asm_test($value);
 				if ((( $include_asm < 0 && $asm_test ) ||
-					( $include_asm > 0 && !$asm_test )) &&
-					$this->isNotHybrid($value) ) {
+					( $include_asm > 0 && !$asm_test ))) {
 						continue;
 				} 
 
@@ -1342,7 +1341,7 @@ if (!class_exists("Bread")) {
 			if (strlen(trim($grouping))==0) {
 				return 'NO DATA';
 			}
-			if (strlen($this->options[$name.$alt.'_suffix'])>0) {
+			if (!empty($this->options[$name.$alt.'_suffix'])) {
 				return $grouping.' '.$this->options[$name.$alt.'_suffix'];
 			}
 			return $grouping;
@@ -1495,6 +1494,7 @@ if (!class_exists("Bread")) {
 
 			$meeting_value['day_abbr'] = $this->getday($meeting_value['weekday_tinyint'], true, $lang);
 			$meeting_value['day'] = $this->getday($meeting_value['weekday_tinyint'], false, $lang);
+			$area_name = $this->get_area_name($meeting_value);
 			$meeting_value['area_name'] = $area_name;
 			$meeting_value['area_i'] = substr($area_name, 0, 1);
 			// Extensions.
@@ -1787,7 +1787,7 @@ if (!class_exists("Bread")) {
 				$data .= "<table style='line-height:".$line_height."; font-size:".$font_size."pt; width:100%;'>";
 			}
 			foreach ($this->service_meeting_result as $value) {
-				$area_name = $this->get_area_name($meeting_value);
+				$area_name = $this->get_area_name($value);
 				if ($template != '') {
 					$template = str_replace("&nbsp;", " ", $template);
 					$data .= $this->write_single_meeting($value, $template, $this->analyseTemplate($template),
