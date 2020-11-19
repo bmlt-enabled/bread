@@ -10,7 +10,7 @@ Version: 2.5.6
 /* Disallow direct access to the plugin file */
 use Mpdf\Mpdf;
 use function DeepCopy\deep_copy;
-error_reporting(1);
+
 if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 	die('Sorry, but you cannot access this page directly.');
 }

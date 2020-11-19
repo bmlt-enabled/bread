@@ -14,7 +14,7 @@
     }
   ],
   "require": {
-    "mpdf/mpdf": "8.0.1",
+    "mpdf/mpdf": "8.0.7",
     "mpdf/qrcode": "^1.0",
     "myclabs/deep-copy": "1.8.1"
   },
