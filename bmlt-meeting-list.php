@@ -1282,7 +1282,7 @@ if (!class_exists("Bread")) {
 			}
 			return $this_heading;
 		}
-		function skip($this_heading) {
+		function skip_heading($this_heading) {
 			return (mb_substr($this_heading,0,5)=='[XXX]');
 		}
 		function writeBreak($mpdf) {
