@@ -977,7 +977,7 @@ if (!class_exists("Bread")) {
 			$this->mpdf->SetDefaultBodyCSS('line-height', $this->options['content_line_height']);
 			$this->upgradeHeaderData();
 
-			$this->writeMeetings($result_meetings,$this->options['meeting_template_content'],$this->options['weekday_language'],$this->options['include_asm']==0 ? -1 : 0);
+			$this->writeMeetings($result_meetings,$this->options['meeting_template_content'],$this->options['weekday_language'],$this->options['include_asm']==0 ? -1 : 0, true);
 
 			if ( $this->options['page_fold'] !== 'half' && $this->options['page_fold'] !== 'full' ) {
 				$this->write_custom_section();
@@ -1132,8 +1132,8 @@ if (!class_exists("Bread")) {
 		// include_asm = 0  -  let everything through
 		//               1  -  only meetings with asm format
 		//              -1  -  only meetings without asm format
-		function writeMeetings($result_meetings,$template,$lang,$include_asm) {
-			$headerMeetings = $this->getHeaderMeetings($result_meetings,$lang,$include_asm);
+		function writeMeetings($result_meetings,$template,$lang,$include_asm,$asm_flag) {
+			$headerMeetings = $this->getHeaderMeetings($result_meetings,$lang,$include_asm,$asm_flag);
 			$unique_heading = $this->getUniqueHeadings($headerMeetings);
 			
 			$header_style = "color:".$this->options['header_text_color'].";";
@@ -1219,9 +1219,10 @@ if (!class_exists("Bread")) {
 				}
 			}
 		}
-		function asm_test($value) {
+		function asm_test($value,$flag=false) {
 			$format_key = $this->options['asm_format_key'];
 			if ($format_key == "@Virtual@") {
+				if ($flag && $this->isHybrid($value)) return false;
 				return !empty($value['virtual_meeting_link']) ||
 				!empty($value['phone_meeting_number']);
 			}
@@ -1239,11 +1240,11 @@ if (!class_exists("Bread")) {
 		// include_asm = 0  -  let everything through
 		//               1  -  only meetings with asm format
 		//              -1  -  only meetings without asm format
-		function getHeaderMeetings(&$result_meetings, $lang, $include_asm) {
+		function getHeaderMeetings(&$result_meetings, $lang, $include_asm,$asm_flag) {
 			$levels = $this->getHeaderLevels();
 			foreach ($result_meetings as &$value) {
 				$value = $this->enhance_meeting($value, $lang);
-				$asm_test = $this->asm_test($value);
+				$asm_test = $this->asm_test($value,$asm_flag);
 				if ((( $include_asm < 0 && $asm_test ) ||
 					( $include_asm > 0 && !$asm_test ))) {
 						continue;
@@ -1769,13 +1770,13 @@ if (!class_exists("Bread")) {
 				} else {
 					$template = $this->options['meeting_template_content'];
 				}
-				$this->writeMeetings($this->service_meeting_result,$template,$this->options['asm_language'],1);
+				$this->writeMeetings($this->service_meeting_result,$template,$this->options['asm_language'],1,false);
 				return;
 			}
 			$temp = array();
 			foreach ($this->service_meeting_result as $value) {
 				$value = $this->enhance_meeting($value, $this->options['asm_language']);
-				if ( $this->asm_test($value)  ) {
+				if ( $this->asm_test($value,false)  ) {
 					$temp[] = $value;
 				}
 			}
