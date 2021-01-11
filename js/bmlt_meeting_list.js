@@ -421,7 +421,7 @@ var $ml = jQuery.noConflict
 			$ml("#header_options_div").show();
 		}
 	});
-	$ml("#meeting_sort").click(function() {
+	$ml("#meeting_sort").change(function() {
 		var meeting_sort_val = $ml("#meeting_sort").val();
         $ml('.borough_by_suffix').hide();
         $ml('.county_by_suffix').hide();

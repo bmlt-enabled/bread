@@ -1242,6 +1242,7 @@ if (!class_exists("Bread")) {
 		//              -1  -  only meetings without asm format
 		function getHeaderMeetings(&$result_meetings, $lang, $include_asm,$asm_flag) {
 			$levels = $this->getHeaderLevels();
+			$headerMeetings = array();
 			foreach ($result_meetings as &$value) {
 				$value = $this->enhance_meeting($value, $lang);
 				$asm_test = $this->asm_test($value,$asm_flag);
