@@ -5,7 +5,7 @@ Tags: meeting list, bmlt, narcotics anonymous, na
 Requires at least: 4.0
 
 Requires PHP: 7.1
-Tested up to: 5.5.3
+Tested up to: 5.6
 Stable tag: 2.5.6
 
 License: GPLv2 or later
