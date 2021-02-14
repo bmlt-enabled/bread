@@ -5,7 +5,7 @@ Plugin URI: http://wordpress.org/extend/plugins/bread/
 Description: Maintains and generates a PDF Meeting List from BMLT.
 Author: bmlt-enabled
 Author URI: https://bmlt.app
-Version: 2.5.6
+Version: 2.5.7
 */
 /* Disallow direct access to the plugin file */
 use Mpdf\Mpdf;
@@ -522,6 +522,7 @@ if (!class_exists("Bread")) {
 			}
 		}
 		function bmlt_meeting_list($atts = null, $content = null) {
+			$import_streams = [];
 			ini_set('max_execution_time', 600); // tomato server can take a long time to generate a schedule, override the server setting
 			$this->lang = $this->get_bmlt_server_lang();
 			// addServiceBody has the side effect that
@@ -600,7 +601,7 @@ if (!class_exists("Bread")) {
 				$transient_key = 'bmlt_ml_'.md5($this->options['root_server'].$services);
 				if ( false !== ( $content = get_transient( $transient_key ) ) ) {
 					$content = pack("H*" , $content );
-					$name = "current_meeting_list_".strtolower( date ( "njYghis" ) ).".pdf";
+					$name = $this->get_FilePath();
 					header('Content-Type: application/pdf');
 					header('Content-Length: '.strlen($content));
 					header('Content-disposition: inline; filename="'.$name.'"');
@@ -795,12 +796,14 @@ if (!class_exists("Bread")) {
                 ]);
 				
 				$this->mpdf_column->WriteHTML($html);
-				$FilePath = ABSPATH . "column_tmp_".strtolower( date ( "njYghis" ) ).".pdf";
+				$FilePath = ABSPATH . $this->get_FilePath('_column');
 				$this->mpdf_column->Output($FilePath,'F');
-				$pagecount = $this->mpdf->SetSourceFile($FilePath);
+				$h = \fopen($FilePath, 'rb');
+				$stream = new \setasign\Fpdi\PdfParser\StreamReader($h, false);
+				$import_streams[$FilePath] = $stream;
+				$pagecount = $this->mpdf->SetSourceFile($stream);
 				$tplId = $this->mpdf->importPage($pagecount);
 				$this->mpdf->SetPageTemplate($tplId);
-				unlink($FilePath);
 			}
 			//let's leave the enhancement mechanism open for now.
 			//apply_filters is one option, perhaps we will think of something better.
@@ -954,7 +957,6 @@ if (!class_exists("Bread")) {
 			//$this->uniqueFormat($this->formats_used, 'key_string');
             //$this->uniqueFormat($this->formats_all, 'key_string');
 			$this->meeting_count = count($result_meetings);		
-			$unique_heading = array();
 
 			$result_meetings = $this->orderByWeekdayStart($result_meetings);
 			if ( $this->options['page_fold'] === 'full' || $this->options['page_fold'] === 'half' || $this->options['page_fold'] === 'flyer') {
@@ -988,9 +990,8 @@ if (!class_exists("Bread")) {
 				}
 			}
 			$this->mpdf->SetDisplayMode('fullpage','two');
-			$upload_dir = wp_upload_dir();
-			$FilePath = ABSPATH . "current_meeting_list_".strtolower( date ( "njYghis" ) ).".pdf";
 			if ( $this->options['page_fold'] == 'half' ) {
+				$FilePath = ABSPATH. $this->get_FilePath('_half');
 				$this->mpdf->Output($FilePath,'F');
 				$mpdfOptions = [
                         'mode' => $mode,
@@ -1018,7 +1019,10 @@ if (!class_exists("Bread")) {
 				$oh = $this->mpdftmp->w;
 				$pw = $this->mpdftmp->w / 2;
 				$ph = $this->mpdftmp->h;
-				$pagecount = $this->mpdftmp->SetSourceFile($FilePath);
+				$h = \fopen($FilePath, 'rb');
+				$stream = new \setasign\Fpdi\PdfParser\StreamReader($h, false);
+				$import_streams[$FilePath] = $stream;
+				$pagecount = $this->mpdftmp->SetSourceFile($stream);
 				$pp = $this->get_booklet_pages($pagecount);
 				foreach($pp AS $v) {
 					$this->mpdftmp->AddPage(); 
@@ -1030,11 +1034,10 @@ if (!class_exists("Bread")) {
 						$tplIdx = $this->mpdftmp->importPage($v[1]);
 						$this->mpdftmp->UseTemplate($tplIdx, $pw, 0, $pw, $ph);
 					}
-				}					
-				unlink($FilePath);
-				$FilePath = ABSPATH . "current_meeting_list_".strtolower( date ( "njYghis" ) ).".pdf";
+				}
 				$this->mpdf = $this->mpdftmp;
 			} else if ($this->options['page_fold'] == 'full' && $this->options['booklet_pages']) {
+				$FilePath = ABSPATH. $this->get_FilePath('_full');
 				$this->mpdf->Output($FilePath,'F');
 				$mpdfOptions = [
 					'mode' => $mode,
@@ -1052,7 +1055,10 @@ if (!class_exists("Bread")) {
 				$this->mpdftmp=new mPDF($mpdfOptions);
 
 				//$this->mpdftmp->SetImportUse(); 
-				$np = $this->mpdftmp->SetSourceFile($FilePath);
+				$h = \fopen($FilePath, 'rb');
+				$stream = new \setasign\Fpdi\PdfParser\StreamReader($h, false);
+				$import_streams[$FilePath] = $stream;
+				$np = $this->mpdftmp->SetSourceFile($stream);
 				$pp = 4*ceil($np/4);
 				for ($i=1; $i<$np; $i++) {
 					$this->mpdftmp->AddPage(); 
@@ -1065,10 +1071,9 @@ if (!class_exists("Bread")) {
 				$this->mpdftmp->AddPage();
 				$tplIdx = $this->mpdftmp->ImportPage($np);
 				$this->mpdftmp->UseTemplate($tplIdx);					
-				unlink($FilePath);
-				$FilePath = ABSPATH . "current_meeting_list_".strtolower( date ( "njYghis" ) ).".pdf";
 				$this->mpdf = $this->mpdftmp;
 			} else if ($this->options['page_fold'] == 'flyer' ) {
+				$FilePath = ABSPATH. $this->get_FilePath('_flyer');
 				$this->mpdf->Output($FilePath,'F');
 				$mpdfOptions = [
 					'mode' => $mode,
@@ -1085,8 +1090,10 @@ if (!class_exists("Bread")) {
 				];
 				$this->mpdftmp=new mPDF($mpdfOptions); 
 				//$this->mpdftmp->SetImportUse();
-
-				$np = $this->mpdftmp->SetSourceFile($FilePath);
+				$h = \fopen($FilePath, 'rb');
+				$stream = new \setasign\Fpdi\PdfParser\StreamReader($h, false);
+				$import_streams[$FilePath] = $stream;
+				$np = $this->mpdftmp->SetSourceFile($stream);
 				$ow = $this->mpdftmp->w;
 				$oh = $this->mpdftmp->h;
 				$fw = $ow / 3;
@@ -1101,9 +1108,7 @@ if (!class_exists("Bread")) {
 				$this->mpdftmp->UseTemplate($tplIdx,0,0);
 				$this->mpdftmp->UseTemplate($tplIdx,$fw,0);
 				$this->mpdftmp->UseTemplate($tplIdx,$fw+$fw,0);	
-				$this->addColumnSeparators($oh);				
-				unlink($FilePath);
-				$FilePath = ABSPATH . "current_meeting_list_".strtolower( date ( "njYghis" ) ).".pdf";
+				$this->addColumnSeparators($oh);
 				$this->mpdf = $this->mpdftmp;
 			}
 			if ( $this->options['include_protection'] == 1 ) {
@@ -1116,9 +1121,12 @@ if (!class_exists("Bread")) {
 				$transient_key = 'bmlt_ml_'.md5($this->options['root_server'].$services);
 				set_transient( $transient_key, $content, intval($this->options['cache_time']) * HOUR_IN_SECONDS );
 			}			
-			$FilePath = "current_meeting_list_".strtolower( date ( "njYghis" ) ).".pdf";
-				
+			$FilePath = $this->get_FilePath();
 			$this->mpdf->Output($FilePath,'I');
+			foreach ($import_streams as $FilePath=>$stream) {
+				unlink($FilePath);
+			}
+
 			exit;
 		}
 		function orderByWeekdayStart(&$result_meetings) {
@@ -1128,6 +1136,9 @@ if (!class_exists("Bread")) {
 				array_splice($result_meetings, array_search($today_str, $days)),
 				array_splice($result_meetings, 0)
 			);
+		}
+		function get_FilePath($pos='') {
+			return "bread_".$this->loaded_setting.$pos.'_'.strtolower( date ( "njYghis" ) ).".pdf";
 		}
 		// include_asm = 0  -  let everything through
 		//               1  -  only meetings with asm format
@@ -2423,7 +2434,7 @@ if (!class_exists("Bread")) {
 			$this->options = $theOptions;
 			$this->fillUnsetOptions();
 			$this->upgrade_settings();
-			$this->authors_safe = $theOptions['authors'];
+			$this->authors_safe = isset($theOptions['authors']) ? $theOptions['authors'] : array();
 			$this->loaded_setting = $current_setting;
 		}
 
