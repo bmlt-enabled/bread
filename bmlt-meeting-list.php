@@ -597,9 +597,9 @@ if (!class_exists("Bread")) {
 			if ( !isset($this->options['custom_query']) ) {$this->options['custom_query'] = '';}
 			if ( !isset($this->options['asm_custom_query']) ) {$this->options['asm_custom_query'] = '';}			if ( !isset($this->options['user_agent']) ) {$this->options['user_agent'] = 'Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0) +bread';}
 			if ( !isset($this->options['used_format_1']) ) {$this->options['used_format_1'] = '';}
-			if ( intval($this->options['cache_time']) > 0 && ! isset($_GET['nocache']) ) {
-				$transient_key = 'bmlt_ml_'.md5($this->options['root_server'].$services);
-				if ( false !== ( $content = get_transient( $transient_key ) ) ) {
+			if ( intval($this->options['cache_time']) > 0 && ! isset($_GET['nocache']) &&
+					! isset($_GET['custom_query'])) {
+				if ( false !== ( $content = get_transient( $this->get_TransientKey() ) ) ) {
 					$content = pack("H*" , $content );
 					$name = $this->get_FilePath();
 					header('Content-Type: application/pdf');
@@ -1115,10 +1115,11 @@ if (!class_exists("Bread")) {
 				// 'copy','print','modify','annot-forms','fill-forms','extract','assemble','print-highres'
 				$this->mpdf->SetProtection(array('copy','print','print-highres'), '', $this->options['protection_password']);
 			}
-			if ( intval($this->options['cache_time']) > 0 && ! isset($_GET['nocache']) ) {
+			if ( intval($this->options['cache_time']) > 0 && ! isset($_GET['nocache']) 
+			     && !isset($_GET['custom_query'])) {
 				$content = $this->mpdf->Output('', 'S');
 				$content = bin2hex($content);
-				$transient_key = 'bmlt_ml_'.md5($this->options['root_server'].$services);
+				$transient_key = $this->get_TransientKey();
 				set_transient( $transient_key, $content, intval($this->options['cache_time']) * HOUR_IN_SECONDS );
 			}			
 			$FilePath = $this->get_FilePath();
@@ -1138,7 +1139,11 @@ if (!class_exists("Bread")) {
 			);
 		}
 		function get_FilePath($pos='') {
-			return "bread_".$this->loaded_setting.$pos.'_'.strtolower( date ( "njYghis" ) ).".pdf";
+			$site = '';
+			if (is_multisite()) {
+				$site = get_current_blog_id().'_';
+			}
+			return "bread_".$site.$this->loaded_setting.$pos.'_'.strtolower( date ( "njYghis" ) ).".pdf";
 		}
 		// include_asm = 0  -  let everything through
 		//               1  -  only meetings with asm format
@@ -2011,17 +2016,17 @@ if (!class_exists("Bread")) {
 				$this->save_admin_options();
 				set_transient( 'admin_notice', 'Please put down your weapon. You have 20 seconds to comply.' );
 				echo '<div class="updated"><p style="color: #F00;">Your changes were successfully saved!</p>';
-				$num = $this->delete_transient_cache();
+				$num = delete_transient($this->get_TransientKey());
 				if ( $num > 0 ) {
 					echo "<p>$num Cache entries deleted</p>";
 				}
 				echo '</div>';
 			} elseif ( isset($_REQUEST['pwsix_action']) && $_REQUEST['pwsix_action'] == "import_settings" ) {
 				echo '<div class="updated"><p style="color: #F00;">Your file was successfully imported!</p></div>';
-				$num = $this->delete_transient_cache();
+				$num = delete_transient($this->get_TransientKey());
 			} elseif ( isset($_REQUEST['pwsix_action']) && $_REQUEST['pwsix_action'] == "default_settings_success" ) {
 				echo '<div class="updated"><p style="color: #F00;">Your default settings were successfully updated!</p></div>';
-				$num = $this->delete_transient_cache();
+				$num = delete_transient($this->get_TransientKey());
 			}
 			global $wpdb;
 			$query = "SELECT COUNT(*) FROM {$wpdb->posts} WHERE guid LIKE '%default_nalogo.jpg%'";
@@ -2193,28 +2198,11 @@ if (!class_exists("Bread")) {
 				$this->options['extra_meetings_enabled'] = 0;				
 			}
 		}
-		/**
-		 * Deletes transient cache
-		 */
-		function delete_transient_cache() {
-			global $wpdb, $_wp_using_ext_object_cache;
-			wp_cache_flush();
-			$num1 = $wpdb->query($wpdb->prepare("DELETE FROM $wpdb->options WHERE option_name LIKE %s ", '_transient_bmlt_ml_%'));
-			$num2 = $wpdb->query($wpdb->prepare("DELETE FROM $wpdb->options WHERE option_name LIKE %s ", '_transient_timeout_bmlt_ml_%'));
-			wp_cache_flush();
-			return $num1 + $num2;
+		function get_TransientPrefix() {
+			return '_bread';
 		}
-
-		/**
-		 * count transient cache
-		 */
-		function count_transient_cache() {
-			global $wpdb, $_wp_using_ext_object_cache;
-			wp_cache_flush();
-			$num1 = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $wpdb->options WHERE option_name LIKE %s ", '_transient_bmlt_ml_%'));
-			$num2 = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $wpdb->options WHERE option_name LIKE %s ", '_transient_timeout_bmlt_ml_%'));
-			wp_cache_flush();
-			return $num1 + $num2;
+		function get_TransientKey() {
+			return $this->get_TransientPrefix().'__'.$this->loaded_setting;
 		}
 		function pwsix_process_settings_admin() {
 			$this->getMLOptions($this->requested_setting);
