@@ -232,7 +232,7 @@ foreach($all_users as $user){
                 </div>
             </div>
             <div id="meetinglistcachediv" class="postbox">
-                <h3 class="hndle">Meeting List Cache (<?php echo $this->count_transient_cache(); ?> Cached Entries)<span title='<p>Meeting List data is cached (as database transient) to generate a Meeting List faster.</p><p><i>CACHE is DELETED when you Save Changes.</i></p><p><b>The meeting list will not reflect changes to BMLT until the cache expires or is deleted.</b></p>' class="tooltip"></span></h3>
+                <h3 class="hndle">Meeting List Cache<span title='<p>Meeting List data is cached (as database transient) to generate a Meeting List faster.</p><p><i>CACHE is DELETED when you Save Changes.</i></p><p><b>The meeting list will not reflect changes to BMLT until the cache expires or is deleted.</b></p>' class="tooltip"></span></h3>
                 <div class="inside">
                     <?php global $_wp_using_ext_object_cache; ?>
                     <?php if ( $_wp_using_ext_object_cache ) { ?>
