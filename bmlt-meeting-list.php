@@ -5,7 +5,7 @@ Plugin URI: http://wordpress.org/extend/plugins/bread/
 Description: Maintains and generates a PDF Meeting List from BMLT.
 Author: bmlt-enabled
 Author URI: https://bmlt.app
-Version: 2.5.8
+Version: 2.5.9
 */
 /* Disallow direct access to the plugin file */
 use Mpdf\Mpdf;
@@ -439,19 +439,17 @@ if (!class_exists("Bread")) {
 		
 		function testRootServer($override_root_server = null) {
 			if ($override_root_server == null) {
-				$results = $this->get_configured_root_server_request("client_interface/serverInfo.xml");
+				$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetServerInfo");
 			} else {
-				$results = $this->get_root_server_request($override_root_server."/client_interface/serverInfo.xml");
+				$results = $this->get_root_server_request($override_root_server."/client_interface/json/?switcher=GetServerInfo");
 			}
 			$httpcode = wp_remote_retrieve_response_code($results);
 			if ($httpcode != 200 && $httpcode != 302 && $httpcode != 304) {
 				return false;
 			}
-			$results = simplexml_load_string(wp_remote_retrieve_body($results));
-			$results = json_encode($results);
-			$results = json_decode($results,TRUE);
-			$results = $results["serverVersion"]["readableString"];
-			return $results;
+            $result = json_decode(wp_remote_retrieve_body($results), true);
+            $result = $result[0]["version"];
+			return $result;
 		}
 		// This is used from the AdminUI, not to generate the
 		// meeting list.
