@@ -6,7 +6,7 @@ Requires at least: 4.0
 
 Requires PHP: 7.1
 Tested up to: 5.6.1
-Stable tag: 2.5.8
+Stable tag: 2.5.9
 
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -55,6 +55,9 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 - Read here for more information: https://github.com/bmlt-enabled/bread/blob/unstable/contribute.md
 
 == Changelog ==
+
+= 2.5.9 =
+* Using json endpoint for version checking.
 
 = 2.5.7 =
 * Fixed problem with Caching
