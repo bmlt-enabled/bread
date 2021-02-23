@@ -242,6 +242,7 @@ if (!class_exists("Bread")) {
 				$initArray['font_formats']='Arial (Default)=arial;';
 				$initArray['font_formats'].='Times (Sans-Serif)=times;';
 				$initArray['font_formats'].='Courier (Monospace)=courier;';
+				$initArray['content_style'] = 'body { font-family: Arial; }';
 			}
 			return $initArray;
 		}
@@ -593,7 +594,8 @@ if (!class_exists("Bread")) {
 			if ( !isset($this->options['cache_time']) ) {$this->options['cache_time'] = 0;}
 			if ( !isset($this->options['extra_meetings']) ) {$this->options['extra_meetings'] = '';}
 			if ( !isset($this->options['custom_query']) ) {$this->options['custom_query'] = '';}
-			if ( !isset($this->options['asm_custom_query']) ) {$this->options['asm_custom_query'] = '';}			if ( !isset($this->options['user_agent']) ) {$this->options['user_agent'] = 'Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0) +bread';}
+			if ( !isset($this->options['asm_custom_query']) ) {$this->options['asm_custom_query'] = '';}			
+			if ( !isset($this->options['user_agent']) ) {$this->options['user_agent'] = 'Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0) +bread';}
 			if ( !isset($this->options['used_format_1']) ) {$this->options['used_format_1'] = '';}
 			if ( intval($this->options['cache_time']) > 0 && ! isset($_GET['nocache']) &&
 					! isset($_GET['custom_query'])) {
