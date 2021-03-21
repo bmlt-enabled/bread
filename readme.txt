@@ -5,7 +5,7 @@ Tags: meeting list, bmlt, narcotics anonymous, na
 Requires at least: 4.0
 
 Requires PHP: 7.1
-Tested up to: 5.6.1
+Tested up to: 5.7
 Stable tag: 2.5.9
 
 License: GPLv2 or later
@@ -58,6 +58,8 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 
 = 2.5.9 =
 * Using json endpoint for version checking.
+* Added filter to change download name
+* Allow non-integer line heights for custom content.
 
 = 2.5.7 =
 * Fixed problem with Caching

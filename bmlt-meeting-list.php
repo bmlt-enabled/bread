@@ -592,7 +592,7 @@ if (!class_exists("Bread")) {
 			if ( !isset($this->options['bmlt_login_password']) ) {$this->options['bmlt_login_password'] = '';}
 			if ( !isset($this->options['protection_password']) ) {$this->options['protection_password'] = '';}
 			if ( !isset($this->options['cache_time']) ) {$this->options['cache_time'] = 0;}
-			if ( !isset($this->options['extra_meetings']) ) {$this->options['extra_meetings'] = '';}
+			if ( !isset($this->options['extra_meetings']) ) {$this->options['extra_meetings'] = [];}
 			if ( !isset($this->options['custom_query']) ) {$this->options['custom_query'] = '';}
 			if ( !isset($this->options['asm_custom_query']) ) {$this->options['asm_custom_query'] = '';}			
 			if ( !isset($this->options['user_agent']) ) {$this->options['user_agent'] = 'Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0) +bread';}
@@ -871,7 +871,7 @@ if (!class_exists("Bread")) {
             }
 
             $result = json_decode(wp_remote_retrieve_body($results), true);
-            if ( $this->options['extra_meetings'] ) {
+            if ( !empty($this->options['extra_meetings'] )) {
                 $extras = "";
                 foreach ($this->options['extra_meetings'] as $value) {
                     $data = array(" [", "]");
@@ -1122,7 +1122,7 @@ if (!class_exists("Bread")) {
 				$transient_key = $this->get_TransientKey();
 				set_transient( $transient_key, $content, intval($this->options['cache_time']) * HOUR_IN_SECONDS );
 			}			
-			$FilePath = $this->get_FilePath();
+			$FilePath = apply_filters("Bread_Download_Name",$this->get_FilePath(), $this->options['service_body_1'], $this->allSettings[$this->loaded_setting]);
 			$this->mpdf->Output($FilePath,'I');
 			foreach ($import_streams as $FilePath=>$stream) {
 				unlink($FilePath);
@@ -1143,7 +1143,7 @@ if (!class_exists("Bread")) {
 			if (is_multisite()) {
 				$site = get_current_blog_id().'_';
 			}
-			return "bread_".$site.$this->loaded_setting.$pos.'_'.strtolower( date ( "njYghis" ) ).".pdf";
+			return "meetinglist_".$site.$this->loaded_setting.$pos.'_'.strtolower( date ( "njYghis" ) ).".pdf";
 		}
 		// include_asm = 0  -  let everything through
 		//               1  -  only meetings with asm format
@@ -1969,7 +1969,7 @@ if (!class_exists("Bread")) {
 				$this->options['column_line'] = boolval($_POST['column_line']); #seperator
 				$this->options['col_color'] = validate_hex_color($_POST['col_color']);
 				$this->options['custom_section_content'] = wp_kses_post($_POST['custom_section_content']);
-				$this->options['custom_section_line_height'] = intval($_POST['custom_section_line_height']);
+				$this->options['custom_section_line_height'] = floatval($_POST['custom_section_line_height']);
 				$this->options['custom_section_font_size'] = floatval($_POST['custom_section_font_size']);
 				$this->options['pagenumbering_font_size'] = floatval($_POST['pagenumbering_font_size']);
 				$this->options['used_format_1'] = sanitize_text_field($_POST['used_format_1']);
@@ -2003,7 +2003,12 @@ if (!class_exists("Bread")) {
 				$this->options['custom_query'] = sanitize_text_field($_POST['custom_query']);
 				$this->options['asm_custom_query'] = sanitize_text_field($_POST['asm_custom_query']);
 				$this->options['user_agent'] = sanitize_text_field($_POST['user_agent']);
-				$this->options['extra_meetings'] = isset($_POST['extra_meetings']) ? wp_kses_post($_POST['extra_meetings']) : '';
+				$this->options['extra_meetings'] = array();
+				if (isset($_POST['extra_meetings'])) {
+					foreach ($_POST['extra_meetings'] as $extra) {
+						$this->options['extra_meetings'][] = wp_kses_post($extra);
+					}
+				}
 				$authors = $_POST['authors_select'];
 				$this->options['authors'] = array();
 				foreach ($authors as $author) {
@@ -2131,6 +2136,14 @@ if (!class_exists("Bread")) {
 				$this->options[$option] = $default;
 			}			
 		}
+		function fillUnsetArrayOption($option, $default) {
+			if ( !isset($this->options[$option]) || !is_array($this->options[$option])) {
+				if (is_string($this->options[$option]) && strlen(trim($this->options[$option])) > 0) {
+					$this->options[$option] = [ trim($this->options[$option]) ];
+				}
+				else $this->options[$option] = $default;
+			}			
+		}
 		function fillUnsetOptions() {
 			$this->fillUnsetOption('front_page_line_height', '1.0');
 			$this->fillUnsetOption('front_page_font_size', '10');
@@ -2191,12 +2204,13 @@ if (!class_exists("Bread")) {
 			$this->fillUnsetStringOption('asm_custom_query','');
 			$this->fillUnsetStringOption('user_agent','Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0) +bread');
 			$this->fillUnsetOption('cache_time', 0);
-			$this->fillUnsetStringOption('extra_meetings', '');
-			if (strlen($this->options['extra_meetings'])>0) {
+			$this->fillUnsetArrayOption('extra_meetings', []);
+			if (count($this->options['extra_meetings'])>0) {
 				$this->options['extra_meetings_enabled'] = 1;
 			}else{
 				$this->options['extra_meetings_enabled'] = 0;				
 			}
+			$this->fillUnsetArrayOption('authors',[]);
 		}
 		function get_TransientPrefix() {
 			return '_bread';
