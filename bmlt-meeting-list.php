@@ -1715,6 +1715,8 @@ if (!class_exists("Bread")) {
 			$data = str_replace($search_strings,$replacements,$data);
 			$this->replace_format_shortcodes($data, $page);
 			$data = str_replace("[date]", strtoupper( date ( "F Y" ) ), $data);
+			if ($this->target_timezone)
+				$data = str_replace('[timezone]',$this->target_timezone->getName(), $data);
 		}
 		function writeHTML($str) {
 			$str = mb_convert_encoding($str, 'HTML-ENTITIES');
@@ -2251,10 +2253,12 @@ if (!class_exists("Bread")) {
 			$this->fillUnsetStringOption('user_agent','Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0) +bread');
 			$this->fillUnsetOption('cache_time', 0);
 			$this->fillUnsetArrayOption('extra_meetings', []);
-			if (count($this->options['extra_meetings'])>0) {
-				$this->options['extra_meetings_enabled'] = 1;
-			}else{
-				$this->options['extra_meetings_enabled'] = 0;				
+			if ( !isset($this->options['extra_meetings']) ) {
+				if (count($this->options['extra_meetings'])>0) {
+					$this->options['extra_meetings_enabled'] = 1;
+				}else{
+					$this->options['extra_meetings_enabled'] = 0;	
+				}			
 			}
 			$this->fillUnsetArrayOption('authors',[]);
 		}
