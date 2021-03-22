@@ -5,7 +5,7 @@ Plugin URI: http://wordpress.org/extend/plugins/bread/
 Description: Maintains and generates a PDF Meeting List from BMLT.
 Author: bmlt-enabled
 Author URI: https://bmlt.app
-Version: 2.5.9
+Version: 2.6.0
 */
 /* Disallow direct access to the plugin file */
 use Mpdf\Mpdf;
@@ -29,6 +29,7 @@ if (!class_exists("Bread")) {
 		var $translate = array();
 		var $services = '';
 		var $requested_setting = 1;
+		var $target_timezone = false;
 		var $meeting_fields = array (
 			'id_bigint',
 			'service_body_bigint',
@@ -613,6 +614,9 @@ if (!class_exists("Bread")) {
 					exit;
 				}
 			}
+			if (isset($_GET['time_zone'])) {
+				$this->target_timezone = timezone_open ($_GET['time_zone'] );
+			}
 			// upgrade
 			if (!isset($this->options['bread_version'])) {
 				if (!($this->options['meeting_sort'] === 'weekday_area' 
@@ -906,6 +910,7 @@ if (!class_exists("Bread")) {
 				echo '<div style="font-size: 20px;text-align:center;font-weight:normal;color:#F00;margin:0 auto;margin-top: 30px;"><p>No Meetings Found</p><p>Or</p><p>Internet or Server Problem</p><p>'.$this->options['root_server'].'</p><p>Please try again or contact your BMLT Administrator</p></div>';
 				exit;
 			}
+			$this->adjust_timezone($result_meetings, $this->target_timezone);
 			$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetFormats&lang_enum=".$this->getSingleLanguage($this->options['weekday_language']));
 			$this->formats_all = json_decode(wp_remote_retrieve_body($results), true);
 			if ($this->options['asm_language']=='') {
@@ -1144,6 +1149,46 @@ if (!class_exists("Bread")) {
 				$site = get_current_blog_id().'_';
 			}
 			return "meetinglist_".$site.$this->loaded_setting.$pos.'_'.strtolower( date ( "njYghis" ) ).".pdf";
+		}
+		function adjust_timezone(&$meetings, $target_timezone) {
+			if (!$target_timezone) return;
+			$target_midnight = new DateTime();
+			$target_midnight->setTimezone($target_timezone);
+			$target_midnight->setTime(23,59);
+			$target_yesterday = new DateTime();
+			$target_yesterday->setTimezone($target_timezone);
+			$target_yesterday->setTime(0,0);
+			foreach($meetings as &$meeting) {
+				if (!empty($meeting['time_zone'])) {
+					$meeting_time_zone = timezone_open ($meeting['time_zone']);
+					if ($meeting_time_zone) {
+						$date = date_create($meeting['start_time'], $meeting_time_zone);
+						date_timezone_set($date, $target_timezone);
+						$meeting['start_time'] = $date->format('H:i');
+						if ($date >= $target_midnight) {
+							$meeting['weekday_tinyint'] = $meeting['weekday_tinyint']+1;
+							if ($meeting['weekday_tinyint']==8) {
+								$meeting['weekday_tinyint'] = 1;
+							}
+						} elseif ($date < $target_yesterday) {
+							$meeting['weekday_tinyint'] = $meeting['weekday_tinyint']-1;
+							if ($meeting['weekday_tinyint']==0) {
+								$meeting['weekday_tinyint'] = 7;
+							}
+						}
+					}
+				}
+			}
+			usort($meetings, array($this, "sortDayTime"));
+		}
+		function sortDayTime($a, $b) {
+			if ($a['weekday_tinyint'] < $b['weekday_tinyint']) return -1;
+			if ($a['weekday_tinyint'] > $b['weekday_tinyint']) return 1;
+			if ($a['start_time'] < $b['start_time']) return -1;
+			if ($a['start_time'] > $b['start_time']) return 1;
+			if ($a['duration_time'] < $b['duration_time']) return -1;
+			if ($a['duration_time'] > $b['duration_time']) return 1;
+			return 0;
 		}
 		// include_asm = 0  -  let everything through
 		//               1  -  only meetings with asm format
@@ -1778,6 +1823,7 @@ if (!class_exists("Bread")) {
 				$results = $this->get_configured_root_server_request( $asm_query );
 				$this->service_meeting_result = json_decode(wp_remote_retrieve_body($results), true);
 				if ($sort_order == 'weekday_tinyint,start_time') {
+					$this->adjust_timezone($this->service_meeting_result, $this->target_timezone);
 					$this->service_meeting_result = $this->orderByWeekdayStart($this->service_meeting_result);
 				}
 			}
