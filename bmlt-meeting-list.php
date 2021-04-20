@@ -21,6 +21,7 @@ if (!class_exists("Bread")) {
 	class Bread {
 		var $lang = '';
 		var $mpdf = null;
+		var $tmp_dir;
 		var $meeting_count = 0;
 		var $formats_used = '';
 		var $formats_by_key = array();
@@ -247,7 +248,21 @@ if (!class_exists("Bread")) {
 			}
 			return $initArray;
 		}
-
+		function get_temp_dir() {
+			if (!$this->tmp_dir) {
+				$dir = get_temp_dir();
+    			$dir = rtrim($dir, DIRECTORY_SEPARATOR);
+    			if (!is_dir($dir) || !is_writable($dir)) {
+        			return false;
+    			}
+				$attempts = 0;
+				do {
+					$path = sprintf('%s%s%s%s', $dir, DIRECTORY_SEPARATOR, 'bread', mt_rand(100000, mt_getrandmax()));
+				} while (!mkdir($path) && $attempts++ < 100);
+				$this->tmp_dir = $path;
+			}
+			return $this->tmp_dir;
+		}
 		function is_root_server_missing() {
 			global $my_admin_page;
 			$screen = get_current_screen();
@@ -258,8 +273,8 @@ if (!class_exists("Bread")) {
 					$url = admin_url( 'options-general.php?page=bmlt-meeting-list.php' );
 					echo "<p><a href='$url'>Settings</a></p>";
 					echo '</div>';
-				} else if (!get_temp_dir()) {
-					echo '<div id="message" class="error"><p>' . get_temp_dir() . ' temporary directory is not writable.</p>';
+				} else if (!$this->get_temp_dir()) {
+					echo '<div id="message" class="error"><p>' . $this->get_temp_dir() . ' temporary directory is not writable.</p>';
 					$url = admin_url( 'options-general.php?page=bmlt-meeting-list.php' );
 					echo "<p><a href='$url'>Settings</a></p>";
 					echo '</div>';
@@ -693,7 +708,7 @@ if (!class_exists("Bread")) {
             			__DIR__ . '/mpdf/vendor/mpdf/mpdf/ttfonts',
 						__DIR__ . '/fonts',
 						),
-					'tempDir' => get_temp_dir(),
+					'tempDir' => $this->get_temp_dir(),
 					'mode' => $mode,
 					'default_font_size' => 7,
 					'fontdata' => [
@@ -727,7 +742,7 @@ if (!class_exists("Bread")) {
             else {
             	$mpdf_init_options = [
             		'mode' => $mode,
-					'tempDir' => get_temp_dir(),
+					'tempDir' => $this->get_temp_dir(),
 					'default_font_size' => 7,
 					'default_font' => $default_font,
 					'margin_left' => $this->options['margin_left'],
@@ -786,7 +801,7 @@ if (!class_exists("Bread")) {
 				}
 				$this->mpdf_column=new mPDF([
                     'mode' => $mode,
-                    'tempDir' => get_temp_dir(),
+                    'tempDir' => $this->get_temp_dir(),
                     'format' => $mpdf_init_options['format'],
                     'default_font_size' => 7,
                     'default_font' => $default_font,
@@ -800,7 +815,7 @@ if (!class_exists("Bread")) {
                 ]);
 				
 				$this->mpdf_column->WriteHTML($html);
-				$FilePath = ABSPATH . $this->get_FilePath('_column');
+				$FilePath = $this->get_temp_dir(). DIRECTORY_SEPARATOR . $this->get_FilePath('_column');
 				$this->mpdf_column->Output($FilePath,'F');
 				$h = \fopen($FilePath, 'rb');
 				$stream = new \setasign\Fpdi\PdfParser\StreamReader($h, false);
@@ -996,11 +1011,11 @@ if (!class_exists("Bread")) {
 			}
 			$this->mpdf->SetDisplayMode('fullpage','two');
 			if ( $this->options['page_fold'] == 'half' ) {
-				$FilePath = ABSPATH. $this->get_FilePath('_half');
+				$FilePath = $this->get_temp_dir(). DIRECTORY_SEPARATOR . $this->get_FilePath('_half');
 				$this->mpdf->Output($FilePath,'F');
 				$mpdfOptions = [
                         'mode' => $mode,
-                        'tempDir' => get_temp_dir(),
+                        'tempDir' => $this->get_temp_dir(),
                         'default_font_size' => '',
                         'margin_left' => 0,
                         'margin_right' => 0,
@@ -1042,11 +1057,11 @@ if (!class_exists("Bread")) {
 				}
 				$this->mpdf = $this->mpdftmp;
 			} else if ($this->options['page_fold'] == 'full' && $this->options['booklet_pages']) {
-				$FilePath = ABSPATH. $this->get_FilePath('_full');
+				$FilePath = $this->get_temp_dir(). DIRECTORY_SEPARATOR . $this->get_FilePath('_full');
 				$this->mpdf->Output($FilePath,'F');
 				$mpdfOptions = [
 					'mode' => $mode,
-					'tempDir' => get_temp_dir(),
+					'tempDir' => $this->get_temp_dir(),
 					'default_font_size' => '',
 					'margin_left' => 0,
 					'margin_right' => 0,
@@ -1078,11 +1093,11 @@ if (!class_exists("Bread")) {
 				$this->mpdftmp->UseTemplate($tplIdx);					
 				$this->mpdf = $this->mpdftmp;
 			} else if ($this->options['page_fold'] == 'flyer' ) {
-				$FilePath = ABSPATH. $this->get_FilePath('_flyer');
+				$FilePath = $this->get_temp_dir(). DIRECTORY_SEPARATOR . $this->get_FilePath('_flyer');
 				$this->mpdf->Output($FilePath,'F');
 				$mpdfOptions = [
 					'mode' => $mode,
-					'tempDir' => get_temp_dir(),
+					'tempDir' => $this->get_temp_dir(),
 					'default_font_size' => '',
 					'margin_left' => 0,
 					'margin_right' => 0,
@@ -1130,9 +1145,9 @@ if (!class_exists("Bread")) {
 			$FilePath = apply_filters("Bread_Download_Name",$this->get_FilePath(), $this->options['service_body_1'], $this->allSettings[$this->loaded_setting]);
 			$this->mpdf->Output($FilePath,'I');
 			foreach ($import_streams as $FilePath=>$stream) {
-				unlink($FilePath);
+				@unlink($FilePath);
 			}
-
+			@unlink($this->get_temp_dir());
 			exit;
 		}
 		function orderByWeekdayStart(&$result_meetings) {
