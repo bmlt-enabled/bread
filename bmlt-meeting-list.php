@@ -5,7 +5,7 @@ Plugin URI: http://wordpress.org/extend/plugins/bread/
 Description: Maintains and generates a PDF Meeting List from BMLT.
 Author: bmlt-enabled
 Author URI: https://bmlt.app
-Version: 2.6.0
+Version: 2.6.1
 */
 /* Disallow direct access to the plugin file */
 use Mpdf\Mpdf;
@@ -279,21 +279,8 @@ if (!class_exists("Bread")) {
 					echo "<p><a href='$url'>Settings</a></p>";
 					echo '</div>';
 				}
-				add_action("admin_notices", array(
-					&$this,
-					"clear_admin_message"
-				));
 			}
 		}
-
-		function clear_admin_message() {
-			//remove_action("admin_notices", array(&$this,"is_root_server_missing"));
-		}
-
-		function clear_admin_message2() {
-			echo '<div id="message" class="error"><p>what</p></div>';
-		}
-
 		function Bread() {
 			$this->__construct();
 		}
@@ -562,6 +549,10 @@ if (!class_exists("Bread")) {
 			}
 			if ( $this->options['service_body_1'] == 'Not Used' && true === ($this->options['custom_query'] == '' ) ) {
 				echo '<p><strong>bread Error: Service Body 1 missing from configuration.<br/><br/>Please go to Settings -> bread and verify Service Body</strong><br/><br/>Contact the bread administrator and report this problem!</p>';
+				exit;
+			}
+			if (headers_sent()) {
+				echo '<div id="message" class="error"><p>Headers already sent before Meeting List generation</div>';
 				exit;
 			}
 
@@ -1135,17 +1126,21 @@ if (!class_exists("Bread")) {
 				// 'copy','print','modify','annot-forms','fill-forms','extract','assemble','print-highres'
 				$this->mpdf->SetProtection(array('copy','print','print-highres'), '', $this->options['protection_password']);
 			}
-			if ( intval($this->options['cache_time']) > 0 && ! isset($_GET['nocache']) 
-			     && !isset($_GET['custom_query'])) {
-				$content = $this->mpdf->Output('', 'S');
-				$content = bin2hex($content);
-				$transient_key = $this->get_TransientKey();
-				set_transient( $transient_key, $content, intval($this->options['cache_time']) * HOUR_IN_SECONDS );
-			}			
-			$FilePath = apply_filters("Bread_Download_Name",$this->get_FilePath(), $this->options['service_body_1'], $this->allSettings[$this->loaded_setting]);
-			$this->mpdf->Output($FilePath,'I');
-			foreach ($import_streams as $FilePath=>$stream) {
-				@unlink($FilePath);
+			if (headers_sent()) {
+				echo '<div id="message" class="error"><p>Headers already sent before PDF generation</div>';
+			} else {
+				if ( intval($this->options['cache_time']) > 0 && ! isset($_GET['nocache']) 
+			 	    && !isset($_GET['custom_query'])) {
+					$content = $this->mpdf->Output('', 'S');
+					$content = bin2hex($content);
+					$transient_key = $this->get_TransientKey();
+					set_transient( $transient_key, $content, intval($this->options['cache_time']) * HOUR_IN_SECONDS );
+				}			
+				$FilePath = apply_filters("Bread_Download_Name",$this->get_FilePath(), $this->options['service_body_1'], $this->allSettings[$this->loaded_setting]);
+				$this->mpdf->Output($FilePath,'I');
+				foreach ($import_streams as $FilePath=>$stream) {
+					@unlink($FilePath);
+				}
 			}
 			@unlink($this->get_temp_dir());
 			exit;
