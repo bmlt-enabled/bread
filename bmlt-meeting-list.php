@@ -1138,13 +1138,27 @@ if (!class_exists("Bread")) {
 				}			
 				$FilePath = apply_filters("Bread_Download_Name",$this->get_FilePath(), $this->options['service_body_1'], $this->allSettings[$this->loaded_setting]);
 				$this->mpdf->Output($FilePath,'I');
-				foreach ($import_streams as $FilePath=>$stream) {
-					@unlink($FilePath);
-				}
 			}
-			@unlink($this->get_temp_dir());
+			foreach ($import_streams as $FilePath=>$stream) {
+				@unlink($FilePath);
+			}
+			$this->rrmdir($this->get_temp_dir());
 			exit;
 		}
+		function rrmdir($dir) { 
+			if (is_dir($dir)) { 
+			  $objects = scandir($dir);
+			  foreach ($objects as $object) { 
+				if ($object != "." && $object != "..") { 
+				  if (is_dir($dir. DIRECTORY_SEPARATOR .$object) && !is_link($dir."/".$object))
+					$this->rrmdir($dir. DIRECTORY_SEPARATOR .$object);
+				  else
+					@unlink($dir. DIRECTORY_SEPARATOR .$object); 
+				} 
+			  }
+			  @rmdir($dir); 
+			} 
+		  }
 		function orderByWeekdayStart(&$result_meetings) {
 			$days = array_column($result_meetings, 'weekday_tinyint');
 			$today_str = $this->options['weekday_start'];
