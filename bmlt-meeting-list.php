@@ -1890,7 +1890,7 @@ if (!class_exists("Bread")) {
 				}
 				$display_string = '<strong>'.$value['meeting_name'].'</strong>';
 				if ( !strstr($value['comments'],'Open Position') ) {
-					$display_string .= '<strong> - ' . date ('g:i A',strtotime($value['start_time'])) . '</strong>';
+					$display_string .= '<strong> - ' . $value['start_time'] . '</strong>';
 				}
 
 				if ( trim ( $value['location_text'] ) ) {
