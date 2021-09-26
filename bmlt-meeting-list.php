@@ -1308,12 +1308,10 @@ if (!class_exists("Bread")) {
 			$format_key = $this->options['asm_format_key'];
 			if ($format_key == "@Virtual@") {
 				if ($flag && $this->isHybrid($value)) return false;
-				return !empty($value['virtual_meeting_link']) ||
-				!empty($value['phone_meeting_number']);
+				return $this->isVirtual($value);
 			}
 			if ($format_key == "@F2F@") {
-				return (empty($value['virtual_meeting_link']) && empty($value['phone_meeting_number']) )
-					|| $this->isHybrid($value);
+				return !$this->isVirtual($value) || $this->isHybrid($value);
 			}
 			$enFormats = explode ( ",", $value['formats'] );
 			return in_array ( $format_key, $enFormats );
@@ -1321,6 +1319,10 @@ if (!class_exists("Bread")) {
 		function isHybrid($value) {
 			$enFormats = explode ( ",", $value['formats'] );
 			return in_array('HY',$enFormats);
+		}
+		function isVirtual($value) {
+			$enFormats = explode ( ",", $value['formats'] );
+			return in_array('VM',$enFormats);
 		}
 		// include_asm = 0  -  let everything through
 		//               1  -  only meetings with asm format
