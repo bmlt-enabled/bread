@@ -31,7 +31,7 @@ foreach($all_users as $user){
                         echo "<span style='color: #f00;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-dismiss'></div>ERROR: Please enter a BMLT Server</span>";
                         echo '<input type="hidden" id="user_agent" value="'.$this->options['user_agent'].'" />';
                     } else {
-                        ?><span style='color: #f00;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-dismiss'></div>ERROR: Problem Connecting to BMLT Server</span>
+                        ?><span style='color: #f00;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-dismiss'></div>ERROR: Problem Connecting to BMLT Server<br/><?php echo $this->connection_error; ?></span>
                         <p>
                         <label for="user_agent">Try a different user agent or "None" for Wordpress default: "</label>
                         <input class="bmlt-input" id="user_agent" type="text" name="user_agent" value="<?php echo $this->options['user_agent']; ?>" />
