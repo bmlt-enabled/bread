@@ -365,6 +365,8 @@ if (!class_exists("Bread")) {
 					'User-Agent' => $this->options['user_agent']
 				);
 			}
+			if ($this->options['sslverify'] == '1')
+				$args['sslverify'] = false;
             return wp_remote_get($url, $args);
 		}
 		function get_all_meetings() {
@@ -609,6 +611,7 @@ if (!class_exists("Bread")) {
 			if ( !isset($this->options['custom_query']) ) {$this->options['custom_query'] = '';}
 			if ( !isset($this->options['asm_custom_query']) ) {$this->options['asm_custom_query'] = '';}			
 			if ( !isset($this->options['user_agent']) ) {$this->options['user_agent'] = 'Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0) +bread';}
+			if ( !isset($this->options['sslverify']) ) {$this->options['sslverify'] = '0';}
 			if ( !isset($this->options['used_format_1']) ) {$this->options['used_format_1'] = '';}
 			if ( intval($this->options['cache_time']) > 0 && ! isset($_GET['nocache']) &&
 					! isset($_GET['custom_query'])) {
@@ -2083,6 +2086,7 @@ if (!class_exists("Bread")) {
 				$this->options['custom_query'] = sanitize_text_field($_POST['custom_query']);
 				$this->options['asm_custom_query'] = sanitize_text_field($_POST['asm_custom_query']);
 				$this->options['user_agent'] = sanitize_text_field($_POST['user_agent']);
+				$this->options['sslverify'] = isset($_POST['sslverify']) ? '1' : '0';
 				$this->options['extra_meetings'] = array();
 				if (isset($_POST['extra_meetings'])) {
 					foreach ($_POST['extra_meetings'] as $extra) {
@@ -2283,6 +2287,7 @@ if (!class_exists("Bread")) {
 			$this->fillUnsetStringOption('custom_query','');
 			$this->fillUnsetStringOption('asm_custom_query','');
 			$this->fillUnsetStringOption('user_agent','Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0) +bread');
+			$this->fillUnsetOption('sslverify','0');
 			$this->fillUnsetOption('cache_time', 0);
 			$this->fillUnsetArrayOption('extra_meetings', []);
 			if ( !isset($this->options['extra_meetings']) ) {

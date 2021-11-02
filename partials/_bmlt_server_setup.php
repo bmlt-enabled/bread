@@ -27,14 +27,20 @@ foreach($all_users as $user){
                     if ( $this_connected ) {
                         echo $ThisVersion;
                         echo '<input type="hidden" id="user_agent" value="'.$this->options['user_agent'].'" />';
+                        if ($this->options['sslverify']=='1') echo '<input type="hidden" id="sslverify" name="sslverify" value="1">';
                     } elseif ( !isset($this->options['root_server']) ) {
                         echo "<span style='color: #f00;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-dismiss'></div>ERROR: Please enter a BMLT Server</span>";
                         echo '<input type="hidden" id="user_agent" value="'.$this->options['user_agent'].'" />';
+                        if ($this->options['sslverify']=='1') echo '<input type="hidden" id="sslverify" name="sslverify" value="1">';
                     } else {
                         ?><span style='color: #f00;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-dismiss'></div>ERROR: Problem Connecting to BMLT Server<br/><?php echo $this->connection_error; ?></span>
                         <p>
                         <label for="user_agent">Try a different user agent or "None" for Wordpress default: "</label>
                         <input class="bmlt-input" id="user_agent" type="text" name="user_agent" value="<?php echo $this->options['user_agent']; ?>" />
+                        <p>
+                        <input type="checkbox" id="sslverify" name="sslverify" value="1" <?php echo $this->options['sslverify']?'checked':''; ?>/>
+                        <label for="sslverify">Disable SSL verification of server</label>
+                    </p>
                         <?php
                     }
                     ?>
