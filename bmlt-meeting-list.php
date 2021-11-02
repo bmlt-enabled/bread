@@ -646,6 +646,9 @@ if (!class_exists("Bread")) {
 					}
 					$this->options['page_orientation'] = 'L';
 				}
+				if ($this->options['page_fold']=='tri') {
+					$this->options['page_orientation'] = 'L';
+				}
 				if (substr($this->options['meeting_sort'],0,8) == 'weekday_') {
 						$this->options['sub_header_shown'] = 'display';
 				}
