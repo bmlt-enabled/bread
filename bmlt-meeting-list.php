@@ -5,7 +5,7 @@ Plugin URI: http://wordpress.org/extend/plugins/bread/
 Description: Maintains and generates a PDF Meeting List from BMLT.
 Author: bmlt-enabled
 Author URI: https://bmlt.app
-Version: 2.6.2
+Version: 2.6.3
 */
 /* Disallow direct access to the plugin file */
 use Mpdf\Mpdf;
@@ -702,7 +702,6 @@ if (!class_exists("Bread")) {
 				}
 				$page_type_settings = ['format' => $ps."-".$this->options['page_orientation'], 'margin_footer' => 0];
 			}
-
             $default_font = $this->options['base_font'] == "freesans" ? "dejavusanscondensed" : $this->options['base_font'];
             $mode = 's';
             if ($default_font == 'arial' || $default_font == 'times' || $default_font == 'courier') {
@@ -757,6 +756,7 @@ if (!class_exists("Bread")) {
 			}
 			$mpdf_init_options['restrictColorSpace'] = $this->options['colorspace'];
 			$mpdf_init_options = array_merge($mpdf_init_options, $page_type_settings);
+			$mpdf_init_options = apply_filters("Bread_Mpdf_Init_Options", $mpdf_init_options, $this->options);
 			ob_end_clean();
             $this->mpdf = new mPDF($mpdf_init_options);
             $this->mpdf->setAutoBottomMargin = 'pad';
@@ -934,7 +934,7 @@ if (!class_exists("Bread")) {
 			if ($this->options['asm_language']=='') {
 				$this->options['asm_language'] = $this->options['weekday_language'];
 			}
-			if (strlen($this->options['asm_format_key'])>0) {
+			if (isset($this->options['asm_format_key']) && strlen($this->options['asm_format_key'])>0) {
 				if ($this->options['weekday_language'] != $this->options['asm_language']) {
 					$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetFormats&lang_enum=".$this->getSingleLanguage($this->options['asm_language']));
 					$formats_all = json_decode(wp_remote_retrieve_body($results), true);
@@ -2010,9 +2010,6 @@ if (!class_exists("Bread")) {
 			if ($_POST['bmltmeetinglistsave']) {
 				if (!wp_verify_nonce($_POST['_wpnonce'], 'bmltmeetinglistupdate-options'))
 					die('Whoops! There was a problem with the data you posted. Please go back and try again.');
-				if (!$this->current_user_can_modify()) {
-					return;
-				}
 				$this->options['bread_version'] = sanitize_text_field($_POST['bread_version']);	
 				$this->options['front_page_content'] = wp_kses_post($_POST['front_page_content']);
 				$this->options['last_page_content'] = wp_kses_post($_POST['last_page_content']);
@@ -2060,7 +2057,7 @@ if (!class_exists("Bread")) {
 				$this->options['pagenumbering_font_size'] = floatval($_POST['pagenumbering_font_size']);
 				$this->options['used_format_1'] = sanitize_text_field($_POST['used_format_1']);
 				$this->options['include_meeting_email'] = isset($_POST['include_meeting_email']) ? boolval($_POST['include_meeting_email']) : false;
-				$this->options['recurse_service_bodies'] = intval($_POST['recurse_service_bodies']);
+				$this->options['recurse_service_bodies'] = isset($_POST['recurse_service_bodies']) ? 1 : 0;
 				$this->options['retrieve_all_fields'] = intval($_POST['retrieve_all_fields']);
 				$this->options['extra_meetings_enabled'] = isset($_POST['extra_meetings_enabled']) ? intval($_POST['extra_meetings_enabled']) : 0;
 				$this->options['include_protection'] = boolval($_POST['include_protection']);
@@ -2088,7 +2085,7 @@ if (!class_exists("Bread")) {
 				$this->options['cache_time'] = intval($_POST['cache_time']);
 				$this->options['custom_query'] = sanitize_text_field($_POST['custom_query']);
 				$this->options['asm_custom_query'] = sanitize_text_field($_POST['asm_custom_query']);
-				$this->options['user_agent'] = sanitize_text_field($_POST['user_agent']);
+				$this->options['user_agent'] = isset($_POST['user_agent']) ? sanitize_text_field($_POST['user_agent']) : 'None';
 				$this->options['sslverify'] = isset($_POST['sslverify']) ? '1' : '0';
 				$this->options['extra_meetings'] = array();
 				if (isset($_POST['extra_meetings'])) {
@@ -2105,12 +2102,16 @@ if (!class_exists("Bread")) {
 				if (!in_array($user->ID, $this->options['authors'])) {
 					$this->options['authors'][] = $user->ID;
 				}
-				$this->save_admin_options();
 				set_transient( 'admin_notice', 'Please put down your weapon. You have 20 seconds to comply.' );
-				echo '<div class="updated"><p style="color: #F00;">Your changes were successfully saved!</p>';
-				$num = delete_transient($this->get_TransientKey());
-				if ( $num > 0 ) {
-					echo "<p>$num Cache entries deleted</p>";
+				if (!$this->current_user_can_modify()) {
+					echo '<div class="updated"><p style="color: #F00;">You do not have permission to save this configuation!</p>';
+				} else {
+					$this->save_admin_options();
+					echo '<div class="updated"><p style="color: #F00;">Your changes were successfully saved!</p>';
+					$num = delete_transient($this->get_TransientKey());
+					if ( $num > 0 ) {
+						echo "<p>$num Cache entries deleted</p>";
+					}
 				}
 				echo '</div>';
 			} elseif ( isset($_REQUEST['pwsix_action']) && $_REQUEST['pwsix_action'] == "import_settings" ) {
