@@ -1,4 +1,4 @@
-FROM wordpress:5.4.0-php7.2-apache
+FROM wordpress:5.9.0-php8.0-apache
 
 RUN apt-get update && \
 	apt-get install -y  --no-install-recommends ssl-cert && \
@@ -8,7 +8,7 @@ RUN apt-get update && \
 
 ENV PHP_INI_PATH "/usr/local/etc/php/php.ini"
 
-RUN pecl install xdebug-2.6.1 && docker-php-ext-enable xdebug \
+RUN pecl install xdebug-3.1.2 && docker-php-ext-enable xdebug \
     && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" >> ${PHP_INI_PATH} \
     && echo "xdebug.remote_port=9000" >> ${PHP_INI_PATH} \
     && echo "xdebug.remote_enable=1" >> ${PHP_INI_PATH} \

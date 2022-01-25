@@ -3,11 +3,10 @@
 Contributors: odathp, radius314, pjaudiomv, klgrimley, jbraswell, otrok7
 Tags: meeting list, bmlt, narcotics anonymous, na
 Requires at least: 4.0
-
 Requires PHP: 7.1
 Requires at least: 5.1
-Tested up to: 5.8.1
-Stable tag: 2.6.3
+Tested up to: 5.9
+Stable tag: 2.6.4
 
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -54,6 +53,11 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 
 = How do I contribute?
 - Read here for more information: https://github.com/bmlt-enabled/bread/blob/unstable/contribute.md
+
+== Changelog ==
+= 2.6.4 =
+* Fixed an issue with plugin activation when using PHP8.
+* Upgraded to mPDF 8.0.17
 
 == Changelog ==
 = 2.6.3 =
