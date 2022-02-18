@@ -58,8 +58,9 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 = 2.6.4 =
 * Fixed an issue with plugin activation when using PHP8.
 * Upgraded to mPDF 8.0.17
+* Allow mPDF initialization values to be set through a filter
+* Minor bug fixes.
 
-== Changelog ==
 = 2.6.3 =
 * Give the admin the ability to turn off checking the SSL cert.
 * Added filter to modify MPDF initialization parameters (e.g. page-size)

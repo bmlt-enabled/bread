@@ -257,6 +257,7 @@ if (!class_exists("Bread")) {
         			return false;
     			}
 				$attempts = 0;
+				$path = '';
 				do {
 					$path = sprintf('%s%s%s%s', $dir, DIRECTORY_SEPARATOR, 'bread', mt_rand(100000, mt_getrandmax()));
 				} while (!mkdir($path) && $attempts++ < 100);
@@ -934,6 +935,10 @@ if (!class_exists("Bread")) {
 			if ($this->options['asm_language']=='') {
 				$this->options['asm_language'] = $this->options['weekday_language'];
 			}
+			$this->formats_by_key[$this->options['weekday_language']] = array();
+			foreach($this->formats_all as $thisFormat) {
+			    $this->formats_by_key[$this->options['weekday_language']][$thisFormat['key_string']] = $thisFormat;
+			}
 			if (isset($this->options['asm_format_key']) && strlen($this->options['asm_format_key'])>0) {
 				if ($this->options['weekday_language'] != $this->options['asm_language']) {
 					$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetFormats&lang_enum=".$this->getSingleLanguage($this->options['asm_language']));
@@ -947,7 +952,7 @@ if (!class_exists("Bread")) {
 							}
 					}
 				} elseif (substr($this->options['asm_format_key'],0,1)!='@') {
-					$this->options['asm_format_id'] = $this->formats_by_key[$this->options['asm_format_key']];
+					$this->options['asm_format_id'] = $this->formats_by_key[$this->options['weekday_language']][$this->options['asm_format_key']]['id'];
 				}
 			}
 			if ( strpos($this->options['custom_section_content'].$this->options['front_page_content'].$this->options['last_page_content'], '[format_codes_used_basic_es') !== false ) {
@@ -973,10 +978,6 @@ if (!class_exists("Bread")) {
 			$this->sortBySubkey($this->formats_used, 'key_string');
 			$this->sortBySubkey($this->formats_all, 'key_string');
 
-			$this->formats_by_key[$this->options['weekday_language']] = array();
-			foreach($this->formats_all as $thisFormat) {
-			    $this->formats_by_key[$this->options['weekday_language']][$thisFormat['key_string']] = $thisFormat;
-			}
 			//$this->uniqueFormat($this->formats_used, 'key_string');
             //$this->uniqueFormat($this->formats_all, 'key_string');
 			$this->meeting_count = count($result_meetings);		
@@ -1036,6 +1037,7 @@ if (!class_exists("Bread")) {
 				} else {
 					$mpdfOptions['format'] = $ps.'-L';
 				}
+				$mpdfOptions = apply_filters("Bread_Mpdf_Init_Options", $mpdfOptions, $this->options);
 				$this->mpdftmp=new mPDF($mpdfOptions);
 
 				$ow = $this->mpdftmp->h;
@@ -1075,6 +1077,7 @@ if (!class_exists("Bread")) {
 					'restrictColorSpace' => $this->options['colorspace'],
 				];
 				$mpdfOptions['format'] =  $this->options['page_size']."-".$this->options['page_orientation'];
+				$mpdfOptions = apply_filters("Bread_Mpdf_Init_Options", $mpdfOptions, $this->options);
 				$this->mpdftmp=new mPDF($mpdfOptions);
 
 				//$this->mpdftmp->SetImportUse(); 
@@ -2225,7 +2228,9 @@ if (!class_exists("Bread")) {
 			}			
 		}
 		function fillUnsetArrayOption($option, $default) {
-			if ( !isset($this->options[$option]) || !is_array($this->options[$option])) {
+			if ( !isset($this->options[$option]) )
+				$this->options[$option] = $default;
+			else if (!is_array($this->options[$option])) {
 				if (is_string($this->options[$option]) && strlen(trim($this->options[$option])) > 0) {
 					$this->options[$option] = [ trim($this->options[$option]) ];
 				}
