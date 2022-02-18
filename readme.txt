@@ -6,7 +6,7 @@ Requires at least: 4.0
 
 Requires PHP: 7.1
 Requires at least: 5.1
-Tested up to: 5.8.1
+Tested up to: 5.9
 Stable tag: 2.6.4
 
 License: GPLv2 or later
@@ -57,6 +57,8 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 
 == Changelog ==
 = 2.6.4 =
+* Fixed an issue with plugin activation when using PHP8.
+* Upgraded to mPDF 8.0.17
 * Allow mPDF initialization values to be set through a filter
 * Minor bug fixes.
 
