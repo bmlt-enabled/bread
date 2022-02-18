@@ -155,7 +155,7 @@ if (!class_exists("Bread")) {
             register_deactivation_hook(__FILE__, array(__CLASS__, 'deactivation'));
 		}
 
-        public function activation() {
+        public static function activation() {
             Bread::add_cap();
         }
 
@@ -166,7 +166,7 @@ if (!class_exists("Bread")) {
             }
         }
 
-        public function deactivation() {
+        public static function deactivation() {
             Bread::remove_cap();
         }
 

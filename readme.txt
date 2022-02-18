@@ -3,7 +3,6 @@
 Contributors: odathp, radius314, pjaudiomv, klgrimley, jbraswell, otrok7
 Tags: meeting list, bmlt, narcotics anonymous, na
 Requires at least: 4.0
-
 Requires PHP: 7.1
 Requires at least: 5.1
 Tested up to: 5.9
