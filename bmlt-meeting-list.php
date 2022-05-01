@@ -5,7 +5,7 @@ Plugin URI: http://wordpress.org/extend/plugins/bread/
 Description: Maintains and generates a PDF Meeting List from BMLT.
 Author: bmlt-enabled
 Author URI: https://bmlt.app
-Version: 2.6.4
+Version: 2.6.5
 */
 /* Disallow direct access to the plugin file */
 use Mpdf\Mpdf;
@@ -965,6 +965,16 @@ if (!class_exists("Bread")) {
 				$this->formats_spanish = $result_es['formats'];
 				$this->sortBySubkey($this->formats_spanish, 'key_string');
 			}
+			if ( strpos($this->options['custom_section_content'].$this->options['front_page_content'].$this->options['last_page_content'], '[format_codes_used_basic_fr') !== false ) {
+				if ( $this->options['used_format_1'] == '' ) {
+					$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=time$get_used_formats&lang_enum=fr" );
+				} else {
+					$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=time&get_used_formats&lang_enum=fr&formats[]=".$this->options['used_format_1'] );
+				}
+				$result_fr = json_decode(wp_remote_retrieve_body($results), true);
+				$this->formats_french = $result_fr['formats'];
+				$this->sortBySubkey($this->formats_french, 'key_string');
+			}
 			
 			if ( $this->options['include_asm'] === '0' ) {
 				$countmax = count ( $this->formats_used );
@@ -1783,6 +1793,7 @@ if (!class_exists("Bread")) {
 			$this->shortcode_formats('[format_codes_used_detailed]', true, $this->formats_used, $page_name, $data);
 			$this->shortcode_formats('[format_codes_used_basic_es]', false, $this->formats_spanish, $page_name, $data);
 			$this->shortcode_formats('[format_codes_used_detailed_es]', true, $this->formats_spanish, $page_name, $data);
+			$this->shortcode_formats('[format_codes_used_basic_fr]', false, $this->formats_french, $page_name, $data);
 			$this->shortcode_formats('[format_codes_all_basic]', false, $this->formats_all, $page_name, $data);
 			$this->shortcode_formats('[format_codes_all_detailed]', true, $this->formats_all, $page_name, $data);
 		}
