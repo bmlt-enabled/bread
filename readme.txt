@@ -1,6 +1,6 @@
 === bread ===
 
-Contributors: odathp, radius314, pjaudiomv, klgrimley, jbraswell, otrok7
+Contributors: odathp, radius314, pjaudiomv, klgrimley, jbraswell, otrok7, alanb2718
 Tags: meeting list, bmlt, narcotics anonymous, na
 Requires at least: 4.0
 Requires PHP: 7.1
@@ -57,6 +57,8 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 == Changelog ==
 = 2.7.0 =
 * In Booklet layout, the page number can be customized and set to different text for the meeting list, the additional meeting list, and the other pages.
+= 2.6.5 =
+* Add a shortcode for format legends in French [format_codes_used_basic_fr]
 
 = 2.6.4 =
 * Fixed an issue with plugin activation when using PHP8.
