@@ -189,7 +189,14 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 							?>
 						</select>
 					</div>
-                    <p>
+                    <?php if ($this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full' ) {
+                    ?>    
+                    <div class="meeting1_footer_div">
+						<label for="meeting1_footer">Custom Footer: </label>
+						<input name="meeting1_footer" type="text" size="50" value="<?php echo $this->options['meeting1_footer'];?>">
+					</div>
+                    <?php }
+                    ?><p>
                 </div>
             </div>
             <div id="custommeetingtemplatediv" class="postbox">
@@ -399,7 +406,16 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 							}
 						?>
                      </select>
-                     </p><p>
+                     </p>
+                     <?php if ($this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full' ) {
+                    ?>    
+                    <div class="meeting2_footer_div">
+						<label for="meeting2_footer">Custom Footer: </label>
+						<input name="meeting2_footer" type="text" size="50" value="<?php echo $this->options['meeting2_footer'];?>">
+					</div>
+                    <?php }
+                    ?>
+                     <p>
                      <label for="asm_custom_query">Custom Query: </label>
                     <input type="text" id="asm_custom_query" name="asm_custom_query" size="100" value="<?php echo esc_html($this->options['asm_custom_query'])?>" />
                     </p><p>

@@ -5,7 +5,7 @@ Plugin URI: http://wordpress.org/extend/plugins/bread/
 Description: Maintains and generates a PDF Meeting List from BMLT.
 Author: bmlt-enabled
 Author URI: https://bmlt.app
-Version: 2.6.4
+Version: 2.7.0
 */
 /* Disallow direct access to the plugin file */
 use Mpdf\Mpdf;
@@ -764,8 +764,9 @@ if (!class_exists("Bread")) {
 
             // TODO: Adding a page number really could just be an option or tag.
 			if ( $this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full' )  {
-				$page_string = $this->translate[$this->options['weekday_language']]['PAGE'];
-				$this->mpdf->DefHTMLFooterByName('MyFooter','<div style="text-align:center;font-size:' . $this->options['pagenumbering_font_size'] . 'pt;font-style: italic;">'.$page_string.' {PAGENO}</div>');
+				$this->mpdf->DefHTMLFooterByName('MyFooter','<div style="text-align:center;font-size:' . $this->options['pagenumbering_font_size'] . 'pt;font-style: italic;">'.$this->options['nonmeeting_footer'].'</div>');
+				$this->mpdf->DefHTMLFooterByName('Meeting1Footer','<div style="text-align:center;font-size:' . $this->options['pagenumbering_font_size'] . 'pt;font-style: italic;">'.$this->options['meeting1_footer'].'</div>');
+				$this->mpdf->DefHTMLFooterByName('Meeting2Footer','<div style="text-align:center;font-size:' . $this->options['pagenumbering_font_size'] . 'pt;font-style: italic;">'.$this->options['meeting2_footer'].'</div>');
             }
 
 			$this->mpdf->simpleTables = false;
@@ -1002,13 +1003,16 @@ if (!class_exists("Bread")) {
 			$this->mpdf->SetDefaultBodyCSS('font-size', $this->options['content_font_size'] . 'pt');			
 			$this->mpdf->SetDefaultBodyCSS('line-height', $this->options['content_line_height']);
 			$this->upgradeHeaderData();
-
+			if ( $this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full' )  {
+				$this->mpdf->WriteHTML('<sethtmlpagefooter name="Meeting1Footer" page="ALL" />');
+            }
 			$this->writeMeetings($result_meetings,$this->options['meeting_template_content'],$this->options['weekday_language'],$this->options['include_asm']==0 ? -1 : 0, true);
 
 			if ( $this->options['page_fold'] !== 'half' && $this->options['page_fold'] !== 'full' ) {
 				$this->write_custom_section();
 				$this->write_front_page();
 			} else {
+				$this->mpdf->WriteHTML('<sethtmlpagefooter name="MyFooter" page="ALL" />');
 				if ( trim($this->options['last_page_content']) !== '' ) {
 					$this->write_last_page();
 				}
@@ -1770,8 +1774,14 @@ if (!class_exists("Bread")) {
 			foreach($strs as $str) {
 				$pos = strpos($data,$str);
 				if (!$pos) continue;
+				if ( $this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full' )  {
+					$this->mpdf->WriteHTML('<sethtmlpagefooter name="Meeting2Footer" page="ALL" />');
+				}
 				$this->WriteHTML(substr($data,0,$pos));
 				$this->write_service_meetings($this->options[$page.'_font_size'], $this->options[$page.'_line_height']);
+				if ( $this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full' )  {
+					$this->mpdf->WriteHTML('<sethtmlpagefooter name="MyFooter" page="ALL" />');
+				}
 				$this->WriteHTML(substr($data,$pos+strlen($str)));
 				return;
 			}
@@ -2067,6 +2077,9 @@ if (!class_exists("Bread")) {
 				$this->options['weekday_language'] = sanitize_text_field($_POST['weekday_language']);
 				$this->options['asm_language'] = sanitize_text_field($_POST['asm_language']);
 				$this->options['weekday_start'] = sanitize_text_field($_POST['weekday_start']);
+				$this->options['meeting1_footer'] = sanitize_text_field($_POST['meeting1_footer']);
+				$this->options['meeting2_footer'] = sanitize_text_field($_POST['meeting2_footer']);
+				$this->options['nonmeeting_footer'] = sanitize_text_field($_POST['nonmeeting_footer']);
 				$this->options['include_asm'] = boolval($_POST['include_asm']);
 				$this->options['asm_format_key'] = sanitize_text_field($_POST['asm_format_key']);
 				$this->options['asm_sort_order'] = sanitize_text_field($_POST['asm_sort_order']);
@@ -2307,6 +2320,10 @@ if (!class_exists("Bread")) {
 				}			
 			}
 			$this->fillUnsetArrayOption('authors',[]);
+			$my_footer = $this->translate[$this->options['weekday_language']]['PAGE'].' {PAGENO}';
+			$this->fillUnsetStringOption('nonmeeting_footer',$my_footer);
+			$this->fillUnsetStringOption('meeting1_footer',$this->options['nonmeeting_footer']);
+			$this->fillUnsetStringOption('meeting2_footer',$this->options['nonmeeting_footer']);
 		}
 		function get_TransientPrefix() {
 			return '_bread';

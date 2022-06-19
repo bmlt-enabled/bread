@@ -95,11 +95,19 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     <br>Watermark: <input size="100" type="text" id="watermark" name="watermark" autocomplete="off" value="<?php echo isset($this->options['watermark']) ? esc_html($this->options['watermark']) : ''; ?>" />&nbsp;&nbsp;&nbsp;
                     </p>
                     </div>
+                    <?php if ($this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full' ) {
+                    ?>    
+                    <div class="myfooter_div">
+						<label for="nonmeeting_footer">Custom Footer: </label>
+						<input name="nonmeeting_footer" type="text" size="50" value="<?php echo $this->options['nonmeeting_footer'];?>">
+					</div>
                     <div id="pagenodiv" style="border-top: 1px solid #EEE;">
                         <p>
                             Page Numbers Font Size: <input min="1" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="pagenumbering_font_size" name="pagenumbering_font_size" value="<?php echo esc_html($this->options['pagenumbering_font_size']); ?>" />
                         </p>
                     </div>
+                    <?php } else {
+                    ?>
                     <div id="columngapdiv" style="border-top: 1px solid #EEE;">
                         <p>
                             Column Gap Width: <input min="1" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="column_gap" name="column_gap" value="<?php echo esc_html($this->options['column_gap']); ?>" />
@@ -120,6 +128,8 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         
                         </p>
                     </div>
+                    <?php } 
+                    ?>
                     <div id="basefontdiv" style="border-top: 1px solid #EEE;">
                         <p>
                         <table><tr>
