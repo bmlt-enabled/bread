@@ -52,7 +52,9 @@ if (!class_exists("Bread")) {
 			'location_text',
 			'meeting_name',
 			'bus_lines',
-			'format_shared_id_list'
+			'format_shared_id_list',
+			'virtual_meeting_link',
+			'virtual_meeting_additional_info'
 		);
 		var $calculated_fields = array(
 			'duration_m',
