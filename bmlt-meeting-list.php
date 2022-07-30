@@ -1339,7 +1339,7 @@ if (!class_exists("Bread")) {
 			$format_key = $this->options['asm_format_key'];
 			if ($format_key == "@Virtual@") {
 				if ($flag && $this->isHybrid($value)) return false;
-				return $this->isVirtual($value);
+				return $this->isVirtual($value) || $this->isHybrid($value);
 			}
 			if ($format_key == "@F2F@") {
 				return !$this->isVirtual($value) || $this->isHybrid($value);
