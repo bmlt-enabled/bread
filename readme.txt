@@ -58,6 +58,8 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 = 2.7.0 =
 * In Booklet layout, the page number can be customized and set to different text for the meeting list, the additional meeting list, and the other pages.
 * Virtual_Meeting_Link and _Additional_Info are now standard fields.
+* Always retrieve all fields
+* Minor fixes
 
 = 2.6.5 =
 * Add a shortcode for format legends in French [format_codes_used_basic_fr]
