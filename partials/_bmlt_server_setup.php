@@ -186,9 +186,6 @@ foreach($all_users as $user){
                     <div>
                         <input type="checkbox" name="recurse_service_bodies" value="1" <?php echo ($this->options['recurse_service_bodies'] == 1 ? 'checked' : '') ?> /> Recurse Service Bodies
                     </div>
-                    <div>
-                        <input type="checkbox" name="retrieve_all_fields" value="1" <?php echo ($this->options['retrieve_all_fields'] == 1 ? 'checked' : '') ?> /> Allow any site-defined fields to be used in meeting templates
-                    </div>
                 </div>
             </div>
             <div id="customquery" class="postbox">
