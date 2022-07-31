@@ -854,11 +854,14 @@ if (!class_exists("Bread")) {
 			}
 			$sort_keys = 'weekday_tinyint,start_time,meeting_name';
 			$get_used_formats = '&get_used_formats';
-
+			$select_language = '';
+			if ($this->options['weekday_language'] != $this->lang) {
+				$select_language = '&lang_enum='.$this->getSingleLanguage($this->options['weekday_language']);
+			}
             if ( $this->options['used_format_1'] == '' ) {
-                $results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=$sort_keys$get_used_formats");
+                $results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=$sort_keys$get_used_formats$select_language");
             } elseif ( $this->options['used_format_1'] != '' ) {
-                $results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=$sort_keys&get_used_formats&formats[]=".$this->options['used_format_1'] );
+                $results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=$sort_keys&get_used_formats&formats[]=".$this->options['used_format_1'].$select_language );
             }
 
             $result = json_decode(wp_remote_retrieve_body($results), true);
@@ -870,7 +873,7 @@ if (!class_exists("Bread")) {
                     $extras .= "&meeting_ids[]=".$value;
                 }
 
-                $extra_results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults&sort_keys=".$sort_keys."".$extras."".$get_used_formats );
+                $extra_results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults&sort_keys=".$sort_keys."".$extras."".$get_used_formats.$select_language );
                 $extra_result = json_decode(wp_remote_retrieve_body($extra_results), true);
                 if ( $extra_result <> null ) {
                     $result_meetings = array_merge($result['meetings'], $extra_result['meetings']);
@@ -898,7 +901,7 @@ if (!class_exists("Bread")) {
 				exit;
 			}
 			$this->adjust_timezone($result_meetings, $this->target_timezone);
-			$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetFormats&lang_enum=".$this->getSingleLanguage($this->options['weekday_language']));
+			$results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetFormats$select_language");
 			$this->formats_all = json_decode(wp_remote_retrieve_body($results), true);
 			if ($this->options['asm_language']=='') {
 				$this->options['asm_language'] = $this->options['weekday_language'];
@@ -956,8 +959,6 @@ if (!class_exists("Bread")) {
 			$this->sortBySubkey($this->formats_used, 'key_string');
 			$this->sortBySubkey($this->formats_all, 'key_string');
 
-			//$this->uniqueFormat($this->formats_used, 'key_string');
-            //$this->uniqueFormat($this->formats_all, 'key_string');
 			$this->meeting_count = count($result_meetings);		
 
 			$result_meetings = $this->orderByWeekdayStart($result_meetings);
