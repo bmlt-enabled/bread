@@ -76,10 +76,10 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     </p>
                     <div id="marginsdiv" style="border-top: 1px solid #EEE;">
                         <p>
-                        Page Margin Top: <input min="0" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="margin_top" name="margin_top" value="<?php echo esc_html($this->options['margin_top']); ?>" />&nbsp;&nbsp;&nbsp;
-                        Bottom: <input min="0" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="margin_bottom" name="margin_bottom" value="<?php echo esc_html($this->options['margin_bottom']); ?>" />&nbsp;&nbsp;&nbsp;
-                        Left: <input min="0" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="margin_left" name="margin_left" value="<?php echo esc_html($this->options['margin_left']); ?>" />&nbsp;&nbsp;&nbsp;
-                        Right: <input min="0" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="margin_right" name="margin_right" value="<?php echo esc_html($this->options['margin_right']); ?>" />&nbsp;&nbsp;&nbsp;
+                        Page Margin Top: <input min="0" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="margin_top" name="margin_top" value="<?php echo $this->getOptionForDisplay('margin_top'.'3'); ?>" />&nbsp;&nbsp;&nbsp;
+                        Bottom: <input min="0" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="margin_bottom" name="margin_bottom" value="<?php echo $this->getOptionForDisplay('margin_bottom'.'3'); ?>" />&nbsp;&nbsp;&nbsp;
+                        Left: <input min="0" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="margin_left" name="margin_left" value="<?php echo $this->getOptionForDisplay('margin_left'.'3'); ?>" />&nbsp;&nbsp;&nbsp;
+                        Right: <input min="0" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="margin_right" name="margin_right" value="<?php echo $this->getOptionForDisplay('margin_right','3'); ?>" />&nbsp;&nbsp;&nbsp;
                         </p>
                     </div>
                     <div id="watermarkandheaderdiv" style="border-top: 1px solid #EEE;">
@@ -91,8 +91,8 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     <label for="pageheader_backgroundcolor" style="margin-left:10px;">Background Color:</label>  <input style="display: inline-block !important; width: 70px; margin-right: 5px;" type='text' id="pageheader_backgroundcolor" name="pageheader_backgroundcolor" value="<?php echo $this->options['pageheader_backgroundcolor']; ?>" />
                     </p><p>
                     Header Margin Top: <input min="0" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="margin_header" name="margin_header" value="<?php echo esc_html($this->options['margin_header']); ?>" />&nbsp;&nbsp;&nbsp;
-                    <br>Header Text: <input size="100" type="text" id="pageheader_content" name="pageheader_content" value="<?php echo isset($this->options['pageheader_content']) ? esc_html($this->options['pageheader_content']) : ''; ?>" />&nbsp;&nbsp;&nbsp;
-                    <br>Watermark: <input size="100" type="text" id="watermark" name="watermark" autocomplete="off" value="<?php echo isset($this->options['watermark']) ? esc_html($this->options['watermark']) : ''; ?>" />&nbsp;&nbsp;&nbsp;
+                    <br>Header Text: <input size="100" type="text" id="pageheader_content" name="pageheader_content" value="<?php echo $this->getOptionForDisplay('pageheader_content',''); ?>" />&nbsp;&nbsp;&nbsp;
+                    <br>Watermark: <input size="100" type="text" id="watermark" name="watermark" autocomplete="off" value="<?php echo $this->getOptionForDisplay('watermark',''); ?>" />&nbsp;&nbsp;&nbsp;
                     </p>
                     </div>
                     <?php if ($this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full' ) {
@@ -103,14 +103,14 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 					</div>
                     <div id="pagenodiv" style="border-top: 1px solid #EEE;">
                         <p>
-                            Page Numbers Font Size: <input min="1" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="pagenumbering_font_size" name="pagenumbering_font_size" value="<?php echo esc_html($this->options['pagenumbering_font_size']); ?>" />
+                            Page Numbers Font Size: <input min="1" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="pagenumbering_font_size" name="pagenumbering_font_size" value="<?php echo $this->getOptionForDisplay('pagenumbering_font_size','9'); ?>" />
                         </p>
                     </div>
                     <?php } else {
                     ?>
                     <div id="columngapdiv" style="border-top: 1px solid #EEE;">
                         <p>
-                            Column Gap Width: <input min="1" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="column_gap" name="column_gap" value="<?php echo esc_html($this->options['column_gap']); ?>" />
+                            Column Gap Width: <input min="1" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="column_gap" name="column_gap" value="<?php echo $this->getOptionForDisplay('column_gap','5'); ?>" />
                         </p>
                     </div>
                     <div id="columnseparatordiv" style="border-top: 1px solid #EEE;">
@@ -121,7 +121,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         <td style="">Separator: <input type="checkbox" name="column_line" value="1" <?php echo ($this->options['column_line'] == '1' ? 'checked' : '') ?> /></td>
                         <td style="">
                             <div class="theme" id="sp-light">
-                                <label for="col_color">Color:</label>  <input style="display: inline-block !important; width: 70px; margin-right: 5px;" type='text' id="col_color" name="col_color" value="<?php echo esc_html($this->options['col_color']); ?>" />
+                                <label for="col_color">Color:</label>  <input style="display: inline-block !important; width: 70px; margin-right: 5px;" type='text' id="col_color" name="col_color" value="<?php echo $this->getOptionForDisplay('col_color','#bfbfbf'); ?>" />
                             </div>
                         </td>
                         </tr></table>
@@ -179,7 +179,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                             <input type="password" style="height:0;width:0;background: transparent; color: transparent;border: none;" data-description="dummyPassword">
                         </div>
                         <label for="protection_password">Password: </label>
-                        <input class="protection_pass" id="protection_password" type="password" name="protection_password" value="<?php echo esc_html($this->options['protection_password']); ?>" />
+                        <input class="protection_pass" id="protection_password" type="password" name="protection_password" value="<?php echo $this->getOptionForDisplay('protection_password',''); ?>" />
                         </p>
                     </div>
                 </div>

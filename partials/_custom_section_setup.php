@@ -16,8 +16,8 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                 ?>
                 <h3 class="hndle">Custom Content<span title='<?php echo $title; ?>' class="bottom-tooltip"></span></h3>
                 <div class="inside">
-                    <p>Default Font Size: <input min="4" max="18" step=".1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="custom_section_font_size" name="custom_section_font_size" value="<?php echo esc_html($this->options['custom_section_font_size']) ;?>" />&nbsp;&nbsp;
-                    Line Height: <input min="1" max="3" step=".1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="custom_section_line_height" type="text" maxlength="3" size="3" name="custom_section_line_height" value="<?php echo esc_html($this->options['custom_section_line_height']) ;?>" /></p>
+                    <p>Default Font Size: <input min="4" max="18" step=".1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="custom_section_font_size" name="custom_section_font_size" value="<?php echo $this->getOptionForDisplay('custom_section_font_size','9') ;?>" />&nbsp;&nbsp;
+                    Line Height: <input min="1" max="3" step=".1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="custom_section_line_height" type="text" maxlength="3" size="3" name="custom_section_line_height" value="<?php echo $this->getOptionForDisplay('custom_section_line_height','1.0') ;?>" /></p>
                     <div style="margin-top:15px; margin-bottom:20px; max-width:100%; width:100%;">
                         <?php
                         $editor_id = "custom_section_content";

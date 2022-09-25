@@ -1378,6 +1378,9 @@ if (!class_exists("Bread")) {
 				$mpdf->WriteHTML("<columnbreak />");
 			}
 		}
+		function getOptionForDisplay($option,$default='') {
+			return empty($this->options[$option])?$default:esc_html($this->options[$option]);
+		}
 		function addColumnSeparators($oh) {
 			if ( $this->options['column_line'] == 1 ) {
 				$this->mpdftmp->WriteHTML('<body style="background:none;">
@@ -2017,7 +2020,8 @@ if (!class_exists("Bread")) {
 				$this->options['header_uppercase'] = intval($_POST['header_uppercase']);
 				$this->options['header_bold'] = intval($_POST['header_bold']);
 				$this->options['sub_header_shown'] = sanitize_text_field($_POST['sub_header_shown']);
-				$this->options['cont_header_shown'] = intval($_POST['cont_header_shown']);				$this->options['column_gap'] = intval($_POST['column_gap']);
+				$this->options['cont_header_shown'] = intval($_POST['cont_header_shown']);
+				$this->options['column_gap'] = intval($_POST['column_gap']);
 				$this->options['margin_right'] = intval($_POST['margin_right']);
 				$this->options['margin_left'] = intval($_POST['margin_left']);
 				$this->options['margin_bottom'] = intval($_POST['margin_bottom']);
