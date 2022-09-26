@@ -5,8 +5,8 @@ Tags: meeting list, bmlt, narcotics anonymous, na
 Requires at least: 4.0
 Requires PHP: 7.1
 Requires at least: 5.1
-Tested up to: 5.9
-Stable tag: 2.7.0
+Tested up to: 6.0.2
+Stable tag: 2.7.1
 
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -55,6 +55,9 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 - Read here for more information: https://github.com/bmlt-enabled/bread/blob/unstable/contribute.md
 
 == Changelog ==
+= 2.7.1 =
+* Stability Improvements
+
 = 2.7.0 =
 * In Booklet layout, the page number can be customized and set to different text for the meeting list, the additional meeting list, and the other pages.
 * Virtual_Meeting_Link and _Additional_Info are now standard fields.
