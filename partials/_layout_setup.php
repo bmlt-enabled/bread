@@ -76,9 +76,9 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     </p>
                     <div id="marginsdiv" style="border-top: 1px solid #EEE;">
                         <p>
-                        Page Margin Top: <input min="0" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="margin_top" name="margin_top" value="<?php echo $this->getOptionForDisplay('margin_top'.'3'); ?>" />&nbsp;&nbsp;&nbsp;
-                        Bottom: <input min="0" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="margin_bottom" name="margin_bottom" value="<?php echo $this->getOptionForDisplay('margin_bottom'.'3'); ?>" />&nbsp;&nbsp;&nbsp;
-                        Left: <input min="0" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="margin_left" name="margin_left" value="<?php echo $this->getOptionForDisplay('margin_left'.'3'); ?>" />&nbsp;&nbsp;&nbsp;
+                        Page Margin Top: <input min="0" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="margin_top" name="margin_top" value="<?php echo $this->getOptionForDisplay('margin_top','3'); ?>" />&nbsp;&nbsp;&nbsp;
+                        Bottom: <input min="0" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="margin_bottom" name="margin_bottom" value="<?php echo $this->getOptionForDisplay('margin_bottom','3'); ?>" />&nbsp;&nbsp;&nbsp;
+                        Left: <input min="0" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="margin_left" name="margin_left" value="<?php echo $this->getOptionForDisplay('margin_left','3'); ?>" />&nbsp;&nbsp;&nbsp;
                         Right: <input min="0" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="margin_right" name="margin_right" value="<?php echo $this->getOptionForDisplay('margin_right','3'); ?>" />&nbsp;&nbsp;&nbsp;
                         </p>
                     </div>
