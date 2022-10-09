@@ -1,4 +1,4 @@
-FROM wordpress:5.9.0-php8.0-apache
+FROM wordpress:6.0.2-php8.0-apache
 
 RUN apt-get update && \
 	apt-get install -y  --no-install-recommends ssl-cert && \
@@ -8,15 +8,13 @@ RUN apt-get update && \
 
 ENV PHP_INI_PATH "/usr/local/etc/php/php.ini"
 
-RUN pecl install xdebug-3.1.2 && docker-php-ext-enable xdebug \
-    && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" >> ${PHP_INI_PATH} \
-    && echo "xdebug.remote_port=9000" >> ${PHP_INI_PATH} \
-    && echo "xdebug.remote_enable=1" >> ${PHP_INI_PATH} \
-    && echo "xdebug.remote_connect_back=0" >> ${PHP_INI_PATH} \
-    && echo "xdebug.remote_host=docker.for.mac.localhost" >> ${PHP_INI_PATH} \
-    && echo "xdebug.idekey=IDEA_DEBUG" >> ${PHP_INI_PATH} \
-    && echo "xdebug.remote_autostart=1" >> ${PHP_INI_PATH} \
-    && echo "xdebug.remote_log=/tmp/xdebug.log" >> ${PHP_INI_PATH}
+RUN pecl install xdebug-3.1.5 && docker-php-ext-enable xdebug \
+    && echo "xdebug.mode=debug" >> ${PHP_INI_PATH} \
+    && echo "xdebug.client_port=9003" >> ${PHP_INI_PATH} \
+    && echo "xdebug.client_host=host.docker.internal" >> ${PHP_INI_PATH} \
+    && echo "xdebug.start_with_request=yes" >> ${PHP_INI_PATH} \
+    && echo "xdebug.log=/tmp/xdebug.log" >> ${PHP_INI_PATH} \
+    && echo "xdebug.idekey=IDE_DEBUG" >> ${PHP_INI_PATH}
 
 EXPOSE 80
 EXPOSE 443

@@ -5,48 +5,84 @@ on:
     branches: [ 'unstable' ]
 
 jobs:
-  deploy-bread-latest:
-    runs-on: ubuntu-20.04
+  lint:
+    runs-on: ubuntu-latest
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+          extensions: "mbstring, gd, bcmath, bz2"
+
+      - name: PHPCS checker
+        id: php-codesniffer
+        run: make lint
+
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#bread'
+        if: failure()
+
+  deploy:
+    runs-on: ubuntu-latest
     permissions:
       id-token: write
       contents: write
     env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      S3_BUCKET: archives.bmlt.app
+      S3_KEY: bread
       BUILD_DIR: build
       DIST_DIR_S3: dist/s3
-      DIST_DIR_GITHUB: dist/github
-      GITHUB_RELEASE_FILENAME: bread.zip
-      S3_KEY: bread
+      PLUGIN: "bread"
+    needs: [ lint ]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         id: code-checkout
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '7.4'
+          php-version: 7.4
+          extensions: "mbstring, gd, bcmath, bz2"
 
-      - name: Install dependencies
-        if: steps.composer-cache.outputs.cache-hit != 'true'
-        id: install-dependencies
-        run: composer install --no-dev --no-progress
-
-      - name: Prepare zip file
+      - name: Prepare to deploy
         run: |
-          export ZIP_FILENAME=${S3_KEY}-build${GITHUB_RUN_NUMBER}-${GITHUB_SHA}.zip
+          export FILENAME=${PLUGIN}-build-${GITHUB_RUN_NUMBER}-${GITHUB_SHA}
+          export ZIP_FILENAME=$FILENAME.zip
           echo "ZIP_FILENAME=${ZIP_FILENAME}" >> $GITHUB_ENV
-          ./simplify-mpdf.sh
-          zip -r $ZIP_FILENAME ./ -x "*.git*" -x "*.editorconfig*" -x "*.travis.yml*" -x "*assets*" -x "composer.*"
-          mkdir $BUILD_DIR && mv $ZIP_FILENAME $BUILD_DIR/
-          mkdir -p $DIST_DIR_S3 && cp $BUILD_DIR/$ZIP_FILENAME $DIST_DIR_S3/$ZIP_FILENAME
-          mkdir -p $DIST_DIR_GITHUB && cp $BUILD_DIR/$ZIP_FILENAME $DIST_DIR_GITHUB/$GITHUB_RELEASE_FILENAME
+          PROD=1 make build
+          mkdir -p ${DIST_DIR_S3} && cp ${BUILD_DIR}/${ZIP_FILENAME} ${DIST_DIR_S3}/${ZIP_FILENAME}
 
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions/gh-ci-s3-artifact
-          role-session-name: gh-actions-bread
+          role-session-name: gh-actions-${{ env.PLUGIN }}
           aws-region: us-east-1
 
-      - name: copy artifacts to s3
+      - name: copy artifact to s3
         run: |
-          aws s3 cp ${DIST_DIR_S3}/${ZIP_FILENAME} s3://${{ secrets.S3_BUCKET }}/${S3_KEY}/${ZIP_FILENAME}
+          aws s3 cp $DIST_DIR_S3/$ZIP_FILENAME s3://$S3_BUCKET/$S3_KEY/$ZIP_FILENAME
+
+      - name: Publish Release to Latest WP
+        id: publish_latest
+        uses: bmlt-enabled/wordpress-releases-github-action@v1
+        with:
+          file: ${{ env.DIST_DIR_S3 }}/${{ env.ZIP_FILENAME }}
+          s3_key: ${{ env.S3_KEY }}
+          aws_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
+
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#bread'
+        if: failure()
