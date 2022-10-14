@@ -1,16 +1,11 @@
 {
-  "repositories": [
+  "name": "bmlt/bread",
+  "description": "This is a WordPress plugin for BMLT.",
+  "type": "project",
+  "license": "MIT",
+  "authors": [
     {
-      "type": "git",
-      "url": "https://github.com/mpdf/mpdf"
-    },
-    {
-      "type": "git",
-      "url": "https://github.com/mpdf/qrcode"
-    },
-    {
-      "type": "git",
-      "url": "https://github.com/myclabs/DeepCopy"
+      "name": "bmltenabled"
     }
   ],
   "require": {

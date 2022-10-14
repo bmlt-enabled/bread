@@ -1,5 +1,8 @@
+.project
+.settings/*
+.vscode/*
 .DS_Store
 .idea
-logs
-mpdf/vendor
-.vscode/*
+vendor/
+logs/
+build/
