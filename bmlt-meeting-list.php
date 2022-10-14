@@ -27,6 +27,7 @@ if (!class_exists("Bread")) {
         var $formats_used = '';
         var $formats_by_key = array();
         var $formats_spanish = '';
+        var $formats_french = '';
         var $formats_all = '';
         var $translate = array();
         var $services = '';
@@ -453,6 +454,7 @@ if (!class_exists("Bread")) {
         {
             $results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetServerInfo");
             $result = json_decode(wp_remote_retrieve_body($results), true);
+            if ($result==null) return 'en';
             $result = $result["0"]["nativeLang"];
             
             return $result;
@@ -882,6 +884,7 @@ if (!class_exists("Bread")) {
             // TODO: Adding a page number really could just be an option or tag.
             if ($this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full') {
                 $this->mpdf->DefHTMLFooterByName('MyFooter', '<div style="text-align:center;font-size:' . $this->options['pagenumbering_font_size'] . 'pt;font-style: italic;">'.$this->options['nonmeeting_footer'].'</div>');
+                $this->mpdf->DefHTMLFooterByName('_default', '<div style="text-align:center;font-size:' . $this->options['pagenumbering_font_size'] . 'pt;font-style: italic;">'.$this->options['nonmeeting_footer'].'</div>');
                 $this->mpdf->DefHTMLFooterByName('Meeting1Footer', '<div style="text-align:center;font-size:' . $this->options['pagenumbering_font_size'] . 'pt;font-style: italic;">'.$this->options['meeting1_footer'].'</div>');
                 $this->mpdf->DefHTMLFooterByName('Meeting2Footer', '<div style="text-align:center;font-size:' . $this->options['pagenumbering_font_size'] . 'pt;font-style: italic;">'.$this->options['meeting2_footer'].'</div>');
             }
@@ -894,7 +897,7 @@ if (!class_exists("Bread")) {
             $header_stylesheet = file_get_contents(plugin_dir_path(__FILE__).'css/mpdfstyletables.css');
             $this->mpdf->WriteHTML($header_stylesheet, 1); // The parameter 1 tells that this is css/style only and no body/html/text
             $this->mpdf->SetDefaultBodyCSS('line-height', $this->options['content_line_height']);
-            $this->mpdf->SetDefaultBodyCSS('background-color', 'transparent');
+            $this->mpdf->SetDefaultBodyCSS('background-color', '#ffffff00');
             if ($this->options['column_line'] == 1 &&
                 ($this->options['page_fold'] == 'tri' || $this->options['page_fold'] == 'quad')) {
                 $html = '<body style="background-color:#fff;">';
@@ -907,7 +910,7 @@ if (!class_exists("Bread")) {
 					<td style="background-color: #fff;width: 33.33%; height: 279.4mm;">&nbsp;</td>
 					</tr>
 					</tbody>
-					</table>';
+					</table></body>';
                 }
                 if ($this->options['page_fold'] == 'quad') {
                     $html .= '<table style="background-color: #fff;width: 100%; border-collapse: collapse;">
@@ -1119,12 +1122,13 @@ if (!class_exists("Bread")) {
             if ($this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full') {
                 $this->write_front_page();
             }
-            $this->mpdf->WriteHTML('td{font-size: '.$this->options['content_font_size']."pt;line-height:".$this->options['content_line_height'].';}', 1);
+            $this->mpdf->WriteHTML('td{font-size: '.$this->options['content_font_size']."pt;line-height:".$this->options['content_line_height'].';background-color:#ffffff00;}', 1);
             $this->mpdf->SetDefaultBodyCSS('font-size', $this->options['content_font_size'] . 'pt');
             $this->mpdf->SetDefaultBodyCSS('line-height', $this->options['content_line_height']);
+            $this->mpdf->SetDefaultBodyCSS('background-color', '#ffffff00');
             $this->upgradeHeaderData();
             if ($this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full') {
-                $this->mpdf->WriteHTML('<sethtmlpagefooter name="Meeting1Footer" page="ALL" />');
+                $this->WriteHTML('<sethtmlpagefooter name="Meeting1Footer" page="ALL" />');
             }
             $this->writeMeetings($result_meetings, $this->options['meeting_template_content'], $this->options['weekday_language'], $this->options['include_asm']==0 ? -1 : 0, true);
 
@@ -1132,7 +1136,7 @@ if (!class_exists("Bread")) {
                 $this->write_custom_section();
                 $this->write_front_page();
             } else {
-                $this->mpdf->WriteHTML('<sethtmlpagefooter name="MyFooter" page="ALL" />');
+                $this->WriteHTML('<sethtmlpagefooter name="MyFooter" page="ALL" />');
                 if (trim($this->options['last_page_content']) !== '') {
                     $this->write_last_page();
                 }
@@ -1452,7 +1456,7 @@ if (!class_exists("Bread")) {
                         $data = utf8_encode($data);
                         $this->writeBreak($test_pages);
                         $y_startpos = $test_pages->y;
-                        $test_pages->WriteHTML($data);
+                        @$test_pages->WriteHTML($data);
                         $y_diff = $test_pages->y - $y_startpos;
                         if ($y_diff >= $this->mpdf->h - ($this->mpdf->y + $this->mpdf->bMargin + 5) - $this->mpdf->kwt_height) {
                             $this->writeBreak($this->mpdf);
@@ -1461,7 +1465,7 @@ if (!class_exists("Bread")) {
                                 $data = $header.$data;
                             }
                         }
-                        $this->mpdf->WriteHTML($data);
+                        $this->WriteHTML($data);
                         $first_meeting = false;
                         $newSubHeading = false;
                         $newMajorHeading = false;
@@ -1906,6 +1910,7 @@ if (!class_exists("Bread")) {
             $this->mpdf->WriteHTML('td{font-size: '.$this->options['front_page_font_size']."pt;line-height:".$this->options['front_page_line_height'].';}', 1);
             $this->mpdf->SetDefaultBodyCSS('line-height', $this->options['front_page_line_height']);
             $this->mpdf->SetDefaultBodyCSS('font-size', $this->options['front_page_font_size'] . 'pt');
+            $this->mpdf->SetDefaultBodyCSS('background-color', '#ffffff00');
             $this->options['front_page_content'] = wp_unslash($this->options['front_page_content']);
             $this->standard_shortcode_replacement($this->options['front_page_content'], 'front_page');
 
@@ -1925,6 +1930,7 @@ if (!class_exists("Bread")) {
             $this->mpdf->WriteHTML('td{font-size: '.$this->options['last_page_font_size']."pt;line-height:".$this->options['last_page_line_height'].';}', 1);
             $this->mpdf->SetDefaultBodyCSS('font-size', $this->options['last_page_font_size'] . 'pt');
             $this->mpdf->SetDefaultBodyCSS('line-height', $this->options['last_page_line_height']);
+            $this->mpdf->SetDefaultBodyCSS('background-color', '#ffffff00');
             $this->standard_shortcode_replacement($this->options['last_page_content'], 'last_page');
             $this->writeHTMLwithServiceMeetings($this->options['last_page_content'], 'last_page');
         }
@@ -1937,6 +1943,7 @@ if (!class_exists("Bread")) {
             }
             $this->mpdf->SetDefaultBodyCSS('line-height', $this->options['custom_section_line_height']);
             $this->mpdf->SetDefaultBodyCSS('font-size', $this->options['custom_section_font_size'] . 'pt');
+            $this->mpdf->SetDefaultBodyCSS('background-color', '#ffffff00');
             $this->standard_shortcode_replacement($this->options['custom_section_content'], 'custom_section');
             $this->mpdf->WriteHTML('td{font-size: '.$this->options['custom_section_font_size']."pt;line-height:".$this->options['custom_section_line_height'].';}', 1);
             $this->writeHTMLwithServiceMeetings($this->options['custom_section_content'], 'custom_section');
@@ -1969,7 +1976,7 @@ if (!class_exists("Bread")) {
             $replacements[] =  $this->meeting_count;
             $data = $this->options[$page.'_content'];
             $data = $this->locale_month_replacement($data, 'lower', "%B");
-            $data = $this->locale_month_replacement($data, 'upper', "%^B");
+            //$data = $this->locale_month_replacement($data, 'upper', "%^B");
             $data = str_replace($search_strings, $replacements, $data);
             $this->replace_format_shortcodes($data, $page);
             $data = str_replace("[date]", strtoupper(date("F Y")), $data);
@@ -1993,12 +2000,12 @@ if (!class_exists("Bread")) {
                     continue;
                 }
                 if ($this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full') {
-                    $this->mpdf->WriteHTML('<sethtmlpagefooter name="Meeting2Footer" page="ALL" />');
+                    $this->WriteHTML('<sethtmlpagefooter name="Meeting2Footer" page="ALL" />');
                 }
                 $this->WriteHTML(substr($data, 0, $pos));
                 $this->write_service_meetings($this->options[$page.'_font_size'], $this->options[$page.'_line_height']);
                 if ($this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full') {
-                    $this->mpdf->WriteHTML('<sethtmlpagefooter name="MyFooter" page="ALL" />');
+                    $this->WriteHTML('<sethtmlpagefooter name="MyFooter" page="ALL" />');
                 }
                 $this->WriteHTML(substr($data, $pos+strlen($str)));
                 return;
@@ -2042,8 +2049,13 @@ if (!class_exists("Bread")) {
                 $data .= "<td style='padding-left:4px;border:1px solid #555;border-right:0;width:12%;vertical-align:top;'>".$formats[$count]['key_string']."</td>";
                 $data .= "<td style='border: 1px solid #555;border-left:0;width:38%;vertical-align:top;'>".$formats[$count]['name_string']."</td>";
                 $count++;
-                $data .= "<td style='padding-left:4px;border: 1px solid #555;border-right:0;width:12%;vertical-align:top;'>".$formats[$count]['key_string']."</td>";
-                $data .= "<td style='border: 1px solid #555;border-left:0;width:38%;vertical-align:top;'>".$formats[$count]['name_string']."</td>";
+                if ($count >= count($formats)) {
+                    $data .= "<td style='padding-left:4px;border: 1px solid #555;border-right:0;width:12%;vertical-align:top;'></td>";
+                    $data .= "<td style='border: 1px solid #555;border-left:0;width:38%;vertical-align:top;'></td>";
+                } else {
+                    $data .= "<td style='padding-left:4px;border: 1px solid #555;border-right:0;width:12%;vertical-align:top;'>".$formats[$count]['key_string']."</td>";
+                    $data .= "<td style='border: 1px solid #555;border-left:0;width:38%;vertical-align:top;'>".$formats[$count]['name_string']."</td>";
+                }
                 $data .= "</tr>";
             }
             $data .= "</table>";
@@ -2297,7 +2309,8 @@ if (!class_exists("Bread")) {
                 $this->options['page_size'] = sanitize_text_field($_POST['page_size']);
                 $this->options['page_orientation'] = validate_page_orientation($_POST['page_orientation']);
                 $this->options['page_fold'] = sanitize_text_field($_POST['page_fold']);
-                $this->options['booklet_pages'] = boolval($_POST['booklet_pages']);
+                $this->options['booklet_pages'] = isset($_POST['booklet_pages']) ?
+                        boolval($_POST['booklet_pages']): false;
                 $this->options['meeting_sort'] = sanitize_text_field($_POST['meeting_sort']);
                 $this->options['main_grouping'] = sanitize_text_field($_POST['main_grouping']);
                 $this->options['subgrouping'] = sanitize_text_field($_POST['subgrouping']);
@@ -2312,7 +2325,8 @@ if (!class_exists("Bread")) {
                 $this->options['custom_section_content'] = wp_kses_post($_POST['custom_section_content']);
                 $this->options['custom_section_line_height'] = floatval($_POST['custom_section_line_height']);
                 $this->options['custom_section_font_size'] = floatval($_POST['custom_section_font_size']);
-                $this->options['pagenumbering_font_size'] = floatval($_POST['pagenumbering_font_size']);
+                $this->options['pagenumbering_font_size'] = isset($_POST['pagenumbering_font_size']) ?
+                                        floatval($_POST['pagenumbering_font_size']) : '9';
                 $this->options['used_format_1'] = sanitize_text_field($_POST['used_format_1']);
                 $this->options['include_meeting_email'] = isset($_POST['include_meeting_email']) ? boolval($_POST['include_meeting_email']) : false;
                 $this->options['recurse_service_bodies'] = isset($_POST['recurse_service_bodies']) ? 1 : 0;
@@ -2321,9 +2335,12 @@ if (!class_exists("Bread")) {
                 $this->options['weekday_language'] = sanitize_text_field($_POST['weekday_language']);
                 $this->options['asm_language'] = sanitize_text_field($_POST['asm_language']);
                 $this->options['weekday_start'] = sanitize_text_field($_POST['weekday_start']);
-                $this->options['meeting1_footer'] = sanitize_text_field($_POST['meeting1_footer']);
-                $this->options['meeting2_footer'] = sanitize_text_field($_POST['meeting2_footer']);
-                $this->options['nonmeeting_footer'] = sanitize_text_field($_POST['nonmeeting_footer']);
+                $this->options['meeting1_footer'] = isset($_POST['meeting1_footer']) ?
+                        sanitize_text_field($_POST['meeting1_footer']) : '';
+                $this->options['meeting2_footer'] = isset($_POST['meeting2_footer']) ?
+                        sanitize_text_field($_POST['meeting2_footer']) :'';
+                $this->options['nonmeeting_footer'] = isset($_POST['nonmeeting_footer']) ?
+                        sanitize_text_field($_POST['nonmeeting_footer']):'';
                 $this->options['include_asm'] = boolval($_POST['include_asm']);
                 $this->options['asm_format_key'] = sanitize_text_field($_POST['asm_format_key']);
                 $this->options['asm_sort_order'] = sanitize_text_field($_POST['asm_sort_order']);
