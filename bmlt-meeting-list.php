@@ -454,7 +454,9 @@ if (!class_exists("Bread")) {
         {
             $results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetServerInfo");
             $result = json_decode(wp_remote_retrieve_body($results), true);
-            if ($result==null) return 'en';
+            if ($result==null) {
+                return 'en';
+            }
             $result = $result["0"]["nativeLang"];
             
             return $result;
@@ -880,7 +882,7 @@ if (!class_exists("Bread")) {
             ob_end_clean();
             $this->mpdf = new mPDF($mpdf_init_options);
             $this->mpdf->setAutoBottomMargin = 'pad';
-
+            $this->mpdf->shrink_tables_to_fit = 1;
             // TODO: Adding a page number really could just be an option or tag.
             if ($this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full') {
                 $this->mpdf->DefHTMLFooterByName('MyFooter', '<div style="text-align:center;font-size:' . $this->options['pagenumbering_font_size'] . 'pt;font-style: italic;">'.$this->options['nonmeeting_footer'].'</div>');
@@ -1167,7 +1169,7 @@ if (!class_exists("Bread")) {
                 }
                 $mpdfOptions = apply_filters("Bread_Mpdf_Init_Options", $mpdfOptions, $this->options);
                 $this->mpdftmp=new mPDF($mpdfOptions);
-
+                $this->mpdf->shrink_tables_to_fit = 1;
                 $ow = $this->mpdftmp->h;
                 $oh = $this->mpdftmp->w;
                 $pw = $this->mpdftmp->w / 2;
@@ -1207,7 +1209,7 @@ if (!class_exists("Bread")) {
                 $mpdfOptions['format'] =  $this->options['page_size']."-".$this->options['page_orientation'];
                 $mpdfOptions = apply_filters("Bread_Mpdf_Init_Options", $mpdfOptions, $this->options);
                 $this->mpdftmp=new mPDF($mpdfOptions);
-
+                $this->mpdf->shrink_tables_to_fit = 1;
                 //$this->mpdftmp->SetImportUse();
                 $h = \fopen($FilePath, 'rb');
                 $stream = new \setasign\Fpdi\PdfParser\StreamReader($h, false);
@@ -1243,6 +1245,7 @@ if (!class_exists("Bread")) {
                     'restrictColorSpace' => $this->options['colorspace'],
                 ];
                 $this->mpdftmp=new mPDF($mpdfOptions);
+                $this->mpdf->shrink_tables_to_fit = 1;
                 //$this->mpdftmp->SetImportUse();
                 $h = \fopen($FilePath, 'rb');
                 $stream = new \setasign\Fpdi\PdfParser\StreamReader($h, false);
@@ -1410,6 +1413,12 @@ if (!class_exists("Bread")) {
             $analysedTemplate = $this->analyseTemplate($template);
             $first_meeting = true;
             $newMajorHeading = false;
+            /***
+             * You might be wondering why I am not using keep-with-table...
+             * The problem is, keep with table doesn't work with columns, only pages.
+             * We want to check that a header and at least one meeting fits, so we write it
+             * to a test PDF, see how big it is, and check if it will fit.
+             */
             $test_pages = deep_copy($this->mpdf);
             foreach ($unique_heading as $this_heading_raw) {
                 $newMajorHeading = true;
@@ -1987,7 +1996,7 @@ if (!class_exists("Bread")) {
         function writeHTML($str)
         {
             $str = mb_convert_encoding($str, 'HTML-ENTITIES');
-            $this->mpdf->WriteHTML(utf8_encode(wpautop(stripslashes($str))));
+            @$this->mpdf->WriteHTML(utf8_encode(wpautop(stripslashes($str))));
         }
         function writeHTMLwithServiceMeetings($data, $page)
         {
