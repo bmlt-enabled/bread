@@ -389,9 +389,9 @@ if (!class_exists("Bread")) {
             foreach ($result as $value) {
                 foreach ($this->unique_areas as $unique_area) {
                     $area_data = explode(',', $unique_area);
-                    $area_id = $area_data[1];
+                    $area_id = $this->arraySafeGet($area_data, 1);
                     if ($area_id === $value['service_body_bigint']) {
-                        $area_name = $area_data[0];
+                        $area_name = $this->arraySafeGet($area_data);
                     }
                 }
                 
@@ -479,8 +479,7 @@ if (!class_exists("Bread")) {
                 return false;
             }
             $result = json_decode(wp_remote_retrieve_body($results), true);
-            $result = $result[0]["version"];
-            return $result;
+            return is_array($result) && array_key_exists("version", $result[0]) ? $result[0]["version"] : '';
         }
         // This is used from the AdminUI, not to generate the
         // meeting list.
@@ -496,22 +495,12 @@ if (!class_exists("Bread")) {
                 $this->options['recurse_service_bodies'] = 1;
             }
             $area_data = explode(',', $this->options['service_body_1']);
-            $service_body_id = $area_data[1];
-            $parent_body_id = $area_data[2];
+            $service_body_id = $this->arraySafeGet($area_data, 1);
             if ($this->options['recurse_service_bodies'] == 1) {
                 $services = '&recursive=1&services[]=' . $service_body_id;
             } else {
                 $services = '&services[]='.$service_body_id;
             }
-            $area_data = explode(',', $this->options['service_body_1']);
-            $service_body_id = $area_data[1];
-            $parent_body_id = $area_data[2];
-            if ($this->options['recurse_service_bodies'] == 1) {
-                $services = '&recursive=1&services[]=' . $service_body_id;
-            } else {
-                $services = '&services[]='.$service_body_id;
-            }
-
             $results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&get_formats_only");
             $results = json_decode(wp_remote_retrieve_body($results), true);
             $results = $results['formats'];
@@ -1604,8 +1593,8 @@ if (!class_exists("Bread")) {
             if ($this->options[$name]=='service_body_bigint') {
                 foreach ($this->unique_areas as $unique_area) {
                     $area_data = explode(',', $unique_area);
-                    $area_name = $area_data[0];
-                    $area_id = $area_data[1];
+                    $area_name = $this->arraySafeGet($area_data);
+                    $area_id = $this->arraySafeGet($area_data, 1);
                     if ($area_id === $value['service_body_bigint']) {
                         return $area_name;
                     }
@@ -1687,9 +1676,9 @@ if (!class_exists("Bread")) {
         {
             foreach ($this->unique_areas as $unique_area) {
                 $area_data = explode(',', $unique_area);
-                $area_id = $area_data[1];
+                $area_id = $this->arraySafeGet($area_data, 1);
                 if ($area_id === $meeting_value['service_body_bigint']) {
-                    return $area_data[0];
+                    return $this->arraySafeGet($area_data);
                 }
             }
             return '';
@@ -2100,6 +2089,10 @@ if (!class_exists("Bread")) {
                 }
             }
             return $text;
+        }
+        public function arraySafeGet($arr, $i = 0)
+        {
+            return is_array($arr) ? $arr[$i] ?? '': '';
         }
         function get_field($obj, $field)
         {
@@ -2865,10 +2858,9 @@ if (!class_exists("Bread")) {
         {
             if (false === ( $this->options[$service_body_name] == 'Not Used' )) {
                 $area_data = explode(',', $this->options[$service_body_name]);
-                $area = $area_data[0];
+                $area = $this->arraySafeGet($area_data);
                 $this->options[$service_body_name] = ($area == 'NOT USED' ? '' : $area);
-                $service_body_id = $area_data[1];
-                $parent_body_id = $area_data[2];
+                $service_body_id = $this->arraySafeGet($area_data, 1);
                 if ($this->options['recurse_service_bodies'] == 1) {
                     return '&recursive=1&services[]=' . $service_body_id;
                 } else {
