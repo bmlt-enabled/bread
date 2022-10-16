@@ -2206,8 +2206,8 @@ if (!class_exists("Bread")) {
                 }
 
                 if (isset($value['email_contact']) && $value['email_contact'] != '' && $this->options['include_meeting_email'] == 1) {
-                    $str = explode("#@-@#", $value['email_contact']);
-                    $value['email_contact'] = $str['2'];
+                    $str = $this->parse_field($value['email_contact']);
+                    $value['email_contact'] = $str;
                     $value['email_contact'] = ' (<i>'.$value['email_contact'].'</i>)';
                 } else {
                     $value['email_contact'] = '';
