@@ -5,7 +5,7 @@ VENDOR_AUTOLOAD := mpdf/vendor/autoload.php
 ZIP_FILE := build/bread.zip
 
 ifeq ($(PROD)x, x)
-	COMPOSER_ARGS := --prefer-dist --no-progress --no-suggest
+	COMPOSER_ARGS := --prefer-dist --no-progress
 else
 	COMPOSER_ARGS := --no-dev
 endif
