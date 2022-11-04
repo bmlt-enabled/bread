@@ -622,6 +622,9 @@ if (!class_exists("Bread")) {
             if (!isset($this->options['margin_header'])) {
                 $this->options['margin_header'] = 3;
             }
+            if (!isset($this->options['margin_footer'])) {
+                $this->options['margin_footer'] = 5;
+            }
             if (!isset($this->options['page_size'])) {
                 $this->options['page_size'] = 'legal';
             }
@@ -790,34 +793,34 @@ if (!class_exists("Bread")) {
             // TODO: The page number is always 5 from botton...this should be adjustable
             if ($this->options['page_fold'] == 'half') {
                 if ($this->options['page_size'] == 'letter') {
-                    $page_type_settings = ['format' => array(139.7,215.9), 'margin_footer' => 5];
+                    $page_type_settings = ['format' => array(139.7,215.9), 'margin_footer' => $this->options['margin_footer']];
                 } elseif ($this->options['page_size'] == 'legal') {
-                    $page_type_settings = ['format' => array(177.8,215.9), 'margin_footer' => 5];
+                    $page_type_settings = ['format' => array(177.8,215.9), 'margin_footer' => $this->options['margin_footer']];
                 } elseif ($this->options['page_size'] == 'ledger') {
-                    $page_type_settings = ['format' => 'letter-P', 'margin_footer' => 5];
+                    $page_type_settings = ['format' => 'letter-P', 'margin_footer' => $this->options['margin_footer']];
                 } elseif ($this->options['page_size'] == 'A4') {
-                    $page_type_settings = ['format' => 'A5-P', 'margin_footer' => 5];
+                    $page_type_settings = ['format' => 'A5-P', 'margin_footer' => $this->options['margin_footer']];
                 } elseif ($this->options['page_size'] == 'A5') {
-                    $page_type_settings = ['format' => 'A6-P', 'margin_footer' => 5];
+                    $page_type_settings = ['format' => 'A6-P', 'margin_footer' => $this->options['margin_footer']];
                 } elseif ($this->options['page_size'] == '5inch') {
-                    $page_type_settings = ['format' => array(197.2,279.4), 'margin_footer' => 5];
+                    $page_type_settings = ['format' => array(197.2,279.4), 'margin_footer' => $this->options['margin_footer']];
                 }
             } elseif ($this->options['page_fold'] == 'flyer') {
                 if ($this->options['page_size'] == 'letter') {
-                    $page_type_settings = ['format' => array(93.13,215.9), 'margin_footer' => 5];
+                    $page_type_settings = ['format' => array(93.13,215.9), 'margin_footer' => $this->options['margin_footer']];
                 } elseif ($this->options['page_size'] == 'legal') {
-                    $page_type_settings = ['format' => array(118.53,215.9), 'margin_footer' => 5];
+                    $page_type_settings = ['format' => array(118.53,215.9), 'margin_footer' => $this->options['margin_footer']];
                 } elseif ($this->options['page_size'] == 'ledger') {
-                    $page_type_settings = ['format' => array(143.93,279.4), 'margin_footer' => 5];
+                    $page_type_settings = ['format' => array(143.93,279.4), 'margin_footer' => $this->options['margin_footer']];
                 } elseif ($this->options['page_size'] == 'A4') {
-                    $page_type_settings = ['format' => array(99.0,210.0), 'margin_footer' => 5];
+                    $page_type_settings = ['format' => array(99.0,210.0), 'margin_footer' => $this->options['margin_footer']];
                 }
             } elseif ($this->options['page_fold'] == 'full') {
                 $ps = $this->options['page_size'];
                 if ($ps=='ledger') {
                     $ps = 'tabloid';
                 }
-                $page_type_settings = ['format' => $ps."-".$this->options['page_orientation'], 'margin_footer' => 5];
+                $page_type_settings = ['format' => $ps."-".$this->options['page_orientation'], 'margin_footer' => $this->options['margin_footer']];
             } else {
                 $ps = $this->options['page_size'];
                 if ($ps=='ledger') {
@@ -2310,6 +2313,8 @@ if (!class_exists("Bread")) {
                 $this->options['margin_bottom'] = intval($_POST['margin_bottom']);
                 $this->options['margin_top'] = intval($_POST['margin_top']);
                 $this->options['margin_header'] = intval($_POST['margin_header']);
+                $this->options['margin_footer'] = isset($_POST['margin_footer']) ?
+                    intval($_POST['margin_footer']): 5;
                 $this->options['pageheader_fontsize'] = floatval($_POST['pageheader_fontsize']);
                 $this->options['pageheader_textcolor'] = validate_hex_color($_POST['pageheader_textcolor']);
                 $this->options['pageheader_backgroundcolor'] = validate_hex_color($_POST['pageheader_backgroundcolor']);

@@ -100,6 +100,10 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     <div class="myfooter_div">
                         <label for="nonmeeting_footer">Custom Footer: </label>
                         <input name="nonmeeting_footer" type="text" size="50" value="<?php echo $this->options['nonmeeting_footer'];?>">
+                        <br/>
+                        <label for="margin_footer">Margin Footer: </label>
+                        <input min="0" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="margin_footer" name="margin_footer" value="<?php echo $this->getOptionForDisplay('margin_footer', '5'); ?>" />
+
                     </div>
                     <div id="pagenodiv" style="border-top: 1px solid #EEE;">
                         <p>
