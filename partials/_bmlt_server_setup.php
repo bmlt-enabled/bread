@@ -67,13 +67,13 @@ foreach ($all_users as $user) {
                                 <option value="Not Used">Not Used</option>
                                 <?php foreach ($unique_areas as $unique_area) { ?>
                                     <?php $area_data = explode(',', $unique_area); ?>
-                                    <?php $area_name = $area_data[0]; ?>
-                                    <?php $area_id = $area_data[1]; ?>
-                                    <?php $area_parent = $area_data[2]; ?>
-                                    <?php $area_parent_name = $area_data[3]; ?>
+                                    <?php $area_name = $this->arraySafeGet($area_data); ?>
+                                    <?php $area_id = $this->arraySafeGet($area_data, 1); ?>
+                                    <?php $area_parent = $this->arraySafeGet($area_data, 2); ?>
+                                    <?php $area_parent_name = $this->arraySafeGet($area_data, 3); ?>
                                     <?php $option_description = $area_name . " (" . $area_id . ") " . $area_parent_name . " (" . $area_parent . ")" ?>
                                     <?php $is_data = explode(',', esc_html($this->options['service_body_1'])); ?>
-                                    <?php if ($is_data[0] != "Not Used" && $area_id == $is_data[1]) { ?>
+                                    <?php if ($this->arraySafeGet($is_data) != "Not Used" && $area_id == $this->arraySafeGet($is_data, 1)) { ?>
                                         <option selected="selected" value="<?php echo $unique_area ?>"><?php echo $option_description ?></option>
                                     <?php } else { ?>
                                         <option value="<?php echo $unique_area ?>"><?php echo $option_description ?></option>
@@ -91,13 +91,13 @@ foreach ($all_users as $user) {
                                 <option value="Not Used">Not Used</option>
                                 <?php foreach ($unique_areas as $unique_area) { ?>
                                     <?php $area_data = explode(',', $unique_area); ?>
-                                    <?php $area_name = $area_data[0]; ?>
-                                    <?php $area_id = $area_data[1]; ?>
-                                    <?php $area_parent = $area_data[2]; ?>
-                                    <?php $area_parent_name = $area_data[3]; ?>
+                                    <?php $area_name = $this->arraySafeGet($area_data); ?>
+                                    <?php $area_id = $this->arraySafeGet($area_data, 1); ?>
+                                    <?php $area_parent = $this->arraySafeGet($area_data, 2); ?>
+                                    <?php $area_parent_name = $this->arraySafeGet($area_data, 3); ?>
                                     <?php $option_description = $area_name . " (" . $area_id . ") " . $area_parent_name . " (" . $area_parent . ")" ?></option>
                                     <?php $is_data = explode(',', esc_html($this->options['service_body_2'])); ?>
-                                    <?php if ($is_data[0] != "Not Used" && $area_id == $is_data[1]) { ?>
+                                    <?php if ($this->arraySafeGet($is_data) != "Not Used" && $area_id == $this->arraySafeGet($is_data, 1)) { ?>
                                         <option selected="selected" value="<?php echo $unique_area ?>"><?php echo $option_description ?></option>
                                     <?php } else { ?>
                                         <option value="<?php echo $unique_area ?>"><?php echo $option_description ?></option>
@@ -115,13 +115,13 @@ foreach ($all_users as $user) {
                                 <option value="Not Used">Not Used</option>
                                 <?php foreach ($unique_areas as $unique_area) { ?>
                                     <?php $area_data = explode(',', $unique_area); ?>
-                                    <?php $area_name = $area_data[0]; ?>
-                                    <?php $area_id = $area_data[1]; ?>
-                                    <?php $area_parent = $area_data[2]; ?>
-                                    <?php $area_parent_name = $area_data[3]; ?>
+                                    <?php $area_name = $this->arraySafeGet($area_data); ?>
+                                    <?php $area_id = $this->arraySafeGet($area_data, 1); ?>
+                                    <?php $area_parent = $this->arraySafeGet($area_data, 2); ?>
+                                    <?php $area_parent_name = $this->arraySafeGet($area_data, 3); ?>
                                     <?php $option_description = $area_name . " (" . $area_id . ") " . $area_parent_name . " (" . $area_parent . ")" ?></option>
                                     <?php $is_data = explode(',', esc_html($this->options['service_body_3'])); ?>
-                                    <?php if ($is_data[0] != "Not Used" && $area_id == $is_data[1]) { ?>
+                                    <?php if ($this->arraySafeGet($is_data) != "Not Used" && $area_id == $this->arraySafeGet($is_data, 1)) { ?>
                                         <option selected="selected" value="<?php echo $unique_area ?>"><?php echo $option_description ?></option>
                                     <?php } else { ?>
                                         <option value="<?php echo $unique_area ?>"><?php echo $option_description ?></option>
@@ -139,13 +139,13 @@ foreach ($all_users as $user) {
                                 <option value="Not Used">Not Used</option>
                                 <?php foreach ($unique_areas as $unique_area) { ?>
                                     <?php $area_data = explode(',', $unique_area); ?>
-                                    <?php $area_name = $area_data[0]; ?>
-                                    <?php $area_id = $area_data[1]; ?>
-                                    <?php $area_parent = $area_data[2]; ?>
-                                    <?php $area_parent_name = $area_data[3]; ?>
+                                    <?php $area_name = $this->arraySafeGet($area_data); ?>
+                                    <?php $area_id = $this->arraySafeGet($area_data, 1); ?>
+                                    <?php $area_parent = $this->arraySafeGet($area_data, 2); ?>
+                                    <?php $area_parent_name = $this->arraySafeGet($area_data, 3); ?>
                                     <?php $option_description = $area_name . " (" . $area_id . ") " . $area_parent_name . " (" . $area_parent . ")" ?></option>
                                     <?php $is_data = explode(',', esc_html($this->options['service_body_4'])); ?>
-                                    <?php if ($is_data[0] != "Not Used" && $area_id == $is_data[1]) { ?>
+                                    <?php if ($this->arraySafeGet($is_data) != "Not Used" && $area_id == $this->arraySafeGet($is_data, 1)) { ?>
                                         <option selected="selected" value="<?php echo $unique_area ?>"><?php echo $option_description ?></option>
                                     <?php } else { ?>
                                         <option value="<?php echo $unique_area ?>"><?php echo $option_description ?></option>
@@ -163,13 +163,13 @@ foreach ($all_users as $user) {
                                 <option value="Not Used">Not Used</option>
                                 <?php foreach ($unique_areas as $unique_area) { ?>
                                     <?php $area_data = explode(',', $unique_area); ?>
-                                    <?php $area_name = $area_data[0]; ?>
-                                    <?php $area_id = $area_data[1]; ?>
-                                    <?php $area_parent = $area_data[2]; ?>
-                                    <?php $area_parent_name = $area_data[3]; ?>
+                                    <?php $area_name = $this->arraySafeGet($area_data); ?>
+                                    <?php $area_id = $this->arraySafeGet($area_data, 1); ?>
+                                    <?php $area_parent = $this->arraySafeGet($area_data, 2); ?>
+                                    <?php $area_parent_name = $this->arraySafeGet($area_data, 3); ?>
                                     <?php $option_description = $area_name . " (" . $area_id . ") " . $area_parent_name . " (" . $area_parent . ")" ?></option>
                                     <?php $is_data = explode(',', esc_html($this->options['service_body_5'])); ?>
-                                    <?php if ($is_data[0] != "Not Used" && $area_id == $is_data[1]) { ?>
+                                    <?php if ($this->arraySafeGet($is_data) != "Not Used" && $area_id == $this->arraySafeGet($is_data, 1)) { ?>
                                         <option selected="selected" value="<?php echo $unique_area ?>"><?php echo $option_description ?></option>
                                     <?php } else { ?>
                                         <option value="<?php echo $unique_area ?>"><?php echo $option_description ?></option>
@@ -210,8 +210,8 @@ foreach ($all_users as $user) {
                         $extra_meetings_array = $this->get_all_meetings();
                         foreach ($extra_meetings_array as $extra_meeting) {
                             $extra_meeting_x = explode('|||', $extra_meeting);
-                            $extra_meeting_id = $extra_meeting_x[3];
-                            $extra_meeting_display = substr($extra_meeting_x[0], 0, 30) . ';' . $extra_meeting_x[1] . ';' . $extra_meeting_x[2]; ?>
+                            $extra_meeting_id = $this->arraySafeGet($extra_meeting_x, 3);
+                            $extra_meeting_display = substr($this->arraySafeGet($extra_meeting_x), 0, 30) . ';' . $this->arraySafeGet($extra_meeting_x, 1) . ';' . $this->arraySafeGet($extra_meeting_x, 2); ?>
                             <option <?php echo ($this->options['extra_meetings'] != '' && in_array($extra_meeting_id, $this->options['extra_meetings']) ? 'selected="selected"' : '') ?> value="<?php echo $extra_meeting_id ?>"><?php echo esc_html($extra_meeting_display) ?></option>
                             <?php
                         }
