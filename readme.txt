@@ -56,6 +56,10 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 
 == Changelog ==
 
+= 2.7.4 =
+* Brute force cleanup of MPDF temp files
+* Force MPDF to use a modern UserAgent
+
 = 2.7.3 =
 * Settable footer margin
 
