@@ -1308,13 +1308,13 @@ if (!class_exists("Bread")) {
                 @rmdir($dir);
             }
         }
-        function brute_force_cleanup($dir) 
+        function brute_force_cleanup($dir)
         {
             if (is_dir($dir)) {
                 $objects = scandir($dir);
                 foreach ($objects as $object) {
                     if ($object != "." && $object != "..") {
-                        if (str_starts_with($object,"bread")) {
+                        if (str_starts_with($object, "bread")) {
                             $filename = $dir . DIRECTORY_SEPARATOR .$object;
                             if (time()-filemtime($filename) > 24 * 3600) {
                                 $this->rrmdir($filename);
@@ -2354,7 +2354,7 @@ if (!class_exists("Bread")) {
                 $this->options['meeting_template_content'] = wp_kses_post($_POST['meeting_template_content']);
                 $this->options['asm_template_content'] = wp_kses_post($_POST['asm_template_content']);
                 $this->options['column_line'] = isset($_POST['column_line']) ?
-                            boolval($_POST['column_line']) : 0; 
+                            boolval($_POST['column_line']) : 0;
                 $this->options['col_color'] = isset($_POST['col_color']) ?
                             validate_hex_color($_POST['col_color']) : '#bfbfbf';
                 $this->options['custom_section_content'] = wp_kses_post($_POST['custom_section_content']);
