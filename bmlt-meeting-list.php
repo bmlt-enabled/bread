@@ -5,7 +5,7 @@ Plugin URI: http://wordpress.org/extend/plugins/bread/
 Description: Maintains and generates a PDF Meeting List from BMLT.
 Author: bmlt-enabled
 Author URI: https://bmlt.app
-Version: 2.7.3
+Version: 2.7.4
 */
 /* Disallow direct access to the plugin file */
 use Mpdf\Mpdf;
@@ -249,6 +249,7 @@ if (!class_exists("Bread")) {
                 if (!is_dir($dir) || !is_writable($dir)) {
                     return false;
                 }
+                $this->brute_force_cleanup($dir);
                 $attempts = 0;
                 $path = '';
                 do {
@@ -1062,7 +1063,9 @@ if (!class_exists("Bread")) {
                         }
                     }
                 } elseif (substr($this->options['asm_format_key'], 0, 1)!='@') {
-                    $this->options['asm_format_id'] = $this->formats_by_key[$this->options['weekday_language']][$this->options['asm_format_key']]['id'];
+                    if (isset($this->formats_by_key[$this->options['weekday_language']][$this->options['asm_format_key']])) {
+                        $this->options['asm_format_id'] = $this->formats_by_key[$this->options['weekday_language']][$this->options['asm_format_key']]['id'];
+                    }
                 }
             }
             if (strpos($this->options['custom_section_content'].$this->options['front_page_content'].$this->options['last_page_content'], '[format_codes_used_basic_es') !== false) {
@@ -1199,6 +1202,12 @@ if (!class_exists("Bread")) {
                     'restrictColorSpace' => $this->options['colorspace'],
                 ];
                 $mpdfOptions['format'] =  $this->options['page_size']."-".$this->options['page_orientation'];
+                /** this is because mPDF has an old UA and SiteGround is complaining
+                 * It will be fixed in the next release of mPDF, but we can't wait that long.
+                 * But, when a new mPDF comes out, remove this line.
+                 */
+                $mpdf_config['curlUserAgent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:108.0) Gecko/20100101 Firefox/108.0';
+                /* */
                 $mpdfOptions = apply_filters("Bread_Mpdf_Init_Options", $mpdfOptions, $this->options);
                 $this->mpdftmp=new mPDF($mpdfOptions);
                 $this->mpdf->shrink_tables_to_fit = 1;
@@ -1297,6 +1306,22 @@ if (!class_exists("Bread")) {
                     }
                 }
                 @rmdir($dir);
+            }
+        }
+        function brute_force_cleanup($dir) 
+        {
+            if (is_dir($dir)) {
+                $objects = scandir($dir);
+                foreach ($objects as $object) {
+                    if ($object != "." && $object != "..") {
+                        if (str_starts_with($object,"bread")) {
+                            $filename = $dir . DIRECTORY_SEPARATOR .$object;
+                            if (time()-filemtime($filename) > 24 * 3600) {
+                                $this->rrmdir($filename);
+                            }
+                        }
+                    }
+                }
             }
         }
         function orderByWeekdayStart(&$result_meetings)
@@ -2300,7 +2325,8 @@ if (!class_exists("Bread")) {
                 $this->options['header_bold'] = intval($_POST['header_bold']);
                 $this->options['sub_header_shown'] = sanitize_text_field($_POST['sub_header_shown']);
                 $this->options['cont_header_shown'] = intval($_POST['cont_header_shown']);
-                $this->options['column_gap'] = intval($_POST['column_gap']);
+                $this->options['column_gap'] = isset($_POST['column_gap']) ?
+                            intval($_POST['column_gap']) : 5;
                 $this->options['margin_right'] = intval($_POST['margin_right']);
                 $this->options['margin_left'] = intval($_POST['margin_left']);
                 $this->options['margin_bottom'] = intval($_POST['margin_bottom']);
@@ -2327,8 +2353,10 @@ if (!class_exists("Bread")) {
                 $this->options['city_suffix'] = sanitize_text_field($_POST['city_suffix']);
                 $this->options['meeting_template_content'] = wp_kses_post($_POST['meeting_template_content']);
                 $this->options['asm_template_content'] = wp_kses_post($_POST['asm_template_content']);
-                $this->options['column_line'] = boolval($_POST['column_line']); #seperator
-                $this->options['col_color'] = validate_hex_color($_POST['col_color']);
+                $this->options['column_line'] = isset($_POST['column_line']) ?
+                            boolval($_POST['column_line']) : 0; 
+                $this->options['col_color'] = isset($_POST['col_color']) ?
+                            validate_hex_color($_POST['col_color']) : '#bfbfbf';
                 $this->options['custom_section_content'] = wp_kses_post($_POST['custom_section_content']);
                 $this->options['custom_section_line_height'] = floatval($_POST['custom_section_line_height']);
                 $this->options['custom_section_font_size'] = floatval($_POST['custom_section_font_size']);
@@ -2574,7 +2602,7 @@ if (!class_exists("Bread")) {
             $this->fillUnsetStringOption('asm_language', '');  // same as main language
             $this->fillUnsetOption('weekday_start', '1');
             $this->fillUnsetOption('include_asm', '0');
-            $this->fillUnsetOption('asm_format_key', 'ASM');
+            $this->fillUnsetOption('asm_format_key', '');
             $this->fillUnsetOption('asm_sort_order', 'name');
             $this->fillUnsetStringOption('bmlt_login_id', '');
             $this->fillUnsetStringOption('bmlt_login_password', '');
