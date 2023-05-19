@@ -5,7 +5,7 @@ Plugin URI: http://wordpress.org/extend/plugins/bread/
 Description: Maintains and generates a PDF Meeting List from BMLT.
 Author: bmlt-enabled
 Author URI: https://bmlt.app
-Version: 2.7.8
+Version: 2.7.9
 */
 /* Disallow direct access to the plugin file */
 use Mpdf\Mpdf;
@@ -479,8 +479,8 @@ if (!class_exists("Bread")) {
                 $this->connection_error = "HTTP Return Code: ".$httpcode;
                 return false;
             }
-            $result = json_decode(wp_remote_retrieve_body($results), true);
-            return is_array($result) && array_key_exists("version", $result[0]) ? $result[0]["version"] : '';
+
+            return json_decode(wp_remote_retrieve_body($results), true);
         }
         // This is used from the AdminUI, not to generate the
         // meeting list.
@@ -502,9 +502,14 @@ if (!class_exists("Bread")) {
             } else {
                 $services = '&services[]='.$service_body_id;
             }
-            $results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&get_formats_only");
+            if (empty($service_body_id)) {
+                $queryUrl = "client_interface/json/?switcher=GetFormats";
+            } else {
+                $queryUrl = "client_interface/json/?switcher=GetSearchResults$services&get_formats_only";
+            }
+            $results = $this->get_configured_root_server_request($queryUrl);
             $results = json_decode(wp_remote_retrieve_body($results), true);
-            $results = $results['formats'];
+            $results = empty($service_body_id) ? $results : $results['formats'];
             $this->sortBySubkey($results, 'key_string');
             return $results;
         }
@@ -2470,9 +2475,10 @@ if (!class_exists("Bread")) {
                     <?php wp_nonce_field('meta-box-order', 'meta-box-order-nonce', false); ?>
                     <?php
                     wp_nonce_field('bmltmeetinglistupdate-options');
-                    $this_connected = $this->testRootServer();
+                    $serverInfo = $this->testRootServer();
+                    $this_connected = is_array($serverInfo) && array_key_exists("version", $serverInfo[0]) ? $serverInfo[0]["version"] : '';
                     $bmlt_version = $this_connected;
-                    if ($bmlt_version == "5.0.0") {
+                    if ($serverInfo[0]["aggregator_mode_enabled"] ?? false) {
                         $ThisVersion = "<span style='color: #00AD00;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-admin-site'></div>Using Tomato Server</span>";
                     } else {
                         $this_version = intval(str_replace(".", "", $this_connected));
