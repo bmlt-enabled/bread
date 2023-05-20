@@ -1,4 +1,4 @@
-FROM wordpress:6.2.1-php8.0-apache
+FROM wordpress:6.2.1-php8.2-apache
 
 RUN apt-get update && \
 	apt-get install -y  --no-install-recommends ssl-cert && \
