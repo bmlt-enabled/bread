@@ -1992,9 +1992,13 @@ if (!class_exists("Bread")) {
                 if (!isset($this->translate[$locLang])) {
                     $locLang = 'en';
                 }
-                setlocale(LC_TIME, $this->translate[$locLang]['LOCALE']);
-                $month = ucfirst(utf8_encode(strftime($sym)));
-                setlocale(LC_TIME, null);
+                $fmt = new IntlDateFormatter(
+                    $this->translate[$locLang]['LOCALE'],
+                    IntlDateFormatter::FULL,
+                    IntlDateFormatter::FULL
+                );
+                $fmt->setPattern($sym);
+                $month = ucfirst(utf8_encode($fmt->format(time())));
                 return substr_replace($data, $month, $strpos, 16);
             }
             return $data;
@@ -2011,8 +2015,7 @@ if (!class_exists("Bread")) {
             $search_strings[] = '[meeting_count]';
             $replacements[] =  $this->meeting_count;
             $data = $this->options[$page.'_content'];
-            $data = $this->locale_month_replacement($data, 'lower', "%B");
-            //$data = $this->locale_month_replacement($data, 'upper', "%^B");
+            $data = $this->locale_month_replacement($data, 'lower', "LLLL");
             $data = str_replace($search_strings, $replacements, $data);
             $this->replace_format_shortcodes($data, $page);
             $data = str_replace("[date]", strtoupper(date("F Y")), $data);
