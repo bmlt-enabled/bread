@@ -19,10 +19,12 @@ services:
       - ./logs/:/var/log/apache2
 
   db:
-    image: mysql:5.7
+    image: mariadb:10.11
     restart: always
+    ports:
+      - 3306:3306
     environment:
-      MYSQL_ROOT_PASSWORD: somewordpress
-      MYSQL_DATABASE: wordpress
-      MYSQL_USER: wordpress
-      MYSQL_PASSWORD: wordpress
+      MARIADB_ROOT_PASSWORD: somewordpress
+      MARIADB_DATABASE: wordpress
+      MARIADB_USER: wordpress
+      MARIADB_PASSWORD: wordpress

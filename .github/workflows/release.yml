@@ -6,7 +6,7 @@ on:
 
 jobs:
   lint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     env:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     steps:
@@ -16,7 +16,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 7.4
+          php-version: 8.2
           extensions: "mbstring, gd, bcmath, bz2"
 
       - name: PHPCS checker
@@ -31,7 +31,7 @@ jobs:
         if: failure()
 
   package:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     env:
       BUILD_DIR: "build"
       DIST_DIR_GITHUB: "dist/github"
@@ -46,7 +46,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 7.4
+          php-version: 8.2
           extensions: "mbstring, gd, bcmath, bz2"
 
       - name: Build package

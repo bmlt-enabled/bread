@@ -1,4 +1,4 @@
-FROM wordpress:6.2.1-php8.2-apache
+FROM wordpress:6.2.2-php8.2-apache
 
 RUN apt-get update && \
 	apt-get install -y  --no-install-recommends ssl-cert && \
@@ -8,7 +8,7 @@ RUN apt-get update && \
 
 ENV PHP_INI_PATH "/usr/local/etc/php/php.ini"
 
-RUN pecl install xdebug-3.1.5 && docker-php-ext-enable xdebug \
+RUN pecl install xdebug-3.2.2 && docker-php-ext-enable xdebug \
     && echo "xdebug.mode=debug" >> ${PHP_INI_PATH} \
     && echo "xdebug.client_port=9003" >> ${PHP_INI_PATH} \
     && echo "xdebug.client_host=host.docker.internal" >> ${PHP_INI_PATH} \
