@@ -722,15 +722,15 @@ var $ml = jQuery.noConflict
 			dataStore.setItem(index, newIndex)
 		}
 	});
-	var tomato = "https://tomato.bmltenabled.org/main_server";
+	var aggregator = "https://aggregator.bmltenabled.org/main_server";
 	$ml(window).on("load", function () {
-		if($ml('#use_tomato').is(':checked')) {
+		if($ml('#use_aggregator').is(':checked')) {
 			$ml("#root_server").prop("readonly", true);
 		}
 	});
-	$ml('#use_tomato').click(function() {
+	$ml('#use_aggregator').click(function() {
 		if($ml(this).is(':checked')) {
-			$ml("#root_server").val(tomato);
+			$ml("#root_server").val(aggregator);
 			$ml("#root_server").prop("readonly", true);
 		} else {
 			$ml("#root_server").val("");
@@ -738,7 +738,7 @@ var $ml = jQuery.noConflict
 		}
 	});
 	var rootServerValue = $ml('#root_server').val();
-	if(~rootServerValue.indexOf(tomato)) {
-		$ml("#use_tomato").prop("checked", true);
+	if(~rootServerValue.indexOf(aggregator)) {
+		$ml("#use_aggregator").prop("checked", true);
 	}
 });
