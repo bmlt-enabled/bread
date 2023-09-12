@@ -51,9 +51,9 @@ foreach ($all_users as $user) {
                     }
                     ?>
                     <p>
-                        <input type="checkbox" id="use_tomato" name="use_tomato" value="1"/>
-                        <label for="use_tomato">Use Tomato &#127813;</label>
-                            <span title='<p>Tomato is a root server aggregator, it collects meeting data <br/>from all known root servers and pretends to be one large server</p><p>This can be useful to use if you want to display meetings outside <br/>of your server, for instance a statewide listing where the state <br/>covers multiple root servers<br/>Another good use case is if you want to display meetings by users<br/> location</p>' class="tooltip"></span>
+                        <input type="checkbox" id="use_aggregator" name="use_aggregator" value="1"/>
+                        <label for="use_aggregator">Use Aggregator &#127813;</label>
+                            <span title='<p>The aggregator collects meeting data <br/>from all known root servers and pretends to be one large server</p><p>This can be useful to use if you want to display meetings outside <br/>of your server, for instance a statewide listing where the state <br/>covers multiple root servers<br/>Another good use case is if you want to display meetings by users<br/> location</p>' class="tooltip"></span>
                     </p>
                     <?php if ($this_connected) { ?>
                         <?php $unique_areas = $this->get_areas(); ?>
