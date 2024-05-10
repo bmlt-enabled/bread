@@ -1,0 +1,77 @@
+<?php 
+    class BreadOptions
+    {
+        var string $root_server = '';
+        var bool $cont_header_shown = false;
+        var float $front_page_line_height = 1.0;
+        var float $front_page_font_size = 10;
+        var float $last_page_font_size = 10;
+        var float $content_font_size = 9;
+        var float $header_font_size = 9;
+        var float $pageheader_fontsize = 9;
+        var bool $suppress_heading = false;
+        var string $header_text_color = '#ffffff';
+        var string $header_background_color = '#000000';
+        var string $pageheader_textcolor = '#000000';
+        var string $pageheader_backgroundcolor = '#ffffff';
+        var bool $header_uppercase = false;
+        var bool $header_bold = true;
+        var string $sub_header_shown = 'none';
+        var int $margin_top = 3;
+        var int $margin_bottom = 3;
+        var int $margin_left = 3;
+        var int $margin_right = 3;
+        var int $column_gap = 5;
+        var float $content_line_height = 1.0;
+        var float $last_page_line_height = 1.0;
+        var string $page_size = 'legal';
+        var string $page_orientation = 'L';
+        var string $page_fold = 'quad';
+        var string $meeting_sort = 'day';
+        var bool $booklet_pages = false;
+        var string $borough_suffix = 'Borough';
+        var string $county_suffix = 'County';
+        var string $neighborhood_suffix = 'Neighborhood';
+        var string $city_suffix = 'City';
+        var string $meeting_template_content = '';
+        var string $asm_template_content = '';
+        var bool $column_line = false;
+        var string $col_color = '#bfbfbf';
+        var string $custom_section_content = '';
+        var float $custom_section_line_height = 1.0;
+        var float $custom_section_font_size = 9;
+        var float $pagenumbering_font_size = 9;
+        // TODO is this a bool?
+        var string $used_format_1 = '';
+        var bool $include_meeting_email = false;
+        var string $base_font = 'dejavusanscondensed';
+        var int $colorspace = 0;
+        var bool $recurse_service_bodies = true;
+        var bool $extra_meetings_enabled = false;
+        var bool $include_protection = false;
+        var string $weekday_language = 'en';
+        var string $asm_language = '';  // same as main language
+        var int $weekday_start = 1;
+        var bool $include_asm = false;
+        var string $asm_format_key = '';
+        var string $asm_sort_order = 'name';
+        var string $bmlt_login_id = '';
+        var string $bmlt_login_password = '';
+        var string $protection_password = '';
+        var string $custom_query = '';
+        var string $asm_custom_query = '';
+        var string $user_agent = 'Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0) +bread';
+        var bool $sslverify = false;
+        var int $cache_time = 0;
+        var array $extra_meetings = [];
+        var array $authors = [];
+        var string $nonmeeting_footer;
+        var string $meeting1_footer;
+        var string $meeting2_footer;
+        private function setFooter($translate) { 
+            $my_footer = $translate[$this->weekday_language]['PAGE'].' {PAGENO}';
+            $this->nonmeeting_footer = $my_footer;
+            $this->meeting1_footer = $this->nonmeeting_footer;
+            $this->meeting2_footer = $this->nonmeeting_footer;
+        }
+    }
