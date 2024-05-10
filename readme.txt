@@ -6,7 +6,7 @@ Requires at least: 4.0
 Requires PHP: 7.1
 Requires at least: 5.1
 Tested up to: 6.2.2
-Stable tag: 2.7.9
+Stable tag: 2.7.10
 
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -55,6 +55,10 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 - Read here for more information: https://github.com/bmlt-enabled/bread/blob/unstable/contribute.md
 
 == Changelog ==
+
+= 2.7.10 =
+* Updated mPDF
+* Small fixes
 
 = 2.7.9 =
 * Fixes for aggregator.

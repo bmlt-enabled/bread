@@ -1,7 +1,14 @@
 <?php
 if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
     die('Sorry, but you cannot access this page directly.');
-} ?>
+}
+$plugin_data = get_plugin_data( WP_PLUGIN_DIR . '/bread/bmlt-meeting-list.php' );
+$plugin_version = "could not access version";
+if ($plugin_data) {
+    $plugin_version = $plugin_data['Version'];
+}
+global $wp_version;
+?>
 <div id="poststuff">
     <div id="postbox-container" class="postbox-container">
         <div id="accordion">
@@ -64,6 +71,8 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                 <p>File an issue <a href="https://github.com/radius314/bread/issues">https://github.com/bmlt-enabled/bread/issues</a></p>
                 <u>Debug Information</u>
                 <ul>
+                <li><b>Bread Version:</b> <?php echo $plugin_version; ?></li>
+                <li><b>Wordpress Version:</b> <?php echo $wp_version; ?></li>
                 <li><b>Protocol:</b> <?php echo $this->protocol; ?></li>
                 <li><b>PHP Version:</b> <?php echo phpversion(); ?></li>
                 <li><b>Server Version:</b> <?php echo $_SERVER["SERVER_SOFTWARE"]; ?></li>

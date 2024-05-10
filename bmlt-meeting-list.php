@@ -5,7 +5,7 @@ Plugin URI: http://wordpress.org/extend/plugins/bread/
 Description: Maintains and generates a PDF Meeting List from BMLT.
 Author: bmlt-enabled
 Author URI: https://bmlt.app
-Version: 2.7.9
+Version: 2.7.10
 */
 /* Disallow direct access to the plugin file */
 use Mpdf\Mpdf;
@@ -69,6 +69,8 @@ if (!class_exists("Bread")) {
         var $loaded_setting = 1;
         var $authors_safe = array();
         var $connection_error = '';
+        var $protocol = '';
+        var $unique_areas = array();
         
         function loadAllSettings()
         {
@@ -331,7 +333,7 @@ if (!class_exists("Bread")) {
             if ($abbreviate) {
                 $key = "WKDYS";
             }
-            return utf8_encode($this->translate[$language][$key][$day]);
+            return mb_convert_encoding($this->translate[$language][$key][$day], 'UTF-8', mb_list_encodings());
         }
 
         function authenticate_root_server()
@@ -601,6 +603,9 @@ if (!class_exists("Bread")) {
             }
             if (!isset($this->options['pageheader_textcolor'])) {
                 $this->options['pageheader_textcolor'] = '#000000';
+            }
+            if (!isset($this->options['pageheader_fontsize'])) {
+                $this->options['pageheader_fontsize'] = '9';
             }
             if (!isset($this->options['pageheader_backgroundcolor'])) {
                 $this->options['pageheader_backgroundcolor'] = '#ffffff';
@@ -925,7 +930,7 @@ if (!class_exists("Bread")) {
 					</tbody>
 					</table>';
                 }
-                $this->mpdf_column=new mPDF([
+                $mpdf_column=new mPDF([
                     'mode' => $mode,
                     'tempDir' => $this->get_temp_dir(),
                     'format' => $mpdf_init_options['format'],
@@ -940,9 +945,9 @@ if (!class_exists("Bread")) {
                     'restrictColorSpace' => $this->options['colorspace'],
                 ]);
                 
-                $this->mpdf_column->WriteHTML($html);
+                $mpdf_column->WriteHTML($html);
                 $FilePath = $this->get_temp_dir(). DIRECTORY_SEPARATOR . $this->get_FilePath('_column');
-                $this->mpdf_column->Output($FilePath, 'F');
+                $mpdf_column->Output($FilePath, 'F');
                 $h = \fopen($FilePath, 'rb');
                 $stream = new \setasign\Fpdi\PdfParser\StreamReader($h, false);
                 $import_streams[$FilePath] = $stream;
@@ -1170,29 +1175,29 @@ if (!class_exists("Bread")) {
                 }
                 $mpdfOptions['curlUserAgent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:108.0) Gecko/20100101 Firefox/108.0';
                 $mpdfOptions = apply_filters("Bread_Mpdf_Init_Options", $mpdfOptions, $this->options);
-                $this->mpdftmp=new mPDF($mpdfOptions);
+                $mpdftmp=new mPDF($mpdfOptions);
                 $this->mpdf->shrink_tables_to_fit = 1;
-                $ow = $this->mpdftmp->h;
-                $oh = $this->mpdftmp->w;
-                $pw = $this->mpdftmp->w / 2;
-                $ph = $this->mpdftmp->h;
+                $ow = $mpdftmp->h;
+                $oh = $mpdftmp->w;
+                $pw = $mpdftmp->w / 2;
+                $ph = $mpdftmp->h;
                 $h = \fopen($FilePath, 'rb');
                 $stream = new \setasign\Fpdi\PdfParser\StreamReader($h, false);
                 $import_streams[$FilePath] = $stream;
-                $pagecount = $this->mpdftmp->SetSourceFile($stream);
+                $pagecount = $mpdftmp->SetSourceFile($stream);
                 $pp = $this->get_booklet_pages($pagecount);
                 foreach ($pp as $v) {
-                    $this->mpdftmp->AddPage();
+                    $mpdftmp->AddPage();
                     if ($v[0]>0 & $v[0]<=$pagecount) {
-                        $tplIdx = $this->mpdftmp->importPage($v[0]);
-                        $this->mpdftmp->UseTemplate($tplIdx, 0, 0, $pw, $ph);
+                        $tplIdx = $mpdftmp->importPage($v[0]);
+                        $mpdftmp->UseTemplate($tplIdx, 0, 0, $pw, $ph);
                     }
                     if ($v[1]>0 & $v[1]<=$pagecount) {
-                        $tplIdx = $this->mpdftmp->importPage($v[1]);
-                        $this->mpdftmp->UseTemplate($tplIdx, $pw, 0, $pw, $ph);
+                        $tplIdx = $mpdftmp->importPage($v[1]);
+                        $mpdftmp->UseTemplate($tplIdx, $pw, 0, $pw, $ph);
                     }
                 }
-                $this->mpdf = $this->mpdftmp;
+                $this->mpdf = $mpdftmp;
             } else if ($this->options['page_fold'] == 'full' && $this->options['booklet_pages']) {
                 $FilePath = $this->get_temp_dir(). DIRECTORY_SEPARATOR . $this->get_FilePath('_full');
                 $this->mpdf->Output($FilePath, 'F');
@@ -1216,26 +1221,26 @@ if (!class_exists("Bread")) {
                 $mpdf_config['curlUserAgent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:108.0) Gecko/20100101 Firefox/108.0';
                 /* */
                 $mpdfOptions = apply_filters("Bread_Mpdf_Init_Options", $mpdfOptions, $this->options);
-                $this->mpdftmp=new mPDF($mpdfOptions);
+                $mpdftmp=new mPDF($mpdfOptions);
                 $this->mpdf->shrink_tables_to_fit = 1;
-                //$this->mpdftmp->SetImportUse();
+                //$mpdftmp->SetImportUse();
                 $h = \fopen($FilePath, 'rb');
                 $stream = new \setasign\Fpdi\PdfParser\StreamReader($h, false);
                 $import_streams[$FilePath] = $stream;
-                $np = $this->mpdftmp->SetSourceFile($stream);
+                $np = $mpdftmp->SetSourceFile($stream);
                 $pp = 4*ceil($np/4);
                 for ($i=1; $i<$np; $i++) {
-                    $this->mpdftmp->AddPage();
-                    $tplIdx = $this->mpdftmp->ImportPage($i);
-                    $this->mpdftmp->UseTemplate($tplIdx);
+                    $mpdftmp->AddPage();
+                    $tplIdx = $mpdftmp->ImportPage($i);
+                    $mpdftmp->UseTemplate($tplIdx);
                 }
                 for ($i=$np; $i<$pp; $i++) {
-                    $this->mpdftmp->AddPage();
+                    $mpdftmp->AddPage();
                 }
-                $this->mpdftmp->AddPage();
-                $tplIdx = $this->mpdftmp->ImportPage($np);
-                $this->mpdftmp->UseTemplate($tplIdx);
-                $this->mpdf = $this->mpdftmp;
+                $mpdftmp->AddPage();
+                $tplIdx = $mpdftmp->ImportPage($np);
+                $mpdftmp->UseTemplate($tplIdx);
+                $this->mpdf = $mpdftmp;
             } else if ($this->options['page_fold'] == 'flyer') {
                 $FilePath = $this->get_temp_dir(). DIRECTORY_SEPARATOR . $this->get_FilePath('_flyer');
                 $this->mpdf->Output($FilePath, 'F');
@@ -1252,29 +1257,30 @@ if (!class_exists("Bread")) {
                     'orientation' => 'L',
                     'restrictColorSpace' => $this->options['colorspace'],
                 ];
-                $this->mpdftmp=new mPDF($mpdfOptions);
+                $mpdftmp=new mPDF($mpdfOptions);
                 $this->mpdf->shrink_tables_to_fit = 1;
-                //$this->mpdftmp->SetImportUse();
+                //$mpdftmp->SetImportUse();
                 $h = \fopen($FilePath, 'rb');
                 $stream = new \setasign\Fpdi\PdfParser\StreamReader($h, false);
                 $import_streams[$FilePath] = $stream;
-                $np = $this->mpdftmp->SetSourceFile($stream);
-                $ow = $this->mpdftmp->w;
-                $oh = $this->mpdftmp->h;
+                $np = $mpdftmp->SetSourceFile($stream);
+                $ow = $mpdftmp->w;
+                $oh = $mpdftmp->h;
                 $fw = $ow / 3;
-                $this->mpdftmp->AddPage();
-                $tplIdx = $this->mpdftmp->importPage(1);
-                $this->mpdftmp->UseTemplate($tplIdx, 0, 0);
-                $this->mpdftmp->UseTemplate($tplIdx, $fw, 0);
-                $this->mpdftmp->UseTemplate($tplIdx, $fw+$fw, 0);
-                $this->addColumnSeparators($oh);
-                $this->mpdftmp->AddPage();
-                $tplIdx = $this->mpdftmp->ImportPage(2);
-                $this->mpdftmp->UseTemplate($tplIdx, 0, 0);
-                $this->mpdftmp->UseTemplate($tplIdx, $fw, 0);
-                $this->mpdftmp->UseTemplate($tplIdx, $fw+$fw, 0);
-                $this->addColumnSeparators($oh);
-                $this->mpdf = $this->mpdftmp;
+                $mpdftmp->AddPage();
+                $tplIdx = $mpdftmp->importPage(1);
+                $mpdftmp->UseTemplate($tplIdx, 0, 0);
+                $mpdftmp->UseTemplate($tplIdx, $fw, 0);
+                $mpdftmp->UseTemplate($tplIdx, $fw+$fw, 0);
+                $sep = $this->columnSeparators($oh);
+                $mpdftmp->writeHTML($sep);
+                $mpdftmp->AddPage();
+                $tplIdx = $mpdftmp->ImportPage(2);
+                $mpdftmp->UseTemplate($tplIdx, 0, 0);
+                $mpdftmp->UseTemplate($tplIdx, $fw, 0);
+                $mpdftmp->UseTemplate($tplIdx, $fw+$fw, 0);
+                $mpdftmp->writeHTML($sep);
+                $this->mpdf = $mpdftmp;
             }
             if ($this->options['include_protection'] == 1) {
                 // 'copy','print','modify','annot-forms','fill-forms','extract','assemble','print-highres'
@@ -1600,10 +1606,10 @@ if (!class_exists("Bread")) {
         {
             return empty($this->options[$option])?$default:esc_html($this->options[$option]);
         }
-        function addColumnSeparators($oh)
+        function columnSeparators($oh)
         {
             if ($this->options['column_line'] == 1) {
-                $this->mpdftmp->WriteHTML('<body style="background:none;">
+                return '<body style="background:none;">
 				<table style="background: none;width: 100%; height:'.$oh.'mm border-collapse: collapse;">
 					<tbody>
 					<tr>
@@ -1612,7 +1618,7 @@ if (!class_exists("Bread")) {
 					<td style="width: 33.33%; height: 100%;">&nbsp;</td>
 					</tr>
 					</tbody>
-					</table>');
+					</table>';
             }
         }
         function getHeaderLevels()
@@ -2668,14 +2674,10 @@ if (!class_exists("Bread")) {
                     return;
                 }
                 unset($this->allSettings[$this->loaded_setting]);
-                if ($this->loaded_setting == $this->max_setting) {
-                    foreach ($this->allSettings as $aKey => $aDescr) {
-                        $this->max_setting = $aKey;
-                    }
-                }
                 update_option(Bread::SETTINGS, $this->allSettings);
                 $this->getMLOptions(1);
                 $this->loaded_setting = 1;
+                $this->requested_setting = 1;
             } elseif (isset($_POST['duplicate'])) {
                 if (!$this->current_user_can_create()) {
                     return;
