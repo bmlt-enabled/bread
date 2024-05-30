@@ -2006,7 +2006,7 @@ if (!class_exists("Bread")) {
                     IntlDateFormatter::FULL
                 );
                 $fmt->setPattern($sym);
-                $month = ucfirst(mb_convert_encoding($fmt->format(time()), 'UTF-8','ISO-8859-1'));
+                $month = ucfirst(mb_convert_encoding($fmt->format(time()), 'UTF-8', 'ISO-8859-1'));
                 return substr_replace($data, $month, $strpos, 16);
             }
             return $data;
