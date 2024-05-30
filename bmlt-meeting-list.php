@@ -1273,13 +1273,17 @@ if (!class_exists("Bread")) {
                 $mpdftmp->UseTemplate($tplIdx, $fw, 0);
                 $mpdftmp->UseTemplate($tplIdx, $fw+$fw, 0);
                 $sep = $this->columnSeparators($oh);
-                $mpdftmp->writeHTML($sep);
+                if (!empty($sep)) {
+                    $mpdftmp->writeHTML($sep);
+                }
                 $mpdftmp->AddPage();
                 $tplIdx = $mpdftmp->ImportPage(2);
                 $mpdftmp->UseTemplate($tplIdx, 0, 0);
                 $mpdftmp->UseTemplate($tplIdx, $fw, 0);
                 $mpdftmp->UseTemplate($tplIdx, $fw+$fw, 0);
-                $mpdftmp->writeHTML($sep);
+                if (!empty($sep)) {
+                    $mpdftmp->writeHTML($sep);
+                }
                 $this->mpdf = $mpdftmp;
             }
             if ($this->options['include_protection'] == 1) {
@@ -1491,8 +1495,6 @@ if (!class_exists("Bread")) {
                             $analysedTemplate,
                             $meeting_value['area_name']
                         );
-                        $data = mb_convert_encoding($data, 'HTML-ENTITIES');
-                        $data = utf8_encode($data);
                         $this->writeBreak($test_pages);
                         $y_startpos = $test_pages->y;
                         @$test_pages->WriteHTML($data);
@@ -2004,7 +2006,7 @@ if (!class_exists("Bread")) {
                     IntlDateFormatter::FULL
                 );
                 $fmt->setPattern($sym);
-                $month = ucfirst(utf8_encode($fmt->format(time())));
+                $month = ucfirst(mb_convert_encoding($fmt->format(time()), 'UTF-8','ISO-8859-1'));
                 return substr_replace($data, $month, $strpos, 16);
             }
             return $data;
@@ -2031,8 +2033,8 @@ if (!class_exists("Bread")) {
         }
         function writeHTML($str)
         {
-            $str = mb_convert_encoding($str, 'HTML-ENTITIES');
-            @$this->mpdf->WriteHTML(utf8_encode(wpautop(stripslashes($str))));
+            //$str = htmlentities($str);
+            @$this->mpdf->WriteHTML(wpautop(stripslashes($str)));
         }
         function writeHTMLwithServiceMeetings($data, $page)
         {
