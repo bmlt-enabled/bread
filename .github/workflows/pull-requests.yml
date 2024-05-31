@@ -2,13 +2,14 @@ name: 'pull-request'
 
 on:
   pull_request:
-    branches: [ 'unstable' ]
+    branches: [ 'main' ]
 
 jobs:
   lint:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v3
+      - name: Check out code 🛒
+        uses: actions/checkout@v4
         id: code-checkout
 
       - name: Setup PHP
@@ -17,10 +18,10 @@ jobs:
           php-version: 8.2
           extensions: "mbstring, gd, bcmath, bz2"
 
-      - name: Validate composer.json and composer.lock
+      - name: Validate composer.json and composer.lock 🎼
         id: composer-validate
         run: composer validate
 
-      - name: PHPCS checker
+      - name: PHPCS checker 🧹
         id: php-codesniffer
         run: make lint

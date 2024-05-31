@@ -10,25 +10,18 @@ jobs:
     env:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     steps:
-      - name: Check out code
-        uses: actions/checkout@v3
+      - name: Check out code 🛒
+        uses: actions/checkout@v4
 
-      - name: Setup PHP
+      - name: Setup PHP 🐫
         uses: shivammathur/setup-php@v2
         with:
           php-version: 8.2
           extensions: "mbstring, gd, bcmath, bz2"
 
-      - name: PHPCS checker
+      - name: PHPCS checker 🧹
         id: php-codesniffer
         run: make lint
-
-      - uses: act10ns/slack@v1
-        with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
-          channel: '#bread'
-        if: failure()
 
   package:
     runs-on: ubuntu-22.04
@@ -39,89 +32,49 @@ jobs:
       PLUGIN: "bread"
       MAINFILE: "bmlt-meeting-list.php"
     needs: [ lint ]
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@v3
-        id: code-checkout
+      - name: Check out code 🛒
+        uses: actions/checkout@v4
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: 8.2
-          extensions: "mbstring, gd, bcmath, bz2"
-
-      - name: Build package
+      - name: Build package 🔧
         id: build-package
         run: |
-          export ZIP_FILENAME=${PLUGIN}-build${GITHUB_RUN_NUMBER}-${GITHUB_SHA}.zip
+          export ZIP_FILENAME=${PLUGIN}-${GITHUB_REF##*/}.zip
           find ./ -type d | xargs chmod 755
           find ./ -name '*.php' | xargs chmod 644
           echo ${GITHUB_SHA} > build.txt
           PROD=1 make build
-          zip $ZIP_FILENAME build.txt
-          mv $ZIP_FILENAME ${PLUGIN}-${GITHUB_REF##*/}.zip
+          zip $BUILD_DIR/$ZIP_FILENAME build.txt
           mkdir -p $DIST_DIR_GITHUB && cp $BUILD_DIR/$ZIP_FILENAME $DIST_DIR_GITHUB/$GITHUB_RELEASE_FILENAME
+          echo "ARTIFACT_PATH=$DIST_DIR_GITHUB/$GITHUB_RELEASE_FILENAME" >> $GITHUB_ENV
+          echo "ARTIFACT_NAME=${ZIP_FILENAME}" >> $GITHUB_ENV
+
+      - name: Generate Release Notes 📝
+        if: github.ref_type == 'tag'
+        run: |
           curl -LO https://raw.githubusercontent.com/bmlt-enabled/release-notes-tool/master/gh-release-notes.sh
           chmod +x gh-release-notes.sh
           ./gh-release-notes.sh readme.txt "wp"
-          curl -LO https://raw.githubusercontent.com/bmlt-enabled/bmlt-wordpress-deploy/master/deploy-wordpress.sh
-          chmod +x deploy-wordpress.sh
-          echo "ARTIFACT_PATH=./${PLUGIN}-${GITHUB_REF##*/}.zip" >> $GITHUB_ENV
-          echo "ARTIFACT_NAME=${PLUGIN}-${GITHUB_REF##*/}.zip" >> $GITHUB_ENV
+          RELEASE_TYPE=$(if [[ "$GITHUB_REF_NAME" =~ "beta" ]]; then echo "true"; else echo "false"; fi)
+          echo "RELEASE_TYPE=${RELEASE_TYPE}" >> $GITHUB_ENV
 
-      - name: Release beta
-        if: contains(github.ref, 'beta')
-        id: beta_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create Release 🎉
+        uses: ncipollo/release-action@v1.14.0
+        if: github.ref_type == 'tag'
         with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
-          prerelease: true
-          draft: false
+          artifacts: ${{ env.ARTIFACT_PATH }}
+          bodyFile: "changelog.txt"
+          prerelease: ${{ env.RELEASE_TYPE }}
 
-      - name: Upload Beta Asset
-        if: contains(github.ref, 'beta')
-        id: beta-release-asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.beta_release.outputs.upload_url }}
-          asset_path: ${{ env.ARTIFACT_PATH }}
-          asset_name: ${{ env.ARTIFACT_NAME }}
-          asset_content_type: application/zip
-
-      - name: Release stable
-        if: "!contains(github.ref, 'beta')"
-        id: stable_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
-          body_path: "changelog.txt"
-          prerelease: false
-          draft: false
-
-      - name: Upload Stable Asset
-        if: "!contains(github.ref, 'beta')"
-        id: stable-release-asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.stable_release.outputs.upload_url }}
-          asset_path: ${{ env.ARTIFACT_PATH }}
-          asset_name: ${{ env.ARTIFACT_NAME }}
-          asset_content_type: application/zip
-
-      - name: Wordpress Release
+      - name: Wordpress Release ⛴
         if: "!contains(github.ref, 'beta')"
         id: wordpress-stable-release
         env:
           WORDPRESS_USERNAME : ${{ secrets.WORDPRESS_USERNAME }}
           WORDPRESS_PASSWORD : ${{ secrets.WORDPRESS_PASSWORD }}
         run: |
+          curl -LO https://raw.githubusercontent.com/bmlt-enabled/bmlt-wordpress-deploy/master/deploy-wordpress.sh
+          chmod +x deploy-wordpress.sh
           ./deploy-wordpress.sh
