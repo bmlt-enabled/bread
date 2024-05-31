@@ -1,4 +1,4 @@
-To contribute to bread, fork, make your changes and send a pull request to the unstable branch.
+To contribute to bread, fork, make your changes and send a pull request to the main branch.
 
 Take a look at the issues for bugs that you might be able to help fix.
 
