@@ -1869,7 +1869,7 @@ if (!class_exists("Bread")) {
             $meeting_value['wheelchair'] = '';
             if (!is_null($this->wheelchair_format)) {
                 $fmts = explode(',', $meeting_value['format_shared_id_list']);
-                if (in_array($this->wheelchair_format['id'],$fmts)) {
+                if (in_array($this->wheelchair_format['id'], $fmts)) {
                     $meeting_value['wheelchair'] = '<img src="'.plugin_dir_url(__FILE__) . 'includes/wheelchair.png" width="20" height="20">';
                 }
             }
