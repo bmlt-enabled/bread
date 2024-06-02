@@ -740,6 +740,9 @@ if (!class_exists("Bread")) {
             if (!isset($this->options['used_format_1'])) {
                 $this->options['used_format_1'] = '';
             }
+            if (!isset($this->options['wheelchair_size'])) {
+                $this->options['wheelchair_size'] = '20px';
+            }
             if (intval($this->options['cache_time']) > 0 && ! isset($_GET['nocache']) &&
                     ! isset($_GET['custom_query'])) {
                 if (false !== ( $content = get_transient($this->get_TransientKey()) )) {
@@ -1870,7 +1873,7 @@ if (!class_exists("Bread")) {
             if (!is_null($this->wheelchair_format)) {
                 $fmts = explode(',', $meeting_value['format_shared_id_list']);
                 if (in_array($this->wheelchair_format['id'], $fmts)) {
-                    $meeting_value['wheelchair'] = '<img src="'.plugin_dir_url(__FILE__) . 'includes/wheelchair.png" width="20" height="20">';
+                    $meeting_value['wheelchair'] = '<img src="'.plugin_dir_url(__FILE__) . 'includes/wheelchair.png" width="'.$this->options['wheelchair_size'].'" height="'.$this->options['wheelchair_size'].'">';
                 }
             }
             // Extensions.
@@ -2421,6 +2424,7 @@ if (!class_exists("Bread")) {
                 $this->options['bmlt_login_password'] = sanitize_text_field($_POST['bmlt_login_password']);
                 $this->options['base_font'] = sanitize_text_field($_POST['base_font']);
                 $this->options['colorspace'] = sanitize_text_field($_POST['colorspace']);
+                $this->options['wheelchair_size'] = sanitize_text_field($_POST['wheelchair_size']);
                 $this->options['protection_password'] = sanitize_text_field($_POST['protection_password']);
                 $this->options['time_clock'] = sanitize_text_field($_POST['time_clock']);
                 $this->options['time_option'] = intval($_POST['time_option']);
@@ -2651,6 +2655,7 @@ if (!class_exists("Bread")) {
             $this->fillUnsetStringOption('user_agent', 'Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0) +bread');
             $this->fillUnsetOption('sslverify', '0');
             $this->fillUnsetOption('cache_time', 0);
+            $this->fillUnsetOption('wheelchair_size', "20px");
             $this->fillUnsetArrayOption('extra_meetings', []);
             if (!isset($this->options['extra_meetings'])) {
                 if (count($this->options['extra_meetings'])>0) {

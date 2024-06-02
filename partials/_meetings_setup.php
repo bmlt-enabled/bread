@@ -226,7 +226,8 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     </div>
                     <p>
                     Default Font Size: <input min="4" max="18" step=".1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="content_font_size" name="content_font_size" value="<?php echo $this->options['content_font_size'] ;?>" />&nbsp;&nbsp;
-                    Line Height: <input min="1" max="3" step=".1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="content_line_height" type="text" maxlength="3" size="3" name="content_line_height" value="<?php echo $this->options['content_line_height'] ;?>" />&nbsp;&nbsp
+                    Line Height: <input min="1" max="3" step=".1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="content_line_height" type="text" maxlength="3" size="3" name="content_line_height" value="<?php echo $this->options['content_line_height'] ;?>" />&nbsp;&nbsp;
+                    Wheelchair Icon Size: <input size="5" maxlength="10" class="bmlt-input-field" style="display:inline;" id="wheelchair_size" type="text" name="wheelchair_size" value="<?php echo $this->options['wheelchair_size'] ;?>" />&nbsp;&nbsp;
                     <div><i>Avoid using tables which will greatly slow down the generation time.  Use CSS instead to get table-like effects if need be.</i></div>
                     <div style="margin-top:0px; margin-bottom:20px; max-width:100%; width:100%;">
                         <?php
