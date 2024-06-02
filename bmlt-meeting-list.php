@@ -1895,13 +1895,17 @@ if (!class_exists("Bread")) {
             $search_strings = array();
             $replacements = array();
             $clean_up = array(
-                '<p></p>'       => '',
                 '<em></em>'     => '',
                 '<em> </em>'    => '',
-                '()'            => '',
+                '<strong></strong>' => '',
+                '<strong> </strong>' => '',
+                '<i></i>' => '',
+                '<i> </i>' => '',
                 '    '          => ' ',
                 '   '           => ' ',
                 '  '            => ' ',
+                '<p></p>'       => '',
+                '()'            => '',
                 '<br/>'         => 'line_break',
                 '<br />'        => 'line_break',
                 'line_break line_break' => '<br />',
@@ -1910,6 +1914,7 @@ if (!class_exists("Bread")) {
                 '<br />,'       => '<br />',
                 ', <br />'      => '<br />',
                 ',<br />'       => '<br />',
+                '<p>,'          => '<p>',
                 ", , ,"         => ",",
                 ", *,"          => ",",
                 ", ,"           => ",",
