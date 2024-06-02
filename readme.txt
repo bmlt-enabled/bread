@@ -57,6 +57,7 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 
 = 2.7.10 =
 * Updated mPDF
+* Added "wheelchair" shortcode
 * Small fixes
 
 = 2.7.9 =

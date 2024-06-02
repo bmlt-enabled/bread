@@ -29,6 +29,7 @@ if (!class_exists("Bread")) {
         var $formats_spanish = '';
         var $formats_french = '';
         var $formats_all = '';
+        var $wheelchair_format = null;
         var $translate = array();
         var $services = '';
         var $requested_setting = 1;
@@ -1060,6 +1061,9 @@ if (!class_exists("Bread")) {
             $this->formats_by_key[$this->options['weekday_language']] = array();
             foreach ($this->formats_all as $thisFormat) {
                 $this->formats_by_key[$this->options['weekday_language']][$thisFormat['key_string']] = $thisFormat;
+                if ($thisFormat['world_id'] == 'WCHR') {
+                    $this->wheelchair_format = $thisFormat;
+                }
             }
             if (isset($this->options['asm_format_key']) && strlen($this->options['asm_format_key'])>0) {
                 if ($this->options['weekday_language'] != $this->options['asm_language']) {
@@ -1861,6 +1865,14 @@ if (!class_exists("Bread")) {
             $area_name = $this->get_area_name($meeting_value);
             $meeting_value['area_name'] = $area_name;
             $meeting_value['area_i'] = substr($area_name, 0, 1);
+
+            $meeting_value['wheelchair'] = '';
+            if (!is_null($this->wheelchair_format)) {
+                $fmts = explode(',', $meeting_value['format_shared_id_list']);
+                if (in_array($this->wheelchair_format['id'],$fmts)) {
+                    $meeting_value['wheelchair'] = '<img src="'.plugin_dir_url(__FILE__) . 'includes/wheelchair.png" width="20" height="20">';
+                }
+            }
             // Extensions.
             return apply_filters("Bread_Enrich_Meeting_Data", $meeting_value, $this->formats_by_key[$lang]);
         }
