@@ -2665,7 +2665,8 @@ if (!class_exists("Bread")) {
                 }
             }
             $this->fillUnsetArrayOption('authors', []);
-            $my_footer = $this->translate[$this->options['weekday_language']]['PAGE'].' {PAGENO}';
+            $my_footer = isset($this->translate[$this->options['weekday_language']]) ?
+                $this->translate[$this->options['weekday_language']]['PAGE'].' {PAGENO}' : '{PAGENO}';
             $this->fillUnsetStringOption('nonmeeting_footer', $my_footer);
             $this->fillUnsetStringOption('meeting1_footer', $this->options['nonmeeting_footer']);
             $this->fillUnsetStringOption('meeting2_footer', $this->options['nonmeeting_footer']);
