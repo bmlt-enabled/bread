@@ -887,6 +887,10 @@ if (!class_exists("Bread")) {
             $mpdf_init_options = array_merge($mpdf_init_options, $page_type_settings);
             $mpdf_init_options = apply_filters("Bread_Mpdf_Init_Options", $mpdf_init_options, $this->options);
             ob_end_clean();
+            // We load mPDF only when we need to and as late as possible.  This prevents
+            // conflicts with other plugins that use the same PSRs in different versions 
+            // by simply clobbering the other definitions.  Since we generate the PDF then
+            // die, we shouldn't create any conflicts ourselves.
             require_once plugin_dir_path(__FILE__).'mpdf/vendor/autoload.php';
             $this->mpdf = new mPDF($mpdf_init_options);
             $this->mpdf->setAutoBottomMargin = 'pad';
