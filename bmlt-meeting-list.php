@@ -5,7 +5,7 @@ Plugin URI: http://wordpress.org/extend/plugins/bread/
 Description: Maintains and generates a PDF Meeting List from BMLT.
 Author: bmlt-enabled
 Author URI: https://bmlt.app
-Version: 2.7.10
+Version: 2.7.11
 */
 /* Disallow direct access to the plugin file */
 use Mpdf\Mpdf;
@@ -15,7 +15,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
     die('Sorry, but you cannot access this page directly.');
 }
 
-require_once plugin_dir_path(__FILE__).'mpdf/vendor/autoload.php';
+//require_once plugin_dir_path(__FILE__).'mpdf/vendor/autoload.php';
 include 'partials/_helpers.php';
 if (!class_exists("Bread")) {
     class Bread
@@ -605,7 +605,7 @@ if (!class_exists("Bread")) {
             if (!isset($this->options['pageheader_textcolor'])) {
                 $this->options['pageheader_textcolor'] = '#000000';
             }
-            if (!isset($this->options['pageheader_fontsize'])) {
+            if (!isset($this->options['pageheader_fontsize']) || floatval($this->options['pageheader_fontsize'])<4) {
                 $this->options['pageheader_fontsize'] = '9';
             }
             if (!isset($this->options['pageheader_backgroundcolor'])) {
@@ -884,10 +884,14 @@ if (!class_exists("Bread")) {
                 ];
             }
             $mpdf_init_options['restrictColorSpace'] = $this->options['colorspace'];
-            $mpdf_init_options['curlUserAgent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:108.0) Gecko/20100101 Firefox/108.0';
             $mpdf_init_options = array_merge($mpdf_init_options, $page_type_settings);
             $mpdf_init_options = apply_filters("Bread_Mpdf_Init_Options", $mpdf_init_options, $this->options);
             ob_end_clean();
+            // We load mPDF only when we need to and as late as possible.  This prevents
+            // conflicts with other plugins that use the same PSRs in different versions
+            // by simply clobbering the other definitions.  Since we generate the PDF then
+            // die, we shouldn't create any conflicts ourselves.
+            require_once plugin_dir_path(__FILE__).'mpdf/vendor/autoload.php';
             $this->mpdf = new mPDF($mpdf_init_options);
             $this->mpdf->setAutoBottomMargin = 'pad';
             $this->mpdf->shrink_tables_to_fit = 1;
@@ -2602,6 +2606,9 @@ if (!class_exists("Bread")) {
             $this->fillUnsetOption('content_font_size', '9');
             $this->fillUnsetOption('header_font_size', $this->options['content_font_size']);
             $this->fillUnsetOption('pageheader_fontsize', $this->options['header_font_size']);
+            if (floatval($this->options['pageheader_fontsize']) < 4) {
+                $this->options['pageheader_fontsize'] = 6;
+            }
             $this->fillUnsetOption('suppress_heading', 0);
             $this->fillUnsetOption('header_text_color', '#ffffff');
             $this->fillUnsetOption('header_background_color', '#000000');
