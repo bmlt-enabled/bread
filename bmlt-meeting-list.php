@@ -1026,7 +1026,7 @@ if (!class_exists("Bread")) {
             $result = json_decode(wp_remote_retrieve_body($results), true);
             if (!empty($this->options['extra_meetings'])) {
                 $extras = "";
-                foreach ($this->options['extra_meetings'] as $value) {
+                foreach ((array)$this->options['extra_meetings'] as $value) {
                     $data = array(" [", "]");
                     $value = str_replace($data, "", $value);
                     $extras .= "&meeting_ids[]=".$value;
