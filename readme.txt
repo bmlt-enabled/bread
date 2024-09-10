@@ -55,7 +55,7 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 
 == Changelog ==
 
-= 2.7.12 =
+= 2.7.13 =
 * Multilingual [month_upper].
 
 = 2.7.12 =
