@@ -5,7 +5,7 @@ Plugin URI: http://wordpress.org/extend/plugins/bread/
 Description: Maintains and generates a PDF Meeting List from BMLT.
 Author: bmlt-enabled
 Author URI: https://bmlt.app
-Version: 2.7.12
+Version: 2.7.13
 */
 /* Disallow direct access to the plugin file */
 use Mpdf\Mpdf;
@@ -2031,6 +2031,9 @@ if (!class_exists("Bread")) {
                 );
                 $fmt->setPattern($sym);
                 $month = ucfirst(mb_convert_encoding($fmt->format(time()), 'UTF-8', 'ISO-8859-1'));
+                if ($case=='upper') {
+                    $month = mb_strtoupper($month, 'UTF-8');
+                }
                 return substr_replace($data, $month, $strpos, 16);
             }
             return $data;
@@ -2048,6 +2051,7 @@ if (!class_exists("Bread")) {
             $replacements[] =  $this->meeting_count;
             $data = $this->options[$page.'_content'];
             $data = $this->locale_month_replacement($data, 'lower', "LLLL");
+            $data = $this->locale_month_replacement($data, 'upper', "LLLL");
             $data = str_replace($search_strings, $replacements, $data);
             $this->replace_format_shortcodes($data, $page);
             $data = str_replace("[date]", strtoupper(date("F Y")), $data);
