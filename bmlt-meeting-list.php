@@ -5,7 +5,7 @@ Plugin URI: http://wordpress.org/extend/plugins/bread/
 Description: Maintains and generates a PDF Meeting List from BMLT.
 Author: bmlt-enabled
 Author URI: https://bmlt.app
-Version: 2.7.13
+Version: 2.7.14
 */
 /* Disallow direct access to the plugin file */
 use Mpdf\Mpdf;
@@ -72,7 +72,7 @@ if (!class_exists("Bread")) {
         var $connection_error = '';
         var $protocol = '';
         var $unique_areas = array();
-        
+
         function loadAllSettings()
         {
             $this->allSettings = get_option(Bread::SETTINGS);
@@ -387,7 +387,7 @@ if (!class_exists("Bread")) {
         {
             $results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults&data_field_key=weekday_tinyint,start_time,service_body_bigint,id_bigint,meeting_name,location_text,email_contact&sort_keys=meeting_name,service_body_bigint,weekday_tinyint,start_time");
             $result = json_decode(wp_remote_retrieve_body($results), true);
-            
+
             $this->unique_areas = $this->get_areas();
             $all_meetings = array();
             foreach ($result as $value) {
@@ -398,11 +398,11 @@ if (!class_exists("Bread")) {
                         $area_name = $this->arraySafeGet($area_data);
                     }
                 }
-                
+
                 $value['start_time'] = date("g:iA", strtotime($value['start_time']));
                 $all_meetings[] = $value['meeting_name'].'||| ['.$this->getday($value['weekday_tinyint'], true, $this->lang).'] ['.$value['start_time'].']||| ['.$area_name.']||| ['.$value['id_bigint'].']';
             }
-            
+
             return $all_meetings;
         }
         function get_fieldkeys()
@@ -437,7 +437,7 @@ if (!class_exists("Bread")) {
             $results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetServiceBodies");
             $result = json_decode(wp_remote_retrieve_body($results), true);
             $unique_areas = array();
-            
+
             foreach ($result as $value) {
                 $parent_name = 'Parent ID';
                 foreach ($result as $parent) {
@@ -450,7 +450,7 @@ if (!class_exists("Bread")) {
                 }
                 $unique_areas[] = $value['name'] . ',' . $value['id'] . ',' . $value['parent_id'] . ',' . $parent_name;
             }
-                        
+
             return $unique_areas;
         }
 
@@ -462,10 +462,10 @@ if (!class_exists("Bread")) {
                 return 'en';
             }
             $result = $result["0"]["nativeLang"];
-            
+
             return $result;
         }
-        
+
         function testRootServer($override_root_server = null)
         {
             if ($override_root_server == null) {
@@ -569,7 +569,7 @@ if (!class_exists("Bread")) {
             $services .= $this->addServiceBody('service_body_4');
             $services .= $this->addServiceBody('service_body_5');
             $area = $this->options['service_body_1'];
-            
+
             if (isset($_GET['custom_query'])) {
                 $services = $_GET['custom_query'];
             } elseif ($this->options['custom_query'] !== '') {
@@ -952,7 +952,7 @@ if (!class_exists("Bread")) {
                     'orientation' => 'P',
                     'restrictColorSpace' => $this->options['colorspace'],
                 ]);
-                
+
                 $mpdf_column->WriteHTML($html);
                 $FilePath = $this->get_temp_dir(). DIRECTORY_SEPARATOR . $this->get_FilePath('_column');
                 $mpdf_column->Output($FilePath, 'F');
@@ -963,7 +963,7 @@ if (!class_exists("Bread")) {
                 $tplId = $this->mpdf->importPage($pagecount);
                 $this->mpdf->SetPageTemplate($tplId);
             }
-            
+
             $this->section_shortcodes = array(
                 '<h2>'                          => '<h2 style="font-size:'.$this->options['front_page_font_size'] . 'pt!important;">',
                 '<div>[page_break]</div>'       =>  '<pagebreak />',
@@ -987,7 +987,7 @@ if (!class_exists("Bread")) {
                 "[service_body_3]"              => strtoupper($this->options['service_body_3']),
                 "[service_body_4]"              => strtoupper($this->options['service_body_4']),
                 "[service_body_5]"              => strtoupper($this->options['service_body_5']),
-        
+
             );
             $this->unique_areas = $this->get_areas();
             // Extensions
@@ -1110,7 +1110,7 @@ if (!class_exists("Bread")) {
                 $this->formats_french = $result_fr['formats'];
                 $this->sortBySubkey($this->formats_french, 'key_string');
             }
-            
+
             if ($this->options['include_asm'] === '0') {
                 $countmax = count($this->formats_used);
                 for ($count = 0; $count < $countmax; $count++) {
@@ -1432,7 +1432,7 @@ if (!class_exists("Bread")) {
         {
             $headerMeetings = $this->getHeaderMeetings($result_meetings, $lang, $include_asm, $asm_flag);
             $unique_heading = $this->getUniqueHeadings($headerMeetings);
-            
+
             $header_style = "color:".$this->options['header_text_color'].";";
             $header_style .= "background-color:".$this->options['header_background_color'].";";
             $header_style .= "font-size:".$this->options['header_font_size']."pt;";
@@ -1449,7 +1449,7 @@ if (!class_exists("Bread")) {
                 $header_style .= 'font-weight: bold;';
             }
             $cont = '('.$this->translate[$lang]['CONT'].')';
-            
+
 
             $template = wpautop(stripslashes($template));
             $template = preg_replace('/[[:^print:]]/', ' ', $template);
@@ -1974,7 +1974,7 @@ if (!class_exists("Bread")) {
 
         function write_front_page()
         {
-            
+
             $this->mpdf->WriteHTML('td{font-size: '.$this->options['front_page_font_size']."pt;line-height:".$this->options['front_page_line_height'].';}', 1);
             $this->mpdf->SetDefaultBodyCSS('line-height', $this->options['front_page_line_height']);
             $this->mpdf->SetDefaultBodyCSS('font-size', $this->options['front_page_font_size'] . 'pt');
@@ -2068,7 +2068,7 @@ if (!class_exists("Bread")) {
         {
             $strs = array('<p>[service_meetings]</p>','[service_meetings]',
                           '<p>[additional_meetings]</p>','[additional_meetings]');
-                          
+
             foreach ($strs as $str) {
                 $pos = strpos($data, $str);
                 if (!$pos) {
@@ -2089,7 +2089,7 @@ if (!class_exists("Bread")) {
         }
         function replace_format_shortcodes(&$data, $page_name)
         {
-            
+
             $this->shortcode_formats('[format_codes_used_basic]', false, $this->formats_used, $page_name, $data);
             $this->shortcode_formats('[format_codes_used_detailed]', true, $this->formats_used, $page_name, $data);
             $this->shortcode_formats('[format_codes_used_basic_es]', false, $this->formats_spanish, $page_name, $data);
@@ -2318,7 +2318,7 @@ if (!class_exists("Bread")) {
         {
             $this->getMLOptions($this->requested_setting);
             $this->lang = $this->get_bmlt_server_lang();
-            ?>      
+            ?>
             <div class="connecting"></div>
             <div class="saving"></div>
             <div style="display:none;">
@@ -2490,7 +2490,7 @@ if (!class_exists("Bread")) {
                 media_sideload_image($url, 0);
             }
             $this->fillUnsetOptions();
-            
+
             $this->authors_safe = $this->options['authors'];
             ?>
             <?php include 'partials/_help_videos.php'; ?>
@@ -2528,10 +2528,10 @@ if (!class_exists("Bread")) {
                         }
                     }
                     ?>
-                    <div id="setup">                        
+                    <div id="setup">
                         <?php include 'partials/_meeting_list_setup.php'; ?>
                     </div>
-                    <div id="tabs-first">                       
+                    <div id="tabs-first">
                         <?php include 'partials/_bmlt_server_setup.php'; ?>
                     </div>
                     <div id="layout">
@@ -2551,7 +2551,7 @@ if (!class_exists("Bread")) {
                     </div>
                     </form>
                     <div id="import-export">
-                        <?php include 'partials/_backup_restore_setup.php'; ?>                      
+                        <?php include 'partials/_backup_restore_setup.php'; ?>
                     </div>
                 </div>
             </div>
@@ -2744,7 +2744,7 @@ if (!class_exists("Bread")) {
             if (! $this->current_user_can_modify()) {
                 return;
             }
-                            
+
             $this->allSettings[$this->loaded_setting] = sanitize_text_field($_POST['setting_descr']);
             update_option(Bread::SETTINGS, $this->allSettings);
         }

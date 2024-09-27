@@ -5,7 +5,7 @@ Tags: meeting list, bmlt, narcotics anonymous, na
 Requires PHP: 8.1
 Requires at least: 6.2
 Tested up to: 6.6.1
-Stable tag: 2.7.13
+Stable tag: 2.7.14
 
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -156,7 +156,7 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 
 = 2.1.2 =
 * Brought back 5inch format
- 
+
 = 2.1.1 =
 * Bread now automatically calculates how many meetings fit in a column or on a page.
   This eliminates the need to guess an appropriate value for Page-Height-adjustment
@@ -173,7 +173,7 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 * Include additional (secondary) meeting list.  This can be used to provide a seperate list
   of special interest or foreign language meetings, or to list meetings that for some
   reason are not included in the main list.  This is a generalized version of Bread 1's "ASM" functionality,
-  which was used to list area service meetings. 
+  which was used to list area service meetings.
 * Italian, German and Farsi support.
 * New layout options
   - Full-Page Layout now full functional
@@ -182,7 +182,7 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
   - Page Headers (good when generating posters)
   - Flyer Layout (instead of a tri-fold meeting list, 3 identical meeting lists on a single
     sheet, good for special interest meeting lists)
-* Extensibility 
+* Extensibility
   - Site specific BMLT Meeting fields may be used in templates
   - Sites can defined their own complex fields, calculated from other fields,
     that can then be used in templates.
