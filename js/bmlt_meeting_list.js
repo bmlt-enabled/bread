@@ -1,4 +1,4 @@
-﻿var s = document.getElementsByTagName('SELECT')[5].options, 
+﻿var s = document.getElementsByTagName('SELECT')[5].options,
   l = [],
   d = '';
 for(i = 0; i < s.length; i++){
@@ -7,9 +7,9 @@ for(j = 0; j < column.length; j++){
   if(!l[j]) l[j] = 0;
   if(column[j].length > l[j]){
 	l[j] = column[j].length;
-  }      
-}    
-}  
+  }
+}
+}
 for(i = 0; i < s.length; i++){
 column = s[i].text.split(';');
 temp_line = '';
@@ -21,8 +21,8 @@ for(j = 0; j < column.length; j++){
   }
   temp_line += column[j] + d;
 }
-s[i].text = temp_line;    
-}  
+s[i].text = temp_line;
+}
  function root_server_video() {
 	jQuery('.tooltip').tooltipster('hide');
 	jQuery('#root-server-video').bPopup({
@@ -406,7 +406,7 @@ var $ml = jQuery.noConflict
 	}
 	 if (meeting_sort_val == 'weekday_area'
 	 ||  meeting_sort_val == 'weekday_city'
-	 ||  meeting_sort_val == 'weekday_county' 
+	 ||  meeting_sort_val == 'weekday_county'
 	 ||  meeting_sort_val == 'state'
 	 ||  user_defined_sub) {
 		 $ml('.show_subheader').show();
@@ -449,7 +449,7 @@ var $ml = jQuery.noConflict
 	   }
 		if (meeting_sort_val == 'weekday_area'
 		||  meeting_sort_val == 'weekday_city'
-		||  meeting_sort_val == 'weekday_county' 
+		||  meeting_sort_val == 'weekday_county'
 		||  meeting_sort_val == 'state'
 		||  user_defined_sub) {
 			$ml('.show_subheader').show();
@@ -460,7 +460,7 @@ var $ml = jQuery.noConflict
 	$ml("#subgrouping").click(function() {
 		var user_defined_sub = false;
 		$ml('.user_defined_headings').hide();
-		if (meeting_sort_val === 'user_defined') {
+		if ($ml("#meeting_sort").val() === 'user_defined') {
 		   $ml('.user_defined_headings').show();
 		   if ($ml("#subgrouping").val()!='') {
 				$ml('.show_subheader').show();
@@ -663,10 +663,10 @@ var $ml = jQuery.noConflict
 	});
 	$ml('#extra_meetings').on('chosen:showing_dropdown', function(evt, params) {
 		$ml(".ctrl_key").show();
-	});	
+	});
 	$ml('#extra_meetings').on('chosen:hiding_dropdown', function(evt, params) {
 		$ml(".ctrl_key").hide();
-	});	
+	});
 	$ml("#author_chosen").chosen({
 		no_results_text: "Oops, nothing found!",
 		width: "100%",
@@ -675,11 +675,11 @@ var $ml = jQuery.noConflict
 	});
 	$ml('#author_chosen').on('chosen:showing_dropdown', function(evt, params) {
 		$ml(".ctrl_key").show();
-	});	
+	});
 	$ml('#author_chosen').on('chosen:hiding_dropdown', function(evt, params) {
 		$ml(".ctrl_key").hide();
-	});	
-/* 
+	});
+/*
 	$ml("#extra_meetings").select2({
 		//tags: "true",
 		placeholder: "Select Meetings",
