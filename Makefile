@@ -1,7 +1,7 @@
 COMMIT := $(shell git rev-parse --short=8 HEAD)
 ZIP_FILENAME := $(or $(ZIP_FILENAME), $(shell echo "$${PWD\#\#*/}.zip"))
 BUILD_DIR := $(or $(BUILD_DIR),build)
-VENDOR_AUTOLOAD := mpdf/vendor/autoload.php
+VENDOR_AUTOLOAD := vendor/autoload.php
 ZIP_FILE := build/bread.zip
 
 ifeq ($(PROD)x, x)
@@ -34,8 +34,8 @@ composer: $(VENDOR_AUTOLOAD) ## Runs composer install
 
 .PHONY: lint
 lint: $(VENDOR_AUTOLOAD) ## PHP Lint
-	mpdf/vendor/squizlabs/php_codesniffer/bin/phpcs
+	vendor/squizlabs/php_codesniffer/bin/phpcs
 
 .PHONY: lint-fix
 lint-fix: $(VENDOR_AUTOLOAD) ## PHP Lint Fix
-	mpdf/vendor/squizlabs/php_codesniffer/bin/phpcbf
+	vendor/squizlabs/php_codesniffer/bin/phpcbf

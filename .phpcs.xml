@@ -35,7 +35,7 @@
    custom standard so you don't have to specify the
    patterns on the command line.
     -->
-    <exclude-pattern>mpdf/*</exclude-pattern>
+    <exclude-pattern>vendor/*</exclude-pattern>
 
     <!--
     You can add specific global ignores to different
@@ -50,6 +50,7 @@
     </rule>
     <rule ref="PSR1">
         <exclude name="PSR1.Methods.CamelCapsMethodName.NotCamelCaps" />
+        <exclude name="Squiz.Classes.ValidClassName.NotCamelCaps" />
         <exclude name="PSR1.Classes.ClassDeclaration.MissingNamespace" />
     </rule>
 </ruleset>
