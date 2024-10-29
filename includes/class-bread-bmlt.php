@@ -1,7 +1,8 @@
 <?php
-Class Bread_Bmlt
+class Bread_Bmlt
 {
     public static $connection_error;
+    private static $bmlt_server_lang = '';
     public static function authenticate_root_server()
     {
         $query_string = http_build_query(
@@ -124,14 +125,15 @@ Class Bread_Bmlt
 
     public static function get_bmlt_server_lang()
     {
-        $results = Bread_Bmlt::get_configured_root_server_request("client_interface/json/?switcher=GetServerInfo");
-        $result = json_decode(wp_remote_retrieve_body($results), true);
-        if ($result==null) {
-            return 'en';
+        if (Bread_Bmlt::$bmlt_server_lang == '') {
+            $results = Bread_Bmlt::get_configured_root_server_request("client_interface/json/?switcher=GetServerInfo");
+            $result = json_decode(wp_remote_retrieve_body($results), true);
+            if ($result==null) {
+                return 'en';
+            }
+            Bread_Bmlt::$bmlt_server_lang = ($result==null) ? 'en' : $result["0"]["nativeLang"];
         }
-        $result = $result["0"]["nativeLang"];
-
-        return $result;
+        return Bread_Bmlt::$bmlt_server_lang;
     }
 
     public static function testRootServer($override_root_server = null)
@@ -192,7 +194,8 @@ Class Bread_Bmlt
         }
         array_multisort($keys, $sortType, $array);
     }
-    public static function generateDefaultQuery() {
+    public static function generateDefaultQuery()
+    {
         // addServiceBody has the side effect that
         // the service body option is overridden, so that it contains
         // only the name of the service body.

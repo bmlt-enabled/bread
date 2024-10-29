@@ -11,7 +11,7 @@
  * @package    Bread
  * @subpackage Bread/admin/partials
  */
-Class Bread_AdminDisplay
+class Bread_AdminDisplay
 {
     private $lang;
     private $admin;
@@ -83,7 +83,8 @@ Class Bread_AdminDisplay
                 Bread::setOption('sub_header_shown', sanitize_text_field($_POST['sub_header_shown']));
                 Bread::setOption('cont_header_shown', intval($_POST['cont_header_shown']));
                 Bread::setOption(
-                    'column_gap', isset($_POST['column_gap']) ?
+                    'column_gap',
+                    isset($_POST['column_gap']) ?
                     intval($_POST['column_gap']) : 5
                 );
                 Bread::setOption('margin_right', intval($_POST['margin_right']));
@@ -92,7 +93,8 @@ Class Bread_AdminDisplay
                 Bread::setOption('margin_top', intval($_POST['margin_top']));
                 Bread::setOption('margin_header', intval($_POST['margin_header']));
                 Bread::setOption(
-                    'margin_footer', isset($_POST['margin_footer']) ?
+                    'margin_footer',
+                    isset($_POST['margin_footer']) ?
                     intval($_POST['margin_footer']): 5
                 );
                 Bread::setOption('pageheader_fontsize', floatval($_POST['pageheader_fontsize']));
@@ -104,7 +106,8 @@ Class Bread_AdminDisplay
                 Bread::setOption('page_orientation', sanitize_text_field($_POST['page_orientation']));
                 Bread::setOption('page_fold', sanitize_text_field($_POST['page_fold']));
                 Bread::setOption(
-                    'booklet_pages', isset($_POST['booklet_pages']) ?
+                    'booklet_pages',
+                    isset($_POST['booklet_pages']) ?
                     boolval($_POST['booklet_pages']): false
                 );
                 Bread::setOption('meeting_sort', sanitize_text_field($_POST['meeting_sort']));
@@ -117,18 +120,21 @@ Class Bread_AdminDisplay
                 Bread::setOption('meeting_template_content', wp_kses_post($_POST['meeting_template_content']));
                 Bread::setOption('asm_template_content', wp_kses_post($_POST['asm_template_content']));
                 Bread::setOption(
-                    'column_line', isset($_POST['column_line']) ?
+                    'column_line',
+                    isset($_POST['column_line']) ?
                     boolval($_POST['column_line']) : 0
                 );
                 Bread::setOption(
-                    'col_color', isset($_POST['col_color']) ?
+                    'col_color',
+                    isset($_POST['col_color']) ?
                     sanitize_hex_color($_POST['col_color']) : '#bfbfbf'
                 );
                 Bread::setOption('custom_section_content', wp_kses_post($_POST['custom_section_content']));
                 Bread::setOption('custom_section_line_height', floatval($_POST['custom_section_line_height']));
                 Bread::setOption('custom_section_font_size', floatval($_POST['custom_section_font_size']));
                 Bread::setOption(
-                    'pagenumbering_font_size', isset($_POST['pagenumbering_font_size']) ?
+                    'pagenumbering_font_size',
+                    isset($_POST['pagenumbering_font_size']) ?
                     floatval($_POST['pagenumbering_font_size']) : '9'
                 );
                 Bread::setOption('used_format_1', sanitize_text_field($_POST['used_format_1']));
@@ -140,15 +146,18 @@ Class Bread_AdminDisplay
                 Bread::setOption('asm_language', sanitize_text_field($_POST['asm_language']));
                 Bread::setOption('weekday_start', sanitize_text_field($_POST['weekday_start']));
                 Bread::setOption(
-                    'meeting1_footer', isset($_POST['meeting1_footer']) ?
+                    'meeting1_footer',
+                    isset($_POST['meeting1_footer']) ?
                     sanitize_text_field($_POST['meeting1_footer']) : ''
                 );
                 Bread::setOption(
-                    'meeting2_footer', isset($_POST['meeting2_footer']) ?
+                    'meeting2_footer',
+                    isset($_POST['meeting2_footer']) ?
                     sanitize_text_field($_POST['meeting2_footer']) :''
                 );
                 Bread::setOption(
-                    'nonmeeting_footer', isset($_POST['nonmeeting_footer']) ?
+                    'nonmeeting_footer',
+                    isset($_POST['nonmeeting_footer']) ?
                     sanitize_text_field($_POST['nonmeeting_footer']):''
                 );
                 Bread::setOption('include_asm', boolval($_POST['include_asm']));

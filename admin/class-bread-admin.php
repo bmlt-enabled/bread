@@ -303,7 +303,7 @@ class Bread_Admin
     function pwsix_process_default_settings()
     {
         Bread::getMLOptions(Bread::getRequestedSetting());
-        if (! current_user_can('manage_bread') 
+        if (! current_user_can('manage_bread')
             || (isset($_POST['bmltmeetinglistsave']) && $_POST['bmltmeetinglistsave'] == 'Save Changes' )
         ) {
             return;
@@ -396,7 +396,7 @@ class Bread_Admin
                 'timeout' => '120',
                 'cookies' => $cookies,
             );
-            if (isset($this->options['user_agent']) 
+            if (isset($this->options['user_agent'])
                 && Bread::getOption('user_agent') != 'None'
             ) {
                 $args['headers'] = array(
@@ -422,7 +422,6 @@ class Bread_Admin
     {
         include_once plugin_dir_path(__FILE__).'partials/bread-admin-display.php';
         (new Bread_AdminDisplay($this))->admin_options_page();
-
     }
     function pwsix_process_settings_admin()
     {
@@ -460,6 +459,4 @@ class Bread_Admin
             Bread::getMLOptions($id);
         }
     }
-
-
 }

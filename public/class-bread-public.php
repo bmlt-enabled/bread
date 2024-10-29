@@ -1,7 +1,8 @@
 <?php
 use Mpdf\Mpdf;
+
 /**
- * The public-facing functionality of the plugin.
+ * Main class for generating the PDF meeting list.
  *
  * @link  https://bmlt.app
  * @since 2.8.0
@@ -11,10 +12,10 @@ use Mpdf\Mpdf;
  */
 
 /**
- * The public-facing functionality of the plugin.
+ * Main class for generating the PDF meeting list.
  *
- * Defines the plugin name, version, and two examples hooks for how to
- * enqueue the public-facing stylesheet and JavaScript.
+ * Sets up mPdf and the page layout, does the initial BMLT query, then calls the generator to
+ * produce the meeting list contents.
  *
  * @package    Bread
  * @subpackage Bread/public
@@ -40,9 +41,22 @@ class Bread_Public
      * @var    string    $version    The current version of this plugin.
      */
     private $version;
+    /**
+     * The settings/ meeting list configuration.  Everything that was filled in in the WP Backend.
+     *
+     * @since  2.8.0
+     * @access private
+     * @var array The settings/ meeting list configuration.  Everything that was filled in in the WP Backend.
+     */
     private $options;
+    /**
+     * Does the work of translating the HTML to PDF.
+     *
+     * @since  2.8.0
+     * @access private
+     * @var object Does the work of translating the HTML to PDF.
+     */
     private $mpdf;
-    private $lang;
     /**
      * Initialize the class and set its properties.
      *
@@ -107,7 +121,6 @@ class Bread_Public
         $this->options = Bread::getMLOptions(Bread::getRequestedSetting());
         $import_streams = [];
         ini_set('max_execution_time', 600); // tomato server can take a long time to generate a schedule, override the server setting
-        $this->lang = Bread_Bmlt::get_bmlt_server_lang();
 
         if ($this->options['root_server'] == '') {
             echo '<p><strong>bread Error: BMLT Server missing.<br/><br/>Please go to Settings -> bread and verify BMLT Server</strong></p>';
@@ -311,7 +324,7 @@ class Bread_Public
         $sort_keys = 'weekday_tinyint,start_time,meeting_name';
         $get_used_formats = '&get_used_formats';
         $select_language = '';
-        if ($this->options['weekday_language'] != $this->lang) {
+        if ($this->options['weekday_language'] != Bread_Bmlt::get_bmlt_server_lang()) {
             $select_language = '&lang_enum='.$this->getSingleLanguage($this->options['weekday_language']);
         }
         $services = Bread_Bmlt::generateDefaultQuery();

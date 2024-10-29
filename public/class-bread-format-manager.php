@@ -1,25 +1,30 @@
 <?php
-class Bread_FormatsManager {
+class Bread_FormatsManager
+{
     private $usedFormats = array();
     private $allFormats = array();
     private $hashedFormats = array();
     private $defaultLang;
-    function __construct(&$usedFormats, $lang) {
+    function __construct(&$usedFormats, $lang)
+    {
         $this->usedFormats[$lang] = $usedFormats;
         $this->hashedFormats[$lang] = $this->hashFormats($usedFormats);
         $this->defaultLang = $lang;
     }
-    function getFormatsUsed() {
-       return $this->usedFormats[$this->defaultLang];
+    function getFormatsUsed()
+    {
+        return $this->usedFormats[$this->defaultLang];
     }
-    function hashFormats($formats) {
+    function hashFormats($formats)
+    {
         $ret = array();
         foreach ($formats as $format) {
             $ret[$format['key_string']] = $format;
         }
         return $ret;
     }
-    function loadFormats($lang) {
+    function loadFormats($lang)
+    {
         if (isset($this->allFormats[$lang])) {
             return;
         }
@@ -28,7 +33,8 @@ class Bread_FormatsManager {
         Bread_Bmlt::sortBySubkey($this->allFormats[$lang], 'key_string');
         $this->hashedFormats[$lang] = $this->hashFormats($this->allFormats[$lang]);
     }
-    function getFormatFromField($lang, $field, $id) {
+    function getFormatFromField($lang, $field, $id)
+    {
         if (!isset($this->allFormats[$lang])) {
             if (isset($this->usedFormats[$lang])) {
                 $found = $this->searchField($this->usedFormats[$lang], $id, $field);
@@ -40,13 +46,17 @@ class Bread_FormatsManager {
         }
         return $this->searchField($this->allFormats[$lang], $id, $field);
     }
-    function searchField($formats, $id, $field) {
-        foreach($formats as $format) {
-            if ($format[$field] == $id) return $format;
+    function searchField($formats, $id, $field)
+    {
+        foreach ($formats as $format) {
+            if ($format[$field] == $id) {
+                return $format;
+            }
         }
         return null;
     }
-    function getFormatByKey($lang, $key) {
+    function getFormatByKey($lang, $key)
+    {
         if (!isset($this->hashedFormats[$lang])) {
             $this->loadFormats($lang);
         }
@@ -69,11 +79,12 @@ class Bread_FormatsManager {
         }
         $this->loadFormats($lang);
         $this->usedFormats[$lang] = array();
-        foreach($this->usedFormats[$this->defaultLang] as $usedFormat) {
+        foreach ($this->usedFormats[$this->defaultLang] as $usedFormat) {
             $this->usedFormats[$lang] = $this->getFormatFromField($lang, 'id', $usedFormat['id']);
         }
     }
-    function getHashedFormats($lang) {
+    function getHashedFormats($lang)
+    {
         if (!isset($this->hashedFormats[$lang])) {
             $this->loadFormats($lang);
         }
@@ -86,7 +97,7 @@ class Bread_FormatsManager {
             return '';
         }
         $data = "<table style='width:100%;font-size:".$fontSize."pt;line-height:".$lineHeight.";'>";
-        foreach($formats as $format) {
+        foreach ($formats as $format) {
                 $data .= "<tr><td style='border-bottom:1px solid #555;width:8%;vertical-align:top;'><span style='font-size:" . $fontSize . "pt;line-height:" . $lineHeight . ";font-weight:bold;'>" . $format['key_string'] . "</span></td>";
                 $data .= "<td style='border-bottom:1px solid #555;width:92%;vertical-align:top;'><span style='font-size:" . $fontSize . "pt;line-height:" . $lineHeight . ";'>(" . $format['name_string'] . ") " . $format['description_string'] . "</span></td></tr>";
         }
