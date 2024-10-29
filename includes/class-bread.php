@@ -191,20 +191,21 @@ class Bread
     {
         return Bread::OPTIONS_NAME . '_' . $current_setting;
     }
-    public static function getMLOptions($current_setting)
+    public static function &getMLOptions($current_setting)
     {
-        Bread::$instance->getMLOptionsInner($current_setting);
+        return Bread::$instance->getMLOptionsInner($current_setting);
     }
     /**
      * Retrieves the plugin options from the database.
      *
      * @return array
      */
-    private function getMLOptionsInner($current_setting)
+    private function &getMLOptionsInner($current_setting)
     {
-        if ($current_setting < 1 and is_admin()) {
-                $current_setting = 1;
+        if ($current_setting < 1) {
+                $current_setting = is_admin() ? 1 : $this->requested_setting;
         }
+
         if ($current_setting != 1) {
             $this->optionsName = $this->generateOptionName($current_setting);
         } else {
@@ -226,6 +227,7 @@ class Bread
             $this->fillUnsetOptions();
             $this->upgrade_settings();
             $this->requested_setting = $current_setting;
+            return $this->options;
     }
     public static function getOptionsName()
     {
@@ -580,7 +582,7 @@ class Bread
                 || $this->options['meeting_sort'] === 'weekday_county'
                 || $this->options['meeting_sort'] === 'day')
             ) {
-                    $this->options['weekday_language'] = $this->lang;
+                    $this->options['weekday_language'] = Bread_Bmlt::get_bmlt_server_lang();
             }
             if ($this->options['page_fold']=='half') {
                 if ($this->options['page_size']=='A5') {

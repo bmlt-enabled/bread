@@ -6,7 +6,7 @@ class Bread_FormatsManager {
     private $defaultLang;
     function __construct(&$usedFormats, $lang) {
         $this->usedFormats[$lang] = $usedFormats;
-        $this->hashedFormats[$lang] = $this->hashFormats($usedFormats[$lang]);
+        $this->hashedFormats[$lang] = $this->hashFormats($usedFormats);
         $this->defaultLang = $lang;
     }
     function getFormatsUsed() {

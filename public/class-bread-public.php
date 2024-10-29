@@ -50,11 +50,10 @@ class Bread_Public
      * @param string $plugin_name The name of the plugin.
      * @param string $version     The version of this plugin.
      */
-    public function __construct($plugin_name, $version, &$options)
+    public function __construct($plugin_name, $version)
     {
         $this->plugin_name = $plugin_name;
         $this->version = $version;
-        $this->options = $options;
     }
 
     /**
@@ -105,6 +104,7 @@ class Bread_Public
 
     function bmlt_meeting_list($atts = null, $content = null)
     {
+        $this->options = Bread::getMLOptions(Bread::getRequestedSetting());
         $import_streams = [];
         ini_set('max_execution_time', 600); // tomato server can take a long time to generate a schedule, override the server setting
         $this->lang = Bread_Bmlt::get_bmlt_server_lang();
@@ -125,7 +125,7 @@ class Bread_Public
         if (intval($this->options['cache_time']) > 0 && ! isset($_GET['nocache'])
             && ! isset($_GET['custom_query'])
         ) {
-            if (false !== ( $content = get_transient(Bread::get_TransientKey()) )) {
+            if (false !== ( $content = get_transient(Bread::get_TransientKey(Bread::getRequestedSetting())) )) {
                 $content = pack("H*", $content);
                 $name = $this->get_FilePath();
                 header('Content-Type: application/pdf');
@@ -238,7 +238,9 @@ class Bread_Public
         // conflicts with other plugins that use the same PSRs in different versions
         // by simply clobbering the other definitions.  Since we generate the PDF then
         // die, we shouldn't create any conflicts ourselves.
-        include_once plugin_dir_path(__FILE__).'mpdf/vendor/autoload.php';
+        include_once plugin_dir_path(__FILE__).'../vendor/autoload.php';
+        require_once __DIR__.'/class-bread-content-generator.php';
+        require_once __DIR__.'/class-bread-format-manager.php';
         $this->mpdf = new mPDF($mpdf_init_options);
         $this->mpdf->setAutoBottomMargin = 'pad';
         $this->mpdf->shrink_tables_to_fit = 1;
@@ -375,8 +377,7 @@ class Bread_Public
             $this->options['page_fold'] = 'quad';
             $num_columns = 4;
         }
-        require_once __DIR__.'/class-bread_content-generator.php';
-        $generator = new Bread_ContentGenerator($mpdf, $options, $result_meetings, $formatsManager);
+        $generator = new Bread_ContentGenerator($this->mpdf, $this->options, $result_meetings, $formatsManager);
         $generator->generate($num_columns);
         $this->mpdf->SetDisplayMode('fullpage', 'two');
         if ($this->options['page_fold'] == 'half') {
@@ -528,7 +529,7 @@ class Bread_Public
             ) {
                 $content = $this->mpdf->Output('', 'S');
                 $content = bin2hex($content);
-                $transient_key = Bread::get_TransientKey();
+                $transient_key = Bread::get_TransientKey(Bread::getRequestedSetting());
                 set_transient($transient_key, $content, intval($this->options['cache_time']) * HOUR_IN_SECONDS);
             }
             $FilePath = apply_filters("Bread_Download_Name", $this->get_FilePath(), $this->options['service_body_1'], Bread::getSettingName(Bread::getRequestedSetting()));

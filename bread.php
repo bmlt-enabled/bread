@@ -13,7 +13,7 @@
  * @package Bread
  *
  * @wordpress-plugin
- * Plugin Name:       Bread-Refactored
+ * Plugin Name:       Bread
  * Plugin URI:        https://bmlt.app
  * Description:       Maintains and generates a PDF Meeting List from BMLT.
  * Version:           2.8.0
