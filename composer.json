@@ -17,6 +17,6 @@
     "squizlabs/php_codesniffer": "3.*"
   },
   "config": {
-    "vendor-dir": "mpdf/vendor"
+    "vendor-dir": "vendor"
   }
 }
