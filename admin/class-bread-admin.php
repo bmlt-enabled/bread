@@ -290,7 +290,7 @@ class Bread_Admin
             $encode_options = substr($encode_options, 3);
         }
         $settings = json_decode($encode_options, true);
-        $settings['authors'] =
+        $settings['authors'] = array(wp_get_current_user()->ID);
         update_option(Bread::getOptionsName(), $settings);
         setcookie('pwsix_action', "import_settings", time()+10);
         setcookie('current-meeting-list', $this->loaded_setting, time()+10);

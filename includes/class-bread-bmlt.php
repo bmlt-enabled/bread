@@ -3,7 +3,14 @@ class Bread_Bmlt
 {
     public static $connection_error;
     private static $bmlt_server_lang = '';
-    public static function authenticate_root_server()
+    private static array $unique_areas;
+    /**
+     * Prepare to make a call that requires user authentication (because the meeting's e-mail is included).
+     * First call 'login', then make the call.
+     *
+     * @return WP_Error | Array
+     */
+    public static function authenticate_root_server() : WP_Error | Array
     {
         $query_string = http_build_query(
             array(
@@ -13,14 +20,19 @@ class Bread_Bmlt
         );
         return Bread_Bmlt::get(Bread::getOption('root_server')."/local_server/server_admin/xml.php?" . $query_string);
     }
+    /**
+     * We only want to make a login call if really necessary.
+     *
+     * @return boolean
+     */
     public static function requires_authentication()
     {
-        return (Bread::getOption('include_meeting_email') == 1 || Bread::getOption('include_asm') == 1);
+        return (Bread::getOption('include_meeting_email') == 1);
     }
 
-    public static function get_root_server_request($url)
+    public static function get_root_server_request(string $url)
     {
-        $cookies = null;
+        $cookies = array();
 
         if (Bread_Bmlt::requires_authentication()) {
             $auth_response = Bread_Bmlt::authenticate_root_server();
@@ -34,8 +46,14 @@ class Bread_Bmlt
     {
         return Bread_Bmlt::get_root_server_request(Bread::getOption('root_server')."/".$url);
     }
-
-    private static function get($url, $cookies = array())
+    /**
+     * Undocumented function
+     *
+     * @param string $url The BMLT calls.
+     * @param array $cookies Any cookies that should be added.
+     * @return WP_Error | array The result of the call.
+     */
+    private static function get(string $url, array $cookies = array()) : WP_Error | array
     {
         $args = array(
             'timeout' => '120',
@@ -101,11 +119,19 @@ class Bread_Bmlt
         }
         return $ret;
     }
+    /**
+     * Generates a list of service bodies to be used in the admin UI's drop downs.
+     *
+     * @return array the service bodies.
+     */
     public static function get_areas()
     {
+        if (!empty(Bread_Bmlt::$unique_areas)) {
+            return Bread_Bmlt::$unique_areas;
+        }
         $results = Bread_Bmlt::get_configured_root_server_request("client_interface/json/?switcher=GetServiceBodies");
         $result = json_decode(wp_remote_retrieve_body($results), true);
-        $unique_areas = array();
+        Bread_Bmlt::$unique_areas = array();
 
         foreach ($result as $value) {
             $parent_name = 'Parent ID';
@@ -117,13 +143,17 @@ class Bread_Bmlt
             if ($value['parent_id'] == '') {
                 $value['parent_id'] = '0';
             }
-            $unique_areas[] = $value['name'] . ',' . $value['id'] . ',' . $value['parent_id'] . ',' . $parent_name;
+            Bread_Bmlt::$unique_areas[] = $value['name'] . ',' . $value['id'] . ',' . $value['parent_id'] . ',' . $parent_name;
         }
 
-        return $unique_areas;
+        return Bread_Bmlt::$unique_areas;
     }
-
-    public static function get_bmlt_server_lang()
+    /**
+     * Gets the default language of the root server.
+     *
+     * @return string 2 character string ISO standard for the language.
+     */
+    public static function get_bmlt_server_lang() : string
     {
         if (Bread_Bmlt::$bmlt_server_lang == '') {
             $results = Bread_Bmlt::get_configured_root_server_request("client_interface/json/?switcher=GetServerInfo");
@@ -135,8 +165,13 @@ class Bread_Bmlt
         }
         return Bread_Bmlt::$bmlt_server_lang;
     }
-
-    public static function testRootServer($override_root_server = null)
+    /**
+     * Check if this is a valid BMLT server.
+     *
+     * @param  $override_root_server
+     * @return array the results of GetServerInfo
+     */
+    public static function testRootServer(string $override_root_server = null) : array
     {
         if ($override_root_server == null) {
             $results = Bread_Bmlt::get_configured_root_server_request("client_interface/json/?switcher=GetServerInfo");
@@ -155,9 +190,13 @@ class Bread_Bmlt
 
         return json_decode(wp_remote_retrieve_body($results), true);
     }
-    // This is used from the AdminUI, not to generate the
-    // meeting list.
-    public static function getFormatsForSelect($all = false)
+    /**
+     * This is used from the AdminUI, not to generate the meeting list.
+     *
+     * @param boolean $all should we get all the formats defined in the root server, or only those used in the service body.  This respects the option recurse_service_bodies but only the first service body.
+     * @return array the formats
+     */
+    public static function getFormatsForSelect(bool $all = false): array
     {
         if ($all) {
             $results = Bread_Bmlt::get_configured_root_server_request("client_interface/json/?switcher=GetFormats");
@@ -183,8 +222,15 @@ class Bread_Bmlt
         Bread_Bmlt::sortBySubkey($results, 'key_string');
         return $results;
     }
-
-    public static function sortBySubkey(&$array, $subkey, $sortType = SORT_ASC)
+    /**
+     * Convenient front end to array_multisort.  Sorts the array in place.
+     *
+     * @param array $array The array to be sorted.
+     * @param string $subkey The key to be sorted by.
+     * @param [type] $sortType SORT_ASC (default) or SORT_DESC
+     * @return void
+     */
+    public static function sortBySubkey(array &$array, string $subkey, int $sortType = SORT_ASC): void
     {
         if (empty($array)) {
             return;
@@ -194,7 +240,12 @@ class Bread_Bmlt
         }
         array_multisort($keys, $sortType, $array);
     }
-    public static function generateDefaultQuery()
+    /**
+     * Generate that part of the BMLT query-string that reflects the service bodies being queried.
+     *
+     * @return string Something to paste into the URL
+     */
+    public static function generateDefaultQuery(): string
     {
         // addServiceBody has the side effect that
         // the service body option is overridden, so that it contains
@@ -219,5 +270,16 @@ class Bread_Bmlt
                 return '&services[]='.$service_body_id;
             }
         }
+    }
+    public static function parse_field($text)
+    {
+        if ($text!='') {
+            $exploded = explode("#@-@#", $text);
+            $knt = count($exploded);
+            if ($knt > 1) {
+                $text = $exploded[$knt-1];
+            }
+        }
+        return $text;
     }
 }

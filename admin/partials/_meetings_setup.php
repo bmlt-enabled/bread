@@ -257,22 +257,21 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                 ?>
                 <h3 class="hndle">Start Time Format<span title='<?php echo $title; ?>' class="top-tooltip"></span></h3>
                 <div class="inside">
-                    <?php $space = ' '; ?>
-                    <?php if (Bread::getOption('remove_space') == '1') { ?>
-                        <?php $space = ''; ?>
-                    <?php } ?>
-                    <?php if (Bread::getOption('time_clock') == '12') { ?>
-                        <?php $start_time = "8:00".$space."PM"; ?>
-                        <?php $start_time_2 = "8".$space; ?>
-                        <?php $end_time = "9:00".$space."PM"; ?>
-                        <?php $end_time_2 = "9".$space."PM"; ?>
-                    <?php } elseif (Bread::getOption('time_clock') == '24fr') { ?>
-                        <?php $start_time = "20h00"; ?>
-                        <?php $end_time = "21h00"; ?>
-                    <?php } else { ?>
-                        <?php $start_time = "20:00"; ?>
-                        <?php $end_time = "21:00"; ?>
-                    <?php } ?>
+                    <?php
+                        $space = Bread::getOption('remove_space') == '1' ? '' : ' ';
+                        $end_time_2 = "9".$space."PM";
+                        $start_time_2 = "8".$space;
+                        if (Bread::getOption('time_clock') == '12') {
+                            $start_time = "8:00".$space."PM";
+                            $end_time = "9:00".$space."PM";
+                        } elseif (Bread::getOption('time_clock') == '24fr') {
+                            $start_time = "20h00";
+                            $end_time = "21h00";
+                        } else {
+                            $start_time = "20:00";
+                            $end_time = "21:00";
+                        }
+                    ?>
                     <table>
                     <tr>
                     <td style="padding-right: 30px;">

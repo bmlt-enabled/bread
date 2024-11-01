@@ -1,18 +1,29 @@
 <?php
+
+use Mpdf\Mpdf;
 use function DeepCopy\deep_copy;
 
+/**
+ * Writes the contents of the meeting list as PDF.
+ *
+ * @link  https://bmlt.app
+ * @since 2.8.0
+ *
+ * @package    Bread
+ * @subpackage Bread/public
+ * @author     bmlt-enabled <help@bmlt.app>
+ */
 class Bread_ContentGenerator
 {
-    private $mpdf;
-    private $options;
-    private $result_meetings;
-    private $shortcodes;
-    private $unique_areas;
-    private $meeting_count;
+    private Mpdf $mpdf;
+    private array $options;
+    private array $result_meetings;
+    private array $shortcodes;
+    private int $meeting_count;
     private $target_timezone;
-    private $wheelchair_format;
-    private $formatsManager;
-    private $legacy_synonyms = array (
+    private array $wheelchair_format;
+    private Bread_FormatsManager $formatsManager;
+    private array $legacy_synonyms = array (
         'borough'   => 'location_city_subsection',
         'time'      => 'start_time',
         'state'     => 'location_province',
@@ -29,12 +40,19 @@ class Bread_ContentGenerator
         'hrs'           => 'duration_h',
         "area"          => 'area_name',
     );
-    function __construct($mpdf, $options, $result_meetings, $formatsManager)
+    /**
+     * The constuctor sets things up so that we are ready to generate.
+     *
+     * @param Mpdf $mpdf The object that converts HTML to PDF.
+     * @param array $options
+     * @param array $result_meetings The meetings to be included in the list.
+     * @param Bread_FormatsManager $formatsManager
+     */
+    function __construct(object $mpdf, array $options, array $result_meetings, Bread_FormatsManager $formatsManager)
     {
         $this->mpdf = $mpdf;
         $this->options = $options;
         $this->result_meetings = $this->orderByWeekdayStart($result_meetings);
-        $this->unique_areas = Bread_Bmlt::get_areas();
         $this->formatsManager = $formatsManager;
         if (isset($_GET['time_zone'])) {
             $this->target_timezone = timezone_open($_GET['time_zone']);
@@ -66,7 +84,7 @@ class Bread_ContentGenerator
             "[service_body_5]"              => strtoupper($this->options['service_body_5']),
 
             );
-        $this->shortcodes = apply_filters("Bread_Section_Shortcodes", $this->shortcodes, $this->unique_areas, $formatsManager->getFormatsUsed());
+        $this->shortcodes = apply_filters("Bread_Section_Shortcodes", $this->shortcodes, Bread_Bmlt::get_areas(), $formatsManager->getFormatsUsed());
         if ($this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full') {
             $this->mpdf->DefHTMLFooterByName('MyFooter', '<div style="text-align:center;font-size:' . $this->options['pagenumbering_font_size'] . 'pt;font-style: italic;">'.$this->options['nonmeeting_footer'].'</div>');
             $this->mpdf->DefHTMLFooterByName('_default', '<div style="text-align:center;font-size:' . $this->options['pagenumbering_font_size'] . 'pt;font-style: italic;">'.$this->options['nonmeeting_footer'].'</div>');
@@ -94,6 +112,7 @@ class Bread_ContentGenerator
     }
     public function generate($num_columns)
     {
+        require_once __DIR__.'/class-bread-heading-manager.php';
         $this->mpdf->SetColumns($num_columns, '', $this->options['column_gap']);
         if ($this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full') {
             $this->write_front_page();
@@ -102,11 +121,15 @@ class Bread_ContentGenerator
         $this->mpdf->SetDefaultBodyCSS('font-size', $this->options['content_font_size'] . 'pt');
         $this->mpdf->SetDefaultBodyCSS('line-height', $this->options['content_line_height']);
         $this->mpdf->SetDefaultBodyCSS('background-color', '#ffffff00');
-        $this->upgradeHeaderData();
         if ($this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full') {
             $this->WriteHTML('<sethtmlpagefooter name="Meeting1Footer" page="ALL" />');
         }
-        $this->writeMeetings($this->result_meetings, $this->options['meeting_template_content'], $this->options['weekday_language'], $this->options['include_asm']==0 ? -1 : 0, true);
+        $lang = $this->options['weekday_language'];
+        foreach ($this->result_meetings as &$value) {
+            $value = $this->enhance_meeting($value, $lang);
+        }
+        $headingManager = new Bread_Heading_Manager($this->options, $this->result_meetings, $lang, $this->options['include_asm']==0 ? -1 : 0);
+        $this->writeMeetings($this->options['meeting_template_content'], $headingManager);
 
         if ($this->options['page_fold'] !== 'half' && $this->options['page_fold'] !== 'full') {
             $this->write_custom_section();
@@ -122,53 +145,6 @@ class Bread_ContentGenerator
     {
         //$str = htmlentities($str);
         @$this->mpdf->WriteHTML(wpautop(stripslashes($str)));
-    }
-    function upgradeHeaderData()
-    {
-        $this->options['combine_headings'] = '';
-        if ($this->options['meeting_sort'] === 'user_defined') {
-            if ($this->options['sub_header_shown'] == 'combined') {
-                $this->options['combine_headings'] = 'main_grouping - subgrouping';
-            }
-            return;
-        }
-        unset($this->options['subgrouping']);
-        if ($this->options['meeting_sort'] === 'state') {
-            $this->options['main_grouping'] = 'location_province';
-            $this->options['subgrouping'] = 'location_municipality';
-            $this->options['combine_headings'] = 'subgrouping, main_grouping';
-        } elseif ($this->options['meeting_sort'] === 'city') {
-            $this->options['main_grouping'] = 'location_municipality';
-        } elseif ($this->options['meeting_sort'] === 'borough') {
-            $this->options['main_grouping'] = 'location_city_subsection';
-            $this->options['main_grouping_suffix'] = $this->options['borough_suffix'];
-        } elseif ($this->options['meeting_sort'] === 'county') {
-            $this->options['main_grouping'] = 'location_sub_province';
-            $this->options['main_grouping_alt_suffix'] = $this->options['county_suffix'];
-        } elseif ($this->options['meeting_sort'] === 'borough_county') {
-            $this->options['main_grouping'] = 'location_city_subsection';
-            $this->options['main_grouping_suffix'] = $this->options['borough_suffix'];
-            $this->options['main_grouping_alt'] = 'location_sub_province';
-            $this->options['main_grouping_alt_suffix'] = $this->options['county_suffix'];
-        } elseif ($this->options['meeting_sort'] === 'neighborhood_city') {
-            $this->options['main_grouping'] = 'location_neighborhood';
-            $this->options['main_grouping_suffix'] = $this->options['neighborhood_suffix'];
-            $this->options['main_grouping_alt'] = 'location_municipality';
-            $this->options['main_grouping_alt_suffix'] = $this->options['city_suffix'];
-        } elseif ($this->options['meeting_sort'] === 'group') {
-            $this->options['main_grouping'] = 'meeting_name';
-        } elseif ($this->options['meeting_sort'] === 'weekday_area') {
-            $this->options['main_grouping'] = 'day';
-            $this->options['subgrouping'] = 'service_body_bigint';
-        } elseif ($this->options['meeting_sort'] === 'weekday_city') {
-            $this->options['main_grouping'] = 'day';
-            $this->options['subgrouping'] = 'location_municipality';
-        } elseif ($this->options['meeting_sort'] === 'weekday_county') {
-            $this->options['main_grouping'] = 'day';
-            $this->options['subgrouping'] = 'location_sub_province';
-        } else {
-            $this->options['main_grouping'] = 'day';
-        }
     }
     function standard_shortcode_replacement(&$data, $page)
     {
@@ -269,39 +245,14 @@ class Bread_ContentGenerator
             // include_asm = 0  -  let everything through
         //               1  -  only meetings with asm format
         //              -1  -  only meetings without asm format
-    function writeMeetings($result_meetings, $template, $lang, $include_asm, $asm_flag)
+    function writeMeetings($template, Bread_Heading_Manager $headerManager)
     {
-        if (count($result_meetings)==0) {
-            return;
-        }
-        $headerMeetings = $this->getHeaderMeetings($result_meetings, $lang, $include_asm, $asm_flag);
-        $unique_heading = $this->getUniqueHeadings($headerMeetings);
-
-        $header_style = "color:".$this->options['header_text_color'].";";
-        $header_style .= "background-color:".$this->options['header_background_color'].";";
-        $header_style .= "font-size:".$this->options['header_font_size']."pt;";
-        $header_style .= "line-height:".$this->options['content_line_height'].";";
-        $header_style .= "text-align:center;padding-top:2px;padding-bottom:3px;";
-
-        if ($this->options['header_uppercase'] == 1) {
-            $header_style .= 'text-transform: uppercase;';
-        }
-        if ($this->options['header_bold'] == 0) {
-            $header_style .= 'font-weight: normal;';
-        }
-        if ($this->options['header_bold'] == 1) {
-            $header_style .= 'font-weight: bold;';
-        }
-        $cont = '('.Bread::getTranslateTable()[$lang]['CONT'].')';
-
-
         $template = wpautop(stripslashes($template));
         $template = preg_replace('/[[:^print:]]/', ' ', $template);
 
         $template = str_replace("&nbsp;", " ", $template);
         $analysedTemplate = $this->analyseTemplate($template);
-        $first_meeting = true;
-        $newMajorHeading = false;
+
         /***
          * You might be wondering why I am not using keep-with-table...
          * The problem is, keep with table doesn't work with columns, only pages.
@@ -309,42 +260,11 @@ class Bread_ContentGenerator
          * to a test PDF, see how big it is, and check if it will fit.
          */
         $test_pages = deep_copy($this->mpdf);
-        foreach ($unique_heading as $this_heading_raw) {
-            $newMajorHeading = true;
-            if ($this->skip_heading($this_heading_raw)) {
-                continue;
-            }
-            $this_heading = $this->remove_sort_key($this_heading_raw);
-            $unique_subheading = array_keys($headerMeetings[$this_heading_raw]);
-            asort($unique_subheading, SORT_NATURAL | SORT_FLAG_CASE);
-            foreach ($unique_subheading as $this_subheading_raw) {
-                $newSubHeading = true;
-                $this_subheading = $this->remove_sort_key($this_subheading_raw);
-                foreach ($headerMeetings[$this_heading_raw][$this_subheading_raw] as $meeting_value) {
-                    $header = '';
-                    if ($newSubHeading && !empty($this->options['combine_headings'])) {
-                        $header_string =  $this->options['combine_headings'];
-                        $header_string =  str_replace('main_grouping', $this_heading, $header_string);
-                        $header_string =  str_replace('subgrouping', $this_subheading, $header_string);
-                        $header .= "<div style='".$header_style."'>".$header_string."</div>";
-                    } elseif (!empty($this->options['subgrouping'])) {
-                        if ($newMajorHeading === true) {
-                            $xtraMargin = '';
-                            if (!$first_meeting) {
-                                $xtraMargin = 'margin-top:2pt;';
-                            }
-                            $header .= '<div style="'.$header_style.$xtraMargin.'">'.$this_heading."</div>";
-                        }
-                        if ($newSubHeading && $this->options['sub_header_shown']=='display') {
-                            $header .= "<p style='margin-top:1pt; padding-top:1pt; font-weight:bold;'>".$this_subheading."</p>";
-                        }
-                    } elseif ($newMajorHeading === true) {
-                        $header .= "<div style='".$header_style."'>".$this_heading."</div>";
-                    }
-                    if ($this->options['suppress_heading']==1) {
-                        $header = '';
-                    }
-                    $data = $header . $this->write_single_meeting(
+        while ($subheadings = $headerManager->iterateMainHeading()) {
+            while ($meetings = $headerManager->iterateSubHeading($subheadings)) {
+                while ($meeting_value = $headerManager->iterateMeetings($meetings)) {
+                    $header = $headerManager->calculateHeading();
+                    $data = $this->write_single_meeting(
                         $meeting_value,
                         $template,
                         $analysedTemplate,
@@ -352,103 +272,16 @@ class Bread_ContentGenerator
                     );
                     $this->writeBreak($test_pages);
                     $y_startpos = $test_pages->y;
-                    @$test_pages->WriteHTML($data);
+                    @$test_pages->WriteHTML($header.$data);
                     $y_diff = $test_pages->y - $y_startpos;
                     if ($y_diff >= $this->mpdf->h - ($this->mpdf->y + $this->mpdf->bMargin + 5) - $this->mpdf->kwt_height) {
                         $this->writeBreak($this->mpdf);
-                        if (!$newMajorHeading && $this->options['cont_header_shown']) {
-                            $header = "<div style='".$header_style."'>".$this_heading." " . $cont . "</div>";
-                            $data = $header.$data;
-                        }
+                        $header = $headerManager->calculateContHeader();
                     }
-                    $this->WriteHTML($data);
-                    $first_meeting = false;
-                    $newSubHeading = false;
-                    $newMajorHeading = false;
+                    $this->WriteHTML($header.$data);
                 }
             }
         }
-    }
-    function asm_test($value, $flag = false)
-    {
-        if (empty($this->options['asm_format_key'])) {
-            return false;
-        }
-        $format_key = $this->options['asm_format_key'];
-        if ($format_key == "@Virtual@") {
-            if ($flag && $this->isHybrid($value)) {
-                return false;
-            }
-            return $this->isVirtual($value) || $this->isHybrid($value);
-        }
-        if ($format_key == "@F2F@") {
-            return !$this->isVirtual($value) || $this->isHybrid($value);
-        }
-        $enFormats = explode(",", $value['formats']);
-        return in_array($format_key, $enFormats);
-    }
-    function isHybrid($value)
-    {
-        $enFormats = explode(",", $value['formats']);
-        return in_array('HY', $enFormats);
-    }
-    function isVirtual($value)
-    {
-        $enFormats = explode(",", $value['formats']);
-        return in_array('VM', $enFormats);
-    }
-        // include_asm = 0  -  let everything through
-        //               1  -  only meetings with asm format
-        //              -1  -  only meetings without asm format
-    function getHeaderMeetings(&$result_meetings, $lang, $include_asm, $asm_flag)
-    {
-        $levels = $this->getHeaderLevels();
-        $headerMeetings = array();
-        foreach ($result_meetings as &$value) {
-            $value = $this->enhance_meeting($value, $lang);
-            $asm_test = $this->asm_test($value, $asm_flag);
-            if ((( $include_asm < 0 && $asm_test ) ||
-                ( $include_asm > 0 && !$asm_test ))) {
-                    continue;
-            }
-            $main_grouping = $this->getHeaderItem($value, 'main_grouping');
-            if (!isset($headerMeetings[$main_grouping])) {
-                $headerMeetings[$main_grouping] = array();
-                if ($levels == 1) {
-                    $headerMeetings[$main_grouping][0] = array();
-                }
-            }
-            if ($levels == 2) {
-                $subgrouping = $this->getHeaderItem($value, 'subgrouping');
-                if (!isset($headerMeetings[$main_grouping][$subgrouping])) {
-                    $headerMeetings[$main_grouping][$subgrouping] = array();
-                }
-                $headerMeetings[$main_grouping][$subgrouping][] = $value;
-            } else {
-                $headerMeetings[$main_grouping][0][] = $value;
-            }
-        }
-        return $headerMeetings;
-    }
-    function getUniqueHeadings($headerMeetings)
-    {
-        $unique_heading = array_keys($headerMeetings);
-        asort($unique_heading, SORT_NATURAL | SORT_FLAG_CASE);
-        return $unique_heading;
-    }
-    function remove_sort_key($this_heading)
-    {
-        if (mb_substr($this_heading, 0, 1)=='[') {
-            $end = strpos($this_heading, ']');
-            if ($end>0) {
-                return trim(substr($this_heading, $end+1));
-            }
-        }
-        return $this_heading;
-    }
-    function skip_heading($this_heading)
-    {
-        return (mb_substr($this_heading, 0, 5)=='[XXX]');
     }
     function writeBreak($mpdf)
     {
@@ -674,57 +507,9 @@ class Bread_ContentGenerator
     {
         return strpos($data, '[service_meetings]') || strpos($data, '[additional_meetings]');
     }
-    function getHeaderLevels()
-    {
-        if (!empty($this->options['subgrouping'])) {
-            return 2;
-        }
-        return 1;
-    }
-    function getHeaderItem($value, $name)
-    {
-        if (empty($this->options[$name])) {
-                return '';
-        }
-        $grouping = '';
-        if ($this->options[$name]=='service_body_bigint') {
-            foreach ($this->unique_areas as $unique_area) {
-                $area_data = explode(',', $unique_area);
-                $area_name = Bread::arraySafeGet($area_data);
-                $area_id = Bread::arraySafeGet($area_data, 1);
-                if ($area_id === $value['service_body_bigint']) {
-                    return $area_name;
-                }
-            }
-            return 'Area not found';
-        } elseif ($this->options[$name]=='day') {
-            $off = intval($this->options['weekday_start']);
-            $day = intval($value['weekday_tinyint']);
-            if ($day < $off) {
-                $day = $day + 7;
-            }
-            return '['.str_pad($day, 2, '0', STR_PAD_LEFT).']'.$value['day'];
-        } elseif (isset($value[$this->options[$name]])) {
-            $grouping = $this->parse_field($value[$this->options[$name]]);
-        }
-        $alt = '';
-        if ($grouping==''
-            && !empty($this->options[$name.'_alt'])
-            && isset($value[$this->options[$name.'_alt']])) {
-            $grouping = $this->parse_field($value[$this->options[$name.'_alt']]);
-            $alt = '_alt';
-        }
-        if (strlen(trim($grouping))==0) {
-            return 'NO DATA';
-        }
-        if (!empty($this->options[$name.$alt.'_suffix'])) {
-            return $grouping.' '.$this->options[$name.$alt.'_suffix'];
-        }
-        return $grouping;
-    }
     function get_area_name($meeting_value)
     {
-        foreach ($this->unique_areas as $unique_area) {
+        foreach (Bread_Bmlt::get_areas() as $unique_area) {
             $area_data = explode(',', $unique_area);
             $area_id = Bread::arraySafeGet($area_data, 1);
             if ($area_id === $meeting_value['service_body_bigint']) {
@@ -737,7 +522,7 @@ class Bread_ContentGenerator
     {
         $value = '';
         if (isset($obj[$field])) {
-                $value = $this->parse_field($obj[$field]);
+                $value = Bread_Bmlt::parse_field($obj[$field]);
         }
                     return $value;
     }
@@ -758,7 +543,7 @@ class Bread_ContentGenerator
             }
             $asm_id = "";
             if ($this->options['asm_format_key']==='ASM') {
-                $asm_id = '&formats[]='.$this->formatsManager->getFormatByKey('ASM');
+                $asm_id = '&formats[]='.$this->formatsManager->getFormatByKey($this->options['weekday_language'], 'ASM');
             }
             $services = Bread_Bmlt::generateDefaultQuery();
             if (!empty($this->options['asm_custom_query'])) {
@@ -778,86 +563,14 @@ class Bread_ContentGenerator
         }
         if ($asm_query || $this->options['weekday_language'] != $this->options['asm_language']) {
             foreach ($service_meeting_result as &$value) {
-                if ($this->asm_test($value, false)) {
-                    $value = $this->enhance_meeting($value, $this->options['asm_language']);
-                }
+                $value = $this->enhance_meeting($value, $this->options['asm_language']);
             }
         }
-        if ($this->options['asm_sort_order']=='same') {
-            $this->writeMeetings($service_meeting_result, $template, $this->options['asm_language'], 1, false);
-            return;
-        }
-        $data = '';
-        if (isset($this->options['asm_template_content']) && trim($this->options['asm_template_content'])) {
-            $template = $this->options['asm_template_content'];
-            $template = str_replace("&nbsp;", " ", $template);
-            $analysedTemplate = $this->analyseTemplate($template);
-            foreach ($service_meeting_result as &$value) {
-                $data .= $this->write_single_meeting(
-                    $value,
-                    $template,
-                    $analysedTemplate,
-                    $this->get_area_name($value)
-                );
-            }
-        } else {
-            $data .= "<table style='line-height:".$line_height."; font-size:".$font_size."pt; width:100%;'>";
-            foreach ($service_meeting_result as &$value) {
-                $display_string = '<strong>'.$value['meeting_name'].'</strong>';
-                if (!strstr($value['comments'], 'Open Position')) {
-                    $display_string .= '<strong> - ' . $value['start_time'] . '</strong>';
-                }
-
-                if (trim($value['location_text'])) {
-                    $display_string .= ' - '.trim($value['location_text']);
-                }
-                if (trim($value['location_street'])) {
-                    $display_string .= ' - ' . trim($value['location_street']);
-                }
-                if (trim($value['location_city_subsection'])) {
-                    $display_string .= ' ' . trim($value['location_city_subsection']);
-                }
-                if (trim($value['location_neighborhood'])) {
-                    $display_string .= ' ' . trim($value['location_neighborhood']);
-                }
-                if (trim($value['location_municipality'])) {
-                    $display_string .= ' '.trim($value['location_municipality']);
-                }
-                if (trim($value['location_province'])) {
-                    //$display_string .= ' '.trim ( $value['location_province'] );
-                }
-                if (trim($value['location_postal_code_1'])) {
-                    $display_string .= ' ' . trim($value['location_postal_code_1']);
-                }
-                if (trim($value['location_info'])) {
-                    $display_string .= " (".trim($value['location_info']).")";
-                }
-
-                if (isset($value['email_contact']) && $value['email_contact'] != '' && $this->options['include_meeting_email'] == 1) {
-                    $str = $this->parse_field($value['email_contact']);
-                    $value['email_contact'] = $str;
-                    $value['email_contact'] = ' (<i>'.$value['email_contact'].'</i>)';
-                } else {
-                    $value['email_contact'] = '';
-                }
-                $display_string .=  $value['email_contact'];
-                $data .= "<tr><td style='border-bottom: 1px solid #555;'>".$display_string."</td></tr>";
-            }
-            $data .= "</table>";
-        }
-        $this->writeHTML($data);
+        $headerConfig = new Bread_Heading_Manager($this->options, $service_meeting_result, $this->options['asm_language'], 1);
+        $this->writeMeetings($template, $headerConfig);
+        return;
     }
-    private function parse_field($text)
-    {
-        if ($text!='') {
-            $exploded = explode("#@-@#", $text);
-            $knt = count($exploded);
-            if ($knt > 1) {
-                $text = $exploded[$knt-1];
-            }
-        }
-        return $text;
-    }
+
     function toPersianNum($number)
     {
         $number = str_replace("1", "۱", $number);

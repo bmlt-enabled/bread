@@ -72,7 +72,7 @@ class Bread
     {
         return Bread::$instance->tmp_dir;
     }
-    public static function getOption($name)
+    public static function getOption($name): mixed
     {
         if (!isset(Bread::$instance->options[$name])) {
             return '';
@@ -90,6 +90,10 @@ class Bread
     public static function setOption($name, $value)
     {
         return Bread::$instance->options[$name] = $value;
+    }
+    public static function appendOption($name, $value)
+    {
+        return Bread::$instance->options[$name][] = $value;
     }
     private static function setup_temp_dir()
     {

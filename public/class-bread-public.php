@@ -31,7 +31,7 @@ class Bread_Public
      * @access private
      * @var    string    $plugin_name    The ID of this plugin.
      */
-    private $plugin_name;
+    private string $plugin_name;
 
     /**
      * The version of this plugin.
@@ -40,7 +40,7 @@ class Bread_Public
      * @access private
      * @var    string    $version    The current version of this plugin.
      */
-    private $version;
+    private string $version;
     /**
      * The settings/ meeting list configuration.  Everything that was filled in in the WP Backend.
      *
@@ -48,7 +48,7 @@ class Bread_Public
      * @access private
      * @var array The settings/ meeting list configuration.  Everything that was filled in in the WP Backend.
      */
-    private $options;
+    private array $options;
     /**
      * Does the work of translating the HTML to PDF.
      *
@@ -56,7 +56,7 @@ class Bread_Public
      * @access private
      * @var object Does the work of translating the HTML to PDF.
      */
-    private $mpdf;
+    private Mpdf $mpdf;
     /**
      * Initialize the class and set its properties.
      *
@@ -77,19 +77,6 @@ class Bread_Public
      */
     public function enqueue_styles()
     {
-
-        /**
-         * This function is provided for demonstration purposes only.
-         *
-         * An instance of this class should be passed to the run() function
-         * defined in Bread_Loader as all of the hooks are defined
-         * in that particular class.
-         *
-         * The Bread_Loader will then create the relationship
-         * between the defined hooks and the functions defined in this
-         * class.
-         */
-
         wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/bread-public.css', array(), $this->version, 'all');
     }
 
@@ -100,19 +87,6 @@ class Bread_Public
      */
     public function enqueue_scripts()
     {
-
-        /**
-         * This function is provided for demonstration purposes only.
-         *
-         * An instance of this class should be passed to the run() function
-         * defined in Bread_Loader as all of the hooks are defined
-         * in that particular class.
-         *
-         * The Bread_Loader will then create the relationship
-         * between the defined hooks and the functions defined in this
-         * class.
-         */
-
         wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/bread-public.js', array('jquery'), $this->version, false);
     }
 
@@ -416,7 +390,6 @@ class Bread_Public
             } else {
                 $mpdfOptions['format'] = $ps.'-L';
             }
-            $mpdfOptions['curlUserAgent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:108.0) Gecko/20100101 Firefox/108.0';
             $mpdfOptions = apply_filters("Bread_Mpdf_Init_Options", $mpdfOptions, $this->options);
             $mpdftmp=new mPDF($mpdfOptions);
             $this->mpdf->shrink_tables_to_fit = 1;
@@ -457,13 +430,6 @@ class Bread_Public
             'restrictColorSpace' => $this->options['colorspace'],
             ];
             $mpdfOptions['format'] =  $this->options['page_size']."-".$this->options['page_orientation'];
-            /**
-       * this is because mPDF has an old UA and SiteGround is complaining
-             * It will be fixed in the next release of mPDF, but we can't wait that long.
-             * But, when a new mPDF comes out, remove this line.
-             */
-            $mpdf_config['curlUserAgent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:108.0) Gecko/20100101 Firefox/108.0';
-            /* */
             $mpdfOptions = apply_filters("Bread_Mpdf_Init_Options", $mpdfOptions, $this->options);
             $mpdftmp=new mPDF($mpdfOptions);
             $this->mpdf->shrink_tables_to_fit = 1;

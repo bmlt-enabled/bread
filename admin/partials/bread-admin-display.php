@@ -193,9 +193,12 @@ class Bread_AdminDisplay
                 $authors = $_POST['authors_select'];
                 Bread::setOption('authors', array());
                 foreach ($authors as $author) {
-                    Bread::setOption('authors', intval($author));
+                    Bread::appendOption('authors', intval($author));
                 }
                 $user = wp_get_current_user();
+                if (!is_array(Bread::getOption('authors'))) {
+                    Bread::setOption('authors', array(Bread::getOption('authors')));
+                }
                 if (!in_array($user->ID, Bread::getOption('authors'))) {
                     Bread::setOption('authors', $user->ID);
                 }
