@@ -261,16 +261,16 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         $space = Bread::getOption('remove_space') == '1' ? '' : ' ';
                         $end_time_2 = "9".$space."PM";
                         $start_time_2 = "8".$space;
-                        if (Bread::getOption('time_clock') == '12') {
-                            $start_time = "8:00".$space."PM";
-                            $end_time = "9:00".$space."PM";
-                        } elseif (Bread::getOption('time_clock') == '24fr') {
-                            $start_time = "20h00";
-                            $end_time = "21h00";
-                        } else {
-                            $start_time = "20:00";
-                            $end_time = "21:00";
-                        }
+                    if (Bread::getOption('time_clock') == '12') {
+                        $start_time = "8:00".$space."PM";
+                        $end_time = "9:00".$space."PM";
+                    } elseif (Bread::getOption('time_clock') == '24fr') {
+                        $start_time = "20h00";
+                        $end_time = "21h00";
+                    } else {
+                        $start_time = "20:00";
+                        $end_time = "21:00";
+                    }
                     ?>
                     <table>
                     <tr>
