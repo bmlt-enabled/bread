@@ -66,7 +66,7 @@ class Bread_Heading_Manager
         $meeting_sort = $options['meeting_sort'];
         if ($include_asm > 0) {
             $this->options['suppess_heading'] = 1;
-            switch($options['asm_sort_order']) {
+            switch ($options['asm_sort_order']) {
                 case 'meeting_name':
                     $meeting_sort = 'meeting_name';
                     break;
