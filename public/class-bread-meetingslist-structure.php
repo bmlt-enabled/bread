@@ -1,19 +1,85 @@
 <?php
-class Bread_Heading_Manager
+/**
+ * Controls how the meetingslist is structured into headings and possibly subheadings
+ */
+class Bread_Meetingslist_Structure
 {
+    /**
+     * The CSS associated with the header
+     *
+     * @var string
+     */
     private string $header_style;
+    /**
+     * The text to be added to the header if we have to go to a new page/column while continuing with the
+     * old heading.  And at the top of the new page/column we want something line "Heading (continued)".
+     *
+     * @var string
+     */
     private string $cont;
+    /**
+     * The meetingslist configuration.
+     *
+     * @var array
+     */
     private array $options;
+    /**
+     * Index of the current heading.
+     *
+     * @var integer
+     */
     private int $main_index = 0;
+    /**
+     * Index of the current sub-heading within the current heading.
+     *
+     * @var integer
+     */
     private int $sub_index = 0;
+    /**
+     * Index of the current meeting within the current sub-heading.
+     *
+     * @var integer
+     */
     private int $meeting_index = 0;
+    /**
+     * The result of structuring the meetings under their headings.  Array of order 3, first order: main heading; second order subheadings, third order: meetings.
+     * The headings are not sorted.
+     * @var array
+     */
     private array $headerMeetings;
+    /**
+     * A sorted list of the main headings.
+     *
+     * @var array
+     */
     private array $unique_heading;
+    /**
+     * The current main heading.  May contain [numbers] in the beginning, in case you don't want to sort alphebetically.  These number can be added to a "filter"
+     * extension to enhance_meeting.  This was added for New Zealand, who wants their cities sorted north-south.
+     *
+     * @var string
+     */
     private string $main_heading_raw;
+    /**
+     * The current sub heading.  May contain [numbers] in the beginning, in case you don't want to sort alphebetically.  These number can be added to a "filter"
+     * extension to enhance_meeting.  This was added for New Zealand, who wants their cities sorted north-south.
+     *
+     * @var string
+     */
     private string $sub_heading_raw;
+    /**
+     * Flag to indicate if we are printing the first meeting of a new main heading.
+     *
+     * @var boolean
+     */
     private bool $newMainHeading;
-
-    function upgradeHeaderData($meeting_sort)
+    /**
+     * Add some options that will help us structure the meeting list
+     *
+     * @param string $meeting_sort the type of ordering we want, e.g., by day, by city, by name.
+     * @return void
+     */
+    private function upgradeHeaderData(string $meeting_sort)
     {
         $this->options['combine_headings'] = '';
         if ($meeting_sort === 'user_defined') {
@@ -60,6 +126,17 @@ class Bread_Heading_Manager
             $this->options['main_grouping'] = 'day';
         }
     }
+    /**
+     * Setup for structuring the meeting list
+     *
+     * @param array $options The configuration of the meeting list.
+     * @param array $result_meetings The meetings in the meeting list.
+     * @param string $lang The language of the meeting list
+     * @param integer $include_asm Whether or not to include meetings that match the requirements of the additional list. Where
+     * 0  -  let everything through
+     * 1  -  only meetings with asm format
+     * -1  -  only meetings without asm format
+     */
     function __construct(array $options, array $result_meetings, string $lang, int $include_asm)
     {
         $this->options = $options;
@@ -79,10 +156,10 @@ class Bread_Heading_Manager
         }
         $this->upgradeHeaderData($meeting_sort);
 
-        $header_style = "color:".$options['header_text_color'].";";
-        $header_style .= "background-color:".$options['header_background_color'].";";
-        $header_style .= "font-size:".$options['header_font_size']."pt;";
-        $header_style .= "line-height:".$options['content_line_height'].";";
+        $header_style = "color:" . $options['header_text_color'] . ";";
+        $header_style .= "background-color:" . $options['header_background_color'] . ";";
+        $header_style .= "font-size:" . $options['header_font_size'] . "pt;";
+        $header_style .= "line-height:" . $options['content_line_height'] . ";";
         $header_style .= "text-align:center;padding-top:2px;padding-bottom:3px;";
 
         if ($options['header_uppercase'] == 1) {
@@ -95,12 +172,17 @@ class Bread_Heading_Manager
             $header_style .= 'font-weight: bold;';
         }
         $this->header_style = $header_style;
-        $this->cont = '('.Bread::getTranslateTable()[$lang]['CONT'].')';
+        $this->cont = '(' . Bread::getTranslateTable()[$lang]['CONT'] . ')';
 
         $this->headerMeetings = $this->getHeaderMeetings($result_meetings, $include_asm);
         $this->unique_heading = $this->getUniqueHeadings($this->headerMeetings);
     }
-    function iterateMainHeading()
+    /**
+     * Iterates over the main headings in the meeting list
+     *
+     * @return array the list of sub-headings under this heading.  If there are no sub-headings, an array with a single element is returned.
+     */
+    public function iterateMainHeading(): array
     {
         if ($this->main_index >= count($this->unique_heading)) {
             return null;
@@ -114,12 +196,19 @@ class Bread_Heading_Manager
         $this->sub_index = 0;
         return $unique_subheading;
     }
-    function iterateSubHeading($unique_subheading, $still_new = false)
+    /**
+     * Iterates over the sub-headings in the current main heading.
+     *
+     * @param array $unique_subheading The list over which we are iterating.
+     * @param boolean $still_new a flag to indicate we are looking for the first subheading (we may skip some sub headings)
+     * @return array an array of the meetings in this subheading.
+     */
+    public function iterateSubHeading(array $unique_subheading, bool $still_new = false): array
     {
         if ($this->sub_index >= count($unique_subheading)) {
             return null;
         }
-        $this->newMainHeading = ($this->sub_index==0) || $still_new;
+        $this->newMainHeading = ($this->sub_index == 0) || $still_new;
         $this->sub_heading_raw = $unique_subheading[$this->sub_index++];
         if ($this->skip_heading($this->sub_heading_raw)) {
             return $this->iterateSubHeading($unique_subheading, $this->newMainHeading);
@@ -127,7 +216,13 @@ class Bread_Heading_Manager
         $this->meeting_index = 0;
         return $this->headerMeetings[$this->main_heading_raw][$this->sub_heading_raw];
     }
-    function iterateMeetings($meetings)
+    /**
+     * Iterates over the meetings in the current sub-heading.
+     *
+     * @param array $meetings
+     * @return array The next meeting
+     */
+    public function iterateMeetings(array $meetings): array
     {
         if ($this->meeting_index >= count($meetings)) {
             return null;
@@ -135,20 +230,27 @@ class Bread_Heading_Manager
         $this->newMainHeading = $this->newMainHeading && $this->meeting_index == 0;
         return $meetings[$this->meeting_index++];
     }
-            // include_asm = 0  -  let everything through
-        //               1  -  only meetings with asm format
-        //              -1  -  only meetings without asm format
-    function getHeaderMeetings(&$result_meetings, $include_asm)
+    /**
+     * Does the work of structuring the meeting list into heading, subheadings and meetings.
+     *
+     * @param array $result_meetings The meetings returned from the BMLT root server query.
+     * @param integer $include_asm Whether or not to include meetings that match the requirements of the additional list. Where
+     * 0  -  let everything through
+     * 1  -  only meetings with asm format
+     * -1  -  only meetings without asm format
+     * @return array The meetings, structured into an array with 3 levels.  First level: main heading.  Second level: sub headings, Third level: meetings.
+     */
+    private function getHeaderMeetings(array &$result_meetings, int $include_asm): array
     {
         $levels = $this->getHeaderLevels();
         $headerMeetings = array();
         foreach ($result_meetings as &$value) {
-            $asm_test = $this->asm_test($value, $include_asm==1);
-            if ((( $include_asm < 0 && $asm_test ) ||
-                ( $include_asm > 0 && !$asm_test ))) {
-                    continue;
+            $asm_test = $this->asm_test($value, $include_asm == 1);
+            if ((($include_asm < 0 && $asm_test) ||
+                ($include_asm > 0 && !$asm_test))) {
+                continue;
             }
-            $main_grouping = $this->getHeaderItem($value, $this->setupDefaultHeading('main_'), $include_asm==1);
+            $main_grouping = $this->getHeaderItem($value, $this->setupDefaultHeading('main_'), $include_asm == 1);
             if (!isset($headerMeetings[$main_grouping])) {
                 $headerMeetings[$main_grouping] = array();
                 if ($levels == 1) {
@@ -156,7 +258,7 @@ class Bread_Heading_Manager
                 }
             }
             if ($levels == 2) {
-                $subgrouping = $this->getHeaderItem($value, $this->setupDefaultHeading('sub'), $include_asm==1);
+                $subgrouping = $this->getHeaderItem($value, $this->setupDefaultHeading('sub'), $include_asm == 1);
                 if (!isset($headerMeetings[$main_grouping][$subgrouping])) {
                     $headerMeetings[$main_grouping][$subgrouping] = array();
                 }
@@ -167,50 +269,63 @@ class Bread_Heading_Manager
         }
         return $headerMeetings;
     }
-    function getUniqueHeadings($headerMeetings)
+    /**
+     * Sort the headings alphabetically.
+     *
+     * @param [type] $headerMeetings
+     * @return array The sorted list.
+     */
+    public function getUniqueHeadings($headerMeetings): array
     {
         $unique_heading = array_keys($headerMeetings);
         asort($unique_heading, SORT_NATURAL | SORT_FLAG_CASE);
         return $unique_heading;
     }
-    function remove_sort_key($this_heading)
+    /**
+     * Main headings may contain [numbers] in the beginning, in case you don't want to sort alphebetically.  These number can be added to a "filter"
+     * extension to enhance_meeting.  This was added for New Zealand, who wants their cities sorted north-south.  This gets the heading that we want to print.
+     *
+     * @param string $this_heading The raw heading
+     * @return string The heading with the [number] removed.
+     */
+    private function remove_sort_key(string $this_heading): string
     {
-        if (mb_substr($this_heading, 0, 1)=='[') {
+        if (mb_substr($this_heading, 0, 1) == '[') {
             $end = strpos($this_heading, ']');
-            if ($end>0) {
-                return trim(substr($this_heading, $end+1));
+            if ($end > 0) {
+                return trim(substr($this_heading, $end + 1));
             }
         }
         return $this_heading;
     }
-    function skip_heading($this_heading)
+    private function skip_heading(string $this_heading): bool
     {
-        return (mb_substr($this_heading, 0, 5)=='[XXX]');
+        return (mb_substr($this_heading, 0, 5) == '[XXX]');
     }
-    function getHeaderLevels()
+    private function getHeaderLevels(): int
     {
         if (!empty($options['subgrouping'])) {
             return 2;
         }
         return 1;
     }
-    function setupDefaultHeading($level)
+    private function setupDefaultHeading(string $level): array
     {
-            return array(
-                'name' =>  $level.'grouping',
-                'name_alt' => $level.'grouping_alt',
-                'name_suffix' => $level.'grouping_alt',
-                'name_alt_suffix' => $level.'grouping_alt',
-            );
+        return array(
+            'name' =>  $level . 'grouping',
+            'name_alt' => $level . 'grouping_alt',
+            'name_suffix' => $level . 'grouping_alt',
+            'name_alt_suffix' => $level . 'grouping_alt',
+        );
     }
-    function getHeaderItem($value, $names)
+    private function getHeaderItem(array $value, array $names): string
     {
         if (!$this->options[$names['name']]) {
-                return '';
+            return '';
         }
         $grouping = '';
         $name = $this->options[$names['name']];
-        if ($name=='service_body_bigint') {
+        if ($name == 'service_body_bigint') {
             foreach (Bread_Bmlt::get_areas() as $unique_area) {
                 $area_data = explode(',', $unique_area);
                 $area_name = Bread::arraySafeGet($area_data);
@@ -220,32 +335,33 @@ class Bread_Heading_Manager
                 }
             }
             return 'Area not found';
-        } elseif ($name=='day') {
+        } elseif ($name == 'day') {
             $off = intval($this->options['weekday_start']);
             $day = intval($value['weekday_tinyint']);
             if ($day < $off) {
                 $day = $day + 7;
             }
-            return '['.str_pad($day, 2, '0', STR_PAD_LEFT).']'.$value['day'];
+            return '[' . str_pad($day, 2, '0', STR_PAD_LEFT) . ']' . $value['day'];
         } elseif (isset($value[$name])) {
             $grouping = Bread_Bmlt::parse_field($value[$name]);
         }
         $suffix = $this->options[$names['name_suffix']] ?? '';
-        if ($grouping==''
+        if ($grouping == ''
             && !empty($name_alt)
-            && isset($value[$name_alt])) {
+            && isset($value[$name_alt])
+        ) {
             $grouping = Bread_Bmlt::parse_field($value[$name_alt]);
             $suffix = $this->options[$names['name_alt_suffix']] ?? '';
         }
-        if (strlen(trim($grouping))==0) {
+        if (strlen(trim($grouping)) == 0) {
             return 'NO DATA';
         }
         if (!empty($suffix)) {
-            return $grouping.' '.$suffix;
+            return $grouping . ' ' . $suffix;
         }
         return $grouping;
     }
-    function asm_test($value, $flag = false)
+    private function asm_test(array $value, $flag = false): bool
     {
         if (empty($this->options['asm_format_key'])) {
             return false;
@@ -263,7 +379,7 @@ class Bread_Heading_Manager
         $enFormats = explode(",", $value['formats']);
         return in_array($format_key, $enFormats);
     }
-    function isHybrid($value)
+    private function isHybrid(array $value): bool
     {
         if (empty($value['formats'])) {
             return false;
@@ -271,7 +387,7 @@ class Bread_Heading_Manager
         $enFormats = explode(",", $value['formats']);
         return in_array('HY', $enFormats);
     }
-    function isVirtual($value)
+    private function isVirtual(array $value): bool
     {
         if (empty($value['formats'])) {
             return false;
@@ -279,43 +395,43 @@ class Bread_Heading_Manager
         $enFormats = explode(",", $value['formats']);
         return in_array('VM', $enFormats);
     }
-    function calculateHeading()
+    public function calculateHeading(): string
     {
         $header = '';
-        if ($this->options['suppress_heading']==1) {
+        if ($this->options['suppress_heading'] == 1) {
             return $header;
         }
         $this_heading = $this->remove_sort_key($this->main_heading_raw);
         $this_subheading = $this->remove_sort_key($this->sub_heading_raw);
-        if (($this->meeting_index==1) && !empty($options['combine_headings'])) {
+        if (($this->meeting_index == 1) && !empty($options['combine_headings'])) {
             $header_string =  $this->options['combine_headings'];
             $header_string =  str_replace('main_grouping', $this_heading, $header_string);
             $header_string =  str_replace('subgrouping', $this_subheading, $header_string);
-            $header .= "<div style='".$this->header_style."'>".$header_string."</div>";
+            $header .= "<div style='" . $this->header_style . "'>" . $header_string . "</div>";
         } elseif (!empty($options['subgrouping'])) {
-            if ($this->main_index==1) {
+            if ($this->main_index == 1) {
                 $xtraMargin = '';
-                if (!$this->main_index>1 or $this->meeting_index>1) {
+                if (!$this->main_index > 1 or $this->meeting_index > 1) {
                     $xtraMargin = 'margin-top:2pt;';
                 }
-                $header .= '<div style="'.$this->header_style.$xtraMargin.'">'.$this_heading."</div>";
+                $header .= '<div style="' . $this->header_style . $xtraMargin . '">' . $this_heading . "</div>";
             }
-            if (($this->meeting_index==1) && $this->options['sub_header_shown']=='display') {
-                $header .= "<p style='margin-top:1pt; padding-top:1pt; font-weight:bold;'>".$this_subheading."</p>";
+            if (($this->meeting_index == 1) && $this->options['sub_header_shown'] == 'display') {
+                $header .= "<p style='margin-top:1pt; padding-top:1pt; font-weight:bold;'>" . $this_subheading . "</p>";
             }
         } elseif ($this->newMainHeading) {
-            $header .= "<div style='".$this->header_style."'>".$this_heading."</div>";
+            $header .= "<div style='" . $this->header_style . "'>" . $this_heading . "</div>";
         }
         return $header;
     }
-    function calculateContHeader()
+    public function calculateContHeader(): string
     {
         $header = '';
-        if ($this->options['suppress_heading']==1) {
+        if ($this->options['suppress_heading'] == 1) {
             return $header;
         }
         if (!$this->newMainHeading && $this->options['cont_header_shown']) {
-            $header = "<div style='".$this->header_style."'>".$this->remove_sort_key($this->main_heading_raw)." " . $this->cont . "</div>";
+            $header = "<div style='" . $this->header_style . "'>" . $this->remove_sort_key($this->main_heading_raw) . " " . $this->cont . "</div>";
         }
         return $header;
     }

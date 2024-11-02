@@ -15,15 +15,50 @@ use function DeepCopy\deep_copy;
  */
 class Bread_ContentGenerator
 {
+    /**
+     * Converts HTML to PDF.
+     *
+     * @var Mpdf
+     */
     private Mpdf $mpdf;
+    /**
+     * The configuration of the meeting list.
+     *
+     * @var array
+     */
     private array $options;
+    /**
+     * The meetings in the meeting list.
+     *
+     * @var array
+     */
     private array $result_meetings;
+    /**
+     * The standard shortcodes, not including fields in the array representing the meeting.  Used on front and last pages, etc.
+     *
+     * @var array
+     */
     private array $shortcodes;
     private int $meeting_count;
     private $target_timezone;
+    /**
+     * The format indicating accessibility gets special treatment (graphic symbol).  The format is identified by the NAWS format associated with it.
+     *
+     * @var array
+     */
     private array $wheelchair_format;
+    /**
+     * Convenient API for dealing with formats.
+     *
+     * @var Bread_FormatsManager
+     */
     private Bread_FormatsManager $formatsManager;
-    private array $legacy_synonyms = array (
+    /**
+     * Usually, the key fieled in the array representing the meeting is used to insert a value into a template.  But we also have these convenience names.
+     *
+     * @var array
+     */
+    private array $legacy_synonyms = array(
         'borough'   => 'location_city_subsection',
         'time'      => 'start_time',
         'state'     => 'location_province',
@@ -44,7 +79,7 @@ class Bread_ContentGenerator
      * The constuctor sets things up so that we are ready to generate.
      *
      * @param Mpdf $mpdf The object that converts HTML to PDF.
-     * @param array $options
+     * @param array $options The configuration of the meeting list.
      * @param array $result_meetings The meetings to be included in the list.
      * @param Bread_FormatsManager $formatsManager
      */
@@ -60,7 +95,7 @@ class Bread_ContentGenerator
         $this->meeting_count = count($result_meetings);
         $this->wheelchair_format = $formatsManager->getFormatFromField($this->options['weekday_language'], 'world_id', 'WCHR');
         $this->shortcodes = array(
-            '<h2>'                          => '<h2 style="font-size:'.$this->options['front_page_font_size'] . 'pt!important;">',
+            '<h2>'                          => '<h2 style="font-size:' . $this->options['front_page_font_size'] . 'pt!important;">',
             '<div>[page_break]</div>'       =>  '<pagebreak />',
             '<p>[page_break]</p>'           =>  '<pagebreak />',
             '[page_break]'                  =>  '<pagebreak />',
@@ -83,25 +118,24 @@ class Bread_ContentGenerator
             "[service_body_4]"              => strtoupper($this->options['service_body_4']),
             "[service_body_5]"              => strtoupper($this->options['service_body_5']),
 
-            );
+        );
         $this->shortcodes = apply_filters("Bread_Section_Shortcodes", $this->shortcodes, Bread_Bmlt::get_areas(), $formatsManager->getFormatsUsed());
         if ($this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full') {
-            $this->mpdf->DefHTMLFooterByName('MyFooter', '<div style="text-align:center;font-size:' . $this->options['pagenumbering_font_size'] . 'pt;font-style: italic;">'.$this->options['nonmeeting_footer'].'</div>');
-            $this->mpdf->DefHTMLFooterByName('_default', '<div style="text-align:center;font-size:' . $this->options['pagenumbering_font_size'] . 'pt;font-style: italic;">'.$this->options['nonmeeting_footer'].'</div>');
-            $this->mpdf->DefHTMLFooterByName('Meeting1Footer', '<div style="text-align:center;font-size:' . $this->options['pagenumbering_font_size'] . 'pt;font-style: italic;">'.$this->options['meeting1_footer'].'</div>');
-            $this->mpdf->DefHTMLFooterByName('Meeting2Footer', '<div style="text-align:center;font-size:' . $this->options['pagenumbering_font_size'] . 'pt;font-style: italic;">'.$this->options['meeting2_footer'].'</div>');
+            $this->mpdf->DefHTMLFooterByName('MyFooter', '<div style="text-align:center;font-size:' . $this->options['pagenumbering_font_size'] . 'pt;font-style: italic;">' . $this->options['nonmeeting_footer'] . '</div>');
+            $this->mpdf->DefHTMLFooterByName('_default', '<div style="text-align:center;font-size:' . $this->options['pagenumbering_font_size'] . 'pt;font-style: italic;">' . $this->options['nonmeeting_footer'] . '</div>');
+            $this->mpdf->DefHTMLFooterByName('Meeting1Footer', '<div style="text-align:center;font-size:' . $this->options['pagenumbering_font_size'] . 'pt;font-style: italic;">' . $this->options['meeting1_footer'] . '</div>');
+            $this->mpdf->DefHTMLFooterByName('Meeting2Footer', '<div style="text-align:center;font-size:' . $this->options['pagenumbering_font_size'] . 'pt;font-style: italic;">' . $this->options['meeting2_footer'] . '</div>');
         }
-        if (isset($this->options['pageheader_content'])) {
-            $data = $this->options['pageheader_content'];
-            $this->standard_shortcode_replacement($data, 'pageheader', $this->shortcodes);
+        if (!empty($this->options['pageheader_content'])) {
+            $data = $this->standard_shortcode_replacement('pageheader_content');
             $header_style = "vertical-align: top; text-align: center; font-weight: bold;margin-top:3px;margin-bottom:3px;";
-            $header_style .= "color:".$this->options['pageheader_textcolor'].";";
-            $header_style .= "background-color:".$this->options['pageheader_backgroundcolor'].";";
-            $header_style .= "font-size:".$this->options['pageheader_fontsize']."pt;";
-            $header_style .= "line-height:".$this->options['content_line_height'].";";
+            $header_style .= "color:" . $this->options['pageheader_textcolor'] . ";";
+            $header_style .= "background-color:" . $this->options['pageheader_backgroundcolor'] . ";";
+            $header_style .= "font-size:" . $this->options['pageheader_fontsize'] . "pt;";
+            $header_style .= "line-height:" . $this->options['content_line_height'] . ";";
 
             $this->mpdf->SetHTMLHeader(
-                '<div style="'.$header_style.'">'.$data.'</div>',
+                '<div style="' . $header_style . '">' . $data . '</div>',
                 'O'
             );
         }
@@ -110,14 +144,20 @@ class Bread_ContentGenerator
             $this->mpdf->showWatermarkImage = true;
         }
     }
-    public function generate($num_columns)
+    /**
+     * Generates the contents of the meeting list.
+     *
+     * @param int $num_columns The number of columns in the meeting list.
+     * @return void
+     */
+    public function generate(int $num_columns): void
     {
-        require_once __DIR__.'/class-bread-heading-manager.php';
+        require_once __DIR__ . '/class-bread-heading-manager.php';
         $this->mpdf->SetColumns($num_columns, '', $this->options['column_gap']);
         if ($this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full') {
             $this->write_front_page();
         }
-        $this->mpdf->WriteHTML('td{font-size: '.$this->options['content_font_size']."pt;line-height:".$this->options['content_line_height'].';background-color:#ffffff00;}', 1);
+        $this->mpdf->WriteHTML('td{font-size: ' . $this->options['content_font_size'] . "pt;line-height:" . $this->options['content_line_height'] . ';background-color:#ffffff00;}', 1);
         $this->mpdf->SetDefaultBodyCSS('font-size', $this->options['content_font_size'] . 'pt');
         $this->mpdf->SetDefaultBodyCSS('line-height', $this->options['content_line_height']);
         $this->mpdf->SetDefaultBodyCSS('background-color', '#ffffff00');
@@ -128,8 +168,8 @@ class Bread_ContentGenerator
         foreach ($this->result_meetings as &$value) {
             $value = $this->enhance_meeting($value, $lang);
         }
-        $headingManager = new Bread_Heading_Manager($this->options, $this->result_meetings, $lang, $this->options['include_asm']==0 ? -1 : 0);
-        $this->writeMeetings($this->options['meeting_template_content'], $headingManager);
+        $meetingslistStructure = new Bread_Meetingslist_Structure($this->options, $this->result_meetings, $lang, $this->options['include_asm'] == 0 ? -1 : 0);
+        $this->writeMeetings($this->options['meeting_template_content'], $meetingslistStructure);
 
         if ($this->options['page_fold'] !== 'half' && $this->options['page_fold'] !== 'full') {
             $this->write_custom_section();
@@ -141,12 +181,24 @@ class Bread_ContentGenerator
             }
         }
     }
-    function writeHTML($str)
+    /**
+     * Writes a HTML string to th PDF.
+     *
+     * @param string $str The string to be written.
+     * @return void
+     */
+    private function writeHTML(string $str): void
     {
         //$str = htmlentities($str);
         @$this->mpdf->WriteHTML(wpautop(stripslashes($str)));
     }
-    function standard_shortcode_replacement(&$data, $page)
+    /**
+     * Replace the shortcodes with the standard values (not meeting dependent).
+     *
+     * @param string $page The text containing the shortcodes.
+     * @return string
+     */
+    private function standard_shortcode_replacement(string $page): string
     {
         $search_strings = array();
         $replacements = array();
@@ -157,21 +209,29 @@ class Bread_ContentGenerator
 
         $search_strings[] = '[meeting_count]';
         $replacements[] =  $this->meeting_count;
-        $data = $this->options[$page.'_content'];
-        $data = $this->locale_month_replacement($data, 'lower', "LLLL");
-        $data = $this->locale_month_replacement($data, 'upper', "LLLL");
+        $data = $this->options[$page];
+        $data = $this->locale_month_replacement($data, 'lower');
+        $data = $this->locale_month_replacement($data, 'upper');
         $data = str_replace($search_strings, $replacements, $data);
         $this->replace_format_shortcodes($data, $page);
         $data = str_replace("[date]", strtoupper(date("F Y")), $data);
         if ($this->target_timezone) {
             $data = str_replace('[timezone]', $this->target_timezone->getName(), $data);
         }
+        return $data;
     }
-    function locale_month_replacement($data, $case, $sym)
+    /**
+     * Replace [month] shortcodes with the locale-specific name of the month.
+     *
+     * @param string $data The text containing the shortcode.
+     * @param string $case 'upper' or 'lower'
+     * @return string The text with the shortcode replaced by the value.
+     */
+    private function locale_month_replacement(string $data, string $case): string
     {
-        $strpos = strpos($data, "[month_$case"."_");
+        $strpos = strpos($data, "[month_$case" . "_");
         if ($strpos !== false) {
-            $locLang = substr($data, $strpos+13, 2);
+            $locLang = substr($data, $strpos + 13, 2);
             if (!isset($this->translate[$locLang])) {
                 $locLang = 'en';
             }
@@ -180,16 +240,22 @@ class Bread_ContentGenerator
                 IntlDateFormatter::FULL,
                 IntlDateFormatter::FULL
             );
-            $fmt->setPattern($sym);
+            $fmt->setPattern('LLLL');
             $month = ucfirst(mb_convert_encoding($fmt->format(time()), 'UTF-8', 'ISO-8859-1'));
-            if ($case=='upper') {
-                   $month = mb_strtoupper($month, 'UTF-8');
+            if ($case == 'upper') {
+                $month = mb_strtoupper($month, 'UTF-8');
             }
             return substr_replace($data, $month, $strpos, 16);
         }
         return $data;
     }
-    function orderByWeekdayStart(&$result_meetings)
+    /**
+     * Order the meetings  so that the list starts on the day of the week selected in the configuation.
+     *
+     * @param array $result_meetings The meetings
+     * @return array The meetings.
+     */
+    private function orderByWeekdayStart(array &$result_meetings): array
     {
         $days = array_column($result_meetings, 'weekday_tinyint');
         $today_str = $this->options['weekday_start'];
@@ -198,38 +264,49 @@ class Bread_ContentGenerator
             array_splice($result_meetings, 0)
         );
     }
-    function write_front_page()
+    /**
+     * Generate the front page.
+     *
+     * @return void
+     */
+    private function write_front_page()
     {
-
-        $this->mpdf->WriteHTML('td{font-size: '.$this->options['front_page_font_size']."pt;line-height:".$this->options['front_page_line_height'].';}', 1);
+        $this->mpdf->WriteHTML('td{font-size: ' . $this->options['front_page_font_size'] . "pt;line-height:" . $this->options['front_page_line_height'] . ';}', 1);
         $this->mpdf->SetDefaultBodyCSS('line-height', $this->options['front_page_line_height']);
         $this->mpdf->SetDefaultBodyCSS('font-size', $this->options['front_page_font_size'] . 'pt');
         $this->mpdf->SetDefaultBodyCSS('background-color', '#ffffff00');
         $this->options['front_page_content'] = wp_unslash($this->options['front_page_content']);
-        $this->standard_shortcode_replacement($this->options['front_page_content'], 'front_page');
-
+        $data = $this->standard_shortcode_replacement('front_page_content');
 
         $querystring_custom_items = array();
         preg_match_all('/(\[querystring_custom_\d+\])/', $this->options['front_page_content'], $querystring_custom_items);
         foreach ($querystring_custom_items[0] as $querystring_custom_item) {
             $mod_qs_ci = str_replace("]", "", str_replace("[", "", $querystring_custom_item));
-            $this->options['front_page_content'] = str_replace($querystring_custom_item, (isset($_GET[$mod_qs_ci]) ? $_GET[$mod_qs_ci] : "NOT SET"), $this->options['front_page_content']);
+            $data = str_replace($querystring_custom_item, (isset($_GET[$mod_qs_ci]) ? $_GET[$mod_qs_ci] : "NOT SET"), $data);
         }
-        $this->writeHTMLwithServiceMeetings($this->options['front_page_content'], 'front_page');
+        $this->writeHTMLwithServiceMeetings($data);
         $this->mpdf->showWatermarkImage = false;
     }
-
-    function write_last_page()
+    /**
+     * Generate the last page.
+     *
+     * @return void
+     */
+    private function write_last_page()
     {
-        $this->mpdf->WriteHTML('td{font-size: '.$this->options['last_page_font_size']."pt;line-height:".$this->options['last_page_line_height'].';}', 1);
+        $this->mpdf->WriteHTML('td{font-size: ' . $this->options['last_page_font_size'] . "pt;line-height:" . $this->options['last_page_line_height'] . ';}', 1);
         $this->mpdf->SetDefaultBodyCSS('font-size', $this->options['last_page_font_size'] . 'pt');
         $this->mpdf->SetDefaultBodyCSS('line-height', $this->options['last_page_line_height']);
         $this->mpdf->SetDefaultBodyCSS('background-color', '#ffffff00');
-        $this->standard_shortcode_replacement($this->options['last_page_content'], 'last_page');
-        $this->writeHTMLwithServiceMeetings($this->options['last_page_content'], 'last_page');
+        $data = $this->standard_shortcode_replacement('last_page_content');
+        $this->writeHTMLwithServiceMeetings($data);
     }
-
-    function write_custom_section()
+    /**
+     * Generate the custom section.
+     *
+     * @return void
+     */
+    private function write_custom_section()
     {
         $this->mpdf->SetHTMLHeader();
         if (isset($this->options['pageheader_content']) && trim($this->options['pageheader_content'])) {
@@ -238,14 +315,18 @@ class Bread_ContentGenerator
         $this->mpdf->SetDefaultBodyCSS('line-height', $this->options['custom_section_line_height']);
         $this->mpdf->SetDefaultBodyCSS('font-size', $this->options['custom_section_font_size'] . 'pt');
         $this->mpdf->SetDefaultBodyCSS('background-color', '#ffffff00');
-        $this->standard_shortcode_replacement($this->options['custom_section_content'], 'custom_section');
-        $this->mpdf->WriteHTML('td{font-size: '.$this->options['custom_section_font_size']."pt;line-height:".$this->options['custom_section_line_height'].';}', 1);
-        $this->writeHTMLwithServiceMeetings($this->options['custom_section_content'], 'custom_section');
+        $data = $this->standard_shortcode_replacement('custom_section_content');
+        $this->mpdf->WriteHTML('td{font-size: ' . $this->options['custom_section_font_size'] . "pt;line-height:" . $this->options['custom_section_line_height'] . ';}', 1);
+        $this->writeHTMLwithServiceMeetings($data);
     }
-            // include_asm = 0  -  let everything through
-        //               1  -  only meetings with asm format
-        //              -1  -  only meetings without asm format
-    function writeMeetings($template, Bread_Heading_Manager $headerManager)
+    /**
+     * Generate the meeting list itself, using the specified template and the meetings as structed by the heading manager.
+     *
+     * @param string $template
+     * @param Bread_Meetingslist_Structure $meetingslistStructure
+     * @return void
+     */
+    private function writeMeetings(string $template, Bread_Meetingslist_Structure $meetingslistStructure): void
     {
         $template = wpautop(stripslashes($template));
         $template = preg_replace('/[[:^print:]]/', ' ', $template);
@@ -260,30 +341,36 @@ class Bread_ContentGenerator
          * to a test PDF, see how big it is, and check if it will fit.
          */
         $test_pages = deep_copy($this->mpdf);
-        while ($subheadings = $headerManager->iterateMainHeading()) {
-            while ($meetings = $headerManager->iterateSubHeading($subheadings)) {
-                while ($meeting_value = $headerManager->iterateMeetings($meetings)) {
-                    $header = $headerManager->calculateHeading();
+        while ($subheadings = $meetingslistStructure->iterateMainHeading()) {
+            while ($meetings = $meetingslistStructure->iterateSubHeading($subheadings)) {
+                while ($meeting_value = $meetingslistStructure->iterateMeetings($meetings)) {
+                    $header = $meetingslistStructure->calculateHeading();
                     $data = $this->write_single_meeting(
                         $meeting_value,
                         $template,
-                        $analysedTemplate,
-                        $meeting_value['area_name']
+                        $analysedTemplate
                     );
                     $this->writeBreak($test_pages);
                     $y_startpos = $test_pages->y;
-                    @$test_pages->WriteHTML($header.$data);
+                    @$test_pages->WriteHTML($header . $data);
                     $y_diff = $test_pages->y - $y_startpos;
                     if ($y_diff >= $this->mpdf->h - ($this->mpdf->y + $this->mpdf->bMargin + 5) - $this->mpdf->kwt_height) {
                         $this->writeBreak($this->mpdf);
-                        $header = $headerManager->calculateContHeader();
+                        $header = $meetingslistStructure->calculateContHeader();
                     }
-                    $this->WriteHTML($header.$data);
+                    $this->WriteHTML($header . $data);
                 }
             }
         }
     }
-    function writeBreak($mpdf)
+    /**
+     * Write a break between meetings, so that the meeting does not get broken up in the printout.
+     *   In booklets, a page break.  In fliers, a column break.
+     *
+     * @param Mpdf $mpdf
+     * @return void
+     */
+    private function writeBreak(Mpdf $mpdf)
     {
         if ($this->options['page_fold'] === 'half' || $this->options['page_fold'] === 'full') {
             $mpdf->WriteHTML("<pagebreak>");
@@ -291,25 +378,31 @@ class Bread_ContentGenerator
             $mpdf->WriteHTML("<columnbreak />");
         }
     }
-
-    function analyseTemplate($template)
+    /**
+     * Break up the template into chunks, so that it can be efficiently processed/ filled with values from the meeting.
+     *
+     * @param string $template
+     * @return array chunks to be used by the write_single_meeting method.
+     */
+    private function analyseTemplate(string $template): array
     {
         $arr = preg_split('/\W+/', $template, 0, PREG_SPLIT_OFFSET_CAPTURE);
         $arr = array_reverse($arr, true);
         $ret = array();
         foreach ($arr as $item) {
-            if (strlen($item[0])<3) {
+            if (strlen($item[0]) < 3) {
                 continue;
             }
             $htmlTags = array('table', 'tbody', 'strong', 'left', 'right', 'top', 'bottom', 'center', 'align', 'font', 'size', 'text', 'style', 'family', 'vertical', 'color', 'QRCode');
             if (in_array($item[0], $htmlTags)) {
                 continue;
             }
-            if ($item[1]>0 && $template[$item[1]-1]=='['
-                && $template[$item[1]+strlen($item[0])]==']') {
-                    $item[0] = '['.$item[0].']';
-                    $item[1] = $item[1] - 1;
-                    $item[2] = true;
+            if ($item[1] > 0 && $template[$item[1] - 1] == '['
+                && $template[$item[1] + strlen($item[0])] == ']'
+            ) {
+                $item[0] = '[' . $item[0] . ']';
+                $item[1] = $item[1] - 1;
+                $item[2] = true;
             } else {
                 $item[2] = false;
             }
@@ -317,18 +410,25 @@ class Bread_ContentGenerator
         }
         return $ret;
     }
-    function enhance_meeting(&$meeting_value, $lang)
+    /**
+     * Enhance the meeting fields (in place) with calculated values.
+     *
+     * @param array $meeting_value the raw meeting values, as returned from the BMLT root server.
+     * @param string $lang The language used when generating format descriptions, etc.
+     * @return void
+     */
+    private function enhance_meeting(&$meeting_value, $lang)
     {
         $duration = explode(':', $meeting_value['duration_time']);
-        $minutes = intval($duration[0])*60 + intval($duration[1]) + intval($duration[2]);
+        $minutes = intval($duration[0]) * 60 + intval($duration[1]) + intval($duration[2]);
         $meeting_value['duration_m'] = $minutes;
-        $meeting_value['duration_h'] = rtrim(rtrim(number_format($minutes/60, 2), 0), '.');
+        $meeting_value['duration_h'] = rtrim(rtrim(number_format($minutes / 60, 2), 0), '.');
         $space = ' ';
         if ($this->options['remove_space'] == 1) {
             $space = '';
         }
         if ($this->options['time_clock'] == null || $this->options['time_clock'] == '12' || $this->options['time_option'] == '') {
-            $time_format = "g:i".$space."A";
+            $time_format = "g:i" . $space . "A";
         } elseif ($this->options['time_clock'] == '24fr') {
             $time_format = "H\hi";
         } else {
@@ -343,10 +443,10 @@ class Bread_ContentGenerator
             $addtime = '+ ' . $minutes . ' minutes';
             $end_time = date($time_format, strtotime($meeting_value['start_time'] . ' ' . $addtime));
             $meeting_value['start_time'] = date($time_format, strtotime($meeting_value['start_time']));
-            if ($lang=='fa') {
-                $meeting_value['start_time'] = $this->toPersianNum($end_time).$space.'-'.$space.$this->toPersianNum($meeting_value['start_time']);
+            if ($lang == 'fa') {
+                $meeting_value['start_time'] = $this->toPersianNum($end_time) . $space . '-' . $space . $this->toPersianNum($meeting_value['start_time']);
             } else {
-                $meeting_value['start_time'] = $meeting_value['start_time'].$space.'-'.$space.$end_time;
+                $meeting_value['start_time'] = $meeting_value['start_time'] . $space . '-' . $space . $end_time;
             }
         } elseif ($this->options['time_option'] == '3') {
             $time_array = array("1:00", "2:00", "3:00", "4:00", "5:00", "6:00", "7:00", "8:00", "9:00", "10:00", "11:00", "12:00");
@@ -365,11 +465,11 @@ class Bread_ContentGenerator
             if ($temp_end_time == '12:00PM') {
                 $end_time = 'NOON';
             } elseif (in_array($temp_end_time_2, $time_array)) {
-                $end_time = date("g".$space."A", strtotime($temp_end_time));
+                $end_time = date("g" . $space . "A", strtotime($temp_end_time));
             } else {
-                $end_time = date("g:i".$space."A", strtotime($temp_end_time));
+                $end_time = date("g:i" . $space . "A", strtotime($temp_end_time));
             }
-            $meeting_value['start_time'] = $start_time.$space.'-'.$space.$end_time;
+            $meeting_value['start_time'] = $start_time . $space . '-' . $space . $end_time;
         }
 
         $meeting_value['day_abbr'] = Bread::getday($meeting_value['weekday_tinyint'], true, $lang);
@@ -382,13 +482,21 @@ class Bread_ContentGenerator
         if (!is_null($this->wheelchair_format)) {
             $fmts = explode(',', $meeting_value['format_shared_id_list']);
             if (in_array($this->wheelchair_format['id'], $fmts)) {
-                $meeting_value['wheelchair'] = '<img src="'.plugin_dir_url(__FILE__) . 'includes/wheelchair.png" width="'.$this->options['wheelchair_size'].'" height="'.$this->options['wheelchair_size'].'">';
+                $meeting_value['wheelchair'] = '<img src="' . plugin_dir_url(__FILE__) . 'includes/wheelchair.png" width="' . $this->options['wheelchair_size'] . '" height="' . $this->options['wheelchair_size'] . '">';
             }
         }
         // Extensions.
         return apply_filters("Bread_Enrich_Meeting_Data", $meeting_value, $this->formatsManager->getHashedFormats($lang));
     }
-    function write_single_meeting($meeting_value, $template, $analysedTemplate, $area_name)
+    /**
+     * Write a single meeting to the PDF
+     *
+     * @param array $meeting_value The meeting data.
+     * @param string $template
+     * @param array $analysedTemplate
+     * @return void
+     */
+    private function write_single_meeting(array $meeting_value, string $template, array $analysedTemplate)
     {
         $data = $template;
         $namedValues = array();
@@ -401,7 +509,7 @@ class Bread_ContentGenerator
         foreach ($analysedTemplate as $item) {
             $name = $item[0];
             if ($item[2]) {
-                $name = substr($name, 1, strlen($name)-2);
+                $name = substr($name, 1, strlen($name) - 2);
             }
             if (isset($namedValues[$name])) {
                 $data = substr_replace($data, $namedValues[$name], $item[1], strlen($item[0]));
@@ -410,11 +518,11 @@ class Bread_ContentGenerator
         $qr_pos = strpos($data, "[QRCode");
         if ($qr_pos) {
             $qr_end = strpos($data, ']', $qr_pos);
-            $data = substr($data, 0, $qr_pos).
-                    '<barcode type="QR" disableborder="1" '.
-                    substr($data, $qr_pos+8, $qr_end-$qr_pos-8).
-                    '/>'.
-                    substr($data, $qr_end+1);
+            $data = substr($data, 0, $qr_pos) .
+                '<barcode type="QR" disableborder="1" ' .
+                substr($data, $qr_pos + 8, $qr_end - $qr_pos - 8) .
+                '/>' .
+                substr($data, $qr_end + 1);
         }
         $search_strings = array();
         $replacements = array();
@@ -454,10 +562,20 @@ class Bread_ContentGenerator
         $data = str_replace($search_strings, $replacements, $data);
         return $data;
     }
-    function writeHTMLwithServiceMeetings($data, $page)
+    /**
+     * Generate the PDF of templates that also contain "additional lists" and format tables.
+     *
+     * @param string $data The template.
+     * @return void
+     */
+    private function writeHTMLwithServiceMeetings(string $data)
     {
-        $strs = array('<p>[service_meetings]</p>','[service_meetings]',
-                      '<p>[additional_meetings]</p>','[additional_meetings]');
+        $strs = array(
+            '<p>[service_meetings]</p>',
+            '[service_meetings]',
+            '<p>[additional_meetings]</p>',
+            '[additional_meetings]'
+        );
 
         foreach ($strs as $str) {
             $pos = strpos($data, $str);
@@ -468,17 +586,17 @@ class Bread_ContentGenerator
                 $this->WriteHTML('<sethtmlpagefooter name="Meeting2Footer" page="ALL" />');
             }
             $this->WriteHTML(substr($data, 0, $pos));
-            $this->write_service_meetings($this->options[$page.'_font_size'], $this->options[$page.'_line_height']);
+            $this->write_service_meetings();
             if ($this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full') {
                 $this->WriteHTML('<sethtmlpagefooter name="MyFooter" page="ALL" />');
             }
-            $this->WriteHTML(substr($data, $pos+strlen($str)));
+            $this->WriteHTML(substr($data, $pos + strlen($str)));
             return;
         }
         $this->WriteHTML($data);
     }
 
-    function replace_format_shortcodes(&$data, $page_name)
+    private function replace_format_shortcodes(&$data, $page_name)
     {
         $lang = $this->options['weekday_language'];
         $this->shortcode_formats('[format_codes_used_basic]', false, $lang, false, $page_name, $data);
@@ -489,25 +607,31 @@ class Bread_ContentGenerator
         $this->shortcode_formats('[format_codes_all_basic]', false, $lang, true, $page_name, $data);
         $this->shortcode_formats('[format_codes_all_detailed]', true, $lang, true, $page_name, $data);
     }
-    function shortcode_formats($shortcode, $detailed, $lang, $isAll, $page, &$str)
+    private function shortcode_formats($shortcode, $detailed, $lang, $isAll, $page, &$str)
     {
         $pos = strpos($str, $shortcode);
-        if ($pos==false) {
+        if ($pos == false) {
             return;
         }
         $value = '';
         if ($detailed) {
-            $value = $this->formatsManager->write_detailed_formats($lang, $isAll, $this->options[$page.'_line_height'], $this->options[$page.'_font_size']."pt");
+            $value = $this->formatsManager->write_detailed_formats($lang, $isAll, $this->options[$page . '_line_height'], $this->options[$page . '_font_size'] . "pt");
         } else {
-            $value = $this->formatsManager->write_formats($lang, $isAll, $this->options[$page.'_line_height'], $this->options[$page.'_font_size']."pt");
+            $value = $this->formatsManager->write_formats($lang, $isAll, $this->options[$page . '_line_height'], $this->options[$page . '_font_size'] . "pt");
         }
-        $str = substr($str, 0, $pos).$value.substr($str, $pos+strlen($shortcode));
+        $str = substr($str, 0, $pos) . $value . substr($str, $pos + strlen($shortcode));
     }
-    function asm_required($data)
+    /**
+     * Does a template contain an "additional meeting list"?
+     *
+     * @param string $data
+     * @return void
+     */
+    private function asm_required(string $data): bool
     {
         return strpos($data, '[service_meetings]') || strpos($data, '[additional_meetings]');
     }
-    function get_area_name($meeting_value)
+    function get_area_name(array $meeting_value): string
     {
         foreach (Bread_Bmlt::get_areas() as $unique_area) {
             $area_data = explode(',', $unique_area);
@@ -522,11 +646,11 @@ class Bread_ContentGenerator
     {
         $value = '';
         if (isset($obj[$field])) {
-                $value = Bread_Bmlt::parse_field($obj[$field]);
+            $value = Bread_Bmlt::parse_field($obj[$field]);
         }
-                    return $value;
+        return $value;
     }
-    function write_service_meetings($font_size, $line_height)
+    function write_service_meetings()
     {
         if (isset($this->options['asm_template_content']) && trim($this->options['asm_template_content'])) {
             $template = $this->options['asm_template_content'];
@@ -538,12 +662,12 @@ class Bread_ContentGenerator
         if (empty($this->options['asm_format_key']) || $this->options['asm_format_key'] == 'ASM') {
             $asm_query = true;
             $sort_order = $this->options['asm_sort_order'];
-            if ($sort_order=='same') {
+            if ($sort_order == 'same') {
                 $sort_order = 'weekday_tinyint,start_time';
             }
             $asm_id = "";
-            if ($this->options['asm_format_key']==='ASM') {
-                $asm_id = '&formats[]='.$this->formatsManager->getFormatByKey($this->options['weekday_language'], 'ASM');
+            if ($this->options['asm_format_key'] === 'ASM') {
+                $asm_id = '&formats[]=' . $this->formatsManager->getFormatByKey($this->options['weekday_language'], 'ASM');
             }
             $services = Bread_Bmlt::generateDefaultQuery();
             if (!empty($this->options['asm_custom_query'])) {
@@ -551,23 +675,20 @@ class Bread_ContentGenerator
             }
             $asm_query = "client_interface/json/?switcher=GetSearchResults$services$asm_id&sort_keys=$sort_order";
             // ASM can contain E-Mail and phone numbers that require logins.
-            if ($this->options['asm_format_key']==='ASM') {
+            if ($this->options['asm_format_key'] === 'ASM') {
                 $asm_query .= "&advanced_published=0";
             }
             $results = Bread_Bmlt::get_configured_root_server_request($asm_query);
             $service_meeting_result = json_decode(wp_remote_retrieve_body($results), true);
             $this->adjust_timezone($service_meeting_result, $this->target_timezone);
-            if ($sort_order == 'weekday_tinyint,start_time') {
-                $service_meeting_result = $this->orderByWeekdayStart($service_meeting_result);
-            }
         }
         if ($asm_query || $this->options['weekday_language'] != $this->options['asm_language']) {
             foreach ($service_meeting_result as &$value) {
                 $value = $this->enhance_meeting($value, $this->options['asm_language']);
             }
         }
-        $headerConfig = new Bread_Heading_Manager($this->options, $service_meeting_result, $this->options['asm_language'], 1);
-        $this->writeMeetings($template, $headerConfig);
+        $meetingslistStructure = new Bread_Meetingslist_Structure($this->options, $service_meeting_result, $this->options['asm_language'], 1);
+        $this->writeMeetings($template, $meetingslistStructure);
         return;
     }
 
@@ -604,13 +725,13 @@ class Bread_ContentGenerator
                     date_timezone_set($date, $target_timezone);
                     $meeting['start_time'] = $date->format('H:i');
                     if ($date >= $target_midnight) {
-                        $meeting['weekday_tinyint'] = $meeting['weekday_tinyint']+1;
-                        if ($meeting['weekday_tinyint']==8) {
+                        $meeting['weekday_tinyint'] = $meeting['weekday_tinyint'] + 1;
+                        if ($meeting['weekday_tinyint'] == 8) {
                             $meeting['weekday_tinyint'] = 1;
                         }
                     } elseif ($date < $target_yesterday) {
-                        $meeting['weekday_tinyint'] = $meeting['weekday_tinyint']-1;
-                        if ($meeting['weekday_tinyint']==0) {
+                        $meeting['weekday_tinyint'] = $meeting['weekday_tinyint'] - 1;
+                        if ($meeting['weekday_tinyint'] == 0) {
                             $meeting['weekday_tinyint'] = 7;
                         }
                     }
