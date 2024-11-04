@@ -238,7 +238,7 @@ class Bread_Meetingslist_Structure
      * 0  -  let everything through
      * 1  -  only meetings with asm format
      * -1  -  only meetings without asm format
-     * @return array The meetings, structured into an array with 3 levels.  First level: main heading.  Second level: sub headings, Third level: meetings.
+     * @return array rray, with header text as key and array of subheadings as values.  Each subheading is itself an array with the heading as key, and the meetings as values.
      */
     private function getHeaderMeetings(array &$result_meetings, int $include_asm): array
     {
@@ -272,10 +272,10 @@ class Bread_Meetingslist_Structure
     /**
      * Sort the headings alphabetically.
      *
-     * @param [type] $headerMeetings
+     * @param array $headerMeetings Array, with header text as key and array of subheadings as values.  Each subheading is itself an array with the heading as key, and the meetings as values.
      * @return array The sorted list.
      */
-    public function getUniqueHeadings($headerMeetings): array
+    public function getUniqueHeadings(array $headerMeetings): array
     {
         $unique_heading = array_keys($headerMeetings);
         asort($unique_heading, SORT_NATURAL | SORT_FLAG_CASE);
@@ -298,6 +298,12 @@ class Bread_Meetingslist_Structure
         }
         return $this_heading;
     }
+    /**
+     * If you want a heading to be skipped, the extension can add the sort key "[XXX]" to it.
+     *
+     * @param string $this_heading The raw heading
+     * @return bool true if the heading should be skipped.
+     */
     private function skip_heading(string $this_heading): bool
     {
         return (mb_substr($this_heading, 0, 5) == '[XXX]');
@@ -361,6 +367,13 @@ class Bread_Meetingslist_Structure
         }
         return $grouping;
     }
+    /**
+     * Does the meeting belong in the additional list.
+     *
+     * @param array $value the meeting.
+     * @param boolean $flag true if we are generating the additonal list.  Hybrid meetings don't belong if virtual meetings are being selected.
+     * @return boolean true if the meeting belongs in the addional list.
+     */
     private function asm_test(array $value, $flag = false): bool
     {
         if (empty($this->options['asm_format_key'])) {
@@ -368,6 +381,7 @@ class Bread_Meetingslist_Structure
         }
         $format_key = $this->options['asm_format_key'];
         if ($format_key == "@Virtual@") {
+            //TODO: Is this correct?  For now, I'm just refactoring, so leaving it in.
             if ($flag && $this->isHybrid($value)) {
                 return false;
             }
@@ -395,6 +409,11 @@ class Bread_Meetingslist_Structure
         $enFormats = explode(",", $value['formats']);
         return in_array('VM', $enFormats);
     }
+    /**
+     * Gets the heading for the current meeting, based on where we've iterated to in the Heading array
+     *
+     * @return string the current heading, if needed, as HTML/CSS.  Or an empty string, if not.
+     */
     public function calculateHeading(): string
     {
         $header = '';
@@ -424,6 +443,11 @@ class Bread_Meetingslist_Structure
         }
         return $header;
     }
+    /**
+     * When moving between pages/columns, get an appropriate "Continued" HTML.
+     *
+     * @return string the header HTML.
+     */
     public function calculateContHeader(): string
     {
         $header = '';

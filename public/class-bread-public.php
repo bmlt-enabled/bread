@@ -4,18 +4,8 @@ use Mpdf\Mpdf;
 /**
  * Main class for generating the PDF meeting list.
  *
- * @link  https://bmlt.app
- * @since 2.8.0
- *
- * @package    Bread
- * @subpackage Bread/public
- */
-
-/**
- * Main class for generating the PDF meeting list.
- *
  * Sets up mPdf and the page layout, does the initial BMLT query, then calls the generator to
- * produce the meeting list contents.
+ * produce the meeting list contents.  Nasty mPDF stuff should be concentrated here.
  *
  * @package    Bread
  * @subpackage Bread/public
@@ -90,7 +80,7 @@ class Bread_Public
         wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/bread-public.js', array('jquery'), $this->version, false);
     }
 
-    function bmlt_meeting_list($atts = null, $content = null)
+    public function bmlt_meeting_list($atts = null, $content = null)
     {
         $this->options = Bread::getMLOptions(Bread::getRequestedSetting());
         $import_streams = [];
@@ -126,100 +116,11 @@ class Bread_Public
                 exit;
             }
         }
-
+        $page_type_settings = $this->constuct_page_type_settings();
         Bread::UpgradeSettings();
-        // TODO: The page number is always 5 from botton...this should be adjustable
-        if ($this->options['page_fold'] == 'half') {
-            if ($this->options['page_size'] == 'letter') {
-                $page_type_settings = ['format' => array(139.7,215.9), 'margin_footer' => $this->options['margin_footer']];
-            } elseif ($this->options['page_size'] == 'legal') {
-                $page_type_settings = ['format' => array(177.8,215.9), 'margin_footer' => $this->options['margin_footer']];
-            } elseif ($this->options['page_size'] == 'ledger') {
-                $page_type_settings = ['format' => 'letter-P', 'margin_footer' => $this->options['margin_footer']];
-            } elseif ($this->options['page_size'] == 'A4') {
-                $page_type_settings = ['format' => 'A5-P', 'margin_footer' => $this->options['margin_footer']];
-            } elseif ($this->options['page_size'] == 'A5') {
-                $page_type_settings = ['format' => 'A6-P', 'margin_footer' => $this->options['margin_footer']];
-            } elseif ($this->options['page_size'] == '5inch') {
-                $page_type_settings = ['format' => array(197.2,279.4), 'margin_footer' => $this->options['margin_footer']];
-            }
-        } elseif ($this->options['page_fold'] == 'flyer') {
-            if ($this->options['page_size'] == 'letter') {
-                $page_type_settings = ['format' => array(93.13,215.9), 'margin_footer' => $this->options['margin_footer']];
-            } elseif ($this->options['page_size'] == 'legal') {
-                $page_type_settings = ['format' => array(118.53,215.9), 'margin_footer' => $this->options['margin_footer']];
-            } elseif ($this->options['page_size'] == 'ledger') {
-                $page_type_settings = ['format' => array(143.93,279.4), 'margin_footer' => $this->options['margin_footer']];
-            } elseif ($this->options['page_size'] == 'A4') {
-                $page_type_settings = ['format' => array(99.0,210.0), 'margin_footer' => $this->options['margin_footer']];
-            }
-        } elseif ($this->options['page_fold'] == 'full') {
-            $ps = $this->options['page_size'];
-            if ($ps=='ledger') {
-                $ps = 'tabloid';
-            }
-            $page_type_settings = ['format' => $ps."-".$this->options['page_orientation'], 'margin_footer' => $this->options['margin_footer']];
-        } else {
-            $ps = $this->options['page_size'];
-            if ($ps=='ledger') {
-                $ps = 'tabloid';
-            }
-            $page_type_settings = ['format' => $ps."-".$this->options['page_orientation'], 'margin_footer' => 0];
-        }
         $default_font = $this->options['base_font'] == "freesans" ? "dejavusanscondensed" : $this->options['base_font'];
         $mode = 's';
-        if ($default_font == 'arial' || $default_font == 'times' || $default_font == 'courier') {
-            $mpdf_init_options = [
-            'fontDir' => array(
-            __DIR__ . '/mpdf/vendor/mpdf/mpdf/ttfonts',
-            __DIR__ . '/fonts',
-            ),
-            'tempDir' => Bread::temp_dir(),
-            'mode' => $mode,
-            'default_font_size' => 7,
-            'fontdata' => [
-            "arial" => [
-                        'R' => "Arial.ttf",
-                        'B' => "ArialBold.ttf",
-                        'I' => "ArialItalic.ttf",
-                        'BI' => "ArialBoldItalic.ttf",
-            ],
-            "times" => [
-            'R' => "Times.ttf",
-            'B' => "TimesBold.ttf",
-            'I' => "TimesItalic.ttf",
-            'BI' => "TimesBoldItalic.ttf",
-            ],
-            "courier" => [
-            'R' => "CourierNew.ttf",
-            'B' => "CourierNewBold.ttf",
-            'I' => "CourierNewItalic.ttf",
-            'BI' => "CourierNewBoldItalic.ttf",
-            ]
-            ],
-            'default_font' => $default_font,
-            'margin_left' => $this->options['margin_left'],
-            'margin_right' => $this->options['margin_right'],
-            'margin_top' => $this->options['margin_top'],
-            'margin_bottom' => $this->options['margin_bottom'],
-            'margin_header' => $this->options['margin_header'],
-            ];
-        } else {
-            $mpdf_init_options = [
-            'mode' => $mode,
-            'tempDir' => Bread::temp_dir(),
-            'default_font_size' => 7,
-            'default_font' => $default_font,
-            'margin_left' => $this->options['margin_left'],
-            'margin_right' => $this->options['margin_right'],
-            'margin_top' => $this->options['margin_top'],
-            'margin_bottom' => $this->options['margin_bottom'],
-            'margin_header' => $this->options['margin_header'],
-            ];
-        }
-        $mpdf_init_options['restrictColorSpace'] = $this->options['colorspace'];
-        $mpdf_init_options = array_merge($mpdf_init_options, $page_type_settings);
-        $mpdf_init_options = apply_filters("Bread_Mpdf_Init_Options", $mpdf_init_options, $this->options);
+        $mpdf_init_options = $this->construct_init_options($default_font, $mode, $page_type_settings);
         @ob_end_clean();
         // We load mPDF only when we need to and as late as possible.  This prevents
         // conflicts with other plugins that use the same PSRs in different versions
@@ -244,56 +145,7 @@ class Bread_Public
         if ($this->options['column_line'] == 1
             && ($this->options['page_fold'] == 'tri' || $this->options['page_fold'] == 'quad')
         ) {
-            $html = '<body style="background-color:#fff;">';
-            if ($this->options['page_fold'] == 'tri') {
-                $html .= '<table style="background-color: #fff;width: 100%; border-collapse: collapse;">
-				<tbody>
-				<tr>
-				<td style="background-color: #fff;width: 33.33%; border-right: 1px solid '.$this->options['col_color']. '; height: 279.4mm;">&nbsp;</td>
-				<td style="background-color: #fff;width: 33.33%; border-right: 1px solid '.$this->options['col_color']. '; height: 279.4mm;">&nbsp;</td>
-				<td style="background-color: #fff;width: 33.33%; height: 279.4mm;">&nbsp;</td>
-				</tr>
-				</tbody>
-				</table></body>';
-            }
-            if ($this->options['page_fold'] == 'quad') {
-                $html .= '<table style="background-color: #fff;width: 100%; border-collapse: collapse;">
-				<tbody>
-				<tr>
-				<td style="background-color: #fff;width: 25%; border-right: 1px solid '.$this->options['col_color']. '; height: 279.4mm;">&nbsp;</td>
-				<td style="background-color: #fff;width: 25%; border-right: 1px solid '.$this->options['col_color']. '; height: 279.4mm;">&nbsp;</td>
-				<td style="background-color: #fff;width: 25%; border-right: 1px solid '.$this->options['col_color']. '; height: 279.4mm;">&nbsp;</td>
-				<td style="background-color: #fff;width: 25%; height: 279.4mm;">&nbsp;</td>
-				</tr>
-				</tbody>
-				</table>';
-            }
-            $mpdf_column=new mPDF(
-                [
-                'mode' => $mode,
-                'tempDir' => Bread::temp_dir(),
-                'format' => $mpdf_init_options['format'],
-                'default_font_size' => 7,
-                'default_font' => $default_font,
-                'margin_left' => $this->options['margin_left'],
-                'margin_right' => $this->options['margin_right'],
-                'margin_top' => $this->options['margin_top'],
-                'margin_bottom' => $this->options['margin_bottom'],
-                'margin_footer' => 0,
-                'orientation' => 'P',
-                'restrictColorSpace' => $this->options['colorspace'],
-                ]
-            );
-
-            $mpdf_column->WriteHTML($html);
-            $FilePath = Bread::temp_dir(). DIRECTORY_SEPARATOR . $this->get_FilePath('_column');
-            $mpdf_column->Output($FilePath, 'F');
-            $h = \fopen($FilePath, 'rb');
-            $stream = new \setasign\Fpdi\PdfParser\StreamReader($h, false);
-            $import_streams[$FilePath] = $stream;
-            $pagecount = $this->mpdf->SetSourceFile($stream);
-            $tplId = $this->mpdf->importPage($pagecount);
-            $this->mpdf->SetPageTemplate($tplId);
+            $this->drawLinesSeperatingColumns($mode, $mpdf_init_options['format'], $default_font);
         }
         $sort_keys = 'weekday_tinyint,start_time,meeting_name';
         $get_used_formats = '&get_used_formats';
@@ -367,6 +219,186 @@ class Bread_Public
         $generator = new Bread_ContentGenerator($this->mpdf, $this->options, $result_meetings, $formatsManager);
         $generator->generate($num_columns);
         $this->mpdf->SetDisplayMode('fullpage', 'two');
+        $this->reorder_booklet_pages($mode);
+        if ($this->options['include_protection'] == 1) {
+            // 'copy','print','modify','annot-forms','fill-forms','extract','assemble','print-highres'
+            $this->mpdf->SetProtection(array('copy','print','print-highres'), '', $this->options['protection_password']);
+        }
+        if (headers_sent()) {
+            echo '<div id="message" class="error"><p>Headers already sent before PDF generation</div>';
+        } else {
+            if (intval($this->options['cache_time']) > 0 && ! isset($_GET['nocache'])
+                && !isset($_GET['custom_query'])
+            ) {
+                $content = $this->mpdf->Output('', 'S');
+                $content = bin2hex($content);
+                $transient_key = Bread::get_TransientKey(Bread::getRequestedSetting());
+                set_transient($transient_key, $content, intval($this->options['cache_time']) * HOUR_IN_SECONDS);
+            }
+            $FilePath = apply_filters("Bread_Download_Name", $this->get_FilePath(), $this->options['service_body_1'], Bread::getSettingName(Bread::getRequestedSetting()));
+            $this->mpdf->Output($FilePath, 'I');
+        }
+        foreach ($import_streams as $FilePath => $stream) {
+            @unlink($FilePath);
+        }
+        Bread::removeTempDir();
+        exit;
+    }
+    private function constuct_page_type_settings()
+    {
+        // TODO: The page number is always 5 from botton...this should be adjustable
+        if ($this->options['page_fold'] == 'half') {
+            if ($this->options['page_size'] == 'letter') {
+                $page_type_settings = ['format' => array(139.7,215.9), 'margin_footer' => $this->options['margin_footer']];
+            } elseif ($this->options['page_size'] == 'legal') {
+                $page_type_settings = ['format' => array(177.8,215.9), 'margin_footer' => $this->options['margin_footer']];
+            } elseif ($this->options['page_size'] == 'ledger') {
+                $page_type_settings = ['format' => 'letter-P', 'margin_footer' => $this->options['margin_footer']];
+            } elseif ($this->options['page_size'] == 'A4') {
+                $page_type_settings = ['format' => 'A5-P', 'margin_footer' => $this->options['margin_footer']];
+            } elseif ($this->options['page_size'] == 'A5') {
+                $page_type_settings = ['format' => 'A6-P', 'margin_footer' => $this->options['margin_footer']];
+            } elseif ($this->options['page_size'] == '5inch') {
+                $page_type_settings = ['format' => array(197.2,279.4), 'margin_footer' => $this->options['margin_footer']];
+            }
+        } elseif ($this->options['page_fold'] == 'flyer') {
+            if ($this->options['page_size'] == 'letter') {
+                $page_type_settings = ['format' => array(93.13,215.9), 'margin_footer' => $this->options['margin_footer']];
+            } elseif ($this->options['page_size'] == 'legal') {
+                $page_type_settings = ['format' => array(118.53,215.9), 'margin_footer' => $this->options['margin_footer']];
+            } elseif ($this->options['page_size'] == 'ledger') {
+                $page_type_settings = ['format' => array(143.93,279.4), 'margin_footer' => $this->options['margin_footer']];
+            } elseif ($this->options['page_size'] == 'A4') {
+                $page_type_settings = ['format' => array(99.0,210.0), 'margin_footer' => $this->options['margin_footer']];
+            }
+        } elseif ($this->options['page_fold'] == 'full') {
+            $ps = $this->options['page_size'];
+            if ($ps=='ledger') {
+                $ps = 'tabloid';
+            }
+            $page_type_settings = ['format' => $ps."-".$this->options['page_orientation'], 'margin_footer' => $this->options['margin_footer']];
+        } else {
+            $ps = $this->options['page_size'];
+            if ($ps=='ledger') {
+                $ps = 'tabloid';
+            }
+            $page_type_settings = ['format' => $ps."-".$this->options['page_orientation'], 'margin_footer' => 0];
+
+            return $page_type_settings;
+        }
+    }
+    private function construct_init_options($default_font, $mode, $page_type_settings): array
+    {
+        if ($default_font == 'arial' || $default_font == 'times' || $default_font == 'courier') {
+            $mpdf_init_options = [
+            'fontDir' => array(
+            __DIR__ . '/mpdf/vendor/mpdf/mpdf/ttfonts',
+            __DIR__ . '/fonts',
+            ),
+            'tempDir' => Bread::temp_dir(),
+            'mode' => $mode,
+            'default_font_size' => 7,
+            'fontdata' => [
+            "arial" => [
+                        'R' => "Arial.ttf",
+                        'B' => "ArialBold.ttf",
+                        'I' => "ArialItalic.ttf",
+                        'BI' => "ArialBoldItalic.ttf",
+            ],
+            "times" => [
+            'R' => "Times.ttf",
+            'B' => "TimesBold.ttf",
+            'I' => "TimesItalic.ttf",
+            'BI' => "TimesBoldItalic.ttf",
+            ],
+            "courier" => [
+            'R' => "CourierNew.ttf",
+            'B' => "CourierNewBold.ttf",
+            'I' => "CourierNewItalic.ttf",
+            'BI' => "CourierNewBoldItalic.ttf",
+            ]
+            ],
+            'default_font' => $default_font,
+            'margin_left' => $this->options['margin_left'],
+            'margin_right' => $this->options['margin_right'],
+            'margin_top' => $this->options['margin_top'],
+            'margin_bottom' => $this->options['margin_bottom'],
+            'margin_header' => $this->options['margin_header'],
+            ];
+        } else {
+            $mpdf_init_options = [
+            'mode' => $mode,
+            'tempDir' => Bread::temp_dir(),
+            'default_font_size' => 7,
+            'default_font' => $default_font,
+            'margin_left' => $this->options['margin_left'],
+            'margin_right' => $this->options['margin_right'],
+            'margin_top' => $this->options['margin_top'],
+            'margin_bottom' => $this->options['margin_bottom'],
+            'margin_header' => $this->options['margin_header'],
+            ];
+        }
+        $mpdf_init_options['restrictColorSpace'] = $this->options['colorspace'];
+        $mpdf_init_options = array_merge($mpdf_init_options, $page_type_settings);
+        $mpdf_init_options = apply_filters("Bread_Mpdf_Init_Options", $mpdf_init_options, $this->options);
+
+        return $mpdf_init_options;
+    }
+    private function drawLinesSeperatingColumns($mode, $format, $default_font)
+    {
+        $html = '<body style="background-color:#fff;">';
+        if ($this->options['page_fold'] == 'tri') {
+            $html .= '<table style="background-color: #fff;width: 100%; border-collapse: collapse;">
+            <tbody>
+            <tr>
+            <td style="background-color: #fff;width: 33.33%; border-right: 1px solid '.$this->options['col_color']. '; height: 279.4mm;">&nbsp;</td>
+            <td style="background-color: #fff;width: 33.33%; border-right: 1px solid '.$this->options['col_color']. '; height: 279.4mm;">&nbsp;</td>
+            <td style="background-color: #fff;width: 33.33%; height: 279.4mm;">&nbsp;</td>
+            </tr>
+            </tbody>
+            </table></body>';
+        }
+        if ($this->options['page_fold'] == 'quad') {
+            $html .= '<table style="background-color: #fff;width: 100%; border-collapse: collapse;">
+            <tbody>
+            <tr>
+            <td style="background-color: #fff;width: 25%; border-right: 1px solid '.$this->options['col_color']. '; height: 279.4mm;">&nbsp;</td>
+            <td style="background-color: #fff;width: 25%; border-right: 1px solid '.$this->options['col_color']. '; height: 279.4mm;">&nbsp;</td>
+            <td style="background-color: #fff;width: 25%; border-right: 1px solid '.$this->options['col_color']. '; height: 279.4mm;">&nbsp;</td>
+            <td style="background-color: #fff;width: 25%; height: 279.4mm;">&nbsp;</td>
+            </tr>
+            </tbody>
+            </table>';
+        }
+        $mpdf_column=new mPDF(
+            [
+            'mode' => $mode,
+            'tempDir' => Bread::temp_dir(),
+            'format' => $format,
+            'default_font_size' => 7,
+            'default_font' => $default_font,
+            'margin_left' => $this->options['margin_left'],
+            'margin_right' => $this->options['margin_right'],
+            'margin_top' => $this->options['margin_top'],
+            'margin_bottom' => $this->options['margin_bottom'],
+            'margin_footer' => 0,
+            'orientation' => 'P',
+            'restrictColorSpace' => $this->options['colorspace'],
+            ]
+        );
+
+        $mpdf_column->WriteHTML($html);
+        $FilePath = Bread::temp_dir(). DIRECTORY_SEPARATOR . $this->get_FilePath('_column');
+        $mpdf_column->Output($FilePath, 'F');
+        $h = \fopen($FilePath, 'rb');
+        $stream = new \setasign\Fpdi\PdfParser\StreamReader($h, false);
+        $import_streams[$FilePath] = $stream;
+        $pagecount = $this->mpdf->SetSourceFile($stream);
+        $tplId = $this->mpdf->importPage($pagecount);
+        $this->mpdf->SetPageTemplate($tplId);
+    }
+    private function reorder_booklet_pages($mode)
+    {
         if ($this->options['page_fold'] == 'half') {
             $FilePath = Bread::temp_dir(). DIRECTORY_SEPARATOR . $this->get_FilePath('_half');
             $this->mpdf->Output($FilePath, 'F');
@@ -496,29 +528,6 @@ class Bread_Public
             }
             $this->mpdf = $mpdftmp;
         }
-        if ($this->options['include_protection'] == 1) {
-            // 'copy','print','modify','annot-forms','fill-forms','extract','assemble','print-highres'
-            $this->mpdf->SetProtection(array('copy','print','print-highres'), '', $this->options['protection_password']);
-        }
-        if (headers_sent()) {
-            echo '<div id="message" class="error"><p>Headers already sent before PDF generation</div>';
-        } else {
-            if (intval($this->options['cache_time']) > 0 && ! isset($_GET['nocache'])
-                && !isset($_GET['custom_query'])
-            ) {
-                $content = $this->mpdf->Output('', 'S');
-                $content = bin2hex($content);
-                $transient_key = Bread::get_TransientKey(Bread::getRequestedSetting());
-                set_transient($transient_key, $content, intval($this->options['cache_time']) * HOUR_IN_SECONDS);
-            }
-            $FilePath = apply_filters("Bread_Download_Name", $this->get_FilePath(), $this->options['service_body_1'], Bread::getSettingName(Bread::getRequestedSetting()));
-            $this->mpdf->Output($FilePath, 'I');
-        }
-        foreach ($import_streams as $FilePath => $stream) {
-            @unlink($FilePath);
-        }
-        Bread::removeTempDir();
-        exit;
     }
     function get_booklet_pages($np, $backcover = true)
     {
