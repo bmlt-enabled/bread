@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Controls how the meetingslist is structured into headings and possibly subheadings
  */
@@ -79,6 +80,7 @@ class Bread_Meetingslist_Structure
      * @param string $meeting_sort the type of ordering we want, e.g., by day, by city, by name.
      * @return void
      */
+    private bool $suppress_heading;
     private function upgradeHeaderData(string $meeting_sort)
     {
         $this->options['combine_headings'] = '';
@@ -132,18 +134,23 @@ class Bread_Meetingslist_Structure
      * @param array $options The configuration of the meeting list.
      * @param array $result_meetings The meetings in the meeting list.
      * @param string $lang The language of the meeting list
-     * @param integer $include_asm Whether or not to include meetings that match the requirements of the additional list. Where
+     * @param integer $include_additional_list Whether or not to include meetings that match the requirements of the additional list. Where
      * 0  -  let everything through
-     * 1  -  only meetings with asm format
-     * -1  -  only meetings without asm format
+     * 1  -  only meetings with additional_list format
+     * -1  -  only meetings without additional_list format
      */
-    function __construct(array $options, array $result_meetings, string $lang, int $include_asm)
+    function __construct(array $options, array $result_meetings, string $lang, int $include_additional_list)
     {
         $this->options = $options;
+        if ($include_additional_list==1) {
+            $this->suppress_heading = isset($options['additional_list_suppress_heading']) ? $options['additional_list_suppress_heading'] == 1 : true;
+        } else {
+            $this->suppress_heading = $options['suppress_heading'] == 1;
+        }
         $meeting_sort = $options['meeting_sort'];
-        if ($include_asm > 0) {
+        if ($include_additional_list > 0) {
             $this->options['suppess_heading'] = 1;
-            switch ($options['asm_sort_order']) {
+            switch ($options['additional_list_sort_order']) {
                 case 'meeting_name':
                     $meeting_sort = 'meeting_name';
                     break;
@@ -174,18 +181,18 @@ class Bread_Meetingslist_Structure
         $this->header_style = $header_style;
         $this->cont = '(' . Bread::getTranslateTable()[$lang]['CONT'] . ')';
 
-        $this->headerMeetings = $this->getHeaderMeetings($result_meetings, $include_asm);
+        $this->headerMeetings = $this->getHeaderMeetings($result_meetings, $include_additional_list);
         $this->unique_heading = $this->getUniqueHeadings($this->headerMeetings);
     }
     /**
      * Iterates over the main headings in the meeting list
      *
-     * @return array the list of sub-headings under this heading.  If there are no sub-headings, an array with a single element is returned.
+     * @return array the list of sub-headings under this heading.  If there are no sub-headings, an array with a single element is returned. At the end of the list, false is returned.
      */
-    public function iterateMainHeading(): array
+    public function iterateMainHeading(): array|bool
     {
         if ($this->main_index >= count($this->unique_heading)) {
-            return null;
+            return false;
         }
         $this->main_heading_raw = $this->unique_heading[$this->main_index++];
         if ($this->skip_heading($this->main_heading_raw)) {
@@ -201,12 +208,12 @@ class Bread_Meetingslist_Structure
      *
      * @param array $unique_subheading The list over which we are iterating.
      * @param boolean $still_new a flag to indicate we are looking for the first subheading (we may skip some sub headings)
-     * @return array an array of the meetings in this subheading.
+     * @return array an array of the meetings in this subheading.  At the end of the list, false is returned.
      */
-    public function iterateSubHeading(array $unique_subheading, bool $still_new = false): array
+    public function iterateSubHeading(array $unique_subheading, bool $still_new = false): array|bool
     {
         if ($this->sub_index >= count($unique_subheading)) {
-            return null;
+            return false;
         }
         $this->newMainHeading = ($this->sub_index == 0) || $still_new;
         $this->sub_heading_raw = $unique_subheading[$this->sub_index++];
@@ -220,12 +227,12 @@ class Bread_Meetingslist_Structure
      * Iterates over the meetings in the current sub-heading.
      *
      * @param array $meetings
-     * @return array The next meeting
+     * @return array The next meeting.  At the end of the list, false is returned
      */
-    public function iterateMeetings(array $meetings): array
+    public function iterateMeetings(array $meetings): array|bool
     {
         if ($this->meeting_index >= count($meetings)) {
-            return null;
+            return false;
         }
         $this->newMainHeading = $this->newMainHeading && $this->meeting_index == 0;
         return $meetings[$this->meeting_index++];
@@ -234,23 +241,23 @@ class Bread_Meetingslist_Structure
      * Does the work of structuring the meeting list into heading, subheadings and meetings.
      *
      * @param array $result_meetings The meetings returned from the BMLT root server query.
-     * @param integer $include_asm Whether or not to include meetings that match the requirements of the additional list. Where
+     * @param integer $include_additional_list Whether or not to include meetings that match the requirements of the additional list. Where
      * 0  -  let everything through
-     * 1  -  only meetings with asm format
-     * -1  -  only meetings without asm format
+     * 1  -  only meetings with additional_list format
+     * -1  -  only meetings without additional_list format
      * @return array rray, with header text as key and array of subheadings as values.  Each subheading is itself an array with the heading as key, and the meetings as values.
      */
-    private function getHeaderMeetings(array &$result_meetings, int $include_asm): array
+    private function getHeaderMeetings(array &$result_meetings, int $include_additional_list): array
     {
         $levels = $this->getHeaderLevels();
         $headerMeetings = array();
         foreach ($result_meetings as &$value) {
-            $asm_test = $this->asm_test($value, $include_asm == 1);
-            if ((($include_asm < 0 && $asm_test) ||
-                ($include_asm > 0 && !$asm_test))) {
+            $additional_list_test = $this->additional_list_test($value, $include_additional_list == 1);
+            if ((($include_additional_list < 0 && $additional_list_test) ||
+                ($include_additional_list > 0 && !$additional_list_test))) {
                 continue;
             }
-            $main_grouping = $this->getHeaderItem($value, $this->setupDefaultHeading('main_'), $include_asm == 1);
+            $main_grouping = $this->getHeaderItem($value, $this->setupDefaultHeading('main_'));
             if (!isset($headerMeetings[$main_grouping])) {
                 $headerMeetings[$main_grouping] = array();
                 if ($levels == 1) {
@@ -258,7 +265,7 @@ class Bread_Meetingslist_Structure
                 }
             }
             if ($levels == 2) {
-                $subgrouping = $this->getHeaderItem($value, $this->setupDefaultHeading('sub'), $include_asm == 1);
+                $subgrouping = $this->getHeaderItem($value, $this->setupDefaultHeading('sub'));
                 if (!isset($headerMeetings[$main_grouping][$subgrouping])) {
                     $headerMeetings[$main_grouping][$subgrouping] = array();
                 }
@@ -320,8 +327,8 @@ class Bread_Meetingslist_Structure
         return array(
             'name' =>  $level . 'grouping',
             'name_alt' => $level . 'grouping_alt',
-            'name_suffix' => $level . 'grouping_alt',
-            'name_alt_suffix' => $level . 'grouping_alt',
+            'name_suffix' => $level . 'grouping_suffix',
+            'name_alt_suffix' => $level . 'grouping_alt_suffix',
         );
     }
     private function getHeaderItem(array $value, array $names): string
@@ -374,12 +381,12 @@ class Bread_Meetingslist_Structure
      * @param boolean $flag true if we are generating the additonal list.  Hybrid meetings don't belong if virtual meetings are being selected.
      * @return boolean true if the meeting belongs in the addional list.
      */
-    private function asm_test(array $value, $flag = false): bool
+    private function additional_list_test(array $value, $flag = false): bool
     {
-        if (empty($this->options['asm_format_key'])) {
+        if (empty($this->options['additional_list_format_key'])) {
             return false;
         }
-        $format_key = $this->options['asm_format_key'];
+        $format_key = $this->options['additional_list_format_key'];
         if ($format_key == "@Virtual@") {
             //TODO: Is this correct?  For now, I'm just refactoring, so leaving it in.
             if ($flag && $this->isHybrid($value)) {
@@ -417,7 +424,7 @@ class Bread_Meetingslist_Structure
     public function calculateHeading(): string
     {
         $header = '';
-        if ($this->options['suppress_heading'] == 1) {
+        if ($this->suppress_heading) {
             return $header;
         }
         $this_heading = $this->remove_sort_key($this->main_heading_raw);
@@ -451,7 +458,7 @@ class Bread_Meetingslist_Structure
     public function calculateContHeader(): string
     {
         $header = '';
-        if ($this->options['suppress_heading'] == 1) {
+        if ($this->suppress_heading == 1) {
             return $header;
         }
         if (!$this->newMainHeading && $this->options['cont_header_shown']) {

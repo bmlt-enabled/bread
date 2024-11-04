@@ -172,7 +172,7 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 * Access to configure is now controlled with a custom capability called `manage_bread`.  This is automatically added to the `Administrator` role.
 * Include additional (secondary) meeting list.  This can be used to provide a seperate list
   of special interest or foreign language meetings, or to list meetings that for some
-  reason are not included in the main list.  This is a generalized version of Bread 1's "ASM" functionality,
+  reason are not included in the main list.  This is a generalized version of Bread 1's "additional_list" functionality,
   which was used to list area service meetings.
 * Italian, German and Farsi support.
 * New layout options
@@ -301,7 +301,7 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 
 = 1.3.0 =
 * Bumped up the HTTP GET timeout from 30 seconds to 2 mins.
-* Allows for specifying an unpublished ASM (must use credentials.
+* Allows for specifying an unpublished additional_list (must use credentials.
 * Restructured "Special Features" section.
 * Removed hardcodings inherited from legacy code base.
 * Cleaned up some dead code.

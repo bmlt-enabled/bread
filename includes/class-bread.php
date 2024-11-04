@@ -85,7 +85,7 @@ class Bread
     }
     public static function getOptionForDisplay($option, $default = '')
     {
-        return empty(Bread::$instamce->options[$option])?$default:esc_html(Bread::$instance->options[$option]);
+        return empty(Bread::$instamce->options[$option]) ? $default : esc_html(Bread::$instance->options[$option]);
     }
     public static function setOption($name, $value)
     {
@@ -117,8 +117,8 @@ class Bread
             foreach ($objects as $object) {
                 if ($object != "." && $object != "..") {
                     if (str_starts_with($object, "bread")) {
-                        $filename = $dir . DIRECTORY_SEPARATOR .$object;
-                        if (time()-filemtime($filename) > 24 * 3600) {
+                        $filename = $dir . DIRECTORY_SEPARATOR . $object;
+                        if (time() - filemtime($filename) > 24 * 3600) {
                             Bread::rrmdir($filename);
                         }
                     }
@@ -136,10 +136,10 @@ class Bread
             $objects = scandir($dir);
             foreach ($objects as $object) {
                 if ($object != "." && $object != "..") {
-                    if (is_dir($dir. DIRECTORY_SEPARATOR .$object) && !is_link($dir."/".$object)) {
-                        Bread::rrmdir($dir. DIRECTORY_SEPARATOR .$object);
+                    if (is_dir($dir . DIRECTORY_SEPARATOR . $object) && !is_link($dir . "/" . $object)) {
+                        Bread::rrmdir($dir . DIRECTORY_SEPARATOR . $object);
                     } else {
-                        @unlink($dir. DIRECTORY_SEPARATOR .$object);
+                        @unlink($dir . DIRECTORY_SEPARATOR . $object);
                     }
                 }
             }
@@ -207,7 +207,7 @@ class Bread
     private function &getMLOptionsInner($current_setting)
     {
         if ($current_setting < 1) {
-                $current_setting = is_admin() ? 1 : $this->requested_setting;
+            $current_setting = is_admin() ? 1 : $this->requested_setting;
         }
 
         if ($current_setting != 1) {
@@ -215,23 +215,23 @@ class Bread
         } else {
             $this->optionsName = Bread::OPTIONS_NAME;
         }
-            //Don't forget to set up the default options
+        //Don't forget to set up the default options
         if (!$theOptions = get_option($this->optionsName)) {
             if ($current_setting != 1) {
                 unset($this->allSettings[$current_setting]);
                 update_option(Bread::SETTINGS, $this->allSettings);
-                die('Undefined setting: '. $current_setting);
+                die('Undefined setting: ' . $current_setting);
             }
             $import_file = plugin_dir_path(__FILE__) . "includes/three_column_settings.json";
             $encode_options = file_get_contents($import_file);
             $theOptions = json_decode($encode_options, true);
             update_option($this->optionsName, $theOptions);
         }
-            $this->options = $theOptions;
-            $this->fillUnsetOptions();
-            $this->upgrade_settings();
-            $this->requested_setting = $current_setting;
-            return $this->options;
+        $this->options = $theOptions;
+        $this->fillUnsetOptions();
+        $this->upgrade_settings();
+        $this->requested_setting = $current_setting;
+        return $this->options;
     }
     public static function getOptionsName()
     {
@@ -282,12 +282,12 @@ class Bread
     }
     function load_translations()
     {
-        $files = scandir(dirname(__FILE__)."/lang");
+        $files = scandir(dirname(__FILE__) . "/lang");
         foreach ($files as $file) {
-            if (strpos($file, "translate_")!==0) {
+            if (strpos($file, "translate_") !== 0) {
                 continue;
             }
-            include dirname(__FILE__)."/lang/".$file;
+            include dirname(__FILE__) . "/lang/" . $file;
             $key = substr($file, 10, -4);
             $this->translate[$key] = $translate;
         }
@@ -455,7 +455,7 @@ class Bread
     }
     public static function arraySafeGet($arr, $i = 0)
     {
-        return is_array($arr) ? $arr[$i] ?? '': '';
+        return is_array($arr) ? $arr[$i] ?? '' : '';
     }
     public static function getday($day, $abbreviate = false, $language = 'en')
     {
@@ -483,7 +483,7 @@ class Bread
             $this->options[$option] = $default;
         } else if (!is_array($this->options[$option])) {
             if (is_string($this->options[$option]) && strlen(trim($this->options[$option])) > 0) {
-                $this->options[$option] = [ trim($this->options[$option]) ];
+                $this->options[$option] = [trim($this->options[$option])];
             } else {
                 $this->options[$option] = $default;
             }
@@ -529,7 +529,7 @@ class Bread
         $this->fillUnsetStringOption('neighborhood_suffix', 'Neighborhood');
         $this->fillUnsetStringOption('city_suffix', 'City');
         $this->fillUnsetStringOption('meeting_template_content', '');
-        $this->fillUnsetStringOption('asm_template_content', '');
+        $this->fillUnsetStringOption('additional_list_template_content', '');
         $this->fillUnsetOption('column_line', 0);
         $this->fillUnsetOption('col_color', '#bfbfbf');
         $this->fillUnsetStringOption('custom_section_content', '');
@@ -544,23 +544,23 @@ class Bread
         $this->fillUnsetOption('extra_meetings_enabled', 0);
         $this->fillUnsetOption('include_protection', 0);
         $this->fillUnsetOption('weekday_language', 'en');
-        $this->fillUnsetStringOption('asm_language', '');  // same as main language
+        $this->fillUnsetStringOption('additional_list_language', '');  // same as main language
         $this->fillUnsetOption('weekday_start', '1');
-        $this->fillUnsetOption('include_asm', '0');
-        $this->fillUnsetOption('asm_format_key', '');
-        $this->fillUnsetOption('asm_sort_order', 'name');
+        $this->fillUnsetOption('include_additional_list', '0');
+        $this->fillUnsetOption('additional_list_format_key', '');
+        $this->fillUnsetOption('additional_list_sort_order', 'name');
         $this->fillUnsetStringOption('bmlt_login_id', '');
         $this->fillUnsetStringOption('bmlt_login_password', '');
         $this->fillUnsetStringOption('protection_password', '');
         $this->fillUnsetStringOption('custom_query', '');
-        $this->fillUnsetStringOption('asm_custom_query', '');
+        $this->fillUnsetStringOption('additional_list_custom_query', '');
         $this->fillUnsetStringOption('user_agent', 'Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0) +bread');
         $this->fillUnsetOption('sslverify', '0');
         $this->fillUnsetOption('cache_time', 0);
         $this->fillUnsetOption('wheelchair_size', "20px");
         $this->fillUnsetArrayOption('extra_meetings', []);
         if (!isset($this->options['extra_meetings'])) {
-            if (count($this->options['extra_meetings'])>0) {
+            if (count($this->options['extra_meetings']) > 0) {
                 $this->options['extra_meetings_enabled'] = 1;
             } else {
                 $this->options['extra_meetings_enabled'] = 0;
@@ -568,7 +568,7 @@ class Bread
         }
         $this->fillUnsetArrayOption('authors', []);
         $my_footer = isset($this->translate[$this->options['weekday_language']]) ?
-        $this->translate[$this->options['weekday_language']]['PAGE'].' {PAGENO}' : '{PAGENO}';
+            $this->translate[$this->options['weekday_language']]['PAGE'] . ' {PAGENO}' : '{PAGENO}';
         $this->fillUnsetStringOption('nonmeeting_footer', $my_footer);
         $this->fillUnsetStringOption('meeting1_footer', $this->options['nonmeeting_footer']);
         $this->fillUnsetStringOption('meeting2_footer', $this->options['nonmeeting_footer']);
@@ -584,40 +584,40 @@ class Bread
             if (!($this->options['meeting_sort'] === 'weekday_area'
                 || $this->options['meeting_sort'] === 'weekday_city'
                 || $this->options['meeting_sort'] === 'weekday_county'
-                || $this->options['meeting_sort'] === 'day')
-            ) {
-                    $this->options['weekday_language'] = Bread_Bmlt::get_bmlt_server_lang();
+                || $this->options['meeting_sort'] === 'day')) {
+                $this->options['weekday_language'] = Bread_Bmlt::get_bmlt_server_lang();
             }
-            if ($this->options['page_fold']=='half') {
-                if ($this->options['page_size']=='A5') {
+            if ($this->options['page_fold'] == 'half') {
+                if ($this->options['page_size'] == 'A5') {
                     $this->options['page_size'] = 'A4';
                 }
                 $this->options['page_orientation'] = 'L';
             }
-            if ($this->options['page_fold']=='tri') {
-                  $this->options['page_orientation'] = 'L';
+            if ($this->options['page_fold'] == 'tri') {
+                $this->options['page_orientation'] = 'L';
             }
             if (substr($this->options['meeting_sort'], 0, 8) == 'weekday_') {
-                 $this->options['sub_header_shown'] = 'display';
+                $this->options['sub_header_shown'] = 'display';
             }
             if (isset($this->options['pageheader_text'])) {
                 $this->options['pageheader_content'] = $this->options['pageheader_text'];
                 unset($this->options['pageheader_text']);
             }
             if (substr($this->options['root_server'], -1) == '/') {
-                $this->options['root_server'] = substr($this->options['root_server'], 0, strlen($this->options['root_server'])-1);
+                $this->options['root_server'] = substr($this->options['root_server'], 0, strlen($this->options['root_server']) - 1);
             }
             if (substr($this->options['root_server'], 0, 4) !== 'http') {
-                $this->options['root_server'] = 'http://'.$this->options['root_server'];
+                $this->options['root_server'] = 'http://' . $this->options['root_server'];
             }
         }
-        if (!isset($this->options['cont_header_shown'])
+        if (
+            !isset($this->options['cont_header_shown'])
             && isset($this->options['page_height_fix'])
         ) {
             $fix = floatval($this->options['page_height_fix']);
             // say, the height of 2 lines
             $x = floatval($this->options['content_font_size']) *
-            floatval($this->options['content_line_height']) * 2.0 * 0.35; // pt to mm
+                floatval($this->options['content_line_height']) * 2.0 * 0.35; // pt to mm
             if ($fix < $x) {
                 $this->options['cont_header_shown'] = true;
             } else {
@@ -637,6 +637,19 @@ class Bread
         if ($this->options['sub_header_shown'] == '1') {
             $this->options['sub_header_shown'] = 'display';
         }
+        $this->renamed_option('asm_format_key', 'additional_list_format_key');
+        $this->renamed_option('asm_sort_order', 'additional_list_sort_order');
+        $this->renamed_option('asm_language', 'additional_list_language');
+        $this->renamed_option('asm_custom_query', 'additional_list_custom_query');
+        $this->renamed_option('asm_template_content', 'additional_list_template_content');
+    }
+    private function renamed_option(string $old, string $new) {
+        if (!empty($this->options[$old])) {
+            if (empty($this->options[$new])) {
+                $this->options[$new] = $this->options[$old];
+                unset($this->options[$old]);
+            }
+        }
     }
     public static function updateOptions()
     {
@@ -644,6 +657,6 @@ class Bread
     }
     public static function get_TransientKey($setting)
     {
-        return '_bread__'.$setting;
+        return '_bread__' . $setting;
     }
 }

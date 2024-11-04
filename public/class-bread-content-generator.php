@@ -139,7 +139,7 @@ class Bread_ContentGenerator
                 'O'
             );
         }
-        if (isset($this->options['watermark'])) {
+        if (!empty($this->options['watermark'])) {
             $this->mpdf->SetWatermarkImage($this->options['watermark'], 0.2, 'F');
             $this->mpdf->showWatermarkImage = true;
         }
@@ -152,7 +152,7 @@ class Bread_ContentGenerator
      */
     public function generate(int $num_columns): void
     {
-        require_once __DIR__ . '/class-bread-heading-manager.php';
+        require_once __DIR__ . '/class-bread-meetingslist-structure.php';
         $this->mpdf->SetColumns($num_columns, '', $this->options['column_gap']);
         if ($this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full') {
             $this->write_front_page();
@@ -168,7 +168,7 @@ class Bread_ContentGenerator
         foreach ($this->result_meetings as &$value) {
             $value = $this->enhance_meeting($value, $lang);
         }
-        $meetingslistStructure = new Bread_Meetingslist_Structure($this->options, $this->result_meetings, $lang, $this->options['include_asm'] == 0 ? -1 : 0);
+        $meetingslistStructure = new Bread_Meetingslist_Structure($this->options, $this->result_meetings, $lang, $this->options['include_additional_list'] == 0 ? -1 : 0);
         $this->writeMeetings($this->options['meeting_template_content'], $meetingslistStructure);
 
         if ($this->options['page_fold'] !== 'half' && $this->options['page_fold'] !== 'full') {
@@ -356,7 +356,9 @@ class Bread_ContentGenerator
                     $y_diff = $test_pages->y - $y_startpos;
                     if ($y_diff >= $this->mpdf->h - ($this->mpdf->y + $this->mpdf->bMargin + 5) - $this->mpdf->kwt_height) {
                         $this->writeBreak($this->mpdf);
-                        $header = $meetingslistStructure->calculateContHeader();
+                        if (empty($header)) {
+                            $header = $meetingslistStructure->calculateContHeader();
+                        }
                     }
                     $this->WriteHTML($header . $data);
                 }
@@ -573,8 +575,8 @@ class Bread_ContentGenerator
         $strs = array(
             '<p>[additional_meetinglist]</p>',
             '[additional_meetinglist]',
-            '<p>[additional_meetings]</p>',
-            '[additional_meetings]'
+            '<p>[service_meetings]</p>',
+            '[service_meetings]'
         );
 
         foreach ($strs as $str) {
@@ -642,42 +644,42 @@ class Bread_ContentGenerator
     }
     function write_additional_meetinglist()
     {
-        if (isset($this->options['asm_template_content']) && trim($this->options['asm_template_content'])) {
-            $template = $this->options['asm_template_content'];
+        if (isset($this->options['additional_list_template_content']) && trim($this->options['additional_list_template_content'])) {
+            $template = $this->options['additional_list_template_content'];
         } else {
             $template = $this->options['meeting_template_content'];
         }
-        $asm_query = false;
+        $additional_list_query = false;
         $additional_meetinglist_result = $this->result_meetings;
-        if (empty($this->options['asm_format_key']) || $this->options['asm_format_key'] == 'ASM') {
-            $asm_query = true;
-            $sort_order = $this->options['asm_sort_order'];
+        if (empty($this->options['additional_list_format_key']) || $this->options['additional_list_format_key'] == 'additional_list') {
+            $additional_list_query = true;
+            $sort_order = $this->options['additional_list_sort_order'];
             if ($sort_order == 'same') {
                 $sort_order = 'weekday_tinyint,start_time';
             }
-            $asm_id = "";
-            if ($this->options['asm_format_key'] === 'ASM') {
-                $asm_id = '&formats[]=' . $this->formatsManager->getFormatByKey($this->options['weekday_language'], 'ASM');
+            $additional_list_id = "";
+            if ($this->options['additional_list_format_key'] === 'additional_list') {
+                $additional_list_id = '&formats[]=' . $this->formatsManager->getFormatByKey($this->options['weekday_language'], 'additional_list');
             }
             $services = Bread_Bmlt::generateDefaultQuery();
-            if (!empty($this->options['asm_custom_query'])) {
-                $services = $this->options['asm_custom_query'];
+            if (!empty($this->options['additional_list_custom_query'])) {
+                $services = $this->options['additional_list_custom_query'];
             }
-            $asm_query = "client_interface/json/?switcher=GetSearchResults$services$asm_id&sort_keys=$sort_order";
-            // ASM can contain E-Mail and phone numbers that require logins.
-            if ($this->options['asm_format_key'] === 'ASM') {
-                $asm_query .= "&advanced_published=0";
+            $additional_list_query = "client_interface/json/?switcher=GetSearchResults$services$additional_list_id&sort_keys=$sort_order";
+            // additional_list can contain E-Mail and phone numbers that require logins.
+            if ($this->options['additional_list_format_key'] === 'additional_list') {
+                $additional_list_query .= "&advanced_published=0";
             }
-            $results = Bread_Bmlt::get_configured_root_server_request($asm_query);
+            $results = Bread_Bmlt::get_configured_root_server_request($additional_list_query);
             $additional_meetinglist_result = json_decode(wp_remote_retrieve_body($results), true);
             $this->adjust_timezone($additional_meetinglist_result, $this->target_timezone);
         }
-        if ($asm_query || $this->options['weekday_language'] != $this->options['asm_language']) {
+        if ($additional_list_query || $this->options['weekday_language'] != $this->options['additional_list_language']) {
             foreach ($additional_meetinglist_result as &$value) {
-                $value = $this->enhance_meeting($value, $this->options['asm_language']);
+                $value = $this->enhance_meeting($value, $this->options['additional_list_language']);
             }
         }
-        $meetingslistStructure = new Bread_Meetingslist_Structure($this->options, $additional_meetinglist_result, $this->options['asm_language'], 1);
+        $meetingslistStructure = new Bread_Meetingslist_Structure($this->options, $additional_meetinglist_result, $this->options['additional_list_language'], 1);
         $this->writeMeetings($template, $meetingslistStructure);
         return;
     }
