@@ -610,8 +610,7 @@ class Bread
                 $this->options['root_server'] = 'http://' . $this->options['root_server'];
             }
         }
-        if (
-            !isset($this->options['cont_header_shown'])
+        if (!isset($this->options['cont_header_shown'])
             && isset($this->options['page_height_fix'])
         ) {
             $fix = floatval($this->options['page_height_fix']);
@@ -643,7 +642,8 @@ class Bread
         $this->renamed_option('asm_custom_query', 'additional_list_custom_query');
         $this->renamed_option('asm_template_content', 'additional_list_template_content');
     }
-    private function renamed_option(string $old, string $new) {
+    private function renamed_option(string $old, string $new)
+    {
         if (!empty($this->options[$old])) {
             if (empty($this->options[$new])) {
                 $this->options[$new] = $this->options[$old];

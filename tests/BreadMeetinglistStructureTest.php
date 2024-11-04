@@ -1,7 +1,6 @@
 <?php
 use PHPUnit\Framework\TestCase;
 
-
 final class BreadMeetinglistStructureTest extends TestCase
 {
     private function getConfiguration(string $config): array

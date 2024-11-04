@@ -26,7 +26,7 @@ class Bread_AdminDisplay
     {
         Bread::getMLOptions(Bread::getRequestedSetting());
         $this->lang = Bread_bmlt::get_bmlt_server_lang();
-?>
+        ?>
         <div class="connecting"></div>
         <div class="saving"></div>
         <div style="display:none;">
@@ -294,7 +294,7 @@ class Bread_AdminDisplay
         <div id="dialog" title="TinyMCE dialog" style="display: none">
             <textarea>test</textarea>
         </div>
-<?php
+        <?php
     }
 }
 ?>

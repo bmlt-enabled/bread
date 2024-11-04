@@ -193,7 +193,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         </select>
                     </div>
                     <?php if (Bread::getOption('page_fold') == 'half' || Bread::getOption('page_fold') == 'full') {
-                    ?>
+                        ?>
                         <div class="meeting1_footer_div">
                             <label for="meeting1_footer">Custom Footer: </label>
                             <input name="meeting1_footer" type="text" size="50" value="<?php echo Bread::getOption('meeting1_footer'); ?>">
@@ -379,7 +379,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                                         <option selected="selected" value="<?php echo esc_html($used_formats[$count]['key_string']) ?>"><?php echo esc_html($used_formats[$count]['name_string']) ?></option>
                                     <?php   } else { ?>
                                         <option value="<?php echo esc_html($used_formats[$count]['key_string']) ?>"><?php echo esc_html($used_formats[$count]['name_string']) ?></option>
-                                <?php   }
+                                    <?php   }
                                 }
                             } else { ?>
                                 <option selected="selected" value="<?php echo Bread::getOption('additional_list_format_key'); ?>"><?php echo 'additional_list'; ?></option>
@@ -414,7 +414,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         </select>
                     </p>
                     <?php if (Bread::getOption('page_fold') == 'half' || Bread::getOption('page_fold') == 'full') {
-                    ?>
+                        ?>
                         <div class="meeting2_footer_div">
                             <label for="meeting2_footer">Custom Footer: </label>
                             <input name="meeting2_footer" type="text" size="50" value="<?php echo Bread::getOption('meeting2_footer'); ?>">
@@ -436,18 +436,18 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         <br>
                         <?php if ($logged_in == 'OK') { ?>
                     <div id="includeemaildiv" class="inside">
-                        <?php $title = '
+                            <?php $title = '
                                 <p>Enable the <strong>Meeting Email Contact</strong> (email_contact) field in the <strong>Meeting Template</strong>.</p>
                                 <p>This feature requires a login ID and password for the service body.</p>
                                 <p>This can be Service Body Administrator or Observer.</p>
                                 <p>Visit the <a target="_blank" href="https://bmlt.app/specific-topics/bmlt-roles/">BMLT Roles</a> page for more details.</p>
                                 ';
-                        ?>
+                            ?>
                         <b>Meeting Email Contact<span title='<?php echo $title; ?>' class="top-tooltip"></span></b>
                         <input name="include_meeting_email" value="0" type="hidden">
                         <p><input type="checkbox" name="include_meeting_email" value="1" <?php echo (Bread::getOption('include_meeting_email') == '1' ? 'checked' : '') ?>>Enable</p>
                     </div>
-                <?php } ?>
+                        <?php } ?>
                 <input name="include_additional_list" value="0" type="hidden">
                 <p><input type="checkbox" name="include_additional_list" value="1" <?php echo (Bread::getOption('include_additional_list') == '1' ? 'checked' : '') ?>>Include meetings with this format in the main list</p>
                 The default format for the additional list is additional_list. If you wish to define a different format for the additional list, use this template.
