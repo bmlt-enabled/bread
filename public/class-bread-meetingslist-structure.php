@@ -81,6 +81,12 @@ class Bread_Meetingslist_Structure
      * @return void
      */
     private bool $suppress_heading;
+    /**
+     * Calculates some options that will be used to structure the meeting list and generate headers.
+     *
+     * @param string $meeting_sort
+     * @return void
+     */
     private function upgradeHeaderData(string $meeting_sort)
     {
         $this->options['combine_headings'] = '';
@@ -142,7 +148,7 @@ class Bread_Meetingslist_Structure
     function __construct(array $options, array $result_meetings, string $lang, int $include_additional_list)
     {
         $this->options = $options;
-        if ($include_additional_list==1) {
+        if ($include_additional_list >= 0) {
             $this->suppress_heading = isset($options['additional_list_suppress_heading']) ? $options['additional_list_suppress_heading'] == 1 : true;
         } else {
             $this->suppress_heading = $options['suppress_heading'] == 1;
@@ -286,7 +292,7 @@ class Bread_Meetingslist_Structure
     {
         $unique_heading = array_keys($headerMeetings);
         asort($unique_heading, SORT_NATURAL | SORT_FLAG_CASE);
-        return $unique_heading;
+        return array_values($unique_heading);
     }
     /**
      * Main headings may contain [numbers] in the beginning, in case you don't want to sort alphebetically.  These number can be added to a "filter"
