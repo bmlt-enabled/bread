@@ -40,20 +40,50 @@ final class BreadMeetinglistStructureTest extends TestCase
         }
         return $header_style;
     }
-    public function testBerlinBooklet()
+    public function testBerlinByDayMain()
     {
-        $this->doTest('berlin-booklet', 'berlin',
+        $this->doTest('berlin-booklet', 'berlin', -1,
             ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'],
             [[0],[0],[0],[0],[0],[0],[0]], 'de');
     }
-    public function doTest($config, $meetingJson, $expectedHeading, $expectedSubHeading, $lang): void
+    public function testBerlinByDayAdditional()
+    {
+        $this->doTest('berlin-booklet', 'berlin', 1,
+            ['','','','','','',''],
+            [[0],[0],[0],[0],[0],[0],[0]], 'de');
+    }
+    public function testBerlinByCityPlusDayMain()
+    {
+        $this->doTest('berlin-by-city-plus-day', 'berlin', -1,
+            ['Berlin','Dallgow-Döberitz','Eberswalde','Potsdam','Rathenow'],
+            [[0],[0],[0],[0],[0]], 'de');
+    }
+    public function testBerlinByCityPlusDayAdditional()
+    {
+        $this->doTest('berlin-booklet', 'berlin', 1,
+            ['','','','','','',''],
+            [[0],[0],[0],[0],[0],[0],[0]], 'de');
+    }
+    public function testBerlinByDayThenCityPlusDayMain()
+    {
+        $this->doTest('berlin-by-city-plus-day', 'berlin', -1,
+            ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'],
+            [['Berlin',],['Berlin','Potsdam','Rathenow'],['Berlin',],['Berlin',],['Berlin',],['Berlin',],['Berlin',]], 'de');
+    }
+    public function testBerlinByDayThenCityPlusDayAdditional()
+    {
+        $this->doTest('berlin-booklet', 'berlin', 1,
+            ['','','','','','',''],
+            [[0],[0],[0],[0],[0],[0],[0]], 'de');
+    }
+    public function doTest($config, $meetingJson, $include, $expectedHeading, $expectedSubHeading, $lang): void
     {
         new Bread();
         $options = $this->getConfiguration($config);
         $meetings = $this->getMeetings($meetingJson);
         $this->enhanceMeetings($meetings, $options);
 
-        $bms = new Bread_Meetingslist_Structure($options, $meetings, $lang, -1);
+        $bms = new Bread_Meetingslist_Structure($options, $meetings, $lang, $include);
         $knt = 0;
         $expectedHeaderStyle = $this->calculateExpectedHeadingStyle($options);
         while ($subs = $bms->iterateMainHeading()) {
@@ -62,7 +92,7 @@ final class BreadMeetinglistStructureTest extends TestCase
             while ($meetings = $bms->iterateSubHeading($subs)) {
                 $knt3 = 0;
                 while ($meeting = $bms->iterateMeetings($meetings)) {
-                    if ($knt3++ == 0) {
+                    if ($knt3++ == 0 && !empty($expectedHeading[$knt-1])) {
                         $expected = "<div style='" . $expectedHeaderStyle . "'>" . $expectedHeading[$knt-1] . "</div>";
                         assertEquals($expected, $bms->calculateHeading());
                     } else {

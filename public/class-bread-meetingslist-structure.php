@@ -207,7 +207,7 @@ class Bread_Meetingslist_Structure
         $unique_subheading = array_keys($this->headerMeetings[$this->main_heading_raw]);
         asort($unique_subheading, SORT_NATURAL | SORT_FLAG_CASE);
         $this->sub_index = 0;
-        return $unique_subheading;
+        return array_values($unique_subheading);
     }
     /**
      * Iterates over the sub-headings in the current main heading.
@@ -323,7 +323,7 @@ class Bread_Meetingslist_Structure
     }
     private function getHeaderLevels(): int
     {
-        if (!empty($options['subgrouping'])) {
+        if (!empty($this->options['subgrouping'])) {
             return 2;
         }
         return 1;
@@ -440,8 +440,8 @@ class Bread_Meetingslist_Structure
             $header_string =  str_replace('main_grouping', $this_heading, $header_string);
             $header_string =  str_replace('subgrouping', $this_subheading, $header_string);
             $header .= "<div style='" . $this->header_style . "'>" . $header_string . "</div>";
-        } elseif (!empty($options['subgrouping'])) {
-            if ($this->main_index == 1) {
+        } elseif (!empty($this->options['subgrouping'])) {
+            if ($this->newMainHeading) {
                 $xtraMargin = '';
                 if (!$this->main_index > 1 or $this->meeting_index > 1) {
                     $xtraMargin = 'margin-top:2pt;';
