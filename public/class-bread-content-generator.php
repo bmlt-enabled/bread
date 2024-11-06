@@ -583,8 +583,7 @@ class Bread_ContentGenerator
             if ($this->options['additional_list_format_key'] === 'additional_list') {
                 $additional_list_query .= "&advanced_published=0";
             }
-            $results = Bread_Bmlt::get_configured_root_server_request($additional_list_query);
-            $additional_meetinglist_result = json_decode(wp_remote_retrieve_body($results), true);
+            $additional_meetinglist_result = Bread_Bmlt::get_configured_root_server_request($additional_list_query);
             $this->adjust_timezone($additional_meetinglist_result, $this->target_timezone);
         }
         if ($additional_list_query || $this->options['weekday_language'] != $this->options['additional_list_language']) {

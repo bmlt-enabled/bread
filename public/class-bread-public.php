@@ -161,12 +161,10 @@ class Bread_Public
             $services = $this->options['custom_query'];
         }
         if ($this->options['used_format_1'] == '') {
-            $results = Bread_Bmlt::get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=$sort_keys$get_used_formats$select_language");
+            $result = Bread_Bmlt::get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=$sort_keys$get_used_formats$select_language");
         } elseif ($this->options['used_format_1'] != '') {
-            $results = Bread_Bmlt::get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=$sort_keys&get_used_formats&formats[]=" . $this->options['used_format_1'] . $select_language);
+            $result = Bread_Bmlt::get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=$sort_keys&get_used_formats&formats[]=" . $this->options['used_format_1'] . $select_language);
         }
-
-        $result = json_decode(wp_remote_retrieve_body($results), true);
         if (!empty($this->options['extra_meetings'])) {
             $extras = "";
             foreach ((array)$this->options['extra_meetings'] as $value) {
@@ -175,8 +173,7 @@ class Bread_Public
                 $extras .= "&meeting_ids[]=" . $value;
             }
 
-            $extra_results = Bread_Bmlt::get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults&sort_keys=" . $sort_keys . "" . $extras . "" . $get_used_formats . $select_language);
-            $extra_result = json_decode(wp_remote_retrieve_body($extra_results), true);
+            $extra_result = Bread_Bmlt::get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults&sort_keys=" . $sort_keys . "" . $extras . "" . $get_used_formats . $select_language);
             $formatsManager = null;
             if ($extra_result <> null) {
                 $result_meetings = array_merge($result['meetings'], $extra_result['meetings']);

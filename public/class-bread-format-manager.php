@@ -24,11 +24,12 @@ class Bread_FormatsManager
      */
     private $hashedFormats = array();
     /**
-     * The default languages.
+     * The default language.
      *
-     * @var array
+     * @var string
      */
-    private $defaultLang;
+    private string $defaultLang;
+    private array|null $wheelchairFormat = array();
     /**
      * The info regarding the formats used is available already during construction because it is returned by the initial root server query.
      *
@@ -75,11 +76,18 @@ class Bread_FormatsManager
         if (isset($this->allFormats[$lang])) {
             return;
         }
-        $results = Bread_Bmlt::get_configured_root_server_request("client_interface/json/?switcher=GetFormats$lang");
-        $this->allFormats[$lang] = json_decode(wp_remote_retrieve_body($results), true);
+        $this->allFormats[$lang] = Bread_Bmlt::get_formats_by_language($lang);
         Bread_Bmlt::sortBySubkey($this->allFormats[$lang], 'key_string');
         $this->hashedFormats[$lang] = $this->hashFormats($this->allFormats[$lang]);
     }
+    /**
+     * Undocumented function
+     *
+     * @param string $lang
+     * @param string $field
+     * @param string $id
+     * @return array
+     */
     public function getFormatFromField(string $lang, string $field, string $id): array
     {
         if (!isset($this->allFormats[$lang])) {
@@ -174,5 +182,12 @@ class Bread_FormatsManager
         }
         $data .= "</table>";
         return $data;
+    }
+    public function getWheelchairFormat($lang)
+    {
+        if (is_array($this->wheelchairFormat) && empty($this->wheelchairFormat)) {
+            $this->wheelchairFormat = $this->getFormatFromField($lang, 'world_id', 'WCHR');
+        }
+        return $this->wheelchairFormat;
     }
 }

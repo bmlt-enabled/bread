@@ -77,11 +77,7 @@ class Bread_Meeting_Enhancer
         $meeting_value['area_i'] = substr($area_name, 0, 1);
 
         $meeting_value['wheelchair'] = '';
-        // This is just to make unit testing easier.  In real life, $formatsManager should always be there
-        if ($formatsManager==null) {
-            return $meeting_value;
-        }
-        $wheelchair_format = $formatsManager->getFormatFromField($this->options['weekday_language'], 'world_id', 'WCHR');
+        $wheelchair_format = $formatsManager->getWheelchairFormat($this->options['weekday_language']);
         if (!is_null($wheelchair_format)) {
             $fmts = explode(',', $meeting_value['format_shared_id_list']);
             if (in_array($wheelchair_format['id'], $fmts)) {

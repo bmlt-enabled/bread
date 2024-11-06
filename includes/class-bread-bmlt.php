@@ -42,9 +42,17 @@ class Bread_Bmlt
         return Bread_Bmlt::get($url, $cookies);
     }
 
-    public static function get_configured_root_server_request($url)
+    public static function get_configured_root_server_request($url, $raw = false)
     {
-        return Bread_Bmlt::get_root_server_request(Bread::getOption('root_server')."/".$url);
+        $results = Bread_Bmlt::get_root_server_request(Bread::getOption('root_server')."/".$url);
+        if ($raw) {
+            return $results;
+        }
+        return json_decode(wp_remote_retrieve_body($results), true);
+    }
+    public static function get_formats_by_language(string $lang)
+    {
+        return Bread_Bmlt::get_configured_root_server_request("client_interface/json/?switcher=GetFormats$lang");
     }
     /**
      * Undocumented function
@@ -72,8 +80,7 @@ class Bread_Bmlt
     public static function get_all_meetings()
     {
         $lang = Bread_Bmlt::get_bmlt_server_lang();
-        $results = Bread_Bmlt::get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults&data_field_key=weekday_tinyint,start_time,service_body_bigint,id_bigint,meeting_name,location_text,email_contact&sort_keys=meeting_name,service_body_bigint,weekday_tinyint,start_time");
-        $result = json_decode(wp_remote_retrieve_body($results), true);
+        $result = Bread_Bmlt::get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults&data_field_key=weekday_tinyint,start_time,service_body_bigint,id_bigint,meeting_name,location_text,email_contact&sort_keys=meeting_name,service_body_bigint,weekday_tinyint,start_time");
 
         $unique_areas = Bread_Bmlt::get_areas();
         $all_meetings = array();
@@ -94,8 +101,7 @@ class Bread_Bmlt
     }
     public static function get_fieldkeys()
     {
-        $results = Bread_Bmlt::get_configured_root_server_request("client_interface/json/?switcher=GetFieldKeys");
-        return json_decode(wp_remote_retrieve_body($results), true);
+        return Bread_Bmlt::get_configured_root_server_request("client_interface/json/?switcher=GetFieldKeys");
     }
     private static $standard_keys = array(
         "id_bigint","worldid_mixed","service_body_bigint",
@@ -129,8 +135,7 @@ class Bread_Bmlt
         if (!empty(Bread_Bmlt::$unique_areas)) {
             return Bread_Bmlt::$unique_areas;
         }
-        $results = Bread_Bmlt::get_configured_root_server_request("client_interface/json/?switcher=GetServiceBodies");
-        $result = json_decode(wp_remote_retrieve_body($results), true);
+        $result = Bread_Bmlt::get_configured_root_server_request("client_interface/json/?switcher=GetServiceBodies");
         Bread_Bmlt::$unique_areas = array();
 
         foreach ($result as $value) {
@@ -156,9 +161,8 @@ class Bread_Bmlt
     public static function get_bmlt_server_lang() : string
     {
         if (Bread_Bmlt::$bmlt_server_lang == '') {
-            $results = Bread_Bmlt::get_configured_root_server_request("client_interface/json/?switcher=GetServerInfo");
-            $result = json_decode(wp_remote_retrieve_body($results), true);
-            if ($result==null) {
+            $result = Bread_Bmlt::testRootServer();
+            if (!($result && is_array($result) && is_array($result[0]))) {
                 return 'en';
             }
             Bread_Bmlt::$bmlt_server_lang = ($result==null) ? 'en' : $result["0"]["nativeLang"];
@@ -174,9 +178,9 @@ class Bread_Bmlt
     public static function testRootServer(string $override_root_server = null) : array
     {
         if ($override_root_server == null) {
-            $results = Bread_Bmlt::get_configured_root_server_request("client_interface/json/?switcher=GetServerInfo");
+            $results = Bread_Bmlt::get_configured_root_server_request("client_interface/json/?switcher=GetServerInfo", true);
         } else {
-            $results = Bread_Bmlt::get_root_server_request($override_root_server."/client_interface/json/?switcher=GetServerInfo");
+            $results = Bread_Bmlt::get_root_server_request($override_root_server."/client_interface/json/?switcher=GetServerInfo", true);
         }
         if ($results instanceof WP_Error) {
             Bread_Bmlt::$connection_error = $results->get_error_message();
@@ -200,7 +204,6 @@ class Bread_Bmlt
     {
         if ($all) {
             $results = Bread_Bmlt::get_configured_root_server_request("client_interface/json/?switcher=GetFormats");
-            $results = json_decode(wp_remote_retrieve_body($results), true);
             Bread_Bmlt::sortBySubkey($results, 'key_string');
             return $results;
         }
@@ -217,7 +220,6 @@ class Bread_Bmlt
             $queryUrl = "client_interface/json/?switcher=GetSearchResults$services&get_formats_only";
         }
         $results = Bread_Bmlt::get_configured_root_server_request($queryUrl);
-        $results = json_decode(wp_remote_retrieve_body($results), true);
         $results = empty($service_body_id) ? $results : $results['formats'];
         Bread_Bmlt::sortBySubkey($results, 'key_string');
         return $results;
