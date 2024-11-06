@@ -153,13 +153,13 @@ class Bread_FormatsManager
         }
         $data = "<table style='width:100%;font-size:".$fontSize."pt;line-height:".$lineHeight.";'>";
         foreach ($formats as $format) {
-                $data .= "<tr><td style='border-bottom:1px solid #555;width:8%;vertical-align:top;'><span style='font-size:" . $fontSize . "pt;line-height:" . $lineHeight . ";font-weight:bold;'>" . $format['key_string'] . "</span></td>";
-                $data .= "<td style='border-bottom:1px solid #555;width:92%;vertical-align:top;'><span style='font-size:" . $fontSize . "pt;line-height:" . $lineHeight . ";'>(" . $format['name_string'] . ") " . $format['description_string'] . "</span></td></tr>";
+            $data .= "<tr><td style='border-bottom:1px solid #555;width:8%;vertical-align:top;'><span style='font-size:" . $fontSize . "pt;line-height:" . $lineHeight . ";font-weight:bold;'>" . $format['key_string'] . "</span></td>";
+            $data .= "<td style='border-bottom:1px solid #555;width:92%;vertical-align:top;'><span style='font-size:" . $fontSize . "pt;line-height:" . $lineHeight . ";'>(" . $format['name_string'] . ") " . $format['description_string'] . "</span></td></tr>";
         }
         $data .= "</table>";
         return $data;
     }
-    public function write_formats(string $lang, bool $isAll, int $lineHeight, int $fontSize)
+    public function write_formats(string $lang, bool $isAll, string $lineHeight, string $fontSize)
     {
         $formats = $isAll ? $this->allFormats[$lang] : $this->getUsedFormats($lang);
         if (empty($formats)) {

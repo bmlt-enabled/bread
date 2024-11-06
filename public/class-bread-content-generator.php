@@ -210,7 +210,7 @@ class Bread_ContentGenerator
 
         $search_strings[] = '[meeting_count]';
         $replacements[] =  $this->meeting_count;
-        $data = $this->options[$page];
+        $data = $this->options[$page.'_content'];
         $data = $this->locale_month_replacement($data, 'lower');
         $data = $this->locale_month_replacement($data, 'upper');
         $data = str_replace($search_strings, $replacements, $data);
@@ -277,7 +277,7 @@ class Bread_ContentGenerator
         $this->mpdf->SetDefaultBodyCSS('font-size', $this->options['front_page_font_size'] . 'pt');
         $this->mpdf->SetDefaultBodyCSS('background-color', '#ffffff00');
         $this->options['front_page_content'] = wp_unslash($this->options['front_page_content']);
-        $data = $this->standard_shortcode_replacement('front_page_content');
+        $data = $this->standard_shortcode_replacement('front_page');
 
         $querystring_custom_items = array();
         preg_match_all('/(\[querystring_custom_\d+\])/', $this->options['front_page_content'], $querystring_custom_items);
@@ -316,7 +316,7 @@ class Bread_ContentGenerator
         $this->mpdf->SetDefaultBodyCSS('line-height', $this->options['custom_section_line_height']);
         $this->mpdf->SetDefaultBodyCSS('font-size', $this->options['custom_section_font_size'] . 'pt');
         $this->mpdf->SetDefaultBodyCSS('background-color', '#ffffff00');
-        $data = $this->standard_shortcode_replacement('custom_section_content');
+        $data = $this->standard_shortcode_replacement('custom_section');
         $this->mpdf->WriteHTML('td{font-size: ' . $this->options['custom_section_font_size'] . "pt;line-height:" . $this->options['custom_section_line_height'] . ';}', 1);
         $this->writeHTMLwithAdditionalMeetinglist($data);
     }

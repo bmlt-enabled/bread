@@ -52,7 +52,7 @@ class Bread_Bmlt
     }
     public static function get_formats_by_language(string $lang)
     {
-        return Bread_Bmlt::get_configured_root_server_request("client_interface/json/?switcher=GetFormats$lang");
+        return Bread_Bmlt::get_configured_root_server_request("client_interface/json/?switcher=GetFormats&lang_enum=$lang");
     }
     /**
      * Undocumented function
@@ -175,7 +175,7 @@ class Bread_Bmlt
      * @param  $override_root_server
      * @return array the results of GetServerInfo
      */
-    public static function testRootServer(string $override_root_server = null) : array
+    public static function testRootServer(string $override_root_server = null) : array|bool
     {
         if ($override_root_server == null) {
             $results = Bread_Bmlt::get_configured_root_server_request("client_interface/json/?switcher=GetServerInfo", true);
