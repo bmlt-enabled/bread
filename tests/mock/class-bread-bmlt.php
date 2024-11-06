@@ -1,5 +1,5 @@
 <?php
-Class Bread_Bmlt
+class Bread_Bmlt
 {
     private static array $areas = array();
     private static string $format_base;
@@ -7,10 +7,12 @@ Class Bread_Bmlt
     {
         Bread_Bmlt::$format_base = $format_base;
     }
-    public static function set_areas(array $areas) {
-       Bread_Bmlt::$areas = $areas;
+    public static function set_areas(array $areas)
+    {
+        Bread_Bmlt::$areas = $areas;
     }
-    public static function get_areas() {
+    public static function get_areas()
+    {
         return Bread_Bmlt::$areas;
     }
     public static function parse_field($text)

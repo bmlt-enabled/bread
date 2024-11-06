@@ -51,39 +51,81 @@ final class BreadMeetinglistStructureTest extends TestCase
     }
     public function testBerlinByDayMain()
     {
-        $this->doTest('berlin-booklet', 'berlin', 'berlin-formats-de', 'german-formats', -1,
+        $this->doTest(
+            'berlin-booklet',
+            'berlin',
+            'berlin-formats-de',
+            'german-formats',
+            -1,
             ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'],
-            [[0],[0],[0],[0],[0],[0],[0]], 'de');
+            [[0],[0],[0],[0],[0],[0],[0]],
+            'de'
+        );
     }
     public function testBerlinByDayAdditional()
     {
-        $this->doTest('berlin-booklet', 'berlin', 'berlin-formats-de', 'german-formats', 1,
+        $this->doTest(
+            'berlin-booklet',
+            'berlin',
+            'berlin-formats-de',
+            'german-formats',
+            1,
             ['','','','','','',''],
-            [[0],[0],[0],[0],[0],[0],[0]], 'de');
+            [[0],[0],[0],[0],[0],[0],[0]],
+            'de'
+        );
     }
     public function testBerlinByCityPlusDayMain()
     {
-        $this->doTest('berlin-by-city-plus-day', 'berlin', 'berlin-formats-de', 'german-formats', -1,
+        $this->doTest(
+            'berlin-by-city-plus-day',
+            'berlin',
+            'berlin-formats-de',
+            'german-formats',
+            -1,
             ['Berlin','Dallgow-Döberitz','Eberswalde','Potsdam','Rathenow'],
-            [[0],[0],[0],[0],[0]], 'de');
+            [[0],[0],[0],[0],[0]],
+            'de'
+        );
     }
     public function testBerlinByCityPlusDayAdditional()
     {
-        $this->doTest('berlin-booklet', 'berlin', 'berlin-formats-de', 'german-formats', 1,
+        $this->doTest(
+            'berlin-booklet',
+            'berlin',
+            'berlin-formats-de',
+            'german-formats',
+            1,
             ['','','','','','',''],
-            [[0],[0],[0],[0],[0],[0],[0]], 'de');
+            [[0],[0],[0],[0],[0],[0],[0]],
+            'de'
+        );
     }
     public function testBerlinByDayThenCityPlusDayAdditionalMain()
     {
-        $this->doTest('berlin-by-day-then-city-plus-day', 'berlin', 'berlin-formats-de', 'german-formats', -1,
+        $this->doTest(
+            'berlin-by-day-then-city-plus-day',
+            'berlin',
+            'berlin-formats-de',
+            'german-formats',
+            -1,
             ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'],
-            [['Berlin',],['Berlin','Potsdam','Rathenow'],['Berlin','Dallgow-Döberitz','Eberswalde'],['Berlin','Potsdam'],['Berlin',],['Berlin','Potsdam'],['Berlin','Potsdam']], 'de');
+            [['Berlin',],['Berlin','Potsdam','Rathenow'],['Berlin','Dallgow-Döberitz','Eberswalde'],['Berlin','Potsdam'],['Berlin',],['Berlin','Potsdam'],['Berlin','Potsdam']],
+            'de'
+        );
     }
     public function testBerlinByDayThenCityPlusDayAdditional()
     {
-        $this->doTest('berlin-by-day-then-city-plus-day', 'berlin', 'berlin-formats-de', 'german-formats', 1,
+        $this->doTest(
+            'berlin-by-day-then-city-plus-day',
+            'berlin',
+            'berlin-formats-de',
+            'german-formats',
+            1,
             ['','','','','','',''],
-            [[0],[0],[0],[0],[0],[0],[0]], 'de');
+            [[0],[0],[0],[0],[0],[0],[0]],
+            'de'
+        );
     }
     public function doTest($config, $meetingJson, $usedFormats, $formatBase, $include, $expectedHeading, $expectedSubHeading, $lang): void
     {
@@ -92,7 +134,7 @@ final class BreadMeetinglistStructureTest extends TestCase
         $meetings = $this->getMeetings($meetingJson);
         $formatMgr = $this->getFormatMgr($usedFormats, $lang);
         Bread_Bmlt::setFormatBase($formatBase);
-        $this->enhanceMeetings($meetings, $options,$formatMgr);
+        $this->enhanceMeetings($meetings, $options, $formatMgr);
 
         $bms = new Bread_Meetingslist_Structure($options, $meetings, $lang, $include);
         $knt = 0;

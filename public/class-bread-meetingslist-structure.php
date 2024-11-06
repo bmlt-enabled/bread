@@ -479,8 +479,7 @@ class Bread_Meetingslist_Structure
             $header_string =  str_replace('main_grouping', $this->remove_sort_key($this->main_heading_raw), $header_string);
             $header_string =  str_replace('subgrouping', $this->remove_sort_key($this->main_heading_raw), $header_string);
             $header .= "<div style='" . $this->header_style . "'>" . $header_string . $cont . "</div>";
-        }
-        else if (!$this->newMainHeading) {
+        } else if (!$this->newMainHeading) {
             $cont = $this->cont;
         }
         $header = "<div style='" . $this->header_style . "'>" . $this->remove_sort_key($this->main_heading_raw) . " " . $cont . "</div>";
