@@ -64,15 +64,15 @@ final class BreadMeetinglistStructureTest extends TestCase
             ['','','','','','',''],
             [[0],[0],[0],[0],[0],[0],[0]], 'de');
     }
-    public function testBerlinByDayThenCityPlusDayMain()
+    public function testBerlinByDayThenCityPlusDayAdditionalMain()
     {
-        $this->doTest('berlin-by-city-plus-day', 'berlin', -1,
+        $this->doTest('berlin-by-day-then-city-plus-day', 'berlin', -1,
             ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'],
-            [['Berlin',],['Berlin','Potsdam','Rathenow'],['Berlin',],['Berlin',],['Berlin',],['Berlin',],['Berlin',]], 'de');
+            [['Berlin',],['Berlin','Potsdam','Rathenow'],['Berlin','Dallgow-Döberitz','Eberswalde'],['Berlin','Potsdam'],['Berlin',],['Berlin','Potsdam'],['Berlin','Potsdam']], 'de');
     }
     public function testBerlinByDayThenCityPlusDayAdditional()
     {
-        $this->doTest('berlin-booklet', 'berlin', 1,
+        $this->doTest('berlin-by-day-then-city-plus-day', 'berlin', 1,
             ['','','','','','',''],
             [[0],[0],[0],[0],[0],[0],[0]], 'de');
     }
@@ -89,15 +89,23 @@ final class BreadMeetinglistStructureTest extends TestCase
         while ($subs = $bms->iterateMainHeading()) {
             assertEquals(count($expectedSubHeading[$knt]), count($subs));
             $knt++;
+            $knt2 = 0;
             while ($meetings = $bms->iterateSubHeading($subs)) {
+                $expected = '';
+                if ($knt2++ == 0 && !empty($expectedHeading[$knt-1])) {
+                    $expected = '<div style="' . $expectedHeaderStyle . '">' . $expectedHeading[$knt-1] . "</div>";
+                }
                 $knt3 = 0;
                 while ($meeting = $bms->iterateMeetings($meetings)) {
-                    if ($knt3++ == 0 && !empty($expectedHeading[$knt-1])) {
-                        $expected = "<div style='" . $expectedHeaderStyle . "'>" . $expectedHeading[$knt-1] . "</div>";
-                        assertEquals($expected, $bms->calculateHeading());
+                    $expectedSub = '';
+                    if ($knt3++ == 0) {
+                        if (!empty($subs[$knt2-1])) {
+                            $expectedSub = "<p style='margin-top:1pt; padding-top:1pt; font-weight:bold;'>" . $subs[$knt2-1] . "</p>";
+                        }
                     } else {
-                        assertEquals('', $bms->calculateHeading());
+                        $expected = '';
                     }
+                    assertEquals($expected.$expectedSub, $bms->calculateHeading());
                 }
             }
         }

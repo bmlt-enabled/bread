@@ -452,7 +452,7 @@ class Bread_Meetingslist_Structure
                 $header .= "<p style='margin-top:1pt; padding-top:1pt; font-weight:bold;'>" . $this_subheading . "</p>";
             }
         } elseif ($this->newMainHeading) {
-            $header .= "<div style='" . $this->header_style . "'>" . $this_heading . "</div>";
+            $header .= '<div style="' . $this->header_style . '">' . $this_heading . "</div>";
         }
         return $header;
     }
@@ -464,12 +464,27 @@ class Bread_Meetingslist_Structure
     public function calculateContHeader(): string
     {
         $header = '';
+        $cont = '';
         if ($this->suppress_heading == 1) {
             return $header;
         }
-        if (!$this->newMainHeading && $this->options['cont_header_shown']) {
-            $header = "<div style='" . $this->header_style . "'>" . $this->remove_sort_key($this->main_heading_raw) . " " . $this->cont . "</div>";
+        if (!$this->options['cont_header_shown']) {
+            return $header;
         }
+        if (!empty($this->options['combine_headings'])) {
+            if (!$this->newMainHeading && $this->meeting_index == 1) {
+                $cont = $this->cont;
+            }
+            $header_string =  $this->options['combine_headings'];
+            $header_string =  str_replace('main_grouping', $this->remove_sort_key($this->main_heading_raw), $header_string);
+            $header_string =  str_replace('subgrouping', $this->remove_sort_key($this->main_heading_raw), $header_string);
+            $header .= "<div style='" . $this->header_style . "'>" . $header_string . $cont . "</div>";
+        }
+        else if (!$this->newMainHeading) {
+            $cont = $this->cont;
+        }
+        $header = "<div style='" . $this->header_style . "'>" . $this->remove_sort_key($this->main_heading_raw) . " " . $cont . "</div>";
+
         return $header;
     }
 }
