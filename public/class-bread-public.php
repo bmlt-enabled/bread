@@ -166,7 +166,7 @@ class Bread_Public
             $result = Bread_Bmlt::get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=$sort_keys&get_used_formats&formats[]=" . $this->options['used_format_1'] . $select_language);
         }
 
-        if ($result_meetings == null) {
+        if ($result == null) {
             echo "<script type='text/javascript'>\n";
             echo "document.body.innerHTML = ''";
             echo "</script>";

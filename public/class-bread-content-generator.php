@@ -126,7 +126,7 @@ class Bread_ContentGenerator
             $this->mpdf->DefHTMLFooterByName('Meeting2Footer', '<div style="text-align:center;font-size:' . $this->options['pagenumbering_font_size'] . 'pt;font-style: italic;">' . $this->options['meeting2_footer'] . '</div>');
         }
         if (!empty($this->options['pageheader_content'])) {
-            $data = $this->standard_shortcode_replacement('pageheader_content');
+            $data = $this->standard_shortcode_replacement('pageheader');
             $header_style = "vertical-align: top; text-align: center; font-weight: bold;margin-top:3px;margin-bottom:3px;";
             $header_style .= "color:" . $this->options['pageheader_textcolor'] . ";";
             $header_style .= "background-color:" . $this->options['pageheader_backgroundcolor'] . ";";
