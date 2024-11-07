@@ -88,7 +88,7 @@ class Bread_FormatsManager
      * @param string $id
      * @return array
      */
-    public function getFormatFromField(string $lang, string $field, string $id): array
+    public function getFormatFromField(string $lang, string $field, string $id): array|null
     {
         if (!isset($this->allFormats[$lang])) {
             if (isset($this->usedFormats[$lang])) {

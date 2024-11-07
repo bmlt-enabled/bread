@@ -232,7 +232,7 @@ class Bread_AdminDisplay
         <?php include '_help_videos.php'; ?>
         <div class="hide wrap" id="meeting-list-tabs-wrapper">
             <div id="tallyBannerContainer">
-                <img id="tallyBannerImage" src="<?php echo plugin_dir_url(__FILE__) ?>css/images/banner.png">
+                <img id="tallyBannerImage" src="<?php echo plugin_dir_url(__FILE__) ?>../css/images/banner.png">
             </div>
             <div id="meeting-list-tabs">
                 <ul class="nav">

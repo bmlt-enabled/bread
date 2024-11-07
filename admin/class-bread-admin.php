@@ -161,12 +161,12 @@ class Bread_Admin
             $root_server = Bread::getOption('root_server');
             if ($root_server == '') {
                 echo '<div id="message" class="error"><p>Missing BMLT Server in settings for bread.</p>';
-                $url = admin_url('options-general.php?page=bmlt-meeting-list.php');
+                $url = admin_url('options-general.php?page=class-bread-admin.php');
                 echo "<p><a href='$url'>Settings</a></p>";
                 echo '</div>';
             } else if (!Bread::temp_dir()) {
                 echo '<div id="message" class="error"><p>' . Bread::temp_dir() . ' temporary directory is not writable.</p>';
-                $url = admin_url('options-general.php?page=bmlt-meeting-list.php');
+                $url = admin_url('options-general.php?page=class-bread-admin.php');
                 echo "<p><a href='$url'>Settings</a></p>";
                 echo '</div>';
             }
@@ -294,7 +294,7 @@ class Bread_Admin
         update_option(Bread::getOptionsName(), $settings);
         setcookie('pwsix_action', "import_settings", time()+10);
         setcookie('current-meeting-list', $this->loaded_setting, time()+10);
-        wp_safe_redirect(admin_url('?page=bmlt-meeting-list.php'));
+        wp_safe_redirect(admin_url('?page=class-bread-admin.php'));
     }
 
     /**
@@ -334,7 +334,7 @@ class Bread_Admin
         update_option(Bread::getOptionsName(), $settings);
         setcookie('pwsix_action', "default_settings_success", time()+10);
         setcookie('current-meeting-list', $this->loaded_setting, time()+10);
-        wp_safe_redirect(admin_url('?page=bmlt-meeting-list.php'));
+        wp_safe_redirect(admin_url('?page=class-bread-admin.php'));
     }
     function my_theme_add_editor_styles()
     {
@@ -352,20 +352,6 @@ class Bread_Admin
         $settings_link = '<a href="options-general.php?page=' . basename(__FILE__) . '">' . __('Settings') . '</a>';
         array_unshift($links, $settings_link); // before other links
         return $links;
-    }
-    private function addServiceBody($service_body_name)
-    {
-        if (false === ( Bread::getOption($service_body_name) == 'Not Used' )) {
-            $area_data = explode(',', Bread::getOption($service_body_name));
-            $area = $this->arraySafeGet($area_data);
-            Bread::setOption($service_body_name, $area == 'NOT USED' ? '' : $area);
-            $service_body_id = $this->arraySafeGet($area_data, 1);
-            if (Bread::getOption('recurse_service_bodies') == 1) {
-                return '&recursive=1&services[]=' . $service_body_id;
-            } else {
-                return '&services[]='.$service_body_id;
-            }
-        }
     }
     function arraySafeGet($arr, $i = 0)
     {
@@ -416,7 +402,9 @@ class Bread_Admin
         activate_bread();
         global $my_admin_page;
         Bread_Activator::activate();
-        $my_admin_page = add_menu_page('Meeting List', 'Meeting List', 'manage_bread', basename(__FILE__), array(&$this, 'admin_options_page'), 'dashicons-admin-page');
+        $my_admin_page = add_menu_page('Meeting List', 'Meeting List', 'manage_bread', basename(__FILE__), array(&$this, 'admin_options_page'),
+       'data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyINCiB3aWR0aD0iNTAuMDAwMDAwcHQiIGhlaWdodD0iNTAuMDAwMDAwcHQiIHZpZXdCb3g9IjAgMCA1MC4wMDAwMDAgNTAuMDAwMDAwIg0KIHByZXNlcnZlQXNwZWN0UmF0aW89InhNaWRZTWlkIG1lZXQiPg0KDQo8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgwLjAwMDAwMCw1MC4wMDAwMDApIHNjYWxlKDAuMTAwMDAwLC0wLjEwMDAwMCkiDQpmaWxsPSIjMDAwMDAwIiBzdHJva2U9Im5vbmUiPg0KPHBhdGggZD0iTTI4MCAzNjEgYzAgLTc0IC0zIC05MSAtMTUgLTkxIC0xMiAwIC0xNSAxNSAtMTUgNzEgMCA2NyAtMSA3MCAtMjINCjY3IC0yMSAtMyAtMjMgLTEwIC0yOCAtNzIgbC01IC02OSAtMzQgNzEgYy0zNCA3MCAtMzUgNzEgLTU0IDU0IC01NSAtNDggLTcyDQotMTU1IC0zNiAtMjI5IDE4IC0zNiAyNSAtNDMgNTEgLTQzIGwyOSAwIC0yMSAzMCBjLTMzIDQ3IC00MyA5MyAtMjkgMTQyIGwxMQ0KNDMgNjkgLTEzNSA2OCAtMTM1IDAgODMgYzEgNjIgNCA4MyAxNCA4MCA3IC0zIDEzIC0yNiAxNSAtNTYgMyAtNDQgNiAtNTIgMjMNCi01MiAxNiAwIDE5IDcgMTkgNTUgbDAgNTUgNDAgMCBjNDkgMCA1MiAtMTcgMTUgLTczIGwtMjYgLTM3IDMxIDAgYzI3IDAgMzQgNg0KNTAgNDMgMjcgNTggMjUgMTI0IC0zIDE3OCAtMjMgNDMgLTgwIDkxIC0xMjQgMTA0IC0yMyA2IC0yMyA1IC0yMyAtODR6IG04OQ0KLTE2IGMxNyAtMjAgMzEgLTQ1IDMxIC01NSAwIC0xNyAtNyAtMjAgLTQwIC0yMCBsLTQwIDAgMCA1NSBjMCAzMCA0IDU1IDkgNTUNCjUgMCAyMyAtMTYgNDAgLTM1eiIvPg0KPHBhdGggZD0iTTY5IDQyMyBjLTEzIC0xNiAtMTIgLTE3IDQgLTQgOSA3IDE3IDE1IDE3IDE3IDAgOCAtOCAzIC0yMSAtMTN6Ii8+DQo8cGF0aCBkPSJNNDEwIDQzNiBjMCAtMiA4IC0xMCAxOCAtMTcgMTUgLTEzIDE2IC0xMiAzIDQgLTEzIDE2IC0yMSAyMSAtMjEgMTN6Ii8+DQo8cGF0aCBkPSJNNDE5IDczIGMtMTMgLTE2IC0xMiAtMTcgNCAtNCAxNiAxMyAyMSAyMSAxMyAyMSAtMiAwIC0xMCAtOCAtMTcNCi0xN3oiLz4NCjxwYXRoIGQ9Ik00NTUgNTAgYy00IC02IC0zIC0xNiAzIC0yMiA2IC02IDEyIC02IDE3IDIgNCA2IDMgMTYgLTMgMjIgLTYgNg0KLTEyIDYgLTE3IC0yeiIvPg0KPC9nPg0KPC9zdmc+'
+        );
     }
     function admin_options_page()
     {

@@ -207,10 +207,10 @@ foreach ($all_users as $user) {
                     } ?>" id="extra_meetings" name="extra_meetings[]" multiple="multiple">
                     <?php
                     if ($this_connected && Bread::getOption('extra_meetings_enabled') == 1) {
-                        $extra_meetings_array = $this->get_all_meetings();
+                        $extra_meetings_array = Bread_Bmlt::get_all_meetings();
                         foreach ($extra_meetings_array as $extra_meeting) {
                             $extra_meeting_x = explode('|||', $extra_meeting);
-                            $extra_meeting_id = $this->admin->arraySafeGet($extra_meeting_x, 3);
+                            $extra_meeting_id = trim($this->admin->arraySafeGet($extra_meeting_x, 3));
                             $extra_meeting_display = substr($this->admin->arraySafeGet($extra_meeting_x), 0, 30) . ';' . $this->admin->arraySafeGet($extra_meeting_x, 1) . ';' . $this->admin->arraySafeGet($extra_meeting_x, 2); ?>
                             <option <?php echo (Bread::getOption('extra_meetings') != '' && in_array($extra_meeting_id, Bread::getOption('extra_meetings')) ? 'selected="selected"' : '') ?> value="<?php echo $extra_meeting_id ?>"><?php echo esc_html($extra_meeting_display) ?></option>
                             <?php
