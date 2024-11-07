@@ -145,7 +145,7 @@ class Bread_FormatsManager
         }
         return $this->hashedFormats[$lang];
     }
-    public function write_detailed_formats(string $lang, bool $isAll, int $lineHeight, int $fontSize)
+    public function write_detailed_formats(string $lang, bool $isAll, string $lineHeight, string $fontSize)
     {
         $formats = $isAll ? $this->allFormats[$lang] : $this->getUsedFormats($lang);
         if (empty($formats)) {
