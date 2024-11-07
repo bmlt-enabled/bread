@@ -165,6 +165,14 @@ class Bread_Public
         } elseif ($this->options['used_format_1'] != '') {
             $result = Bread_Bmlt::get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=$sort_keys&get_used_formats&formats[]=" . $this->options['used_format_1'] . $select_language);
         }
+
+        if ($result_meetings == null) {
+            echo "<script type='text/javascript'>\n";
+            echo "document.body.innerHTML = ''";
+            echo "</script>";
+            echo '<div style="font-size: 20px;text-align:center;font-weight:normal;color:#F00;margin:0 auto;margin-top: 30px;"><p>No Meetings Found</p><p>Or</p><p>Internet or Server Problem</p><p>' . $this->options['root_server'] . '</p><p>Please try again or contact your BMLT Administrator</p></div>';
+            exit;
+        }
         if (!empty($this->options['extra_meetings'])) {
             $extras = "";
             foreach ((array)$this->options['extra_meetings'] as $value) {
@@ -193,13 +201,6 @@ class Bread_Public
             $result_meetings = $result['meetings'];
         }
 
-        if ($result_meetings == null) {
-            echo "<script type='text/javascript'>\n";
-            echo "document.body.innerHTML = ''";
-            echo "</script>";
-            echo '<div style="font-size: 20px;text-align:center;font-weight:normal;color:#F00;margin:0 auto;margin-top: 30px;"><p>No Meetings Found</p><p>Or</p><p>Internet or Server Problem</p><p>' . $this->options['root_server'] . '</p><p>Please try again or contact your BMLT Administrator</p></div>';
-            exit;
-        }
         if ($this->options['additional_list_language'] == '') {
             $this->options['additional_list_language'] = $this->options['weekday_language'];
         }
