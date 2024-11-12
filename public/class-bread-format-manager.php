@@ -144,7 +144,7 @@ class Bread_FormatsManager
      * @param string $lang
      * @return array
      */
-    public function getFormatsUsed(string $lang=''): array
+    public function getFormatsUsed(string $lang = ''): array
     {
         $lang = ($lang == '') ? $this->defaultLang : $lang;
         if (!isset($this->usedFormats[$lang])) {
