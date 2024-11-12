@@ -29,11 +29,16 @@ class Bread_FormatsManager
      * @var string
      */
     private string $defaultLang;
+    /**
+     * The format indicating wheelchair accessibility.
+     *
+     * @var array|null
+     */
     private array|null $wheelchairFormat = array();
     /**
      * The info regarding the formats used is available already during construction because it is returned by the initial root server query.
      *
-     * @param array $usedFormats The array of formats.
+     * @param array $usedFormats The array of formats actually used by meetings in the meeting list.
      * @param string $lang The language of the formats.
      */
     function __construct(array &$usedFormats, string $lang)
@@ -41,15 +46,6 @@ class Bread_FormatsManager
         $this->usedFormats[$lang] = $usedFormats;
         $this->hashedFormats[$lang] = $this->hashFormats($usedFormats);
         $this->defaultLang = $lang;
-    }
-    /**
-     * Returns the array of formats that are actually used by meetings in the meeting list.  Key strings and descriptions are from the default language.
-     *
-     * @var array
-     */
-    public function getFormatsUsed(): array
-    {
-        return $this->usedFormats[$this->defaultLang];
     }
     /**
      * Helper functtion to create a key=>value array of formats for convenient lookup
@@ -81,14 +77,14 @@ class Bread_FormatsManager
         $this->hashedFormats[$lang] = $this->hashFormats($this->allFormats[$lang]);
     }
     /**
-     * Undocumented function
+     * ULookup the format having a particular field having a particular value. Null if none found.
      *
-     * @param string $lang
+     * @param string $lang the language of the formats being searched.
      * @param string $field
      * @param string $id
-     * @return array
+     * @return array|null
      */
-    public function getFormatFromField(string $lang, string $field, string $id): array|null
+    private function getFormatFromField(string $lang, string $field, string $id): array|null
     {
         if (!isset($this->allFormats[$lang])) {
             if (isset($this->usedFormats[$lang])) {
@@ -101,7 +97,15 @@ class Bread_FormatsManager
         }
         return $this->searchField($this->allFormats[$lang], $id, $field);
     }
-    private function searchField(array $formats, string $id, string $field)
+    /**
+     * Do the actual search for a loaded set of formats.
+     *
+     * @param array $formats
+     * @param string $id
+     * @param string $field
+     * @return array|null
+     */
+    private function searchField(array $formats, string $id, string $field): array|null
     {
         foreach ($formats as $format) {
             if ($format[$field] == $id) {
@@ -110,7 +114,14 @@ class Bread_FormatsManager
         }
         return null;
     }
-    public function getFormatByKey(string $lang, string $key)
+    /**
+     * Lookup a format in the hashed list.
+     *
+     * @param string $lang
+     * @param string $key
+     * @return array|null
+     */
+    public function getFormatByKey(string $lang, string $key): array|null
     {
         if (!isset($this->hashedFormats[$lang])) {
             $this->loadFormats($lang);
@@ -127,27 +138,43 @@ class Bread_FormatsManager
         }
         return null;
     }
-    public function getUsedFormats(string $lang)
+    /**
+     * Get the list of formats that were actually used, translated into the specified language.
+     *
+     * @param string $lang
+     * @return array
+     */
+    public function getFormatsUsed(string $lang=''): array
     {
-        if (isset($this->usedFormats[$lang])) {
-            return $this->usedFormats[$lang];
+        $lang = ($lang == '') ? $this->defaultLang : $lang;
+        if (!isset($this->usedFormats[$lang])) {
+            $this->loadFormats($lang);
+            $this->usedFormats[$lang] = array();
+            foreach ($this->usedFormats[$this->defaultLang] as $usedFormat) {
+                $this->usedFormats[$lang][] = $this->getFormatFromField($lang, 'id', $usedFormat['id']);
+            }
         }
-        $this->loadFormats($lang);
-        $this->usedFormats[$lang] = array();
-        foreach ($this->usedFormats[$this->defaultLang] as $usedFormat) {
-            $this->usedFormats[$lang] = $this->getFormatFromField($lang, 'id', $usedFormat['id']);
-        }
+        return $this->usedFormats[$lang];
     }
-    public function getHashedFormats(string $lang)
+    public function getHashedFormats(string $lang): array
     {
         if (!isset($this->hashedFormats[$lang])) {
             $this->loadFormats($lang);
         }
         return $this->hashedFormats[$lang];
     }
+    /**
+     * Generate the HTML table of formats.
+     *
+     * @param string $lang
+     * @param boolean $isAll All formats or only used.
+     * @param string $lineHeight
+     * @param string $fontSize
+     * @return void
+     */
     public function write_detailed_formats(string $lang, bool $isAll, string $lineHeight, string $fontSize)
     {
-        $formats = $isAll ? $this->allFormats[$lang] : $this->getUsedFormats($lang);
+        $formats = $isAll ? $this->allFormats[$lang] : $this->getFormatsUsed($lang);
         if (empty($formats)) {
             return '';
         }
@@ -159,9 +186,18 @@ class Bread_FormatsManager
         $data .= "</table>";
         return $data;
     }
+    /**
+     * Generate the HTML table of formats.
+     *
+     * @param string $lang
+     * @param boolean $isAll All formats or only used.
+     * @param string $lineHeight
+     * @param string $fontSize
+     * @return void
+     */
     public function write_formats(string $lang, bool $isAll, string $lineHeight, string $fontSize)
     {
-        $formats = $isAll ? $this->allFormats[$lang] : $this->getUsedFormats($lang);
+        $formats = $isAll ? $this->allFormats[$lang] : $this->getFormatsUsed($lang);
         if (empty($formats)) {
             return '';
         }

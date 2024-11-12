@@ -369,10 +369,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                                 <option value="">Not Used</option>
                                 <option value="@Virtual@" <?php echo Bread::getOption('additional_list_format_key') == '@Virtual@' ? 'selected' : '' ?>>Virtual Meetings</option>
                                 <option value="@F2F@" <?php echo Bread::getOption('additional_list_format_key') == '@F2F@' ? 'selected' : '' ?>>Face-to-Face Meetings</option>
-                                <?php
-                                if ($this_connected) {
-                                    $used_formats = Bread_Bmlt::getFormatsForSelect(true);
-                                }
+                                <?php $used_formats = Bread_Bmlt::getFormatsForSelect(true);
                                 $countmax = count($used_formats);
                                 for ($count = 0; $count < $countmax; $count++) {
                                     if ($used_formats[$count]['key_string'] == Bread::getOption('additional_list_format_key')) { ?>
@@ -381,9 +378,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                                         <option value="<?php echo esc_html($used_formats[$count]['key_string']) ?>"><?php echo esc_html($used_formats[$count]['name_string']) ?></option>
                                     <?php   }
                                 }
-                            } else { ?>
-                                <option selected="selected" value="<?php echo Bread::getOption('additional_list_format_key'); ?>"><?php echo 'additional_list'; ?></option>
-                            <?php } ?>
+                            } ?>
                         </select>
                     </p>
                     <p>
