@@ -24,7 +24,8 @@ class Bread_AdminDisplay
         $this->admin = $admin;
         $this->refresh_status();
     }
-    private function refresh_status() {
+    private function refresh_status()
+    {
         $serverInfo = Bread_Bmlt::testRootServer();
         $this->connected = is_array($serverInfo) && array_key_exists("version", $serverInfo[0]) ? $serverInfo[0]["version"] : '';
         if ($serverInfo[0]["aggregator_mode_enabled"] ?? false) {
@@ -54,7 +55,8 @@ if ($this->connected) {
         }
     }
     private function select_service_body_options(int $i)
-    { ?>
+    {
+        ?>
     <option value="Not Used">Not Used</option><?php
     foreach ($this->unique_areas as $area) {
         $area_data = explode(',', $area);
