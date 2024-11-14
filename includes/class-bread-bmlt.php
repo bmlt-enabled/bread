@@ -4,47 +4,10 @@ class Bread_Bmlt
     public static $connection_error;
     private static $bmlt_server_lang = '';
     private static array $unique_areas;
-    /**
-     * Prepare to make a call that requires user authentication (because the meeting's e-mail is included).
-     * First call 'login', then make the call.
-     *
-     * @return WP_Error | Array
-     */
-    public static function authenticate_root_server() : WP_Error | Array
-    {
-        $query_string = http_build_query(
-            array(
-            'admin_action' => 'login',
-            'c_comdef_admin_login' => Bread::getOption('bmlt_login_id'),
-            'c_comdef_admin_password' => Bread::getOption('bmlt_login_password'), '&')
-        );
-        return Bread_Bmlt::get(Bread::getOption('root_server')."/local_server/server_admin/xml.php?" . $query_string);
-    }
-    /**
-     * We only want to make a login call if really necessary.
-     *
-     * @return boolean
-     */
-    public static function requires_authentication()
-    {
-        return (Bread::getOption('include_meeting_email') == 1);
-    }
-
-    public static function get_root_server_request(string $url)
-    {
-        $cookies = array();
-
-        if (Bread_Bmlt::requires_authentication()) {
-            $auth_response = Bread_Bmlt::authenticate_root_server();
-            $cookies = wp_remote_retrieve_cookies($auth_response);
-        }
-
-        return Bread_Bmlt::get($url, $cookies);
-    }
 
     public static function get_configured_root_server_request($url, $raw = false)
     {
-        $results = Bread_Bmlt::get_root_server_request(Bread::getOption('root_server')."/".$url);
+        $results = Bread_Bmlt::get(Bread::getOption('root_server')."/".$url);
         if ($raw) {
             return $results;
         }
@@ -57,15 +20,13 @@ class Bread_Bmlt
     /**
      * Undocumented function
      *
-     * @param string $url The BMLT calls.
-     * @param array $cookies Any cookies that should be added.
+     * @param string $url The BMLT call.
      * @return WP_Error | array The result of the call.
      */
-    private static function get(string $url, array $cookies = array()) : WP_Error | array
+    private static function get(string $url) : WP_Error | array
     {
         $args = array(
             'timeout' => '120',
-            'cookies' => $cookies,
         );
         if (Bread::getOption('user_agent') != 'None') {
             $args['headers'] = array(
@@ -180,7 +141,7 @@ class Bread_Bmlt
         if ($override_root_server == null) {
             $results = Bread_Bmlt::get_configured_root_server_request("client_interface/json/?switcher=GetServerInfo", true);
         } else {
-            $results = Bread_Bmlt::get_root_server_request($override_root_server."/client_interface/json/?switcher=GetServerInfo", true);
+            $results = Bread_Bmlt::get($override_root_server."/client_interface/json/?switcher=GetServerInfo");
         }
         if ($results instanceof WP_Error) {
             Bread_Bmlt::$connection_error = $results->get_error_message();

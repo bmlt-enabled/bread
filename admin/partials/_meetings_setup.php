@@ -327,12 +327,12 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                 ?>
                 <h3 class="hndle">Include Only This Meeting Format<span title='<?php echo $title; ?>' class="top-tooltip"></span></h3>
                 <div class="inside">
-                    <?php if ($this_connected) { ?>
+                    <?php if ($this->connected) { ?>
                         <?php $used_formats = Bread_Bmlt::getFormatsForSelect(false); ?>
                     <?php } ?>
                     <label for="used_format_1">Meeting Format: </label>
                     <select id="used_format_1" name="used_format_1">
-                        <?php if ($this_connected) { ?>
+                        <?php if ($this->connected) { ?>
                             <option value="">Not Used</option>
                             <?php $countmax = count($used_formats); ?>
                             <?php for ($count = 0; $count < $countmax; $count++) { ?>
@@ -348,25 +348,18 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     </select>
                 </div>
             </div>
-            <?php
-            $connected = '';
-            $logged_in = wp_remote_retrieve_body(Bread_Bmlt::authenticate_root_server()); ?>
-            <?php $connected = "<p><div style='color: #f00;font-size: 16px;vertical-align: middle;' class='dashicons dashicons-unlock'></div><span style='color: #f00;'>Login ID or Password Incorrect</span></p>"; ?>
-            <?php if ($logged_in == 'OK') { ?>
-                <?php $connected = "<p><div style='color: #00AD00;font-size: 16px;vertical-align: middle;' class='dashicons dashicons-lock'></div><span style='color: #00AD00;'>Login OK</span></p>"; ?>
-            <?php } ?>
             <div class="postbox">
                 <h3 class="hndle">Additional List</h3>
                 <div class="inside">
                     <p>
                         This section allows the definition of an additional meeting list, containing meetings that should not be included in the main
-                        list. This is typically service meetings, but it can be any group of meetings identified by a format.
+                        list. This is typically virtual meetings, but it can be any group of meetings identified by a format.
                     </p>
                     <p>
                         <label for="additional_list_format_key">Format of meetings in the additional list: </label>
                         <select id="additional_list_format_key" name="additional_list_format_key">
-                            <?php if ($this_connected) { ?>
-                                <option value="">Not Used</option>
+                            <option value="">Not Used</option>
+                            <?php if ($this->connected) { ?>
                                 <option value="@Virtual@" <?php echo Bread::getOption('additional_list_format_key') == '@Virtual@' ? 'selected' : '' ?>>Virtual Meetings</option>
                                 <option value="@F2F@" <?php echo Bread::getOption('additional_list_format_key') == '@F2F@' ? 'selected' : '' ?>>Face-to-Face Meetings</option>
                                 <?php $used_formats = Bread_Bmlt::getFormatsForSelect(true);
@@ -420,62 +413,39 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         <label for="additional_list_custom_query">Custom Query: </label>
                         <input type="text" id="additional_list_custom_query" name="additional_list_custom_query" size="100" value="<?php echo esc_html(Bread::getOption('additional_list_custom_query')) ?>" />
                     </p>
-                    <p>
-                        The additional list may include fields that might be used for say "service meetings". To access these fields
-                        you must login with an service body administrator account.
-                        <br>
-                        <label for="bmlt_login_id">Login ID: </label>
-                        <input class="bmlt-login" id="bmlt_login_id" type="text" name="bmlt_login_id" value="<?php echo esc_html(Bread::getOption('bmlt_login_id')); ?>" />&nbsp;&nbsp;&nbsp;&nbsp;
-                        <label for="bmlt_login_password">Password: </label>
-                        <input class="bmlt-login" id="bmlt_login_password" type="password" name="bmlt_login_password" value="<?php echo esc_html(Bread::getOption('bmlt_login_password')); ?>" /> <?php echo $connected; ?>
-                        <br>
-                        <?php if ($logged_in == 'OK') { ?>
-                    <div id="includeemaildiv" class="inside">
-                            <?php $title = '
-                                <p>Enable the <strong>Meeting Email Contact</strong> (email_contact) field in the <strong>Meeting Template</strong>.</p>
-                                <p>This feature requires a login ID and password for the service body.</p>
-                                <p>This can be Service Body Administrator or Observer.</p>
-                                <p>Visit the <a target="_blank" href="https://bmlt.app/specific-topics/bmlt-roles/">BMLT Roles</a> page for more details.</p>
-                                ';
-                            ?>
-                        <b>Meeting Email Contact<span title='<?php echo $title; ?>' class="top-tooltip"></span></b>
-                        <input name="include_meeting_email" value="0" type="hidden">
-                        <p><input type="checkbox" name="include_meeting_email" value="1" <?php echo (Bread::getOption('include_meeting_email') == '1' ? 'checked' : '') ?>>Enable</p>
+                    <input name="include_additional_list" value="0" type="hidden">
+                    <p><input type="checkbox" name="include_additional_list" value="1" <?php echo (Bread::getOption('include_additional_list') == '1' ? 'checked' : '') ?>>Include meetings with this format in the main list</p>
+                    If you wish to define different contents for the additional list, use this template.
+                    <div style="margin-top:0px; margin-bottom:20px; max-width:100%; width:100%;">
+                        <?php
+                        $editor_id = "additional_list_template_content";
+                        $settings    = array(
+                            'tabindex'      => false,
+                            'editor_height' => 110,
+                            'resize'        => true,
+                            "media_buttons" => false,
+                            "drag_drop_upload" => true,
+                            "editor_css"    => "<style>.aligncenter{display:block!important;margin-left:auto!important;margin-right:auto!important;}</style>",
+                            "teeny"         => false,
+                            'quicktags'     => true,
+                            'wpautop'       => false,
+                            'textarea_name' => $editor_id,
+                            'tinymce' => array('toolbar1' => 'bold,italic,underline,strikethrough,bullist,numlist,alignleft,aligncenter,alignright,alignjustify,link,unlink,table,undo,redo,fullscreen', 'toolbar2' => 'formatselect,fontsizeselect,fontselect,forecolor,backcolor,indent,outdent,pastetext,removeformat,charmap,code', 'toolbar3' => 'custom_template_button_1,custom_template_button_2')
+                        );
+                        wp_editor(stripslashes(Bread::getOption('additional_list_template_content')), $editor_id, $settings);
+                        ?>
                     </div>
-                        <?php } ?>
-                <input name="include_additional_list" value="0" type="hidden">
-                <p><input type="checkbox" name="include_additional_list" value="1" <?php echo (Bread::getOption('include_additional_list') == '1' ? 'checked' : '') ?>>Include meetings with this format in the main list</p>
-                The default format for the additional list is additional_list. If you wish to define a different format for the additional list, use this template.
-                <div style="margin-top:0px; margin-bottom:20px; max-width:100%; width:100%;">
-                    <?php
-                    $editor_id = "additional_list_template_content";
-                    $settings    = array(
-                        'tabindex'      => false,
-                        'editor_height' => 110,
-                        'resize'        => true,
-                        "media_buttons" => false,
-                        "drag_drop_upload" => true,
-                        "editor_css"    => "<style>.aligncenter{display:block!important;margin-left:auto!important;margin-right:auto!important;}</style>",
-                        "teeny"         => false,
-                        'quicktags'     => true,
-                        'wpautop'       => false,
-                        'textarea_name' => $editor_id,
-                        'tinymce' => array('toolbar1' => 'bold,italic,underline,strikethrough,bullist,numlist,alignleft,aligncenter,alignright,alignjustify,link,unlink,table,undo,redo,fullscreen', 'toolbar2' => 'formatselect,fontsizeselect,fontselect,forecolor,backcolor,indent,outdent,pastetext,removeformat,charmap,code', 'toolbar3' => 'custom_template_button_1,custom_template_button_2')
-                    );
-                    wp_editor(stripslashes(Bread::getOption('additional_list_template_content')), $editor_id, $settings);
-                    ?>
-                </div>
-                <div class="inside">
-                    <div style="margin-bottom: 10px; padding:0;" id="accordion_additional_list">
-                        <h3 class="help-accordian">Instructions</h3>
-                        <div class="videocontent">
-                            <video id="my_video_1" style="width:100%;height:100%;" controls width="100%" height="100%" preload="auto">
-                                <source src="https://nameetinglist.org/videos/show_area_service_meetings.mp4" type="video/mp4">
-                                Your browser does not support HTML5 video.
-                            </video>
+                    <div class="inside">
+                        <div style="margin-bottom: 10px; padding:0;" id="accordion_additional_list">
+                            <h3 class="help-accordian">Instructions</h3>
+                            <div class="videocontent">
+                                <video id="my_video_1" style="width:100%;height:100%;" controls width="100%" height="100%" preload="auto">
+                                    <source src="https://nameetinglist.org/videos/show_area_service_meetings.mp4" type="video/mp4">
+                                    Your browser does not support HTML5 video.
+                                </video>
+                            </div>
                         </div>
                     </div>
-                </div>
                 </div>
             </div>
         </div>

@@ -15,9 +15,62 @@ class Bread_AdminDisplay
 {
     private $lang;
     private $admin;
+    private $connected;
+    private $server_version;
+    private array $unique_areas;
+
     function __construct($admin)
     {
         $this->admin = $admin;
+        $this->refresh_status();
+    }
+    private function refresh_status() {
+        $serverInfo = Bread_Bmlt::testRootServer();
+        $this->connected = is_array($serverInfo) && array_key_exists("version", $serverInfo[0]) ? $serverInfo[0]["version"] : '';
+        if ($serverInfo[0]["aggregator_mode_enabled"] ?? false) {
+            $this->server_version = "<span style='color: #00AD00;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-admin-site'></div>Using Tomato Server</span>";
+        } else {
+            $this_version = intval(str_replace(".", "", $this->connected));
+            $connect = "<p><div style='color: #f00;font-size: 16px;vertical-align: middle;' class='dashicons dashicons-no'></div><span style='color: #f00;'>Connection to BMLT Server Failed.  Check spelling or try again.  If you are certain spelling is correct, BMLT Server could be down.</span></p>";
+            if ($this->connected) {
+                $this->server_version = "<span style='color: #0A8ADD;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-smiley'></div>Your BMLT Server is running " . $this->connected . "</span>";
+            }
+        }
+        if ($this->connected) {
+            $this->unique_areas = Bread_Bmlt::get_areas();
+            asort($this->unique_areas);
+        }
+    }
+    private function select_service_bodies()
+    {
+        for ($i=1; $i<=5; $i++) {?>
+<li><label for="service_body_<?php echo $i;?>">Service Body <?php echo $i;?>: </label>
+<select class="service_body_select" id="service_body_<?php echo $i;?>" name="service_body_<?php echo $i;?>"><?php
+if ($this->connected) {
+    $this->select_service_body_options($i);
+} else {?>
+    <option selected="selected" value="<?php esc_html(Bread::getOption("service_body_$i"));?>"><?php echo 'Not Connected - Can not get Service Bodies'; ?></option><?php
+}?></select></li><?php
+        }
+    }
+    private function select_service_body_options(int $i)
+    { ?>
+    <option value="Not Used">Not Used</option><?php
+    foreach ($this->unique_areas as $area) {
+        $area_data = explode(',', $area);
+        $area_name = Bread::arraySafeGet($area_data);
+        $area_id = Bread::arraySafeGet($area_data, 1);
+        $area_parent = Bread::arraySafeGet($area_data, 2);
+        $area_parent_name = Bread::arraySafeGet($area_data, 3);
+        $descr = $area_name . " (" . $area_id . ") " . $area_parent_name . " (" . $area_parent . ")";
+        $selected = '';
+        $sb = esc_html(Bread::getOption("service_body_$i"));
+        $area_selected = explode(',', $sb);
+        if (Bread::arraySafeGet($area_selected) != "Not Used" && $area_id == Bread::arraySafeGet($area_selected, 1)) {
+            $selected = 'selected = "selected"';
+        } ?>
+        <option <?php echo $selected;?> value="<?php echo $area ?>"><?php echo $descr ?></option><?php
+    }
     }
     /**
      * Adds settings/options page
@@ -138,7 +191,6 @@ class Bread_AdminDisplay
                     floatval($_POST['pagenumbering_font_size']) : '9'
             );
             Bread::setOption('used_format_1', sanitize_text_field($_POST['used_format_1']));
-            Bread::setOption('include_meeting_email', isset($_POST['include_meeting_email']) ? boolval($_POST['include_meeting_email']) : false);
             Bread::setOption('recurse_service_bodies', isset($_POST['recurse_service_bodies']) ? 1 : 0);
             Bread::setOption('extra_meetings_enabled', isset($_POST['extra_meetings_enabled']) ? intval($_POST['extra_meetings_enabled']) : 0);
             Bread::setOption('include_protection', boolval($_POST['include_protection']));
@@ -163,8 +215,6 @@ class Bread_AdminDisplay
             Bread::setOption('include_additional_list', boolval($_POST['include_additional_list']));
             Bread::setOption('additional_list_format_key', sanitize_text_field($_POST['additional_list_format_key']));
             Bread::setOption('additional_list_sort_order', sanitize_text_field($_POST['additional_list_sort_order']));
-            Bread::setOption('bmlt_login_id', sanitize_text_field($_POST['bmlt_login_id']));
-            Bread::setOption('bmlt_login_password', sanitize_text_field($_POST['bmlt_login_password']));
             Bread::setOption('base_font', sanitize_text_field($_POST['base_font']));
             Bread::setOption('colorspace', sanitize_text_field($_POST['colorspace']));
             Bread::setOption('wheelchair_size', sanitize_text_field($_POST['wheelchair_size']));
@@ -249,21 +299,8 @@ class Bread_AdminDisplay
                     <input type="hidden" name="current-meeting-list" value="<?php echo $this->admin->loaded_setting ?>" />
                     <?php wp_nonce_field('closedpostboxes', 'closedpostboxesnonce', false); ?>
                     <?php wp_nonce_field('meta-box-order', 'meta-box-order-nonce', false); ?>
-                    <?php
-                    wp_nonce_field('bmltmeetinglistupdate-options');
-                    $serverInfo = Bread_Bmlt::testRootServer();
-                    $this_connected = is_array($serverInfo) && array_key_exists("version", $serverInfo[0]) ? $serverInfo[0]["version"] : '';
-                    $bmlt_version = $this_connected;
-                    if ($serverInfo[0]["aggregator_mode_enabled"] ?? false) {
-                        $ThisVersion = "<span style='color: #00AD00;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-admin-site'></div>Using Tomato Server</span>";
-                    } else {
-                        $this_version = intval(str_replace(".", "", $this_connected));
-                        $connect = "<p><div style='color: #f00;font-size: 16px;vertical-align: middle;' class='dashicons dashicons-no'></div><span style='color: #f00;'>Connection to BMLT Server Failed.  Check spelling or try again.  If you are certain spelling is correct, BMLT Server could be down.</span></p>";
-                        if ($this_connected) {
-                            $ThisVersion = "<span style='color: #0A8ADD;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-smiley'></div>Your BMLT Server is running " . $bmlt_version . "</span>";
-                        }
-                    }
-                    ?>
+                    <?php wp_nonce_field('bmltmeetinglistupdate-options'); ?>
+                    <?php $this->refresh_status(); ?>
                     <div id="setup">
                         <?php include '_meeting_list_setup.php'; ?>
                     </div>

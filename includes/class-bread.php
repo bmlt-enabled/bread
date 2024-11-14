@@ -337,6 +337,11 @@ class Bread
         include_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-bread-admin.php';
 
         /**
+         * The class that creates the main menu item in the admin area, shared between bread and crouton.
+         */
+        include_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-bmltenabled-admin.php';
+
+        /**
          * The class responsible for defining all actions that occur in the public-facing
          * side of the site.
          */
@@ -370,13 +375,15 @@ class Bread
      */
     private function define_admin_hooks()
     {
-
-        $plugin_admin = new Bread_Admin($this->get_plugin_name(), $this->get_version());
+        $bmltenabled_admin = new BmltEnabled_Admin();
+        $plugin_admin = new Bread_Admin($this->get_plugin_name(), $this->get_version(), $bmltenabled_admin);
 
         $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
         $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
 
-        $this->loader->add_action("admin_menu", $plugin_admin, "admin_menu_link");
+        $this->loader->add_action("admin_menu", $bmltenabled_admin, "admin_menu_link");
+        $this->loader->add_action("BmltEnabled_Submenu", $plugin_admin, "admin_submenu_link");
+        $this->loader->add_filter("BmltEnabled_Slugs", $plugin_admin, "submenu_slug");
         $this->loader->add_filter('tiny_mce_before_init', $plugin_admin, 'tiny_tweaks');
         $this->loader->add_filter('mce_external_plugins', $plugin_admin, 'my_custom_plugins');
         $this->loader->add_filter('mce_buttons', $plugin_admin, 'my_register_mce_button');
@@ -453,9 +460,16 @@ class Bread
     {
         return $this->version;
     }
-    public static function arraySafeGet($arr, $i = 0)
+    /**
+     * Return a blank if the key is unset
+     *
+     * @param array $arr
+     * @param string $key
+     * @return string
+     */
+    public static function arraySafeGet(array $arr, string $key = "0"): string
     {
-        return is_array($arr) ? $arr[$i] ?? '' : '';
+        return $arr[$key] ?? '';
     }
     public static function getday($day, $abbreviate = false, $language = 'en')
     {
@@ -492,6 +506,13 @@ class Bread
     public static function fillUnsetOptions()
     {
         Bread::$instance->fillUnsetOptionsInner();
+        Bread::$instance->removeDeprecated();
+    }
+    function removeDeprecated()
+    {
+        unset($this->options['include_meeting_email']);
+        unset($this->options['bmlt_login_id']);
+        unset($this->options['bmlt_login_password']);
     }
     function fillUnsetOptionsInner()
     {
@@ -537,7 +558,6 @@ class Bread
         $this->fillUnsetOption('custom_section_font_size', '9');
         $this->fillUnsetOption('pagenumbering_font_size', '9');
         $this->fillUnsetStringOption('used_format_1', '');
-        $this->fillUnsetOption('include_meeting_email', 0);
         $this->fillUnsetOption('base_font', 'dejavusanscondensed');
         $this->fillUnsetOption('colorspace', 0);
         $this->fillUnsetOption('recurse_service_bodies', 1);
@@ -549,8 +569,6 @@ class Bread
         $this->fillUnsetOption('include_additional_list', '0');
         $this->fillUnsetOption('additional_list_format_key', '');
         $this->fillUnsetOption('additional_list_sort_order', 'name');
-        $this->fillUnsetStringOption('bmlt_login_id', '');
-        $this->fillUnsetStringOption('bmlt_login_password', '');
         $this->fillUnsetStringOption('protection_password', '');
         $this->fillUnsetStringOption('custom_query', '');
         $this->fillUnsetStringOption('additional_list_custom_query', '');
