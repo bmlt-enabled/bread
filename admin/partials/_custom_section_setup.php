@@ -41,11 +41,4 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
             </div>
         </div>
     </div>
-    <?php if ($this->admin->current_user_can_modify()) {
-        echo '
-    <input type="submit" value="Save Changes" id="bmltmeetinglistsave1" name="bmltmeetinglistsave" class="button-primary" />
- ';
-    } ?>
-    <?php echo '<p style="display: inline; margin-top:.5em;margin-bottom:1.0em;margin-left:.2em;"><a target="_blank" class="button-primary" href="' . home_url() . '/?current-meeting-list=' . $this->admin->loaded_setting . '">Generate Meeting List</a></p>'; ?>
-    <div style="display:inline;"><i>&nbsp;&nbsp;Save Changes before Generate Meeting List.</i></div>
 </div>

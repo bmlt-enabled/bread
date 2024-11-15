@@ -877,3 +877,54 @@ jQuery(document).ready(
         }
     }
 );
+/**
+ * Get Tab Key
+ */
+function getTabKey(href) {
+    return href.replace('#', '');
+  }
+  /**
+   * Hide all tabs
+   */
+  function hideAllTabs() {
+      tabs.each(function(){
+          var href = getTabKey(jQuery(this).attr('href'));
+          jQuery('#' + href).hide();
+      });
+  }
+  /**
+   * Activate Tab
+   */
+  function activateTab(tab) {
+      var href = getTabKey(tab.attr('href'));
+      tabs.removeClass('nav-tab-active');
+      tab.addClass('nav-tab-active');
+      jQuery('#' + href).show();
+  }
+  jQuery(document).ready(function($){
+      var activeTab, firstTab;
+      // First load, activate first tab or tab with nav-tab-active class
+      firstTab = false;
+      activeTab = false;
+      tabs = $('a.nav-tab');
+      hideAllTabs();
+      tabs.each(function(){
+          var href = $(this).attr('href').replace('#', '');
+          if (!firstTab) {
+              firstTab = $(this);
+          }
+          if ($(this).hasClass('nav-tab-active')) {
+              activeTab = $(this);
+          }
+      });
+      if (!activeTab) {
+          activeTab = firstTab;
+      }
+      activateTab(activeTab);
+      //Click tab
+      tabs.click(function(e) {
+          e.preventDefault();
+          hideAllTabs();
+          activateTab($(this));
+      });
+  });

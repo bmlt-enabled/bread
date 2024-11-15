@@ -80,35 +80,6 @@ if ($this->connected) {
         ?>
         <div class="connecting"></div>
         <div class="saving"></div>
-        <div style="display:none;">
-            <form method="POST" id="three_column_default_settings" name="three_column_default_settings" enctype="multipart/form-data">
-                <?php wp_nonce_field('pwsix_submit_three_column', 'pwsix_submit_three_column'); ?>
-                <input type="hidden" name="pwsix_action" value="three_column_default_settings" />
-                <input type="hidden" name="current-meeting-list" value="<?php echo $this->admin->loaded_setting ?>" />
-                <div id="basicModal1">
-                    <p style="color:#f00;">Your current meeting list settings will be replaced and lost forever.</p>
-                    <p>Consider backing up your settings by using the Configuration Tab.</p>
-                </div>
-            </form>
-            <form method="POST" id="four_column_default_settings" name="four_column_default_settings" enctype="multipart/form-data">
-                <?php wp_nonce_field('pwsix_submit_four_column', 'pwsix_submit_four_column'); ?>
-                <input type="hidden" name="pwsix_action" value="four_column_default_settings" />
-                <input type="hidden" name="current-meeting-list" value="<?php echo $this->admin->loaded_setting ?>" />
-                <div id="basicModal2">
-                    <p style="color:#f00;">Your current meeting list settings will be replaced and lost forever.</p>
-                    <p>Consider backing up your settings by using the Configuration Tab.</p>
-                </div>
-            </form>
-            <form method="POST" id="booklet_default_settings" name="booklet_default_settings" enctype="multipart/form-data">
-                <?php wp_nonce_field('pwsix_submit_booklet', 'pwsix_submit_booklet'); ?>
-                <input type="hidden" name="pwsix_action" value="booklet_default_settings" />
-                <input type="hidden" name="current-meeting-list" value="<?php echo $this->admin->loaded_setting ?>" />
-                <div id="basicModal3">
-                    <p style="color:#f00;">Your current meeting list settings will be replaced and lost forever.</p>
-                    <p>Consider backing up your settings by using the Configuration Tab.</p>
-                </div>
-            </form>
-        </div>
         <?php
         if (!isset($_POST['bmltmeetinglistsave'])) {
             $_POST['bmltmeetinglistsave'] = false;
@@ -281,39 +252,50 @@ if ($this->connected) {
             </div>
             <div id="meeting-list-tabs">
                 <ul class="nav">
-                    <li><a href="#setup"><?php _e('Meeting List Setup', 'root-server'); ?></a></li>
-                    <li><a href="#tabs-first"><?php _e('BMLT Server', 'root-server'); ?></a></li>
-                    <li><a href="#layout"><?php _e('Page Layout', 'root-server'); ?></a></li>
-                    <li><a href="#front-page"><?php _e('Front Page', 'root-server'); ?></a></li>
-                    <li><a href="#meetings"><?php _e('Meetings', 'root-server'); ?></a></li>
-                    <li><a href="#custom-section"><?php _e('Custom Content', 'root-server'); ?></a></li>
+                    <li><a href="#instructions"><?php _e('Getting Started', 'root-server'); ?></a></li>
+                    <li><a href="#editor"><?php _e('Editor', 'root-server'); ?></a></li>
                     <li><a href="#import-export"><?php _e('Configuration', 'root-server'); ?></a></li>
                 </ul>
-                <form style=" display:inline!important;" method="POST" id="bmlt_meeting_list_options">
-                    <input type="hidden" name="current-meeting-list" value="<?php echo $this->admin->loaded_setting ?>" />
-                    <?php wp_nonce_field('closedpostboxes', 'closedpostboxesnonce', false); ?>
-                    <?php wp_nonce_field('meta-box-order', 'meta-box-order-nonce', false); ?>
-                    <?php wp_nonce_field('bmltmeetinglistupdate-options'); ?>
-                    <?php $this->refresh_status(); ?>
-                    <div id="setup">
-                        <?php include '_meeting_list_setup.php'; ?>
-                    </div>
-                    <div id="tabs-first">
-                        <?php include '_bmlt_server_setup.php'; ?>
-                    </div>
-                    <div id="layout">
-                        <?php include '_layout_setup.php'; ?>
-                    </div>
-                    <div id="front-page">
-                        <?php include '_front_page_setup.php'; ?>
-                    </div>
-                    <div id="meetings">
-                        <?php include '_meetings_setup.php'; ?>
-                    </div>
-                    <div id="custom-section">
-                        <?php include '_custom_section_setup.php'; ?>
-                    </div>
-                </form>
+                <div id="instructions">
+                    <?php include '_meeting_list_setup.php'; ?>
+                </div>
+                <div id="editor">
+                    <nav class="nav-tab-wrapper">
+                        <a href="#tabs-first" class="nav-tab nav-tab-active"><?php _e('BMLT Server', 'root-server'); ?></a>
+                        <a href="#layout" class="nav-tab"><?php _e('Page Layout', 'root-server'); ?></a>
+                        <a href="#front-page" class="nav-tab"><?php _e('Front Page', 'root-server'); ?></a>
+                        <a href="#meetings" class="nav-tab"><?php _e('Meetings', 'root-server'); ?></a>
+                        <a href="#custom-section" class="nav-tab"><?php _e('Custom Content', 'root-server'); ?></a>
+                    </nav>
+                    <form style=" display:inline!important;" method="POST" id="bmlt_meeting_list_options">
+                        <input type="hidden" name="current-meeting-list" value="<?php echo $this->admin->loaded_setting ?>" />
+                        <?php wp_nonce_field('closedpostboxes', 'closedpostboxesnonce', false); ?>
+                        <?php wp_nonce_field('meta-box-order', 'meta-box-order-nonce', false); ?>
+                        <?php wp_nonce_field('bmltmeetinglistupdate-options'); ?>
+                        <?php $this->refresh_status(); ?>
+                        <div id="tabs-first" class="tab-content">
+                            <?php include '_bmlt_server_setup.php'; ?>
+                        </div>
+                        <div id="layout" class="tab-content">
+                            <?php include '_layout_setup.php'; ?>
+                        </div>
+                        <div id="front-page" class="tab-content">
+                            <?php include '_front_page_setup.php'; ?>
+                        </div>
+                        <div id="meetings" class="tab-content">
+                            <?php include '_meetings_setup.php'; ?>
+                        </div>
+                        <div id="custom-section" class="tab-content">
+                            <?php include '_custom_section_setup.php'; ?>
+                        </div>
+                        <?php if ($this->admin->current_user_can_modify()) {?>
+    <input type="submit" value="Save Changes" id="bmltmeetinglistsave1" name="bmltmeetinglistsave" class="button-primary" />
+    <p style="display: inline; margin-top:.5em;margin-bottom:1.0em;margin-left:.2em;"><a target="_blank" class="button-primary" href="<?php echo home_url();?>/?current-meeting-list=' . $this->admin->loaded_setting . '">Generate Meeting List</a></p>
+    <div style="display:inline;"><i>&nbsp;&nbsp;Save Changes before Generate Meeting List.</i></div>
+    <br class="clear">
+                        <?php } ?>
+                    </form>
+                </div>
                 <div id="import-export">
                     <?php include '_backup_restore_setup.php'; ?>
                 </div>
