@@ -683,10 +683,6 @@ jQuery(document).ready(
             $ml("#A5, label[for=A5]").show();
             $ml("#A6, label[for=A6]").hide();
             $ml("#portrait, label[for=portrait]").hide();
-            $ml("#meeting-list-tabs ul li:eq(5)").hide();
-            $ml("#meeting-list-tabs ul li:eq(6)").show();
-            $ml('#meeting-list-tabs').tabs('disable', 5);
-            $ml('#meeting-list-tabs').tabs('enable', 6);
             $ml("#half-fold").css(
                 {
                     "display": "inline-block"
@@ -706,10 +702,6 @@ jQuery(document).ready(
             $ml("#5inch, label[for=5inch]").hide();
             $ml("#portrait, label[for=portrait]").show();
             $ml("#booklet_pages, label[for=booklet_pages]").show();
-            $ml("#meeting-list-tabs ul li:eq(5)").hide();
-            $ml("#meeting-list-tabs ul li:eq(6)").show();
-            $ml('#meeting-list-tabs').tabs('disable', 5);
-            $ml('#meeting-list-tabs').tabs('enable', 6);
             $ml('#columngapdiv').hide();
             $ml('#columnseparatordiv').hide();
             $ml("#half-fold").css(

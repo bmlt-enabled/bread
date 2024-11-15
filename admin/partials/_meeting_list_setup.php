@@ -45,7 +45,6 @@ global $wp_version;
                 <p></i>The Custom Content section is used to add information like helplines, service meetings, meeting format legend, etc.</i></p>
                 <h2>Large Areas, Metro Areas or Regions</h2>
                 <p>Larger service bodies would benefit from using a booklet meeting list.</p>
-                <p></i>The booklet uses the Front and Last pages for custom content.  There is no Custom Content section on a booklet meeting list.</i></p>
                 <h2>Support</h2>
                 <p>For support file an issue at https://github.com/bmlt-enabled/bread/issues</p>
             </div>

@@ -34,7 +34,7 @@ class Bread_ContentGenerator
      */
     private array $result_meetings;
     /**
-     * The standard shortcodes, not including fields in the array representing the meeting.  Used on front and last pages, etc.
+     * The standard shortcodes, not including fields in the array representing the meeting.  Used on front and custom sections.
      *
      * @var array
      */
@@ -177,9 +177,7 @@ class Bread_ContentGenerator
             $this->write_front_page();
         } else {
             $this->mpdf->WriteHTML('<sethtmlpagefooter name="MyFooter" page="ALL" />');
-            if (trim($this->options['last_page_content']) !== '') {
-                $this->write_last_page();
-            }
+            $this->write_custom_section();
         }
     }
     /**
@@ -287,20 +285,6 @@ class Bread_ContentGenerator
         }
         $this->writeHTMLwithAdditionalMeetinglist($data);
         $this->mpdf->showWatermarkImage = false;
-    }
-    /**
-     * Generate the last page.
-     *
-     * @return void
-     */
-    private function write_last_page()
-    {
-        $this->mpdf->WriteHTML('td{font-size: ' . $this->options['last_page_font_size'] . "pt;line-height:" . $this->options['last_page_line_height'] . ';}', 1);
-        $this->mpdf->SetDefaultBodyCSS('font-size', $this->options['last_page_font_size'] . 'pt');
-        $this->mpdf->SetDefaultBodyCSS('line-height', $this->options['last_page_line_height']);
-        $this->mpdf->SetDefaultBodyCSS('background-color', '#ffffff00');
-        $data = $this->standard_shortcode_replacement('last_page');
-        $this->writeHTMLwithAdditionalMeetinglist($data);
     }
     /**
      * Generate the custom section.

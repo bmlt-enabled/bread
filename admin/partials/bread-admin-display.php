@@ -119,11 +119,8 @@ if ($this->connected) {
             }
             Bread::setOption('bread_version', sanitize_text_field($_POST['bread_version']));
             Bread::setOption('front_page_content', wp_kses_post($_POST['front_page_content']));
-            Bread::setOption('last_page_content', wp_kses_post($_POST['last_page_content']));
             Bread::setOption('front_page_line_height', $_POST['front_page_line_height']);
             Bread::setOption('front_page_font_size', floatval($_POST['front_page_font_size']));
-            Bread::setOption('last_page_font_size', floatval($_POST['last_page_font_size']));
-            Bread::setOption('last_page_line_height', floatval($_POST['last_page_line_height']));
             Bread::setOption('content_font_size', floatval($_POST['content_font_size']));
             Bread::setOption('suppress_heading', floatval($_POST['suppress_heading']));
             Bread::setOption('header_font_size', floatval($_POST['header_font_size']));
@@ -290,7 +287,6 @@ if ($this->connected) {
                     <li><a href="#front-page"><?php _e('Front Page', 'root-server'); ?></a></li>
                     <li><a href="#meetings"><?php _e('Meetings', 'root-server'); ?></a></li>
                     <li><a href="#custom-section"><?php _e('Custom Content', 'root-server'); ?></a></li>
-                    <li><a href="#last-page"><?php _e('Last Page', 'root-server'); ?></a></li>
                     <li><a href="#import-export"><?php _e('Configuration', 'root-server'); ?></a></li>
                 </ul>
                 <form style=" display:inline!important;" method="POST" id="bmlt_meeting_list_options">
@@ -316,9 +312,6 @@ if ($this->connected) {
                     </div>
                     <div id="custom-section">
                         <?php include '_custom_section_setup.php'; ?>
-                    </div>
-                    <div id="last-page">
-                        <?php include '_last_page_setup.php'; ?>
                     </div>
                 </form>
                 <div id="import-export">

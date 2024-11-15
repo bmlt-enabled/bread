@@ -518,7 +518,6 @@ class Bread
     {
         $this->fillUnsetOption('front_page_line_height', '1.0');
         $this->fillUnsetOption('front_page_font_size', '10');
-        $this->fillUnsetOption('last_page_font_size', '10');
         $this->fillUnsetOption('content_font_size', '9');
         $this->fillUnsetOption('header_font_size', $this->options['content_font_size']);
         $this->fillUnsetOption('pageheader_fontsize', $this->options['header_font_size']);
@@ -539,7 +538,6 @@ class Bread
         $this->fillUnsetOption('margin_right', 3);
         $this->fillUnsetOption('column_gap', "5");
         $this->fillUnsetOption('content_line_height', '1.0');
-        $this->fillUnsetOption('last_page_line_height', '1.0');
         $this->fillUnsetOption('page_size', 'legal');
         $this->fillUnsetOption('page_orientation', 'L');
         $this->fillUnsetOption('page_fold', 'quad');
@@ -659,6 +657,17 @@ class Bread
         $this->renamed_option('asm_language', 'additional_list_language');
         $this->renamed_option('asm_custom_query', 'additional_list_custom_query');
         $this->renamed_option('asm_template_content', 'additional_list_template_content');
+        if (!isset($this->options['bread_version']) || $this->options['bread_version'] < '2.8') {
+            if (($this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full') && trim($this->options['last_page_content'])!=='') {
+                $this->options['custom_section_content'] = $this->options['last_page_content'];
+                $this->options['custom_section_font_size'] = $this->options['last_page_font_size'];
+                $this->options['custom_section_line_height'] = $this->options['last_page_line_height'];
+                unset($this->options['last_page_content']);
+                unset($this->options['last_page_line_height']);
+                unset($this->options['last_page_font_size']);
+            }
+        }
+        $this->options['bread_version'] = BREAD_VERSION;
     }
     private function renamed_option(string $old, string $new)
     {
