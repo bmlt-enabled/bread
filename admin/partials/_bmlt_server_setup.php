@@ -36,7 +36,7 @@ foreach ($all_users as $user) {
                         if (Bread::getOption('sslverify') == '1') { ?>
                             <p>
                                 <input type="checkbox" id="sslverify" name="sslverify" value="1" checked />
-                                <label for="sslverify">Disable SSL verification of server</label>
+                                <label for="sslverify">Disable SSL verification of server</label></p>
                         <?php }
                     } else {
                         ?><span style='color: #f00;'>
@@ -45,7 +45,7 @@ foreach ($all_users as $user) {
                             <p>
                                 <label for="user_agent">Try a different user agent or "None" for Wordpress default: "</label>
                                 <input class="bmlt-input" id="user_agent" type="text" name="user_agent" value="<?php echo Bread::getOption('user_agent'); ?>" />
-                            <p>
+                            </p><p>
                                 <input type="checkbox" id="sslverify" name="sslverify" value="1" <?php echo Bread::getOption('sslverify') ? 'checked' : ''; ?> />
                                 <label for="sslverify">Disable SSL verification of server</label>
                             </p>

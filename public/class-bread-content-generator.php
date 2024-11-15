@@ -299,7 +299,7 @@ class Bread_ContentGenerator
         $this->mpdf->SetDefaultBodyCSS('font-size', $this->options['last_page_font_size'] . 'pt');
         $this->mpdf->SetDefaultBodyCSS('line-height', $this->options['last_page_line_height']);
         $this->mpdf->SetDefaultBodyCSS('background-color', '#ffffff00');
-        $data = $this->standard_shortcode_replacement('last_page_content');
+        $data = $this->standard_shortcode_replacement('last_page');
         $this->writeHTMLwithAdditionalMeetinglist($data);
     }
     /**

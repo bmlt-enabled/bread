@@ -28,18 +28,14 @@ class Bread_AdminDisplay
     {
         $serverInfo = Bread_Bmlt::testRootServer();
         $this->connected = is_array($serverInfo) && array_key_exists("version", $serverInfo[0]) ? $serverInfo[0]["version"] : '';
-        if ($serverInfo[0]["aggregator_mode_enabled"] ?? false) {
-            $this->server_version = "<span style='color: #00AD00;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-admin-site'></div>Using Tomato Server</span>";
-        } else {
-            $this_version = intval(str_replace(".", "", $this->connected));
-            $connect = "<p><div style='color: #f00;font-size: 16px;vertical-align: middle;' class='dashicons dashicons-no'></div><span style='color: #f00;'>Connection to BMLT Server Failed.  Check spelling or try again.  If you are certain spelling is correct, BMLT Server could be down.</span></p>";
-            if ($this->connected) {
-                $this->server_version = "<span style='color: #0A8ADD;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-smiley'></div>Your BMLT Server is running " . $this->connected . "</span>";
-            }
-        }
         if ($this->connected) {
             $this->unique_areas = Bread_Bmlt::get_areas();
             asort($this->unique_areas);
+            if ($serverInfo[0]["aggregator_mode_enabled"] ?? false) {
+                $this->server_version = "<span style='color: #00AD00;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-admin-site'></div>Using Tomato Server</span>";
+            } elseif ($this->connected) {
+                $this->server_version = "<span style='color: #0A8ADD;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-smiley'></div>Your BMLT Server is running " . $this->connected . "</span>";
+            }
         }
     }
     private function select_service_bodies()
