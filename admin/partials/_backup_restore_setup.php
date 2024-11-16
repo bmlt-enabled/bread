@@ -84,4 +84,5 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
         </div>
     </div>
     <br class="clear">
+    <p style="display: inline; margin-top:.5em;margin-bottom:1.0em;margin-left:.2em;"><a target="_blank" class="button-primary" href="<?php echo home_url();?>/?current-meeting-list=<?php echo $this->admin->loaded_setting;?>">Generate Meeting List</a></p>
 </div>

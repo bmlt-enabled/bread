@@ -84,7 +84,10 @@ if ($this->connected) {
         if (!isset($_POST['bmltmeetinglistsave'])) {
             $_POST['bmltmeetinglistsave'] = false;
         }
-        if ($_POST['bmltmeetinglistsave']) {
+        if (!isset($_POST['bmltmeetinglistpreview'])) {
+            $_POST['bmltmeetinglistpreview'] = false;
+        }
+        if ($_POST['bmltmeetinglistsave'] || $_POST['bmltmeetinglistpreview']) {
             if (!wp_verify_nonce($_POST['_wpnonce'], 'bmltmeetinglistupdate-options')) {
                 die('Whoops! There was a problem with the data you posted. Please go back and try again.');
             }
@@ -218,6 +221,12 @@ if ($this->connected) {
             if (!in_array($user->ID, Bread::getOption('authors'))) {
                 Bread::setOption('authors', $user->ID);
             }
+            if ($_POST['bmltmeetinglistpreview']) {
+                session_start();
+                $_SESSION['bread_preview_settings'] = Bread::getOptions();
+                wp_redirect(home_url()."?preview-meeting-list=1");
+                exit();
+            }
             set_transient('admin_notice', 'Please put down your weapon. You have 20 seconds to comply.');
             if (!$this->admin->current_user_can_modify()) {
                 echo '<div class="updated"><p style="color: #F00;">You do not have permission to save this configuation!</p>';
@@ -290,6 +299,7 @@ if ($this->connected) {
                         </div>
                         <?php if ($this->admin->current_user_can_modify()) {?>
     <input type="submit" value="Save Changes" id="bmltmeetinglistsave1" name="bmltmeetinglistsave" class="button-primary" />
+    <input type="submit" value="Preview" id="bmltmeetinglistpreview" name="bmltmeetinglistpreview" class="button-primary" formtarget="_blank" />
     <p style="display: inline; margin-top:.5em;margin-bottom:1.0em;margin-left:.2em;"><a target="_blank" class="button-primary" href="<?php echo home_url();?>/?current-meeting-list=' . $this->admin->loaded_setting . '">Generate Meeting List</a></p>
     <div style="display:inline;"><i>&nbsp;&nbsp;Save Changes before Generate Meeting List.</i></div>
     <br class="clear">

@@ -146,9 +146,15 @@ class Bread
             @rmdir($dir);
         }
     }
-    private function loadAllSettings()
+    private function loadAllSettings($holder): int
     {
-        $this->allSettings = get_option(Bread::SETTINGS);
+        if (isset($holder['bread_preview_settings'])) {
+            $this->allSettings = array();
+            $this->allSettings[0] = $holder['bread_preview_settings'];
+            $this->allSettings[1] = "Preview Setting";
+        } else {
+            $this->allSettings = get_option(Bread::SETTINGS);
+        }
         if ($this->allSettings === false) {
             $this->allSettings = array();
             $this->allSettings[1] = "Default Setting";
@@ -160,6 +166,7 @@ class Bread
                 }
             }
         }
+        return isset($holder['current-meeting-list']) ? intval($holder['current-meeting-list']) : 1;
     }
     public static function renameSetting($id, $name)
     {
@@ -182,9 +189,15 @@ class Bread
     private function getCurrentMeetingListHolder()
     {
         $ret = array();
+        if (isset(($_REQUEST['preview-meeting-list']))) {
+            session_start();
+            $ret['bread_preview_settings'] = $_SESSION['bread_preview_settings'];
+            $ret['current-meeting-list'] = 1;
+            // TODO check that the value is equal to some security option we've set, otherwise reject.
+        }
         if (isset($_REQUEST['current-meeting-list'])) {
             $ret['current-meeting-list'] = $_REQUEST['current-meeting-list'];
-        } else if (isset($_COOKIE['current-meeting-list'])) {
+        } elseif (isset($_COOKIE['current-meeting-list'])) {
             $ret['current-meeting-list'] = $_COOKIE['current-meeting-list'];
         }
         return $ret;
@@ -209,29 +222,37 @@ class Bread
         if ($current_setting < 1) {
             $current_setting = is_admin() ? 1 : $this->requested_setting;
         }
-
-        if ($current_setting != 1) {
-            $this->optionsName = $this->generateOptionName($current_setting);
+        if (is_array($this->allSettings[$current_setting])) {
+            $this->options = $this->allSettings[$current_setting];
         } else {
-            $this->optionsName = Bread::OPTIONS_NAME;
-        }
-        //Don't forget to set up the default options
-        if (!$theOptions = get_option($this->optionsName)) {
             if ($current_setting != 1) {
-                unset($this->allSettings[$current_setting]);
-                update_option(Bread::SETTINGS, $this->allSettings);
-                die('Undefined setting: ' . $current_setting);
+                $this->optionsName = $this->generateOptionName($current_setting);
+            } else {
+                $this->optionsName = Bread::OPTIONS_NAME;
             }
-            $import_file = plugin_dir_path(__FILE__) . "includes/three_column_settings.json";
-            $encode_options = file_get_contents($import_file);
-            $theOptions = json_decode($encode_options, true);
-            update_option($this->optionsName, $theOptions);
+            //Don't forget to set up the default options
+            if (!$theOptions = get_option($this->optionsName)) {
+                if ($current_setting != 1) {
+                    unset($this->allSettings[$current_setting]);
+                    update_option(Bread::SETTINGS, $this->allSettings);
+                    die('Undefined setting: ' . $current_setting);
+                }
+                $import_file = plugin_dir_path(__FILE__) . "includes/three_column_settings.json";
+                $encode_options = file_get_contents($import_file);
+                $theOptions = json_decode($encode_options, true);
+                update_option($this->optionsName, $theOptions);
+            }
+            $this->options = $theOptions;
+            $this->fillUnsetOptions();
+            $this->upgrade_settings();
         }
-        $this->options = $theOptions;
-        $this->fillUnsetOptions();
-        $this->upgrade_settings();
+
         $this->requested_setting = $current_setting;
         return $this->options;
+    }
+    public static function getOptions()
+    {
+        return Bread::$instance->options;
     }
     public static function getOptionsName()
     {
@@ -270,10 +291,9 @@ class Bread
         $this->tmp_dir = $this->setup_temp_dir();
         $this->protocol = (strpos(strtolower(home_url()), "https") !== false ? "https" : "http") . "://";
 
-        $this->loadAllSettings();
         $holder = $this->getCurrentMeetingListHolder();
+        $this->requested_setting = $this->loadAllSettings($holder);
 
-        $this->requested_setting = isset($holder['current-meeting-list']) ? intval($holder['current-meeting-list']) : 1;
         $this->load_dependencies();
         $this->set_locale();
         $this->load_translations();

@@ -245,6 +245,7 @@ class Bread_Public
     }
     private function constuct_page_type_settings()
     {
+        $page_type_settings = array();
         // TODO: The page number is always 5 from botton...this should be adjustable
         if ($this->options['page_fold'] == 'half') {
             if ($this->options['page_size'] == 'letter') {
