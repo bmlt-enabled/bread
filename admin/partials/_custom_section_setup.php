@@ -6,15 +6,16 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
     <div id="postbox-container" class="postbox-container">
         <div id="normal-sortables" class="meta-box-sortables ui-sortable">
             <div id="custom-content-div" class="postbox">
-                <?php $title = '
-                <p>The Custom Content can be customized with text, graphics, tables, shortcodes, ect.</p>
-                <p><strong>Default Font Size</strong> can be changed for specific text in the editor.</p>
-                <p><strong>Add Media</strong> button - upload and add graphics.</p>
-                <p><strong>Meeting List Shortcodes</strong> dropdown - insert variable data.</p>
-                <p><i>The Custom Content will print immediately after the meetings in the meeting list.</i></p>
-                ';
-                ?>
-                <h3 class="hndle">Custom Content<span title='<?php echo $title; ?>' class="bottom-tooltip"></span></h3>
+                <div style="display:none;">
+                    <div id="customsection-tooltip-content">
+                    <p>The Custom Content can be customized with text, graphics, tables, shortcodes, ect.</p>
+                    <p><strong>Default Font Size</strong> can be changed for specific text in the editor.</p>
+                    <p><strong>Add Media</strong> button - upload and add graphics.</p>
+                    <p><strong>Meeting List Shortcodes</strong> dropdown - insert variable data.</p>
+                    <p><i>The Custom Content will print immediately after the meetings in the meeting list.</i></p>
+                    </div>
+                </div>
+                <h3 class="hndle">Custom Section Content<span data-tooltip-content="#customsection-tooltip-content" class="my-tooltip"><span class="tooltipster-icon">(?)</span></span></h3>
                 <div class="inside">
                     <p>Default Font Size: <input min="4" max="18" step=".1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="custom_section_font_size" name="custom_section_font_size" value="<?php echo Bread::getOptionForDisplay('custom_section_font_size', '9'); ?>" />&nbsp;&nbsp;
                         Line Height: <input min="1" max="3" step=".1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="custom_section_line_height" type="text" maxlength="3" size="3" name="custom_section_line_height" value="<?php echo Bread::getOptionForDisplay('custom_section_line_height', '1.0'); ?>" /></p>

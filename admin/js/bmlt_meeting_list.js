@@ -1,4 +1,4 @@
-﻿var s = document.getElementsByTagName('SELECT')[5].options,
+﻿var s = document.getElementById('extra_meetings').options,
     l = [],
     d = '';
 for(i = 0;i < s.length;i++) {
@@ -25,161 +25,20 @@ for(i = 0;i < s.length;i++) {
     }
     s[i].text = temp_line;
 }
-function root_server_video() {
-    jQuery('.tooltip').tooltipster('hide');
-    jQuery('#root-server-video').bPopup(
-        {
-            transition: 'slideIn',
-            closeClass: 'b-close',
-            onClose: function() {
-                for(var player in mejs.players) {
-                    mejs.players[player].media.stop();
-                }
-            }
-        }
-    );
-};
-function current_meeting_list_video() {
-    jQuery('.tooltip').tooltipster('hide');
-    jQuery('#current-meeting-list-video').bPopup(
-        {
-            transition: 'slideIn',
-            closeClass: 'b-close',
-            onClose: function() {
-                for(var player in mejs.players) {
-                    mejs.players[player].media.stop();
-                }
-            }
-        }
-    );
-};
-function numbersonly(myfield, e, dec) {
-    var key;
-    var keychar;
-    if(window.event) {
-        key = window.event.keyCode;
-    } else if(e) {
-        key = e.which;
-    } else {
-        return true;
-    }
-    keychar = String.fromCharCode(key);
-    // control keys
-    if((key == null) || (key == 0) || (key == 8)
-        || (key == 9) || (key == 13) || (key == 27)
-    ) {
-        return true;
-    }
-    // numbers
-    else if((("0123456789").indexOf(keychar) > -1)) {
-        return true;
-    }
-    // decimal point jump
-    else if(dec && (keychar == ".")) {
-        myfield.form.elements[dec].focus();
-        return false;
-    } else {
-        return false;
-    }
-}
 var $ml = jQuery.noConflict
 jQuery(document).ready(
     function($ml) {
         $ml(".connecting").hide();
         $ml(".saving").hide();
-        $ml("#accordion").accordion(
+        $ml(".bmlt-accrodian").accordion(
             {
                 heightStyle: "content",
                 active: false,
                 collapsible: true
             }
         );
-        $ml("#accordion2").accordion(
-            {
-                heightStyle: "content",
-                active: false,
-                collapsible: true
-            }
-        );
-        $ml("#accordion3").accordion(
-            {
-                heightStyle: "content",
-                active: false,
-                collapsible: true
-            }
-        );
-        $ml("#accordion_additional_list").accordion(
-            {
-                heightStyle: "content",
-                active: false,
-                collapsible: true
-            }
-        );
-        $ml("#col_color").spectrum(
-            {
-                preferredFormat: "hex",
-                showInput: true,
-                showInitial: true,
-                theme: "sp-light"
-            }
-        );
-        $ml("#col_color").click(
-            function() {
-                $ml("#triggerSet").spectrum("set", $("#col_color").val());
-            }
-        );
-        $ml("#header_text_color").spectrum(
-            {
-                preferredFormat: "hex",
-                showInput: true,
-                showInitial: true,
-                theme: "sp-light"
-            }
-        );
-        $ml("#header_text_color").click(
-            function() {
-                $ml("#triggerSet").spectrum("set", $("#header_text_color").val());
-            }
-        );
-        $ml("#header_background_color").spectrum(
-            {
-                preferredFormat: "hex",
-                showInput: true,
-                showInitial: true,
-                theme: "sp-light"
-            }
-        );
-        $ml("#header_background_color").click(
-            function() {
-                $ml("#triggerSet").spectrum("set", $("#header_background_color").val());
-            }
-        );
-        $ml("#pageheader_textcolor").spectrum(
-            {
-                preferredFormat: "hex",
-                showInput: true,
-                showInitial: true,
-                theme: "sp-light"
-            }
-        );
-        $ml("#pageheader_textcolor").click(
-            function() {
-                $ml("#triggerSet").spectrum("set", $("#pageheader_textcolor").val());
-            }
-        );
-        $ml("#pageheader_backgroundcolor").spectrum(
-            {
-                preferredFormat: "hex",
-                showInput: true,
-                showInitial: true,
-                theme: "sp-light"
-            }
-        );
-        $ml("#pageheader_backgroundcolor").click(
-            function() {
-                $ml("#triggerSet").spectrum("set", $("#pageheader_backgroundcolor").val());
-            }
-        );
+        $ml(".bmlt_color").spectrum();
+        $ml("#col_color").on("click", ()=>$ml("#triggerSet").spectrum("set", this.val()));
         $ml("#bmlt_meeting_list_options").on(
             "keypress", function(event) {
                 if(event.which == 13 && !event.shiftKey) {
@@ -188,32 +47,7 @@ jQuery(document).ready(
                 }
             }
         );
-        $ml("#bmltmeetinglistsave1").click(
-            function(e) {
-                $ml(".saving").show();
-            }
-        );
-        $ml("#bmltmeetinglistsave2").click(
-            function(e) {
-                $ml(".saving").show();
-            }
-        );
-        $ml("#bmltmeetinglistsave3").click(
-            function(e) {
-                $ml(".saving").show();
-            }
-        );
-        $ml("#bmltmeetinglistsave4").click(
-            function(e) {
-                $ml(".saving").show();
-            }
-        );
-        $ml("#bmltmeetinglistsave5").click(
-            function(e) {
-                $ml(".saving").show();
-            }
-        );
-        $ml("#bmltmeetinglistsave6").click(
+        $ml("#bmltmeetinglistsave").click(
             function(e) {
                 $ml(".saving").show();
             }
@@ -346,124 +180,14 @@ jQuery(document).ready(
                 );
             }
         );
-        $ml('#service-body-button').bind(
-            'click', function(e) {
-                e.preventDefault();
-                $ml('#service-body-video').bPopup(
-                    {
-                        transition: 'slideIn',
-                        closeClass: 'b-close',
-                        onClose: function() {
-                            for(var player in mejs.players) {
-                                mejs.players[player].media.stop();
-                            }
-                        }
-                    }
-                );
-            }
-        );
-        $ml('.my-tooltip').tooltipster(
+        $ml('.my-tooltip').each(function(i,e) {
+        $ml(e).tooltipster(
             {
-                animation: 'grow',
-                delay: 200,
-                theme: 'tooltipster-noir',
                 contentAsHTML: true,
-                //positionTracker: false,
-                touchDevices: false,
-                hideOnClick: true,
-                icon: '(?)',
-                iconCloning: true,
-                iconDesktop: true,
-                iconTouch: false,
-                iconTheme: 'tooltipster-icon',
-                interactive: true,
-                arrow: false,
-                position: 'right',
-                //maxWidth: 900,
-                //offsetX: 150,
-                offsetY: -200,
+                theme: 'tooltipster-noir',
                 trigger: 'click'
             }
-        );
-        $ml('.tooltip').tooltipster(
-            {
-                animation: 'grow',
-                delay: 200,
-                theme: 'tooltipster-noir',
-                hideOnClick: true,
-                contentAsHTML: true,
-                positionTracker: false,
-                icon: '(?)',
-                iconCloning: true,
-                iconDesktop: true,
-                iconTouch: false,
-                iconTheme: 'tooltipster-icon',
-                interactive: true,
-                arrow: true,
-                position: 'right',
-                trigger: 'click'
-            }
-        );
-        $ml('.bottom-tooltip').tooltipster(
-            {
-                animation: 'grow',
-                delay: 200,
-                theme: 'tooltipster-noir',
-                hideOnClick: true,
-                contentAsHTML: true,
-                positionTracker: false,
-                icon: '(?)',
-                iconCloning: true,
-                iconDesktop: true,
-                iconTouch: false,
-                iconTheme: 'tooltipster-icon',
-                interactive: true,
-                arrow: true,
-                position: 'bottom-left',
-                offsetX: -10,
-                trigger: 'click'
-            }
-        );
-        $ml('.top-tooltip').tooltipster(
-            {
-                animation: 'grow',
-                delay: 200,
-                theme: 'tooltipster-noir',
-                hideOnClick: true,
-                contentAsHTML: true,
-                positionTracker: false,
-                icon: '(?)',
-                iconCloning: true,
-                iconDesktop: true,
-                iconTouch: false,
-                iconTheme: 'tooltipster-icon',
-                interactive: true,
-                arrow: true,
-                position: 'top-left',
-                offsetX: -10,
-                trigger: 'click'
-            }
-        );
-        $ml('.top-middle-tooltip').tooltipster(
-            {
-                animation: 'grow',
-                delay: 200,
-                theme: 'tooltipster-noir',
-                hideOnClick: true,
-                contentAsHTML: true,
-                positionTracker: false,
-                icon: '(?)',
-                iconCloning: true,
-                iconDesktop: true,
-                iconTouch: false,
-                iconTheme: 'tooltipster-icon',
-                interactive: true,
-                arrow: true,
-                position: 'top',
-                offsetX: -10,
-                trigger: 'click'
-            }
-        );
+        )});
         $ml("#meeting-list-tabs").tabs(
             {
                 active: 0
@@ -669,100 +393,18 @@ jQuery(document).ready(
         );
         var page_fold_val = $ml('input[name=page_fold]:checked').val();
         function bookletControlsShowHide() {
-            $ml('#pagenodiv').show();
-            $ml('#columngapdiv').hide();
-            $ml('#columnseparatordiv').hide();
-            $ml("#portrait, label[for=portrait]").hide();
             $ml('#landscape').prop("checked", true);
-            $ml("#5inch, label[for=5inch]").show();
-            $ml("#letter, label[for=letter]").show();
-            $ml("#legal, label[for=legal]").show();
-            $ml("#ledger, label[for=ledger]").show();
-            $ml("#booklet_pages, label[for=booklet_pages]").hide();
-            $ml("#A4, label[for=A4]").show();
-            $ml("#A5, label[for=A5]").show();
-            $ml("#A6, label[for=A6]").hide();
-            $ml("#portrait, label[for=portrait]").hide();
-            $ml("#half-fold").css(
-                {
-                    "display": "inline-block"
-                }
-            );
-            $ml("#tri-fold").css(
-                {
-                    "display": "none"
-                }
-            );
+            $ml('.booklet').show();
+            $ml('.single-page').hide();
         }
-        function fullPageControlsShowHide() {
-            $ml('#pagenodiv').hide();
-            $ml("#A4, label[for=A4]").show();
-            $ml("#A5, label[for=A5]").show();
-            $ml("#A6, label[for=A6]").show();
-            $ml("#5inch, label[for=5inch]").hide();
-            $ml("#portrait, label[for=portrait]").show();
-            $ml("#booklet_pages, label[for=booklet_pages]").show();
-            $ml('#columngapdiv').hide();
-            $ml('#columnseparatordiv').hide();
-            $ml("#half-fold").css(
-                {
-                    "display": "inline-block"
-                }
-            );
-            $ml("#tri-fold").css(
-                {
-                    "display": "none"
-                }
-            );
+        function singlePageControlsShowHide() {
+            $ml('.booklet').hide();
+            $ml('.single-page').show();
         }
-        function foldControlsShowHide(fold) {
-            $ml("#letter, label[for=letter]").show();
-            $ml("#legal, label[for=legal]").show();
-            $ml("#ledger, label[for=ledger]").show();
-            $ml("#booklet_pages, label[for=booklet_pages]").hide();
-            $ml("#A4, label[for=A4]").show();
-            $ml("#A5, label[for=A5]").hide();
-            $ml("#A6, label[for=A6]").hide();
-            $ml("#5inch, label[for=5inch]").hide();
-            if(fold == 'quad') {
-                $ml("#portrait, label[for=portrait]").show();
-            } else {
-                $ml("#portrait, label[for=portrait]").hide();
-                $ml('#landscape').prop("checked", true);
-            }
-            $ml("#meeting-list-tabs ul li:eq(5)").hide();
-            $ml("#booklet_pages, label[for=booklet_pages]").hide();
-            $ml("#meeting-list-tabs ul li:eq(5)").show();
-            $ml("#meeting-list-tabs ul li:eq(6)").hide();
-            $ml('#meeting-list-tabs').tabs('enable', 5);
-            $ml('#meeting-list-tabs').tabs('disable', 6);
-        }
-        if(page_fold_val == 'half') {
-            bookletControlsShowHide();
-        } else if(page_fold_val == 'full') {
-            fullPageControlsShowHide();
-        } else {
-            foldControlsShowHide(page_fold_val);
-        }
-        $ml('input[name=page_fold]:radio').click(
-            function() {
-                var page_fold_val = $ml('input[name=page_fold]:checked').val();
-                var page_orientation_val = $ml('input[name=page_orientation]:checked').val();
-                var page_size_val = $ml('input[name=page_size]:checked').val();
-                if(page_fold_val == 'half') {
-                    bookletControlsShowHide();
-                }
-                else if(page_fold_val == 'full') {
-                    fullPageControlsShowHide();
-                }
-                else {
-                    foldControlsShowHide(page_fold_val);
-                };
-                if(page_fold_val === 'tri') {
-                    $ml('input[name=page_size]').val(['letter']);
-                };
-            }
-        );
+        $ml('.single-page-check').on('click',singlePageControlsShowHide);
+        $ml('.booklet-check').on('click',bookletControlsShowHide);
+        $ml('input[name=page_fold]:checked').hasClass('booklet-check') && bookletControlsShowHide();
+        $ml('input[name=page_fold]:checked').hasClass('single-page-check') && singlePageControlsShowHide();
         $ml(".service_body_select").chosen(
             {
                 inherit_select_classes: true,

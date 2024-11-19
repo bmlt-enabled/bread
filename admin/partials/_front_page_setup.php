@@ -6,14 +6,15 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
     <div id="postbox-container" class="postbox-container">
         <div id="normal-sortables" class="meta-box-sortables ui-sortable">
             <div id="frontpagecontentdiv" class="postbox">
-                <?php $title = '
-                <p>The Front Page can be customized with text, graphics, tables, shortcodes, ect.</p>
-                <p><strong>Add Media</strong> button - upload and add graphics.</p>
-                <p><strong>Meeting List Shortcodes</strong> dropdown - insert custom data.</p>
-                <p><strong>Default Font Size</strong> can be changed for specific text.</p>
-                ';
-                ?>
-                <h3 class="hndle">Front Page Content<span title='<?php echo $title; ?>' class="tooltip"></span></h3>
+                <div style="display:none;">
+                    <div id="frontpage-tooltip-content">
+                        <p>The Front Page can be customized with text, graphics, tables, shortcodes, ect.</p>
+                        <p><strong>Add Media</strong> button - upload and add graphics.</p>
+                        <p><strong>Meeting List Shortcodes</strong> dropdown - insert custom data.</p>
+                        <p><strong>Default Font Size</strong> can be changed for specific text.</p>
+                    </div>
+                </div>
+                <h3 class="hndle">Front Page Content<span data-tooltip-content="#frontpage-tooltip-content" class="my-tooltip"><span class="tooltipster-icon">(?)</span></span></h3>
                 <div class="inside">
                     <p>Default Font Size: <input min="4" max="18" step=".1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="front_page_font_size" name="front_page_font_size" value="<?php echo Bread::getOptionForDisplay('front_page_font_size', '10'); ?>" />&nbsp;&nbsp;
                         Line Height: <input min="1" max="3" step=".1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="front_page_line_height" type="text" maxlength="3" size="3" name="front_page_line_height" value="<?php echo Bread::getOptionForDisplay('front_page_line_height', '1.0'); ?>" /></p>

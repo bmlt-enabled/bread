@@ -254,7 +254,6 @@ if ($this->connected) {
         }
         Bread::fillUnsetOptions();
         ?>
-        <?php include '_help_videos.php'; ?>
         <div class="hide wrap" id="meeting-list-tabs-wrapper">
             <div id="tallyBannerContainer">
                 <img id="tallyBannerImage" src="<?php echo plugin_dir_url(__FILE__) ?>../css/images/banner.png">
@@ -298,7 +297,7 @@ if ($this->connected) {
                             <?php include '_custom_section_setup.php'; ?>
                         </div>
                         <?php if ($this->admin->current_user_can_modify()) {?>
-    <input type="submit" value="Save Changes" id="bmltmeetinglistsave1" name="bmltmeetinglistsave" class="button-primary" />
+    <input type="submit" value="Save Changes" id="bmltmeetinglistsave" name="bmltmeetinglistsave" class="button-primary" />
     <input type="submit" value="Preview" id="bmltmeetinglistpreview" name="bmltmeetinglistpreview" class="button-primary" formtarget="_blank" />
     <p style="display: inline; margin-top:.5em;margin-bottom:1.0em;margin-left:.2em;"><a target="_blank" class="button-primary" href="<?php echo home_url();?>/?current-meeting-list=' . $this->admin->loaded_setting . '">Generate Meeting List</a></p>
     <div style="display:inline;"><i>&nbsp;&nbsp;Save Changes before Generate Meeting List.</i></div>

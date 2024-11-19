@@ -15,7 +15,7 @@ foreach ($all_users as $user) {
     <div id="postbox-container" class="postbox-container">
         <div id="normal-sortables" class="meta-box-sortables ui-sortable">
             <div id="bmltrootserverurl" class="postbox">
-                <h3 class="hndle">BMLT Server<span title='<p>Visit <a target="_blank" href="https://bmlt.app/what-is-the-bmlt/hit-parade/#bmlt-server">BMLT Server Implementations</a> to find your BMLT server</p>' class="tooltip"></span></h3>
+                <h3 class="hndle">BMLT Server<span class="my-tooltip" title='<p>Visit <a target="_blank" href="https://doihavethebmlt.org/">BMLT Server Implementations</a> to find your BMLT server</p>'><span class="tooltipster-icon">(?)</span></span></h3>
                 <div class="inside">
                     <p>
                         <label for="root_server">BMLT Server URL: </label>
@@ -64,14 +64,28 @@ foreach ($all_users as $user) {
                 </div>
             </div>
             <div id="customquery" class="postbox">
-                <h3 class="hndle">Custom Query<span title='<p>This will be executed as part of the meeting search query.  This will override any setting in the Service Body dropdowns.' class="tooltip"></span></h3>
+                <div style="display:none;">
+                    <div id="customquery-tooltip-content"><p>
+                        This will be executed as part of the meeting search query.  This will override any setting in the Service Body dropdowns.
+                        <br/>You can get help formulating a query using your sites <a href="<?php echo Bread::getOption('root_server');?>/semantic">semantic interface</a>.</p>
+                    </div>
+                </div>
+                <h3 class="hndle">Custom Query<span data-tooltip-content="#customquery-tooltip-content" class="my-tooltip"><span class="tooltipster-icon">(?)</span></span></h3>
                 <div class="inside">
                     <label for="custom_query">Custom Query: </label>
                     <input type="text" id="custom_query" name="custom_query" size="100" value="<?php echo esc_html(Bread::getOption('custom_query')) ?>" />
                 </div>
             </div>
             <div id="extrameetingsdiv" class="postbox">
-                <h3 class="hndle">Include Extra Meetings<span title='<p>Include Extra Meetings from Another Service Body.</p><p>All Meetings from your BMLT Server are shown in the list.</p><p>The Meetings you select will be merged into your meeting list.</p><p><em>Note: Be sure to select all meetings for each group.</em>' class="tooltip"></span></h3>
+            <div style="display:none;">
+                    <div id="extrameetings-tooltip-content">
+                    <p>Include Extra Meetings from Another Service Body.</p>
+                    <p>All Meetings from your BMLT Server are shown in the list.</p>
+                    <p>The Meetings you select will be merged into your meeting list.</p>
+                    <p><em>Note: Be sure to select all meetings for each group.</em></p>
+                    </div>
+                </div>
+                <h3 class="hndle">Include Extra Meetings<span class="my-tooltip" data-tooltip-content="#extrameetings-tooltip-content"><span class="tooltipster-icon">(?)</span></span></h3>
                 <div class="inside">
                     <p class="ctrl_key" style="display:none; color: #00AD00;">Hold CTRL Key down to select multiple meetings.</p>
                     <select class="chosen-select" style="width: 100%;" data-placeholder="<?php
@@ -102,7 +116,7 @@ foreach ($all_users as $user) {
 
             </div>
             <div id="currentmeetinglistlinkdiv" class="postbox">
-                <h3 class="hndle">Current Meeting List Link<span title='<p>Share the "Current Meeting List Link" on your website, email, etc to generate this meeting list.</p>' class="tooltip"></span></h3>
+                <h3 class="hndle">Current Meeting List Link<span title='<p>Share the "Current Meeting List Link" on your website, email, etc to generate this meeting list.</p>' class="my-tooltip"><span class="tooltipster-icon">(?)</span></span></h3>
                 <div class="inside">
                     <p><a target="_blank" href='<?php echo home_url() ?>/?current-meeting-list=<?php echo $this->admin->loaded_setting ?>'><?php echo home_url() ?>/?current-meeting-list=<?php echo $this->admin->loaded_setting ?></a></p>
                 </div>
@@ -118,7 +132,7 @@ foreach ($all_users as $user) {
                 </div>
             </div>
             <div id="meetinglistcachediv" class="postbox">
-                <h3 class="hndle">Meeting List Cache<span title='<p>Meeting List data is cached (as database transient) to generate a Meeting List faster.</p><p><i>CACHE is DELETED when you Save Changes.</i></p><p><b>The meeting list will not reflect changes to BMLT until the cache expires or is deleted.</b></p>' class="tooltip"></span></h3>
+                <h3 class="hndle">Meeting List Cache<span title='<p>Meeting List data is cached (as database transient) to generate a Meeting List faster.</p><p><i>CACHE is DELETED when you Save Changes.</i></p><p><b>The meeting list will not reflect changes to BMLT until the cache expires or is deleted.</b></p>' class="my-tooltip"><span class="tooltipster-icon">(?)</span></span></h3>
                 <div class="inside">
                     <?php global $_wp_using_ext_object_cache; ?>
                     <?php if ($_wp_using_ext_object_cache) { ?>
@@ -127,7 +141,7 @@ foreach ($all_users as $user) {
                     <ul>
                         <li>
                             <label for="cache_time">Cache Time: </label>
-                            <input class="bmlt-input-field" id="cache_time" onKeyPress="return numbersonly(this, event)" type="number" min="0" max="999" size="3" maxlength="3" name="cache_time" value="<?php echo esc_html(Bread::getOption('cache_time')); ?>" />&nbsp;&nbsp;<i>0 - 999 Hours (0 = disable cache)</i>&nbsp;&nbsp;
+                            <input class="bmlt-input-field" id="cache_time" type="number" min="0" max="999" size="3" maxlength="3" name="cache_time" value="<?php echo esc_html(Bread::getOption('cache_time')); ?>" />&nbsp;&nbsp;<i>0 - 999 Hours (0 = disable cache)</i>&nbsp;&nbsp;
                         </li>
                     </ul>
                     <p><i><b>CACHE is DELETED when you Save Changes.</b></i></p>

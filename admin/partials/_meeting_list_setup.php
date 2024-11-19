@@ -11,7 +11,7 @@ global $wp_version;
 ?>
 <div id="poststuff">
     <div id="postbox-container" class="postbox-container">
-        <div id="accordion">
+        <div id="accordion" class="bmlt-accrodian">
             <h3 class="help-accordian"><strong>Read This Section First</strong></h3>
             <div>
                 <h2>Getting Started</h2>

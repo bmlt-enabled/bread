@@ -17,7 +17,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         <input type="hidden" name="pwsix_action" value="rename_setting" /><input type="hidden" name="current-meeting-list" value="<?php echo $this->admin->loaded_setting?>" /></p>
                         <?php wp_nonce_field('pwsix_rename_nonce', 'pwsix_rename_nonce'); ?>
                         <br>Configuration Name: <input type="text" name="setting_descr" value="<?php echo Bread::getSettingName($this->admin->loaded_setting)?>" />
-                        <?php submit_button(__('Save Configuration Name'), 'button-primary', 'submit', false); ?>
+                        <?php submit_button(__('Save Configuration Name'), 'button-primary', 'submit_settings_name', false); ?>
                     </form></p>
                     <?php if (count(Bread::getSettingNames())>1) {?>
                     <h4>Configuration Selection</h4>
@@ -29,7 +29,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         <?php } ?>
                         </select>
                         <?php wp_nonce_field('pwsix_load_nonce', 'pwsix_load_nonce'); ?>
-                        <?php submit_button(__('Load Configuration'), 'button-primary', 'submit', false); ?>
+                        <?php submit_button(__('Load Configuration'), 'button-primary', 'submit_change_settings', false); ?>
                     </form>
                     <?php }?>
                     <hr/>
@@ -38,7 +38,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         <?php wp_nonce_field('pwsix_settings_admin_nonce', 'pwsix_settings_admin_nonce'); ?>
                         <?php submit_button(__('Duplicate Current Configuration'), 'button-primary', 'duplicate', false); ?>
                         <?php if (1 < $this->admin->loaded_setting) {?>
-                            <?php submit_button(__('Delete Current Configuration'), 'button-primary', 'delete', false); ?>
+                            <?php submit_button(__('Delete Current Configuration'), 'button-primary', 'delete_settings', false); ?>
                         <?php } ?>
                     </form>
                 </div>

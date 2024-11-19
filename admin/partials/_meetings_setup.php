@@ -6,22 +6,14 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
     <div id="postbox-container" class="postbox-container">
         <div id="normal-sortables" class="meta-box-sortables ui-sortable">
             <div id="meetingsheaderdiv" class="postbox">
-                <?php $title = '
-                <p>Customize the Meeting Group Header to your specification.</p>
-                <p>The Meeting Group Header will contain the data from Group By.</p>
-                ';
-                ?>
-                <h3 class="hndle">Meeting Group [Column] Header<span title='<?php echo $title; ?>' class="tooltip"></span></h3>
-                <div class="inside">
-                    <div style="margin-bottom: 10px; padding:0;" id="accordion2">
-                        <h3 class="help-accordian">Instructions</h3>
-                        <div class="videocontent">
-                            <video id="my_video_1" style="width:100%;height:100%;" controls width="100%" height="100%" preload="auto">
-                                <source src="https://nameetinglist.org/videos/meeting_group_header.mp4" type="video/mp4">
-                                Your browser does not support HTML5 video.
-                            </video>
-                        </div>
+                <div style="display:none;">
+                    <div id="columnheader-tooltip-content">
+                    <p>Customize the Meeting Group Header to your specification.</p>
+                    <p>The Meeting Group Header will contain the data from Group By.</p>
                     </div>
+                </div>
+                <h3 class="hndle">Meeting Group [Column] Header<span data-tooltip-content="#columnheader-tooltip-content" class="my-tooltip"><span class="tooltipster-icon">(?)</span></span></h3>
+                <div class="inside">
                     <div>
                         <input name="suppress_heading" value="0" type="hidden">
                         <label for="suppress_heading">Suppress Heading: </label><input type="checkbox" name="suppress_heading" id="suppress_heading" value="1" <?php echo (Bread::getOption('suppress_heading') == '1' ? 'checked' : '') ?>>
@@ -30,12 +22,12 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                                 <td style="padding-right: 10px;">Font Size: <input min="4" max="18" step=".1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="header_font_size" name="header_font_size" value="<?php echo Bread::getOption('header_font_size'); ?>" /></td>
                                 <td style="padding-right: 10px;">
                                     <div class="theme" id="sp-light">
-                                        <label for="header_text_color">Text Color:</label> <input style="display: inline-block !important; width: 70px; margin-right: 5px;" type='text' id="header_text_color" name="header_text_color" value="<?php echo Bread::getOption('header_text_color'); ?>" />
+                                        <label for="header_text_color">Text Color:</label> <input style="display: inline-block !important; width: 70px; margin-right: 5px;" type='color' id="header_text_color" class="bmlt_color" name="header_text_color" value="<?php echo Bread::getOption('header_text_color'); ?>" />
                                     </div>
                                 </td>
                                 <td style="padding-right: 10px;">
                                     <div class="theme" id="sp-light">
-                                        <label for="header_background_color">Background Color:</label> <input style="display: inline-block !important; width: 70px; margin-right: 5px;" type='text' id="header_background_color" name="header_background_color" value="<?php echo Bread::getOption('header_background_color'); ?>" />
+                                        <label for="header_background_color">Background Color:</label> <input style="display: inline-block !important; width: 70px; margin-right: 5px;" type='color' id="header_background_color" class="bmlt_color" name="header_background_color" value="<?php echo Bread::getOption('header_background_color'); ?>" />
                                     </div>
                                 </td>
                                 <td style="padding-right: 10px;">
@@ -192,41 +184,29 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                             ?>
                         </select>
                     </div>
-                    <?php if (Bread::getOption('page_fold') == 'half' || Bread::getOption('page_fold') == 'full') {
-                        ?>
-                        <div class="meeting1_footer_div">
-                            <label for="meeting1_footer">Custom Footer: </label>
-                            <input name="meeting1_footer" type="text" size="50" value="<?php echo Bread::getOption('meeting1_footer'); ?>">
-                        </div>
-                    <?php }
-                    ?><p>
+                    <div class="meeting1_footer_div booklet">
+                        <label for="meeting1_footer">Custom Footer: </label>
+                        <input name="meeting1_footer" type="text" size="50" value="<?php echo Bread::getOption('meeting1_footer'); ?>">
+                    </div>
                 </div>
             </div>
             <div id="custommeetingtemplatediv" class="postbox">
-                <?php $title = '
-                <div style="width:550px; margin-bottom:20px;">
-                <p>The <strong>Meeting Template</strong> is a powerful and flexible method for customizing meetings using
-                HTML markup and BMLT field names.  The template is set-up once and never needs to be messed
-                with again.  Note: When changes are made to the Default Font Size or Line Height, the template
-                may need to be adjusted to reflect those changes.</p>
-                <p>Sample templates can be found in the editor drop down menu <strong>Meeting Template</strong>.</p>
-                <p>BMLT fields can be found in the editor drop down menu <strong>Meeting Template Fields</strong>.</p>
-                <p>The <strong>Default Font Size and Line Height</strong> will be used for the meeting template.</p>
-                <p>Font Size and Line Height can be overridden using HTML mark-up in the meeting text.</p>
-                </div>
-                ';
-                ?>
-                <h3 class="hndle">Meeting Template<span title='<?php echo $title; ?>' class="top-tooltip"></span></h3>
-                <div class="inside">
-                    <div style="margin-bottom: 10px; padding:0;" id="accordion3">
-                        <h3 class="help-accordian">Instructions</h3>
-                        <div class="videocontent">
-                            <video id="my_video_1" style="width:100%;height:100%;" controls width="100%" height="100%" preload="auto">
-                                <source src="https://nameetinglist.org/videos/nameetinglist.mp4" type="video/mp4">
-                                Your browser does not support HTML5 video.
-                            </video>
+                <div style="display:none;">
+                    <div id="meetingtemplate-tooltip-content">
+                        <div style="width:550px; margin-bottom:20px;">
+                            <p>The <strong>Meeting Template</strong> is a powerful and flexible method for customizing meetings using
+                            HTML markup and BMLT field names.  The template is set-up once and never needs to be messed
+                            with again.  Note: When changes are made to the Default Font Size or Line Height, the template
+                            may need to be adjusted to reflect those changes.</p>
+                            <p>Sample templates can be found in the editor drop down menu <strong>Meeting Template</strong>.</p>
+                            <p>BMLT fields can be found in the editor drop down menu <strong>Meeting Template Fields</strong>.</p>
+                            <p>The <strong>Default Font Size and Line Height</strong> will be used for the meeting template.</p>
+                            <p>Font Size and Line Height can be overridden using HTML mark-up in the meeting text.</p>
                         </div>
                     </div>
+                </div>
+                <h3 class="hndle">Meeting Template<span data-tooltip-content="#meetingtemplate-tooltip-content" class="my-tooltip"><span class="tooltipster-icon">(?)</span></span></h3>
+                <div class="inside">
                     <p>
                         Default Font Size: <input min="4" max="18" step=".1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="content_font_size" name="content_font_size" value="<?php echo Bread::getOption('content_font_size'); ?>" />&nbsp;&nbsp;
                         Line Height: <input min="1" max="3" step=".1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="content_line_height" type="text" maxlength="3" size="3" name="content_line_height" value="<?php echo Bread::getOption('content_line_height'); ?>" />&nbsp;&nbsp;
@@ -254,11 +234,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                 </div>
             </div>
             <div id="starttimeformatdiv" class="postbox">
-                <?php $title = '
-                <p>Format the <strong>Start Time</strong> (start_time) field in the <strong>Meeting Template</strong>.</p>
-                ';
-                ?>
-                <h3 class="hndle">Start Time Format<span title='<?php echo $title; ?>' class="top-tooltip"></span></h3>
+                <h3 class="hndle">Start Time Format<span title="Format the <strong>Start Time</strong> (start_time) field in the <strong>Meeting Template</strong>." class="my-tooltip"><span class="tooltipster-icon">(?)</span></span></h3>
                 <div class="inside">
                     <?php
                     $space = Bread::getOption('remove_space') == '1' ? '' : ' ';
@@ -321,30 +297,26 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                 </div>
             </div>
             <div id="getusedformatsdiv" class="postbox">
-                <?php $title = '
-                <p>Create a special interest meeting list.</p>
-                ';
-                ?>
-                <h3 class="hndle">Include Only This Meeting Format<span title='<?php echo $title; ?>' class="top-tooltip"></span></h3>
+                <h3 class="hndle">Include Only This Meeting Format<span title='Create a special interest meeting list.' class="my-tooltip"></span><span class="tooltipster-icon">(?)</span></span></h3>
                 <div class="inside">
-                    <?php if ($this->connected) { ?>
-                        <?php $used_formats = Bread_Bmlt::getFormatsForSelect(false); ?>
-                    <?php } ?>
                     <label for="used_format_1">Meeting Format: </label>
                     <select id="used_format_1" name="used_format_1">
-                        <?php if ($this->connected) { ?>
-                            <option value="">Not Used</option>
-                            <?php $countmax = count($used_formats); ?>
-                            <?php for ($count = 0; $count < $countmax; $count++) { ?>
-                                <?php if ($used_formats[$count]['id'] == Bread::getOption('used_format_1')) { ?>
-                                    <option selected="selected" value="<?php echo esc_html($used_formats[$count]['id']) ?>"><?php echo esc_html($used_formats[$count]['name_string']) ?></option>
-                                <?php } else { ?>
-                                    <option value="<?php echo esc_html($used_formats[$count]['id']) ?>"><?php echo esc_html($used_formats[$count]['name_string']) ?></option>
-                                <?php } ?>
-                            <?php } ?>
-                        <?php } else { ?>
-                            <option selected="selected" value="<?php echo Bread::getOption('used_format_1'); ?>"><?php echo 'Not Connected - Can not get Formats'; ?></option>
-                        <?php } ?>
+                        <?php
+                        if ($this->connected) {
+                            echo '<option value="">Not Used</option>';
+                            $used_formats = Bread_Bmlt::getFormatsForSelect(false);
+                            foreach($used_formats as $format) {
+                                $selected = '';
+                                if ($format['id'] == Bread::getOption('used_format_1')) {
+                                    $selected = 'selected="selected"';
+                                }
+                                $id = $format['id'];
+                                $str = $format['name_string'];
+                                echo "<option $selected value='$id'>$str</option>";
+                            }
+                        } else { ?>
+                            <option selected="selected" value="Not Connected"></option><?php
+                        } ?>
                     </select>
                 </div>
             </div>
@@ -403,7 +375,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     </p>
                     <?php if (Bread::getOption('page_fold') == 'half' || Bread::getOption('page_fold') == 'full') {
                         ?>
-                        <div class="meeting2_footer_div">
+                        <div class="meeting2_footer_div booklet">
                             <label for="meeting2_footer">Custom Footer: </label>
                             <input name="meeting2_footer" type="text" size="50" value="<?php echo Bread::getOption('meeting2_footer'); ?>">
                         </div>
@@ -434,17 +406,6 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         );
                         wp_editor(stripslashes(Bread::getOption('additional_list_template_content')), $editor_id, $settings);
                         ?>
-                    </div>
-                    <div class="inside">
-                        <div style="margin-bottom: 10px; padding:0;" id="accordion_additional_list">
-                            <h3 class="help-accordian">Instructions</h3>
-                            <div class="videocontent">
-                                <video id="my_video_1" style="width:100%;height:100%;" controls width="100%" height="100%" preload="auto">
-                                    <source src="https://nameetinglist.org/videos/show_area_service_meetings.mp4" type="video/mp4">
-                                    Your browser does not support HTML5 video.
-                                </video>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
