@@ -305,7 +305,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         if ($this->connected) {
                             echo '<option value="">Not Used</option>';
                             $used_formats = Bread_Bmlt::getFormatsForSelect(false);
-                            foreach($used_formats as $format) {
+                            foreach ($used_formats as $format) {
                                 $selected = '';
                                 if ($format['id'] == Bread::getOption('used_format_1')) {
                                     $selected = 'selected="selected"';
