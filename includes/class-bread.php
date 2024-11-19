@@ -497,7 +497,7 @@ class Bread
         if ($abbreviate) {
             $key = "WKDYS";
         }
-        return mb_convert_encoding(Bread::$instance->translate[$language][$key][$day], 'UTF-8', mb_list_encodings());
+        return Bread::$instance->translate[$language][$key][$day];
     }
     function fillUnsetOption($option, $default)
     {

@@ -99,12 +99,9 @@ foreach ($all_users as $user) {
                         <?php
                         if ($this->connected && Bread::getOption('extra_meetings_enabled') == 1) {
                             $extra_meetings_array = Bread_Bmlt::get_all_meetings();
-                            foreach ($extra_meetings_array as $extra_meeting) {
-                                $extra_meeting_x = explode('|||', $extra_meeting);
-                                $extra_meeting_id = trim(Bread::arraySafeGet($extra_meeting_x, 3));
-                                $extra_meeting_display = substr(Bread::arraySafeGet($extra_meeting_x), 0, 30) . ';' . Bread::arraySafeGet($extra_meeting_x, 1) . ';' . Bread::arraySafeGet($extra_meeting_x, 2); ?>
-                                <option <?php echo (Bread::getOption('extra_meetings') != '' && in_array($extra_meeting_id, Bread::getOption('extra_meetings')) ? 'selected="selected"' : '') ?> value="<?php echo $extra_meeting_id ?>"><?php echo esc_html($extra_meeting_display) ?></option>
-                                <?php
+                            foreach ($extra_meetings_array as $id => $descr) {
+                                $selected = Bread::getOption('extra_meetings') != '' && in_array($id, Bread::getOption('extra_meetings')) ? 'selected="selected"' : '';
+                                echo "<option $selected value='$id'>$descr</option>";
                             }
                         } ?>
                     </select>

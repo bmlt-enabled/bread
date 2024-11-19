@@ -38,7 +38,12 @@ class Bread_Bmlt
         }
         return wp_remote_get($url, $args);
     }
-    public static function get_all_meetings()
+    /**
+     * Gets all the meetins in the root server as an array with id=>string.  Used to select extra meetings.
+     *
+     * @return array
+     */
+    public static function get_all_meetings(): array
     {
         $lang = Bread_Bmlt::get_bmlt_server_lang();
         $result = Bread_Bmlt::get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults&data_field_key=weekday_tinyint,start_time,service_body_bigint,id_bigint,meeting_name,location_text,email_contact&sort_keys=meeting_name,service_body_bigint,weekday_tinyint,start_time");
@@ -55,7 +60,7 @@ class Bread_Bmlt
             }
 
             $value['start_time'] = date("g:iA", strtotime($value['start_time']));
-            $all_meetings[] = $value['meeting_name'].'||| ['.Bread::getday($value['weekday_tinyint'], true, $lang).'] ['.$value['start_time'].']||| ['.$area_name.']||| ['.$value['id_bigint'].']';
+            $all_meetings[$value['id_bigint']] = $value['meeting_name'].' - '.Bread::getday($value['weekday_tinyint'], true, $lang).' '.$value['start_time'].' in '.$area_name.' at '.$value['location_text'];
         }
 
         return $all_meetings;

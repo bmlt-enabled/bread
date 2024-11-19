@@ -1,31 +1,4 @@
-﻿var s = document.getElementById('extra_meetings').options,
-    l = [],
-    d = '';
-for(i = 0;i < s.length;i++) {
-    column = s[i].text.split(';');
-    for(j = 0;j < column.length;j++) {
-        if(!l[j]) {
-            l[j] = 0;
-        }
-        if(column[j].length > l[j]) {
-            l[j] = column[j].length;
-        }
-    }
-}
-for(i = 0;i < s.length;i++) {
-    column = s[i].text.split(';');
-    temp_line = '';
-    for(j = 0;j < column.length;j++) {
-        t = (l[j] - column[j].length);
-        d = '\u00a0';
-        for(k = 0;k < t;k++) {
-            d += '\u00a0';
-        }
-        temp_line += column[j] + d;
-    }
-    s[i].text = temp_line;
-}
-var $ml = jQuery.noConflict
+﻿var $ml = jQuery.noConflict
 jQuery(document).ready(
     function($ml) {
         $ml(".connecting").hide();
@@ -164,22 +137,6 @@ jQuery(document).ready(
                 }
             }
         );
-        $ml('#root-server-button').bind(
-            'click', function(e) {
-                e.preventDefault();
-                $ml('#root-server-video').bPopup(
-                    {
-                        transition: 'slideIn',
-                        closeClass: 'b-close',
-                        onClose: function() {
-                            for(var player in mejs.players) {
-                                mejs.players[player].media.stop();
-                            }
-                        }
-                    }
-                );
-            }
-        );
         $ml('.my-tooltip').each(function(i,e) {
         $ml(e).tooltipster(
             {
@@ -281,7 +238,6 @@ jQuery(document).ready(
         );
         $ml("#subgrouping").click(
             function() {
-                var user_defined_sub = false;
                 $ml('.user_defined_headings').hide();
                 if($ml("#meeting_sort").val() === 'user_defined') {
                     $ml('.user_defined_headings').show();
@@ -293,105 +249,41 @@ jQuery(document).ready(
                 }
             }
         );
-        var time_clock_val = $ml('input[name=time_clock]:checked').val();
-        if(time_clock_val == '24') {
-            $ml('#option3').hide();
-            $ml('label[for=option3]').hide();
-        } else if(time_clock_val == '24fr') {
-            $ml('#option3').hide();
-            $ml('label[for=option3]').hide();
-        } else {
-            $ml('#option3').show();
-            $ml('label[for=option3]').show();
+        function calcTimeDisplay(hasEndTime) {
+            let clock = $ml('input[name=time_clock]:checked').val();
+            let removeSpaces = $ml('input[name=remove_space]:checked').val()
+            let startTime = '8:00 PM';
+            let endTime = '9:00 PM';
+            if (clock == '24') {
+                startTime = '20:00';
+                endTime = '21:00';
+            } else if (clock == '24fr') {
+                startTime = '20h00';
+                endTime = '21h00';
+            }
+            if (hasEndTime==2) {
+                startTime += ' - '+endTime;
+            }
+            if (hasEndTime==3) {
+                startTime = clock=='12' ? '8 - 9' : '';
+            }
+            if (removeSpaces!="0") {
+                startTime = startTime.replaceAll(' ','');
+            }
+            return startTime;
         }
-        $ml("#two").click(
-            function() {
-                var time_clock_val = $ml('input[name=time_clock]:checked').val();
-                if(time_clock_val == '24') {
-                    $ml('label[for=option1]').html('20:00');
-                    $ml('label[for=option2]').html('20:00 - 21:00');
-                    $ml('#option3').hide();
-                    $ml('label[for=option3]').html('');
-                } else if(time_clock_val == '24fr') {
-                    $ml('label[for=option1]').html('20h00');
-                    $ml('label[for=option2]').html('20h00 - 21h00');
-                    $ml('#option3').hide();
-                    $ml('label[for=option3]').html('');
-                } else {
-                    $ml('#option3').show();
-                    $ml('label[for=option1]').html('8:00 PM');
-                    $ml('label[for=option2]').html('8:00 PM - 9:00 PM');
-                    $ml('label[for=option3]').html('8 - 9 PM');
-                }
-            }
-        );
-        $ml("#four").click(
-            function() {
-                var time_clock_val = $ml('input[name=time_clock]:checked').val();
-                if(time_clock_val == '24') {
-                    $ml('label[for=option1]').html('20:00');
-                    $ml('label[for=option2]').html('20:00-21:00');
-                    $ml('#option3').hide();
-                    $ml('label[for=option3]').html('');
-                } else if(time_clock_val == '24fr') {
-                    $ml('#option3').hide();
-                    $ml('label[for=option1]').html('20h00');
-                    $ml('label[for=option2]').html('20h00-21h00');
-                    $ml('#option3').hide();
-                    $ml('label[for=option3]').html('');
-                } else {
-                    $ml('#option3').show();
-                    $ml('label[for=option1]').html('8:00PM');
-                    $ml('label[for=option2]').html('8:00PM-9:00PM');
-                    $ml('label[for=option3]').html('8-9PM');
-                }
-            }
-        );
-        $ml("#time_clock12").click(
-            function() {
-                var remove_space_val = $ml('input[name=remove_space]:checked').val();
-                $ml('#option3').show();
-                $ml('label[for=option3]').show();
-                if(remove_space_val == '1') {
-                    $ml('label[for=option1]').html('8:00PM');
-                    $ml('label[for=option2]').html('8:00PM-9:00PM');
-                    $ml('label[for=option3]').html('8-9PM');
-                } else {
-                    $ml('label[for=option1]').html('8:00 PM');
-                    $ml('label[for=option2]').html('8:00 PM - 9:00 PM');
-                    $ml('label[for=option3]').html('8 - 9 PM');
-                }
-            }
-        );
-        $ml("#time_clock24").click(
-            function() {
-                var remove_space_val = $ml('input[name=remove_space]:checked').val();
+        function setTimeOptionText() {
+            $ml('label[for=option1]').html(calcTimeDisplay(1));
+            $ml('label[for=option2]').html(calcTimeDisplay(2));
+            $ml('label[for=option3]').html(calcTimeDisplay(3));
+            if ($ml('input[name=time_clock]:checked').val()!='12') {
+                if ($ml('input[name=time_clock]:checked').val()==3)
+                    $ml('#option2').prop('checked', true);
                 $ml('#option3').hide();
-                $ml('label[for=option3]').html('');
-                if(remove_space_val == '1') {
-                    $ml('label[for=option1]').html('20:00');
-                    $ml('label[for=option2]').html('20:00-21:00');
-                } else {
-                    $ml('label[for=option1]').html('20:00');
-                    $ml('label[for=option2]').html('20:00 - 21:00');
-                }
-            }
-        );
-        $ml("#time_clock24fr").click(
-            function() {
-                var remove_space_val = $ml('input[name=remove_space]:checked').val();
-                $ml('#option3').hide();
-                $ml('label[for=option3]').html('');
-                if(remove_space_val == '1') {
-                    $ml('label[for=option1]').html('20h00');
-                    $ml('label[for=option2]').html('20h00-21h00');
-                } else {
-                    $ml('label[for=option1]').html('20h00');
-                    $ml('label[for=option2]').html('20h00 - 21h00');
-                }
-            }
-        );
-        var page_fold_val = $ml('input[name=page_fold]:checked').val();
+            } else $ml('#option3').show();
+        };
+        setTimeOptionText();
+        $ml('.recalcTimeLabel').on('click', setTimeOptionText);
         function bookletControlsShowHide() {
             $ml('#landscape').prop("checked", true);
             $ml('.booklet').show();
@@ -447,22 +339,6 @@ jQuery(document).ready(
                 $ml(".ctrl_key").hide();
             }
         );
-        /*
-            $ml("#extra_meetings").select2({
-            //tags: "true",
-            placeholder: "Select Meetings",
-            containerCssClass: 'tpx-select2-container select2-container-lg',
-            dropdownCssClass: 'tpx-select2-drop',
-            dropdownAutoWidth: true,
-            allowClear: true,
-            width: "100%",
-            /* dropdownParent: $ml('.exactCenter'), */
-        /*     minimumResultsForSearch: 1, */
-        /* closeOnSelect: false, */
-        /*         escapeMarkup: function (markup) { return markup; }
-            }).maximizeSelect2Height({cushion: 100});
-            $ml('.select2-choices').css('background-image','none').css('background-color','#111111 !important');
-            */
         $ml("#meeting-list-tabs").tabs(
             {
                 active: 0

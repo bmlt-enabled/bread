@@ -236,56 +236,34 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
             <div id="starttimeformatdiv" class="postbox">
                 <h3 class="hndle">Start Time Format<span title="Format the <strong>Start Time</strong> (start_time) field in the <strong>Meeting Template</strong>." class="my-tooltip"><span class="tooltipster-icon">(?)</span></span></h3>
                 <div class="inside">
-                    <?php
-                    $space = Bread::getOption('remove_space') == '1' ? '' : ' ';
-                    $end_time_2 = "9" . $space . "PM";
-                    $start_time_2 = "8" . $space;
-                    if (Bread::getOption('time_clock') == '12') {
-                        $start_time = "8:00" . $space . "PM";
-                        $end_time = "9:00" . $space . "PM";
-                    } elseif (Bread::getOption('time_clock') == '24fr') {
-                        $start_time = "20h00";
-                        $end_time = "21h00";
-                    } else {
-                        $start_time = "20:00";
-                        $end_time = "21:00";
-                    }
-                    ?>
                     <table>
                         <tr>
                             <td style="padding-right: 30px;">
-                                <div><input class="mlg" id="time_clock12" type="radio" name="time_clock" value="12" <?php echo (Bread::getOption('time_clock') == '12' || Bread::getOption('time_clock') == '' ? 'checked' : '') ?>><label for="time_clock">12 Hour</label></div>
+                                <div><input class="mlg recalcTimeLabel" id="time_clock12" type="radio" name="time_clock" value="12" <?php echo (Bread::getOption('time_clock') == '12' || Bread::getOption('time_clock') == '' ? 'checked' : '') ?>><label for="time_clock">12 Hour</label></div>
                             </td>
                             <td style="padding-right: 30px;">
                                 <div><input class="mlg" id="option1" type="radio" name="time_option" value="1" <?php echo (Bread::getOption('time_option') == '1' || Bread::getOption('time_option') == '' ? 'checked' : '') ?>><label for="option1"><?php echo $start_time ?></label></div>
                             </td>
                             <td style="padding-right: 30px;">
-                                <?php if (Bread::getOption('remove_space') == '0' || Bread::getOption('remove_space') == '') { ?>
-                                    <div><input class="mlg" id="two" type="radio" name="remove_space" value="0" checked><label for="two">Add White Space</label></div>
-                                <?php } else { ?>
-                                    <div><input class="mlg" id="two" type="radio" name="remove_space" value="0"><label for="two">Add White Space</label></div>
-                                <?php } ?>
+                                <?php $checked = Bread::getOption('remove_space') == '0' || Bread::getOption('remove_space') == '' ? 'checked' : ''; ?>
+                                <div><input class="mlg recalcTimeLabel" id="two" type="radio" name="remove_space" value="0" <?php echo $checked; ?>><label for="two">Add White Space</label></div>
                             </td>
                         </tr>
                         <tr>
                             <td style="padding-right: 30px;">
-                                <div><input class="mlg" id="time_clock24" type="radio" name="time_clock" value="24" <?php echo (Bread::getOption('time_clock') == '24' ? 'checked' : '') ?>><label for="time_clock">24 Hour</label></div>
+                                <div><input class="mlg recalcTimeLabel" id="time_clock24" type="radio" name="time_clock" value="24" <?php echo (Bread::getOption('time_clock') == '24' ? 'checked' : '') ?>><label for="time_clock">24 Hour</label></div>
                             </td>
                             <td style="padding-right: 30px;">
                                 <div><input class="mlg" id="option2" type="radio" name="time_option" value="2" <?php echo (Bread::getOption('time_option') == '2' ? 'checked' : '') ?>><label for="option2"><?php echo $start_time ?><?php echo $space ?>-<?php echo $space ?><?php echo $end_time ?></label></div>
                             </td>
                             <td style="padding-right: 30px;">
-                                <?php if (Bread::getOption('remove_space') == '1') { ?>
-                                    <div><input class="mlg" id="four" type="radio" name="remove_space" value="1" checked><label for="four">Remove White Space</label></div>
-                                <?php } else { ?>
-                                    <div><input class="mlg" id="four" type="radio" name="remove_space" value="1"><label for="four">Remove White Space</label></div>
-                                <?php } ?>
+                                <div><input class="mlg recalcTimeLabel" id="four" type="radio" name="remove_space" value="1" <?php echo (Bread::getOption('remove_space') == '1') ? 'checked' : '';?>><label for="four">Remove White Space</label></div>
                             </td>
                         </tr>
                         </tr>
                         <tr>
                             <td style="padding-right: 30px;">
-                                <div><input class="mlg" id="time_clock24fr" type="radio" name="time_clock" value="24fr" <?php echo (Bread::getOption('time_clock') == '24fr' ? 'checked' : '') ?>><label for="time_clock">24 Hour French</label></div>
+                                <div><input class="mlg recalcTimeLabel" id="time_clock24fr" type="radio" name="time_clock" value="24fr" <?php echo (Bread::getOption('time_clock') == '24fr' ? 'checked' : '') ?>><label for="time_clock">24 Hour French</label></div>
                             </td>
                             <td style="padding-right: 30px;">
                                 <div><input class="mlg" id="option3" type="radio" name="time_option" value="3" <?php echo (Bread::getOption('time_option') == '3' ? 'checked' : '') ?>><label for="option3"><?php echo $start_time_2 ?><?php echo $space ?>-<?php echo $space ?><?php echo $end_time_2 ?></label></div>

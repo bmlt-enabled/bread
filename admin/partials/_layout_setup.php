@@ -176,7 +176,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                 <div class="inside">
                     <div id="includeprotection" style="border-top: 1px solid #EEE;">
                         <input name="include_protection" value="0" type="hidden">
-                        <input type="checkbox" name="include_protection" value="1" <?php echo (Bread::getOption('include_protection') == '1' ? 'checked' : '') ?>>
+                        <input type="checkbox" name="include_protection" value="1" <?php echo (Bread::getOption('include_protection') == '1' ? 'checked' : '') ?>>Enable Protection
                         <div style="overflow: none; height: 0px;background: transparent;" data-description="dummyPanel for Chrome auto-fill issue">
                             <input type="text" style="height:0;width:0; background: transparent; color: transparent;border: none;" data-description="dummyUsername">
                             <input type="password" style="height:0;width:0;background: transparent; color: transparent;border: none;" data-description="dummyPassword">
