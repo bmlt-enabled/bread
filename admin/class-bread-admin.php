@@ -52,13 +52,18 @@ class Bread_Admin
     var $maxSetting = 1;
     var $loaded_setting = 1;
     var $bmltEnabled_admin;
-    public function __construct($plugin_name, $version, $bmltEnabled_admin)
+    private Bread $bread;
+    public function __construct($plugin_name, $version, $bmltEnabled_admin, $bread)
     {
         $this->plugin_name = $plugin_name;
         $this->version = $version;
         $this->bmltEnabled_admin = $bmltEnabled_admin;
+        $this->bread = $bread;
     }
-
+    public function get_bread_instance(): Bread
+    {
+        return $this->bread;
+    }
     /**
      * Register the stylesheets for the admin area.
      *
@@ -168,14 +173,14 @@ class Bread_Admin
         global $my_admin_page;
         $screen = get_current_screen();
         if ($screen->id == $my_admin_page) {
-            $root_server = Bread::getOption('root_server');
+            $root_server = $this->bread->getOption('root_server');
             if ($root_server == '') {
                 echo '<div id="message" class="error"><p>Missing BMLT Server in settings for bread.</p>';
                 $url = admin_url('options-general.php?page=class-bread-admin.php');
                 echo "<p><a href='$url'>Settings</a></p>";
                 echo '</div>';
-            } else if (!Bread::temp_dir()) {
-                echo '<div id="message" class="error"><p>' . Bread::temp_dir() . ' temporary directory is not writable.</p>';
+            } else if (!$this->bread->temp_dir()) {
+                echo '<div id="message" class="error"><p>' . $this->bread->temp_dir() . ' temporary directory is not writable.</p>';
                 $url = admin_url('options-general.php?page=class-bread-admin.php');
                 echo "<p><a href='$url'>Settings</a></p>";
                 echo '</div>';
@@ -185,7 +190,6 @@ class Bread_Admin
 
     function pwsix_process_rename_settings()
     {
-        Bread::getMLOptions(Bread::getRequestedSetting());
         if (isset($_POST['bmltmeetinglistsave']) && $_POST['bmltmeetinglistsave'] == 'Save Changes') {
             return;
         }
@@ -198,15 +202,14 @@ class Bread_Admin
         if (! $this->current_user_can_modify()) {
             return;
         }
-
-        Bread::renameSetting($this->loaded_setting, sanitize_text_field($_POST['setting_descr']));
+        $this->bread->getMLOptions($this->bread->getRequestedSetting());
+        $this->bread->renameSetting($this->loaded_setting, sanitize_text_field($_POST['setting_descr']));
     }
     /**
      * Process a settings export that generates a .json file of the shop settings
      */
     function pwsix_process_settings_export()
     {
-        Bread::getMLOptions(Bread::getRequestedSetting());
         if (isset($_POST['bmltmeetinglistsave']) && $_POST['bmltmeetinglistsave'] == 'Save Changes') {
             return;
         }
@@ -219,13 +222,13 @@ class Bread_Admin
         if (! current_user_can('manage_bread')) {  // TODO: Is this necessary? Why not let the user make a copy
             return;
         }
-
-        $blogname = str_replace(" - ", " ", get_option('blogname').'-'.Bread::getSettingName($this->loaded_setting));
+        $this->bread->getMLOptions($this->bread->getRequestedSetting());
+        $blogname = str_replace(" - ", " ", get_option('blogname').'-'.$this->bread->getSettingName($this->loaded_setting));
         $blogname = str_replace(" ", "-", $blogname);
         $date = date("m-d-Y");
         $blogname = trim(preg_replace('/[^a-z0-9]+/', '-', strtolower($blogname)), '-');
         $json_name = $blogname.$date.".json"; // Naming the filename will be generated.
-        $settings = get_option(Bread::getOptionsName());
+        $settings = get_option($this->bread->getOptionsName());
         foreach ($settings as $key => $value) {
             $value = maybe_unserialize($value);
             $need_options[$key] = $value;
@@ -247,7 +250,7 @@ class Bread_Admin
         if (in_array('administrator', $user->roles)) {
             return true;
         }
-        $authors_safe = Bread::getOption('authors');
+        $authors_safe = $this->bread->getOption('authors');
         if (!is_array($authors_safe) || empty($authors_safe)) {
             return true;
         }
@@ -268,7 +271,6 @@ class Bread_Admin
      */
     function pwsix_process_settings_import()
     {
-        Bread::getMLOptions(Bread::getRequestedSetting());
         if (isset($_POST['bmltmeetinglistsave']) && $_POST['bmltmeetinglistsave'] == 'Save Changes') {
             return;
         }
@@ -281,6 +283,7 @@ class Bread_Admin
         if (! current_user_can('manage_bread')) {
             return;
         }
+        $this->bread->getMLOptions($this->bread->getRequestedSetting());
         $file_name = $_FILES['import_file']['name'];
         $tmp = explode('.', $file_name);
         $extension = end($tmp);
@@ -301,48 +304,8 @@ class Bread_Admin
         }
         $settings = json_decode($encode_options, true);
         $settings['authors'] = array(wp_get_current_user()->ID);
-        update_option(Bread::getOptionsName(), $settings);
+        update_option($this->bread->getOptionsName(), $settings);
         setcookie('pwsix_action', "import_settings", time()+10);
-        setcookie('current-meeting-list', $this->loaded_setting, time()+10);
-        wp_safe_redirect(admin_url('?page=class-bread-admin.php'));
-    }
-
-    /**
-     * Process a default settings
-     */
-    function pwsix_process_default_settings()
-    {
-        Bread::getMLOptions(Bread::getRequestedSetting());
-        if (! current_user_can('manage_bread')
-            || (isset($_POST['bmltmeetinglistsave']) && $_POST['bmltmeetinglistsave'] == 'Save Changes' )
-        ) {
-            return;
-        } elseif (isset($_REQUEST['pwsix_action']) && 'three_column_default_settings' == $_REQUEST['pwsix_action']) {
-            if (! wp_verify_nonce($_POST['pwsix_submit_three_column'], 'pwsix_submit_three_column')) {
-                die('Whoops! There was a problem with the data you posted. Please go back and try again.');
-            }
-            $import_file = plugin_dir_path(__FILE__) . "includes/three_column_settings.json";
-        } elseif (isset($_REQUEST['pwsix_action']) && 'four_column_default_settings' == $_REQUEST['pwsix_action']) {
-            if (! wp_verify_nonce($_POST['pwsix_submit_four_column'], 'pwsix_submit_four_column')) {
-                die('Whoops! There was a problem with the data you posted. Please go back and try again.');
-            }
-            $import_file = plugin_dir_path(__FILE__) . "includes/four_column_settings.json";
-        } elseif (isset($_REQUEST['pwsix_action']) && 'booklet_default_settings' == $_REQUEST['pwsix_action']) {
-            if (! wp_verify_nonce($_POST['pwsix_submit_booklet'], 'pwsix_submit_booklet')) {
-                die('Whoops! There was a problem with the data you posted. Please go back and try again.');
-            }
-            $import_file = plugin_dir_path(__FILE__) . "includes/booklet_settings.json";
-        } else {
-            return;
-        }
-        if (empty($import_file)) {
-            wp_die(__('Error importing default settings file'));
-        }
-        $encode_options = file_get_contents($import_file);
-        $settings = json_decode($encode_options, true);
-        $settings['authors'] = Bread::getOption('authors');
-        update_option(Bread::getOptionsName(), $settings);
-        setcookie('pwsix_action', "default_settings_success", time()+10);
         setcookie('current-meeting-list', $this->loaded_setting, time()+10);
         wp_safe_redirect(admin_url('?page=class-bread-admin.php'));
     }
@@ -368,7 +331,7 @@ class Bread_Admin
          */
     function save_admin_options()
     {
-        Bread::updateOptions();
+        $this->bread->updateOptions();
     }
     public function getLatestRootVersion()
     {
@@ -389,13 +352,13 @@ class Bread_Admin
                 'cookies' => $cookies,
             );
             if (isset($this->options['user_agent'])
-                && Bread::getOption('user_agent') != 'None'
+                && $this->bread->getOption('user_agent') != 'None'
             ) {
                 $args['headers'] = array(
-                    'User-Agent' => Bread::getOption('user_agent')
+                    'User-Agent' => $this->bread->getOption('user_agent')
                 );
             }
-            if (Bread::getOption('sslverify') == '1') {
+            if ($this->bread->getOption('sslverify') == '1') {
                 $args['sslverify'] = false;
             }
             return wp_remote_get($url, $args);
@@ -433,7 +396,6 @@ class Bread_Admin
     }
     function pwsix_process_settings_admin()
     {
-            Bread::getMLOptions(Bread::getRequestedSetting());
         if (isset($_POST['bmltmeetinglistsave']) && $_POST['bmltmeetinglistsave'] == 'Save Changes') {
             return;
         }
@@ -443,6 +405,7 @@ class Bread_Admin
         if (! wp_verify_nonce($_POST['pwsix_settings_admin_nonce'], 'pwsix_settings_admin_nonce')) {
             return;
         }
+        $this->bread->getMLOptions($this->bread->getRequestedSetting());
         if (isset($_POST['delete'])) {
             if (!$this->current_user_can_modify()) {
                 return;
@@ -450,21 +413,21 @@ class Bread_Admin
             if ($this->loaded_setting == 1) {
                 return;
             }
-            Bread::deleteSetting($this->loaded_setting);
-            Bread::getMLOptions(1);
+            $this->bread->deleteSetting($this->loaded_setting);
+            $this->bread->getMLOptions(1);
             $this->loaded_setting = 1;
-            Bread::setRequestedSetting(1);
+            $this->bread->setRequestedSetting(1);
         } elseif (isset($_POST['duplicate'])) {
             if (!$this->current_user_can_create()) {
                 return;
             }
             $id = $this->maxSetting + 1;
-            Bread::setOptionsName(Bread::generateOptionName($id));
-            Bread::setOption('authors', array());
+            $this->bread->setOptionsName($this->bread->generateOptionName($id));
+            $this->bread->setOption('authors', array());
             $this->save_admin_options();
-            Bread::renameSetting($id, 'Setting '.$id);
+            $this->bread->renameSetting($id, 'Setting '.$id);
             $this->maxSetting = $id;
-            Bread::getMLOptions($id);
+            $this->bread->getMLOptions($id);
         }
     }
 }

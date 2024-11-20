@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Central storage and management of the meeting formats. Also generates the HTML table of formats for inclusion in the PDF.
  * We attempt to do as much lazy loading as possible, to minimize (remote) calls to the root server.
@@ -35,17 +36,20 @@ class Bread_FormatsManager
      * @var array|null
      */
     private array|null $wheelchairFormat = array();
+
+    private Bread_bmlt $bmlt;
     /**
      * The info regarding the formats used is available already during construction because it is returned by the initial root server query.
      *
      * @param array $usedFormats The array of formats actually used by meetings in the meeting list.
      * @param string $lang The language of the formats.
      */
-    function __construct(array &$usedFormats, string $lang)
+    function __construct(array &$usedFormats, string $lang, Bread_bmlt $bmlt)
     {
         $this->usedFormats[$lang] = $usedFormats;
         $this->hashedFormats[$lang] = $this->hashFormats($usedFormats);
         $this->defaultLang = $lang;
+        $this->bmlt = $bmlt;
     }
     /**
      * Helper functtion to create a key=>value array of formats for convenient lookup
@@ -72,8 +76,8 @@ class Bread_FormatsManager
         if (isset($this->allFormats[$lang])) {
             return;
         }
-        $this->allFormats[$lang] = Bread_Bmlt::get_formats_by_language($lang);
-        Bread_Bmlt::sortBySubkey($this->allFormats[$lang], 'key_string');
+        $this->allFormats[$lang] = $this->bmlt->get_formats_by_language($lang);
+        $this->bmlt->sortBySubkey($this->allFormats[$lang], 'key_string');
         $this->hashedFormats[$lang] = $this->hashFormats($this->allFormats[$lang]);
     }
     /**
@@ -178,7 +182,7 @@ class Bread_FormatsManager
         if (empty($formats)) {
             return '';
         }
-        $data = "<table style='width:100%;font-size:".$fontSize."pt;line-height:".$lineHeight.";'>";
+        $data = "<table style='width:100%;font-size:" . $fontSize . "pt;line-height:" . $lineHeight . ";'>";
         foreach ($formats as $format) {
             $data .= "<tr><td style='border-bottom:1px solid #555;width:8%;vertical-align:top;'><span style='font-size:" . $fontSize . "pt;line-height:" . $lineHeight . ";font-weight:bold;'>" . $format['key_string'] . "</span></td>";
             $data .= "<td style='border-bottom:1px solid #555;width:92%;vertical-align:top;'><span style='font-size:" . $fontSize . "pt;line-height:" . $lineHeight . ";'>(" . $format['name_string'] . ") " . $format['description_string'] . "</span></td></tr>";
@@ -201,18 +205,18 @@ class Bread_FormatsManager
         if (empty($formats)) {
             return '';
         }
-        $data = "<table style='width:100%;font-size:".$fontSize."pt;line-height:".$lineHeight.";'>";
+        $data = "<table style='width:100%;font-size:" . $fontSize . "pt;line-height:" . $lineHeight . ";'>";
         for ($count = 0; $count < count($formats); $count++) {
             $data .= '<tr>';
-            $data .= "<td style='font-size:".$fontSize."pt;line-height:".$lineHeight.";padding-left:4px;border:1px solid #555;border-right:0;width:12%;vertical-align:top;'>".$formats[$count]['key_string']."</td>";
-            $data .= "<td style='font-size:".$fontSize."pt;line-height:".$lineHeight.";border: 1px solid #555;border-left:0;width:38%;vertical-align:top;'>".$formats[$count]['name_string']."</td>";
+            $data .= "<td style='font-size:" . $fontSize . "pt;line-height:" . $lineHeight . ";padding-left:4px;border:1px solid #555;border-right:0;width:12%;vertical-align:top;'>" . $formats[$count]['key_string'] . "</td>";
+            $data .= "<td style='font-size:" . $fontSize . "pt;line-height:" . $lineHeight . ";border: 1px solid #555;border-left:0;width:38%;vertical-align:top;'>" . $formats[$count]['name_string'] . "</td>";
             $count++;
             if ($count >= count($formats)) {
-                $data .= "<td style='font-size:".$fontSize."pt;line-height:".$lineHeight.";padding-left:4px;border: 1px solid #555;border-right:0;width:12%;vertical-align:top;'></td>";
-                $data .= "<td style='font-size:".$fontSize."pt;line-height:".$lineHeight.";border: 1px solid #555;border-left:0;width:38%;vertical-align:top;'></td>";
+                $data .= "<td style='font-size:" . $fontSize . "pt;line-height:" . $lineHeight . ";padding-left:4px;border: 1px solid #555;border-right:0;width:12%;vertical-align:top;'></td>";
+                $data .= "<td style='font-size:" . $fontSize . "pt;line-height:" . $lineHeight . ";border: 1px solid #555;border-left:0;width:38%;vertical-align:top;'></td>";
             } else {
-                $data .= "<td style='font-size:".$fontSize."pt;line-height:".$lineHeight.";padding-left:4px;border: 1px solid #555;border-right:0;width:12%;vertical-align:top;'>".$formats[$count]['key_string']."</td>";
-                $data .= "<td style='font-size:".$fontSize."pt;line-height:".$lineHeight.";border: 1px solid #555;border-left:0;width:38%;vertical-align:top;'>".$formats[$count]['name_string']."</td>";
+                $data .= "<td style='font-size:" . $fontSize . "pt;line-height:" . $lineHeight . ";padding-left:4px;border: 1px solid #555;border-right:0;width:12%;vertical-align:top;'>" . $formats[$count]['key_string'] . "</td>";
+                $data .= "<td style='font-size:" . $fontSize . "pt;line-height:" . $lineHeight . ";border: 1px solid #555;border-left:0;width:38%;vertical-align:top;'>" . $formats[$count]['name_string'] . "</td>";
             }
             $data .= "</tr>";
         }

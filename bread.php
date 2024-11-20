@@ -60,7 +60,7 @@ register_deactivation_hook(__FILE__, 'deactivate_bread');
  * admin-specific hooks, and public-facing site hooks.
  */
 require plugin_dir_path(__FILE__) . 'includes/class-bread.php';
-
+require plugin_dir_path(__FILE__) . 'includes/class-bread-bmlt.php';
 /**
  * Begins execution of the plugin.
  *

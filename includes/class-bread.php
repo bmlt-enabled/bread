@@ -64,36 +64,41 @@ class Bread
     private $maxSetting = 1;
     private $requested_setting = 1;
     private $protocol;
-    private static $instance = null;
     private $tmp_dir;
     private $options = array();
     private $translate = array();
-    public static function temp_dir()
+    private $generating_meeting_list = false;
+    private Bread_Bmlt $bread_bmlt;
+    public function bmlt(): Bread_Bmlt
     {
-        return Bread::$instance->tmp_dir;
+        return $this->bread_bmlt;
     }
-    public static function getOption($name): mixed
+    public function temp_dir()
     {
-        if (!isset(Bread::$instance->options[$name])) {
+        return $this->tmp_dir;
+    }
+    public function getOption($name): mixed
+    {
+        if (!isset($this->options[$name])) {
             return '';
         }
-        return Bread::$instance->options[$name];
+        return $this->options[$name];
     }
-    public static function emptyOption($name)
+    public function emptyOption($name)
     {
-        return empty(Bread::$instance->options[$name]);
+        return empty($this->options[$name]);
     }
-    public static function getOptionForDisplay($option, $default = '')
+    public function getOptionForDisplay($option, $default = '')
     {
-        return empty(Bread::$instamce->options[$option]) ? $default : esc_html(Bread::$instance->options[$option]);
+        return empty($this->options[$option]) ? $default : esc_html($this->options[$option]);
     }
-    public static function setOption($name, $value)
+    public function setOption($name, $value)
     {
-        return Bread::$instance->options[$name] = $value;
+        return $this->options[$name] = $value;
     }
-    public static function appendOption($name, $value)
+    public function appendOption($name, $value)
     {
-        return Bread::$instance->options[$name][] = $value;
+        return $this->options[$name][] = $value;
     }
     private static function setup_temp_dir()
     {
@@ -126,9 +131,9 @@ class Bread
             }
         }
     }
-    public static function removeTempDir()
+    public function removeTempDir()
     {
-        Bread::rrmdir(Bread::temp_dir());
+        Bread::rrmdir($this->temp_dir());
     }
     private static function rrmdir($dir)
     {
@@ -150,14 +155,13 @@ class Bread
     {
         if (isset($holder['bread_preview_settings'])) {
             $this->allSettings = array();
-            $this->allSettings[0] = $holder['bread_preview_settings'];
-            $this->allSettings[1] = "Preview Setting";
+            $this->allSettings[1] = $holder['bread_preview_settings'];
         } else {
             $this->allSettings = get_option(Bread::SETTINGS);
         }
         if ($this->allSettings === false) {
             $this->allSettings = array();
-            $this->allSettings[1] = "Default Setting";
+            $this->allSettings[1] = array();
             $this->maxSetting = 1;
         } else {
             foreach ($this->allSettings as $key => $value) {
@@ -168,28 +172,28 @@ class Bread
         }
         return isset($holder['current-meeting-list']) ? intval($holder['current-meeting-list']) : 1;
     }
-    public static function renameSetting($id, $name)
+    public function renameSetting($id, $name)
     {
-        Bread::$instance->allSettings[$id] = $name;
-        update_option(Bread::SETTINGS, Bread::$instance->allSettings);
+        $this->allSettings[$id] = $name;
+        update_option(Bread::SETTINGS, $this->allSettings);
     }
-    public static function getSettingName($id)
+    public function getSettingName($id)
     {
-        return Bread::$instance->allSettings[$id];
+        return $this->allSettings[$id];
     }
-    public static function getSettingNames()
+    public function getSettingNames()
     {
-        return Bread::$instance->allSettings;
+        return $this->allSettings;
     }
-    public static function deleteSetting($id)
+    public function deleteSetting($id)
     {
-        unset(Bread::$instance->allSettings[$id]);
-        update_option(Bread::SETTINGS, Bread::$instance->allSettings);
+        unset($this->allSettings[$id]);
+        update_option(Bread::SETTINGS, $this->allSettings);
     }
     private function getCurrentMeetingListHolder()
     {
         $ret = array();
-        if (isset(($_REQUEST['preview-meeting-list']))) {
+        if (isset(($_REQUEST['preview-meeting-list'])) && !is_admin()) {
             session_start();
             $ret['bread_preview_settings'] = $_SESSION['bread_preview_settings'];
             $ret['current-meeting-list'] = 1;
@@ -200,24 +204,24 @@ class Bread
         } elseif (isset($_COOKIE['current-meeting-list'])) {
             $ret['current-meeting-list'] = $_COOKIE['current-meeting-list'];
         }
+        $this->generating_meeting_list = !empty($ret) && !is_admin();
         return $ret;
     }
+    public function generatingMeetingList()
+    {
+        return $this->generating_meeting_list;
+    }
 
-
-    public static function generateOptionName($current_setting)
+    public function generateOptionName($current_setting)
     {
         return Bread::OPTIONS_NAME . '_' . $current_setting;
-    }
-    public static function &getMLOptions($current_setting)
-    {
-        return Bread::$instance->getMLOptionsInner($current_setting);
     }
     /**
      * Retrieves the plugin options from the database.
      *
      * @return array
      */
-    private function &getMLOptionsInner($current_setting)
+    public function &getMLOptions($current_setting)
     {
         if ($current_setting < 1) {
             $current_setting = is_admin() ? 1 : $this->requested_setting;
@@ -250,25 +254,25 @@ class Bread
         $this->requested_setting = $current_setting;
         return $this->options;
     }
-    public static function getOptions()
+    public function getOptions()
     {
-        return Bread::$instance->options;
+        return $this->options;
     }
-    public static function getOptionsName()
+    public function getOptionsName()
     {
-        return Bread::$instance->optionsName;
+        return $this->optionsName;
     }
-    public static function setOptionsName($name)
+    public function setOptionsName($name)
     {
-        return Bread::$instance->optionsName = $name;
+        return $this->optionsName = $name;
     }
-    public static function getRequestedSetting()
+    public function getRequestedSetting()
     {
-        return Bread::$instance->requested_setting;
+        return $this->requested_setting;
     }
-    public static function setRequestedSetting($id)
+    public function setRequestedSetting($id)
     {
-        Bread::$instance->requested_setting = $id;
+        $this->requested_setting = $id;
     }
     /**
      * Define the core functionality of the plugin.
@@ -287,12 +291,12 @@ class Bread
             $this->version = '2.8.0';
         }
         $this->plugin_name = 'bread';
-        Bread::$instance = $this;
         $this->tmp_dir = $this->setup_temp_dir();
         $this->protocol = (strpos(strtolower(home_url()), "https") !== false ? "https" : "http") . "://";
 
         $holder = $this->getCurrentMeetingListHolder();
         $this->requested_setting = $this->loadAllSettings($holder);
+        $this->bread_bmlt = new Bread_Bmlt($this);
 
         $this->load_dependencies();
         $this->set_locale();
@@ -312,13 +316,13 @@ class Bread
             $this->translate[$key] = $translate;
         }
     }
-    public static function getTranslateTable()
+    public function getTranslateTable()
     {
-        return Bread::$instance->translate;
+        return $this->translate;
     }
-    public static function getProtocol()
+    public function getProtocol()
     {
-        return Bread::$instance->protocol;
+        return $this->protocol;
     }
     /**
      * Load the required dependencies for this plugin.
@@ -396,7 +400,7 @@ class Bread
     private function define_admin_hooks()
     {
         $bmltenabled_admin = new BmltEnabled_Admin();
-        $plugin_admin = new Bread_Admin($this->get_plugin_name(), $this->get_version(), $bmltenabled_admin);
+        $plugin_admin = new Bread_Admin($this->get_plugin_name(), $this->get_version(), $bmltenabled_admin, $this);
 
         $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
         $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
@@ -410,7 +414,6 @@ class Bread
         //add_action("admin_notices", $plugin_admin, "is_root_server_missing");
         $this->loader->add_action("admin_init", $plugin_admin, "pwsix_process_settings_export");
         $this->loader->add_action("admin_init", $plugin_admin, "pwsix_process_settings_import");
-        $this->loader->add_action("admin_init", $plugin_admin, "pwsix_process_default_settings");
         $this->loader->add_action("admin_init", $plugin_admin, "pwsix_process_settings_admin");
         $this->loader->add_action("admin_init", $plugin_admin, "pwsix_process_rename_settings");
         $this->loader->add_action("admin_init", $plugin_admin, "my_theme_add_editor_styles");
@@ -428,13 +431,11 @@ class Bread
     private function define_public_hooks()
     {
 
-        $plugin_public = new Bread_Public($this->get_plugin_name(), $this->get_version(), $this->options);
+        $plugin_public = new Bread_Public($this->get_plugin_name(), $this->get_version(), $this);
 
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
-        if (isset($this->getCurrentMeetingListHolder()['current-meeting-list']) && !is_admin()) {
-            $this->loader->add_action('plugins_loaded', $plugin_public, 'bmlt_meeting_list');
-        }
+        $this->loader->add_action('plugins_loaded', $plugin_public, 'bmlt_meeting_list');
     }
 
     /**
@@ -491,13 +492,13 @@ class Bread
     {
         return $arr[$key] ?? '';
     }
-    public static function getday($day, $abbreviate = false, $language = 'en')
+    public function getday($day, $abbreviate = false, $language = 'en')
     {
         $key = "WEEKDAYS";
         if ($abbreviate) {
             $key = "WKDYS";
         }
-        return Bread::$instance->translate[$language][$key][$day];
+        return $this->translate[$language][$key][$day];
     }
     function fillUnsetOption($option, $default)
     {
@@ -523,10 +524,10 @@ class Bread
             }
         }
     }
-    public static function fillUnsetOptions()
+    public function fillUnsetOptions()
     {
-        Bread::$instance->fillUnsetOptionsInner();
-        Bread::$instance->removeDeprecated();
+        $this->fillUnsetOptionsInner();
+        $this->removeDeprecated();
     }
     function removeDeprecated()
     {
@@ -609,9 +610,9 @@ class Bread
         $this->fillUnsetStringOption('meeting1_footer', $this->options['nonmeeting_footer']);
         $this->fillUnsetStringOption('meeting2_footer', $this->options['nonmeeting_footer']);
     }
-    public static function upgradeSettings()
+    public function upgradeSettings()
     {
-        Bread::$instance->upgrade_settings();
+        $this->upgrade_settings();
     }
     function upgrade_settings()
     {
@@ -621,7 +622,7 @@ class Bread
                 || $this->options['meeting_sort'] === 'weekday_city'
                 || $this->options['meeting_sort'] === 'weekday_county'
                 || $this->options['meeting_sort'] === 'day')) {
-                $this->options['weekday_language'] = Bread_Bmlt::get_bmlt_server_lang();
+                $this->options['weekday_language'] = $this->bmlt()->get_bmlt_server_lang();
             }
             if ($this->options['page_fold'] == 'half') {
                 if ($this->options['page_size'] == 'A5') {
@@ -678,7 +679,7 @@ class Bread
         $this->renamed_option('asm_custom_query', 'additional_list_custom_query');
         $this->renamed_option('asm_template_content', 'additional_list_template_content');
         if (!isset($this->options['bread_version']) || $this->options['bread_version'] < '2.8') {
-            if (($this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full') && trim($this->options['last_page_content'])!=='') {
+            if (($this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full') && trim($this->options['last_page_content']) !== '') {
                 $this->options['custom_section_content'] = $this->options['last_page_content'];
                 $this->options['custom_section_font_size'] = $this->options['last_page_font_size'];
                 $this->options['custom_section_line_height'] = $this->options['last_page_line_height'];
@@ -698,9 +699,9 @@ class Bread
             }
         }
     }
-    public static function updateOptions()
+    public function updateOptions()
     {
-        update_option(Bread::getOptionsName(), Bread::$instance->options);
+        update_option(Bread::getOptionsName(), $this->options);
     }
     public static function get_TransientKey($setting)
     {

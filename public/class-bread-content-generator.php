@@ -27,6 +27,7 @@ class Bread_ContentGenerator
      * @var array
      */
     private array $options;
+    private Bread $bread;
     /**
      * The meetings in the meeting list.
      *
@@ -79,14 +80,15 @@ class Bread_ContentGenerator
      * The constuctor sets things up so that we are ready to generate.
      *
      * @param Mpdf $mpdf The object that converts HTML to PDF.
-     * @param array $options The configuration of the meeting list.
+     * @param Bread $bread The configuration of the meeting list.
      * @param array $result_meetings The meetings to be included in the list.
      * @param Bread_FormatsManager $formatsManager
      */
-    function __construct(object $mpdf, array $options, array $result_meetings, Bread_FormatsManager $formatsManager)
+    function __construct(Mpdf $mpdf, Bread $bread, array $result_meetings, Bread_FormatsManager $formatsManager)
     {
         $this->mpdf = $mpdf;
-        $this->options = $options;
+        $this->bread = $bread;
+        $this->options = $bread->getOptions();
         $this->result_meetings = $this->orderByWeekdayStart($result_meetings);
         $this->formatsManager = $formatsManager;
         if (isset($_GET['time_zone'])) {
@@ -118,7 +120,7 @@ class Bread_ContentGenerator
             "[service_body_5]"              => strtoupper($this->options['service_body_5']),
 
         );
-        $this->shortcodes = apply_filters("Bread_Section_Shortcodes", $this->shortcodes, Bread_Bmlt::get_areas(), $formatsManager->getFormatsUsed());
+        $this->shortcodes = apply_filters("Bread_Section_Shortcodes", $this->shortcodes, $this->bread->bmlt()->get_areas(), $formatsManager->getFormatsUsed());
         if ($this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full') {
             $this->mpdf->DefHTMLFooterByName('MyFooter', '<div style="text-align:center;font-size:' . $this->options['pagenumbering_font_size'] . 'pt;font-style: italic;">' . $this->options['nonmeeting_footer'] . '</div>');
             $this->mpdf->DefHTMLFooterByName('_default', '<div style="text-align:center;font-size:' . $this->options['pagenumbering_font_size'] . 'pt;font-style: italic;">' . $this->options['nonmeeting_footer'] . '</div>');
@@ -165,11 +167,11 @@ class Bread_ContentGenerator
             $this->WriteHTML('<sethtmlpagefooter name="Meeting1Footer" page="ALL" />');
         }
         $lang = $this->options['weekday_language'];
-        $this->meetingEnhancer = new Bread_Meeting_Enhancer($this->options, Bread_Bmlt::get_areas());
+        $this->meetingEnhancer = new Bread_Meeting_Enhancer($this->bread, $this->bread->bmlt()->get_areas());
         foreach ($this->result_meetings as &$value) {
             $value = $this->meetingEnhancer->enhance_meeting($value, $lang, $this->formatsManager);
         }
-        $meetingslistStructure = new Bread_Meetingslist_Structure($this->options, $this->result_meetings, $lang, $this->options['include_additional_list'] == 0 ? -1 : 0);
+        $meetingslistStructure = new Bread_Meetingslist_Structure($this->bread, $this->result_meetings, $lang, $this->options['include_additional_list'] == 0 ? -1 : 0);
         $this->writeMeetings($this->options['meeting_template_content'], $meetingslistStructure);
 
         if ($this->options['page_fold'] !== 'half' && $this->options['page_fold'] !== 'full') {
@@ -235,7 +237,7 @@ class Bread_ContentGenerator
                 $locLang = 'en';
             }
             $fmt = new IntlDateFormatter(
-                Bread::getTranslateTable()[$locLang]['LOCALE'],
+                $this->bread->getTranslateTable()[$locLang]['LOCALE'],
                 IntlDateFormatter::FULL,
                 IntlDateFormatter::FULL
             );
@@ -535,7 +537,7 @@ class Bread_ContentGenerator
     {
         $value = '';
         if (isset($obj[$field])) {
-            $value = Bread_Bmlt::parse_field($obj[$field]);
+            $value = $this->bread->bmlt()->parse_field($obj[$field]);
         }
         return $value;
     }
@@ -545,6 +547,9 @@ class Bread_ContentGenerator
             $template = $this->options['additional_list_template_content'];
         } else {
             $template = $this->options['meeting_template_content'];
+        }
+        if (empty($this->options['additional_list_language'])) {
+            $this->options['additional_list_language'] = $this->options['weekday_language'];
         }
         $additional_list_query = false;
         $additional_meetinglist_result = $this->result_meetings;
@@ -562,7 +567,7 @@ class Bread_ContentGenerator
             if ($this->options['additional_list_format_key'] === 'ASM') {
                 $additional_list_id = '&formats[]=' . $this->formatsManager->getFormatByKey($this->options['weekday_language'], 'ASM');
             }
-            $services = Bread_Bmlt::generateDefaultQuery();
+            $services = $this->bread->bmlt()->generateDefaultQuery();
             if (!empty($this->options['additional_list_custom_query'])) {
                 $services = $this->options['additional_list_custom_query'];
             }
@@ -571,7 +576,7 @@ class Bread_ContentGenerator
             if ($this->options['additional_list_format_key'] === 'ASM') {
                 $additional_list_query .= "&advanced_published=0";
             }
-            $additional_meetinglist_result = Bread_Bmlt::get_configured_root_server_request($additional_list_query);
+            $additional_meetinglist_result = $this->bread->bmlt()->get_configured_root_server_request($additional_list_query);
             $this->adjust_timezone($additional_meetinglist_result, $this->target_timezone);
         }
         if ($additional_list_query || $this->options['weekday_language'] != $this->options['additional_list_language']) {
@@ -579,7 +584,7 @@ class Bread_ContentGenerator
                 $value = $this->meetingEnhancer->enhance_meeting($value, $this->options['additional_list_language'], $this->formatsManager);
             }
         }
-        $meetingslistStructure = new Bread_Meetingslist_Structure($this->options, $additional_meetinglist_result, $this->options['additional_list_language'], 1);
+        $meetingslistStructure = new Bread_Meetingslist_Structure($this->bread, $additional_meetinglist_result, $this->options['additional_list_language'], 1);
         $this->writeMeetings($template, $meetingslistStructure);
         return;
     }

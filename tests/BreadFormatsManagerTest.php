@@ -1,4 +1,5 @@
 <?php
+
 use PHPUnit\Framework\TestCase;
 
 use function PHPUnit\Framework\assertEquals;
@@ -8,17 +9,18 @@ final class BreadFormatsManagerTest extends TestCase
 {
     private function getFormats($formats): array
     {
-        $json = file_get_contents('tests/formats/'.$formats.".json");
+        $json = file_get_contents('tests/formats/' . $formats . ".json");
         return json_decode($json, true)['formats'];
     }
-    private function getFormatMgr($usedFormat, $lang)
+    private function getFormatMgr($usedFormat, $lang, $bmlt)
     {
-        Bread_Bmlt::setFormatBase('german-formats');
-        return new Bread_FormatsManager($this->getFormats($usedFormat), $lang);
+        return new Bread_FormatsManager($this->getFormats($usedFormat), $lang, $bmlt);
     }
     public function testGetFormatsUsed()
     {
-        $mgr = $this->getFormatMgr('berlin-formats-de', 'de');
+        $bread = new Bread([]);
+        $bread->bmlt()->setFormatBase('german-formats');
+        $mgr = $this->getFormatMgr('berlin-formats-de', 'de', $bread->bmlt());
         $used = $mgr->getFormatsUsed();
         assertEquals(50, count($used));
         $o1 = $mgr->getFormatByKey('de', 'O1');

@@ -81,6 +81,7 @@ class Bread_Meetingslist_Structure
      * @return void
      */
     private bool $suppress_heading;
+    private Bread $bread;
     /**
      * Calculates some options that will be used to structure the meeting list and generate headers.
      *
@@ -137,7 +138,7 @@ class Bread_Meetingslist_Structure
     /**
      * Setup for structuring the meeting list
      *
-     * @param array $options The configuration of the meeting list.
+     * @param Bread $bread The configuration of the meeting list.
      * @param array $result_meetings The meetings in the meeting list.
      * @param string $lang The language of the meeting list
      * @param integer $include_additional_list Whether or not to include meetings that match the requirements of the additional list. Where
@@ -145,18 +146,19 @@ class Bread_Meetingslist_Structure
      * 1  -  only meetings with additional_list format
      * -1  -  only meetings without additional_list format
      */
-    function __construct(array $options, array $result_meetings, string $lang, int $include_additional_list)
+    function __construct(Bread $bread, array $result_meetings, string $lang, int $include_additional_list)
     {
-        $this->options = $options;
+        $this->bread = $bread;
+        $this->options = $bread->getOptions();
         if ($include_additional_list >= 0) {
             $this->suppress_heading = isset($options['additional_list_suppress_heading']) ? $options['additional_list_suppress_heading'] == 1 : true;
         } else {
-            $this->suppress_heading = $options['suppress_heading'] == 1;
+            $this->suppress_heading = $this->options['suppress_heading'] == 1;
         }
-        $meeting_sort = $options['meeting_sort'];
+        $meeting_sort = $this->options['meeting_sort'];
         if ($include_additional_list > 0) {
             $this->options['suppess_heading'] = 1;
-            switch ($options['additional_list_sort_order']) {
+            switch ($this->options['additional_list_sort_order']) {
                 case 'meeting_name':
                     $meeting_sort = 'meeting_name';
                     break;
@@ -169,23 +171,23 @@ class Bread_Meetingslist_Structure
         }
         $this->upgradeHeaderData($meeting_sort);
 
-        $header_style = "color:" . $options['header_text_color'] . ";";
-        $header_style .= "background-color:" . $options['header_background_color'] . ";";
-        $header_style .= "font-size:" . $options['header_font_size'] . "pt;";
-        $header_style .= "line-height:" . $options['content_line_height'] . ";";
+        $header_style = "color:" . $this->options['header_text_color'] . ";";
+        $header_style .= "background-color:" . $this->options['header_background_color'] . ";";
+        $header_style .= "font-size:" . $this->options['header_font_size'] . "pt;";
+        $header_style .= "line-height:" . $this->options['content_line_height'] . ";";
         $header_style .= "text-align:center;padding-top:2px;padding-bottom:3px;";
 
-        if ($options['header_uppercase'] == 1) {
+        if ($this->options['header_uppercase'] == 1) {
             $header_style .= 'text-transform: uppercase;';
         }
-        if ($options['header_bold'] == 0) {
+        if ($this->options['header_bold'] == 0) {
             $header_style .= 'font-weight: normal;';
         }
-        if ($options['header_bold'] == 1) {
+        if ($this->options['header_bold'] == 1) {
             $header_style .= 'font-weight: bold;';
         }
         $this->header_style = $header_style;
-        $this->cont = '(' . Bread::getTranslateTable()[$lang]['CONT'] . ')';
+        $this->cont = '(' . $bread->getTranslateTable()[$lang]['CONT'] . ')';
 
         $this->headerMeetings = $this->getHeaderMeetings($result_meetings, $include_additional_list);
         $this->unique_heading = $this->getUniqueHeadings($this->headerMeetings);
@@ -345,7 +347,7 @@ class Bread_Meetingslist_Structure
         $grouping = '';
         $name = $this->options[$names['name']];
         if ($name == 'service_body_bigint') {
-            foreach (Bread_Bmlt::get_areas() as $unique_area) {
+            foreach ($this->bread->bmlt()->get_areas() as $unique_area) {
                 $area_data = explode(',', $unique_area);
                 $area_name = Bread::arraySafeGet($area_data);
                 $area_id = Bread::arraySafeGet($area_data, 1);
@@ -362,14 +364,14 @@ class Bread_Meetingslist_Structure
             }
             return '[' . str_pad($day, 2, '0', STR_PAD_LEFT) . ']' . $value['day'];
         } elseif (isset($value[$name])) {
-            $grouping = Bread_Bmlt::parse_field($value[$name]);
+            $grouping = $this->bread->bmlt()->parse_field($value[$name]);
         }
         $suffix = $this->options[$names['name_suffix']] ?? '';
         if ($grouping == ''
             && !empty($name_alt)
             && isset($value[$name_alt])
         ) {
-            $grouping = Bread_Bmlt::parse_field($value[$name_alt]);
+            $grouping = $this->bread->bmlt()->parse_field($value[$name_alt]);
             $suffix = $this->options[$names['name_alt_suffix']] ?? '';
         }
         if (strlen(trim($grouping)) == 0) {

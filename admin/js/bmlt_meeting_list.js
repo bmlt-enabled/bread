@@ -288,6 +288,7 @@ jQuery(document).ready(
             $ml('#landscape').prop("checked", true);
             $ml('.booklet').show();
             $ml('.single-page').hide();
+            $ml('#half').prop('checked') && $ml('.A6').hide();
         }
         function singlePageControlsShowHide() {
             $ml('.booklet').hide();

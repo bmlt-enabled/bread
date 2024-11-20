@@ -1,4 +1,5 @@
 <?php
+
 use PHPUnit\Framework\TestCase;
 
 use function PHPUnit\Framework\assertEquals;
@@ -7,26 +8,26 @@ final class BreadMeetinglistStructureTest extends TestCase
 {
     private function getConfiguration(string $config): array
     {
-        $json = file_get_contents('tests/configurations/'.$config.".json");
+        $json = file_get_contents('tests/configurations/' . $config . ".json");
         return json_decode($json, true);
     }
     private function getMeetings(string $service_body): array
     {
-        $json = file_get_contents('tests/serviceBodies/'.$service_body.".json");
+        $json = file_get_contents('tests/serviceBodies/' . $service_body . ".json");
         return json_decode($json, true);
     }
     private function getFormats($formats)
     {
-        $json = file_get_contents('tests/formats/'.$formats.".json");
+        $json = file_get_contents('tests/formats/' . $formats . ".json");
         return json_decode($json, true);
     }
-    private function getFormatMgr($usedFormat, $lang)
+    private function getFormatMgr($usedFormat, $lang, $bread)
     {
-        return new Bread_FormatsManager($this->getFormats($usedFormat), $lang);
+        return new Bread_FormatsManager($this->getFormats($usedFormat), $lang, $bread->bmlt());
     }
-    private function enhanceMeetings(&$meetings, $options, $formatMgr)
+    private function enhanceMeetings(&$meetings, Bread $bread, $formatMgr)
     {
-        $enhancer = new Bread_Meeting_Enhancer($options, array());
+        $enhancer = new Bread_Meeting_Enhancer($bread, array());
         foreach ($meetings as &$meeting) {
             $meeting = $enhancer->enhance_meeting($meeting, 'de', $formatMgr);
         }
@@ -57,8 +58,8 @@ final class BreadMeetinglistStructureTest extends TestCase
             'berlin-formats-de',
             'german-formats',
             -1,
-            ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'],
-            [[0],[0],[0],[0],[0],[0],[0]],
+            ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'],
+            [[0], [0], [0], [0], [0], [0], [0]],
             'de'
         );
     }
@@ -70,8 +71,8 @@ final class BreadMeetinglistStructureTest extends TestCase
             'berlin-formats-de',
             'german-formats',
             1,
-            ['','','','','','',''],
-            [[0],[0],[0],[0],[0],[0],[0]],
+            ['', '', '', '', '', '', ''],
+            [[0], [0], [0], [0], [0], [0], [0]],
             'de'
         );
     }
@@ -83,8 +84,8 @@ final class BreadMeetinglistStructureTest extends TestCase
             'berlin-formats-de',
             'german-formats',
             -1,
-            ['Berlin','Dallgow-Döberitz','Eberswalde','Potsdam','Rathenow'],
-            [[0],[0],[0],[0],[0]],
+            ['Berlin', 'Dallgow-Döberitz', 'Eberswalde', 'Potsdam', 'Rathenow'],
+            [[0], [0], [0], [0], [0]],
             'de'
         );
     }
@@ -96,8 +97,8 @@ final class BreadMeetinglistStructureTest extends TestCase
             'berlin-formats-de',
             'german-formats',
             1,
-            ['','','','','','',''],
-            [[0],[0],[0],[0],[0],[0],[0]],
+            ['', '', '', '', '', '', ''],
+            [[0], [0], [0], [0], [0], [0], [0]],
             'de'
         );
     }
@@ -109,8 +110,8 @@ final class BreadMeetinglistStructureTest extends TestCase
             'berlin-formats-de',
             'german-formats',
             -1,
-            ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'],
-            [['Berlin',],['Berlin','Potsdam','Rathenow'],['Berlin','Dallgow-Döberitz','Eberswalde'],['Berlin','Potsdam'],['Berlin',],['Berlin','Potsdam'],['Berlin','Potsdam']],
+            ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'],
+            [['Berlin',], ['Berlin', 'Potsdam', 'Rathenow'], ['Berlin', 'Dallgow-Döberitz', 'Eberswalde'], ['Berlin', 'Potsdam'], ['Berlin',], ['Berlin', 'Potsdam'], ['Berlin', 'Potsdam']],
             'de'
         );
     }
@@ -122,21 +123,21 @@ final class BreadMeetinglistStructureTest extends TestCase
             'berlin-formats-de',
             'german-formats',
             1,
-            ['','','','','','',''],
-            [[0],[0],[0],[0],[0],[0],[0]],
+            ['', '', '', '', '', '', ''],
+            [[0], [0], [0], [0], [0], [0], [0]],
             'de'
         );
     }
     public function doTest($config, $meetingJson, $usedFormats, $formatBase, $include, $expectedHeading, $expectedSubHeading, $lang): void
     {
-        new Bread();
         $options = $this->getConfiguration($config);
+        $bread = new Bread($options);
         $meetings = $this->getMeetings($meetingJson);
-        $formatMgr = $this->getFormatMgr($usedFormats, $lang);
-        Bread_Bmlt::setFormatBase($formatBase);
-        $this->enhanceMeetings($meetings, $options, $formatMgr);
+        $bread->bmlt()->setFormatBase($formatBase);
+        $formatMgr = $this->getFormatMgr($usedFormats, $lang, $bread);
+        $this->enhanceMeetings($meetings, $bread, $formatMgr);
 
-        $bms = new Bread_Meetingslist_Structure($options, $meetings, $lang, $include);
+        $bms = new Bread_Meetingslist_Structure($bread, $meetings, $lang, $include);
         $knt = 0;
         $expectedHeaderStyle = $this->calculateExpectedHeadingStyle($options);
         while ($subs = $bms->iterateMainHeading()) {
@@ -145,20 +146,20 @@ final class BreadMeetinglistStructureTest extends TestCase
             $knt2 = 0;
             while ($meetings = $bms->iterateSubHeading($subs)) {
                 $expected = '';
-                if ($knt2++ == 0 && !empty($expectedHeading[$knt-1])) {
-                    $expected = '<div style="' . $expectedHeaderStyle . '">' . $expectedHeading[$knt-1] . "</div>";
+                if ($knt2++ == 0 && !empty($expectedHeading[$knt - 1])) {
+                    $expected = '<div style="' . $expectedHeaderStyle . '">' . $expectedHeading[$knt - 1] . "</div>";
                 }
                 $knt3 = 0;
                 while ($meeting = $bms->iterateMeetings($meetings)) {
                     $expectedSub = '';
                     if ($knt3++ == 0) {
-                        if (!empty($subs[$knt2-1])) {
-                            $expectedSub = "<p style='margin-top:1pt; padding-top:1pt; font-weight:bold;'>" . $subs[$knt2-1] . "</p>";
+                        if (!empty($subs[$knt2 - 1])) {
+                            $expectedSub = "<p style='margin-top:1pt; padding-top:1pt; font-weight:bold;'>" . $subs[$knt2 - 1] . "</p>";
                         }
                     } else {
                         $expected = '';
                     }
-                    assertEquals($expected.$expectedSub, $bms->calculateHeading());
+                    assertEquals($expected . $expectedSub, $bms->calculateHeading());
                 }
             }
         }

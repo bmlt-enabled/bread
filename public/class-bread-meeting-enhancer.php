@@ -1,11 +1,13 @@
 <?php
 class Bread_Meeting_Enhancer
 {
+    private Bread $bread;
     private array $options;
     private array $areas;
-    function __construct($options, $areas)
+    function __construct($bread, $areas)
     {
-        $this->options = $options;
+        $this->bread = $bread;
+        $this->options = $bread->getOptions();
         $this->areas = $areas;
     }
     /**
@@ -70,8 +72,8 @@ class Bread_Meeting_Enhancer
             $meeting_value['start_time'] = $start_time . $space . '-' . $space . $end_time;
         }
 
-        $meeting_value['day_abbr'] = Bread::getday($meeting_value['weekday_tinyint'], true, $lang);
-        $meeting_value['day'] = Bread::getday($meeting_value['weekday_tinyint'], false, $lang);
+        $meeting_value['day_abbr'] = $this->bread->getday($meeting_value['weekday_tinyint'], true, $lang);
+        $meeting_value['day'] = $this->bread->getday($meeting_value['weekday_tinyint'], false, $lang);
         $area_name = $this->get_area_name($meeting_value);
         $meeting_value['area_name'] = $area_name;
         $meeting_value['area_i'] = substr($area_name, 0, 1);
@@ -91,9 +93,9 @@ class Bread_Meeting_Enhancer
     {
         foreach ($this->areas as $unique_area) {
             $area_data = explode(',', $unique_area);
-            $area_id = Bread::arraySafeGet($area_data, 1);
+            $area_id = $this->bread->arraySafeGet($area_data, 1);
             if ($area_id === $meeting_value['service_body_bigint']) {
-                return Bread::arraySafeGet($area_data);
+                return $this->bread->arraySafeGet($area_data);
             }
         }
         return '';
