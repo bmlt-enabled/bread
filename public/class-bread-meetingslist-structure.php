@@ -150,20 +150,19 @@ class Bread_Meetingslist_Structure
     {
         $this->bread = $bread;
         $this->options = $bread->getOptions();
-        if ($include_additional_list >= 0) {
-            $this->suppress_heading = isset($options['additional_list_suppress_heading']) ? $options['additional_list_suppress_heading'] == 1 : true;
-        } else {
-            $this->suppress_heading = $this->options['suppress_heading'] == 1;
-        }
+        $this->suppress_heading = $this->options['suppress_heading'] == 1;
+
         $meeting_sort = $this->options['meeting_sort'];
         if ($include_additional_list > 0) {
             $this->options['suppess_heading'] = 1;
             switch ($this->options['additional_list_sort_order']) {
                 case 'meeting_name':
                     $meeting_sort = 'meeting_name';
+                    $this->suppress_heading = true;
                     break;
                 case 'weekday_tinyint,start_time':
                     $meeting_sort = 'day';
+                    $this->suppress_heading = true;
                     break;
                 default:
                     break;

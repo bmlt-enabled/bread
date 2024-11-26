@@ -107,8 +107,8 @@ class Bread_Admin
         /**
          * Make some JSON from PHP available in JS.
          */
-        $str = file_get_contents(plugin_dir_path(__FILE__) . 'partials/meeting_data_templates.json');
-        wp_add_inline_script( 'common', "meetingDataTemplates = $str", 'before' );
+        $str = file_get_contents(plugin_dir_path(__FILE__) . 'templates/meeting_data_templates.json');
+        wp_add_inline_script('common', "meetingDataTemplates = $str", 'before');
     }
 
     function ml_default_editor()
