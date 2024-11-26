@@ -83,7 +83,7 @@ class Bread_Meeting_Enhancer
         if (!is_null($wheelchair_format)) {
             $fmts = explode(',', $meeting_value['format_shared_id_list']);
             if (in_array($wheelchair_format['id'], $fmts)) {
-                $meeting_value['wheelchair'] = '<img src="' . plugin_dir_url(__FILE__) . 'includes/wheelchair.png" width="' . $this->options['wheelchair_size'] . '" height="' . $this->options['wheelchair_size'] . '">';
+                $meeting_value['wheelchair'] = '<img src="' . plugin_dir_url(__FILE__) . 'public/css/wheelchair.png" width="' . $this->options['wheelchair_size'] . '" height="' . $this->options['wheelchair_size'] . '">';
             }
         }
         // Extensions.

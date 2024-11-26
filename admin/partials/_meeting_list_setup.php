@@ -31,23 +31,8 @@ global $wp_version;
                 <p>Please allow yourself to experiment with mixing and matching different settings and content. There is a good chance you can find a way to match or at least come very close to your current meeting list.</p>
                 <p>When setting up the meeting list it is helpful to have some knowledge of HTML when using the editors. Very little or no knowledge of HTML is required to maintain the meeting list after the setup. If you get stuck or would like some help with the setup, read the Support section below.</p>
             </div>
-            <h3 class="help-accordian">Meeting List Setup</h3>
-            <div>
-                <h2>Default Settings and Content</h2>
-                <p>Changing the Default Settings and Content should only be considered when first using the Meeting List Generator or when you decide to completely start over with setting up your meeting list.</p>
-                <p><i>The buttons below will completely reset your meeting list settings (and content) to whichever layout you choose. There is no Undo.</i></p>
-                <p style="color: #f00; margin-bottom: 15px;">Consider backing up settings by using the Configuration Tab before changing your Meeting List Settings.</p>
-                <input type="submit" value="Tri Fold - Letter Size" id="submit_three_column" class="button-primary" />
-                <input type="submit" value="Quad Fold - Legal Size" id="submit_four_column" class="button-primary" />
-                <input type="submit" value="Half Fold - Booklet" id="submit_booklet" class="button-primary" />
-                <h2>Small or Medium Size Areas</h2>
-                <p>Areas with up to about 100 meetings would benefit from using the tri-fold layout on letter sized paper. Areas larger than 100 meetings would typically use a quad fold meeting list on legal sized paper. These are just basic guidelines and are by no means set in stone. For example, an Area with over 100 meetings could use the tri-fold on letter sized paper using smaller fonts to allow the content to fit. The meeting list configuration is extremely flexible.</p>
-                <p></i>The Custom Content section is used to add information like helplines, service meetings, meeting format legend, etc.</i></p>
-                <h2>Large Areas, Metro Areas or Regions</h2>
-                <p>Larger service bodies would benefit from using a booklet meeting list.</p>
-                <h2>Support</h2>
-                <p>For support file an issue at https://github.com/bmlt-enabled/bread/issues</p>
-            </div>
+            <h3 class="help-accordian">Meeting List Setup Wizard</h3>
+            <?php include '_bread_wizard.php'; ?>
             <h3 class="help-accordian">Multiple Meeting Lists</h3>
             <div>
                 <p>This tool supports multiple meeting lists per site.</p>

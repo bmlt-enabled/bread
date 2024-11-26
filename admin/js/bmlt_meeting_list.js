@@ -10,7 +10,7 @@ jQuery(document).ready(
                 collapsible: true
             }
         );
-        $ml(".bmlt_color").spectrum();
+        $ml(".bmlt_color").spectrum({preferredFormat: 'hex', showInput: true, showPalette: false});
         $ml("#col_color").on("click", ()=>$ml("#triggerSet").spectrum("set", this.val()));
         $ml("#bmlt_meeting_list_options").on(
             "keypress", function(event) {
@@ -285,10 +285,13 @@ jQuery(document).ready(
         setTimeOptionText();
         $ml('.recalcTimeLabel').on('click', setTimeOptionText);
         function bookletControlsShowHide() {
-            $ml('#landscape').prop("checked", true);
+            $ml('#half').prop('checked') && $ml('#landscape').prop("checked", true);
+            $ml('#full').prop('checked') && $ml('#portrait').prop("checked", true);
             $ml('.booklet').show();
             $ml('.single-page').hide();
-            $ml('#half').prop('checked') && $ml('.A6').hide();
+            $ml('#half').prop('checked') && $ml('#A6').hide();
+            $ml('#A6').is(":visible") && $ml("label[for=A6]").show();
+            $ml('#A6').is(":hidden") && $ml("label[for=A6]").hide();
         }
         function singlePageControlsShowHide() {
             $ml('.booklet').hide();

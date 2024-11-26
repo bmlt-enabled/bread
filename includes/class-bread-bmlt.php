@@ -73,7 +73,8 @@ class Bread_Bmlt
     }
     public function get_fieldkeys()
     {
-        return $this->bread->bmlt()->get_configured_root_server_request("client_interface/json/?switcher=GetFieldKeys");
+        $ret = $this->bread->bmlt()->get_configured_root_server_request("client_interface/json/?switcher=GetFieldKeys");
+        return is_null($ret) ? array() : $ret;
     }
     private $standard_keys = array(
         "id_bigint",

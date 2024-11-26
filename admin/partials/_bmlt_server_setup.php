@@ -30,7 +30,7 @@ foreach ($all_users as $user) {
                                 <input type="checkbox" id="sslverify" name="sslverify" value="1" checked />
                                 <label for="sslverify">Disable SSL verification of server</label>
                         <?php }
-                    } elseif ($this->breademptyOption('root_server')) {
+                    } elseif ($this->bread->emptyOption('root_server')) {
                         echo "<span style='color: #f00;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-dismiss'></div>ERROR: Please enter a BMLT Server</span>";
                         echo '<input type="hidden" id="user_agent" value="' . $this->bread->getOption('user_agent') . '" />';
                         if ($this->bread->getOption('sslverify') == '1') { ?>

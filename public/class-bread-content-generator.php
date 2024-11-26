@@ -94,7 +94,7 @@ class Bread_ContentGenerator
         if (isset($_GET['time_zone'])) {
             $this->target_timezone = timezone_open($_GET['time_zone']);
         }
-        $this->meeting_count = count($result_meetings);
+        $this->meeting_count = count($this->result_meetings);
         $this->shortcodes = array(
             '<h2>'                          => '<h2 style="font-size:' . $this->options['front_page_font_size'] . 'pt!important;">',
             '<div>[page_break]</div>'       =>  '<pagebreak />',

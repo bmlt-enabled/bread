@@ -80,6 +80,7 @@ class Bread_Admin
         wp_enqueue_style("tooltipster-noir", plugin_dir_url(__FILE__) . "css/tooltipster-sideTip-noir.min.css", false, "1.2", 'all');
         wp_enqueue_style("admin", plugin_dir_url(__FILE__) . "css/admin.css", false, "1.2", 'all');
         wp_enqueue_style("chosen", plugin_dir_url(__FILE__) . "css/chosen.min.css", false, "1.2", 'all');
+        wp_enqueue_style("smartWizard-dots", plugin_dir_url(__FILE__) . "css/smart_wizard_dots.css", false, "6.0.6", 'all');
     }
 
     /**
@@ -96,10 +97,13 @@ class Bread_Admin
         wp_enqueue_script('jquery-ui-tabs');
         wp_enqueue_script('jquery-ui-accordion');
         wp_enqueue_script('jquery-ui-dialog');
-        wp_enqueue_script("bmlt_meeting_list", plugin_dir_url(__FILE__) . "js/bmlt_meeting_list.js", array('jquery'), "1.2", true);
+        wp_enqueue_script("bmlt_meeting_list", plugin_dir_url(__FILE__) . "js/bmlt_meeting_list.js", array('jquery'), "2.8.0", true);
         wp_enqueue_script("tooltipster", plugin_dir_url(__FILE__) . "js/tooltipster.bundle.min.js", array('jquery'), "1.2", true);
         wp_enqueue_script("spectrum", plugin_dir_url(__FILE__) . "js/spectrum.min.js", array('jquery'), "1.2", true);
         wp_enqueue_script("chosen", plugin_dir_url(__FILE__) . "js/chosen.jquery.min.js", array('jquery'), "1.2", true);
+        wp_enqueue_script("fetch-jsonp", plugin_dir_url(__FILE__) . "js/fetch-jsonp.js", array('jquery'), "1.30", true);
+        wp_enqueue_script("smartWizard", plugin_dir_url(__FILE__) . "js/jquery.smartWizard.js", array('jquery'), "6.0.6", true);
+        wp_enqueue_script("breadWizard", plugin_dir_url(__FILE__) . "js/bread-Wizard.js", array('smartWizard'), "2.8.0", true);
     }
 
     function ml_default_editor()
@@ -190,12 +194,6 @@ class Bread_Admin
 
     function pwsix_process_rename_settings()
     {
-        if (isset($_POST['bmltmeetinglistsave']) && $_POST['bmltmeetinglistsave'] == 'Save Changes') {
-            return;
-        }
-        if (empty($_POST['pwsix_action']) || 'rename_setting' != $_POST['pwsix_action']) {
-            return;
-        }
         if (! wp_verify_nonce($_POST['pwsix_rename_nonce'], 'pwsix_rename_nonce')) {
             return;
         }
@@ -210,12 +208,6 @@ class Bread_Admin
      */
     function pwsix_process_settings_export()
     {
-        if (isset($_POST['bmltmeetinglistsave']) && $_POST['bmltmeetinglistsave'] == 'Save Changes') {
-            return;
-        }
-        if (empty($_REQUEST['pwsix_action']) || 'export_settings' != $_REQUEST['pwsix_action']) {
-            return;
-        }
         if (! wp_verify_nonce($_POST['pwsix_export_nonce'], 'pwsix_export_nonce')) {
             return;
         }
@@ -271,12 +263,6 @@ class Bread_Admin
      */
     function pwsix_process_settings_import()
     {
-        if (isset($_POST['bmltmeetinglistsave']) && $_POST['bmltmeetinglistsave'] == 'Save Changes') {
-            return;
-        }
-        if (empty($_REQUEST['pwsix_action']) || 'import_settings' != $_REQUEST['pwsix_action']) {
-            return;
-        }
         if (empty($_REQUEST['pwsix_import_nonce']) || !wp_verify_nonce($_REQUEST['pwsix_import_nonce'], 'pwsix_import_nonce')) {
             return;
         }
@@ -391,17 +377,38 @@ class Bread_Admin
     }
     function admin_options_page()
     {
+        if (!empty($_POST['pwsix_action']) && (!isset($_POST['bmltmeetinglistsave']) || $_POST['bmltmeetinglistsave'] != 'Save Changes')) {
+            switch ($_POST['pwsix_action']) {
+                case 'settings_admin':
+                    $this->pwsix_process_settings_admin();
+                    break;
+                case 'rename_setting':
+                    $this->pwsix_process_rename_settings();
+                    break;
+                case 'export_settings':
+                    $this->pwsix_process_settings_export();
+                    break;
+                case 'import_settings':
+                    $this->pwsix_process_settings_import();
+                    break;
+                case 'import_settings':
+                    $this->pwsix_process_wizard();
+                    break;
+                default:
+                    break;
+            }
+        }
         include_once plugin_dir_path(__FILE__).'partials/bread-admin-display.php';
         (new Bread_AdminDisplay($this))->admin_options_page();
     }
+    function pwsix_process_wizard()
+    {
+        if (! wp_verify_nonce($_POST['pwsix_wizard_nonce'], 'pwsix_wizard_nonce')) {
+            return;
+        }
+    }
     function pwsix_process_settings_admin()
     {
-        if (isset($_POST['bmltmeetinglistsave']) && $_POST['bmltmeetinglistsave'] == 'Save Changes') {
-            return;
-        }
-        if (empty($_POST['pwsix_action']) || 'settings_admin' != $_POST['pwsix_action']) {
-            return;
-        }
         if (! wp_verify_nonce($_POST['pwsix_settings_admin_nonce'], 'pwsix_settings_admin_nonce')) {
             return;
         }

@@ -123,7 +123,7 @@ class Bread
                 if ($object != "." && $object != "..") {
                     if (str_starts_with($object, "bread")) {
                         $filename = $dir . DIRECTORY_SEPARATOR . $object;
-                        if (time() - filemtime($filename) > 24 * 3600) {
+                        if (time() - filemtime($filename . (is_dir($filename) ? '/.' : '')) > 24 * 3600) {
                             Bread::rrmdir($filename);
                         }
                     }
@@ -412,10 +412,6 @@ class Bread
         $this->loader->add_filter('mce_external_plugins', $plugin_admin, 'my_custom_plugins');
         $this->loader->add_filter('mce_buttons', $plugin_admin, 'my_register_mce_button');
         //add_action("admin_notices", $plugin_admin, "is_root_server_missing");
-        $this->loader->add_action("admin_init", $plugin_admin, "pwsix_process_settings_export");
-        $this->loader->add_action("admin_init", $plugin_admin, "pwsix_process_settings_import");
-        $this->loader->add_action("admin_init", $plugin_admin, "pwsix_process_settings_admin");
-        $this->loader->add_action("admin_init", $plugin_admin, "pwsix_process_rename_settings");
         $this->loader->add_action("admin_init", $plugin_admin, "my_theme_add_editor_styles");
         $this->loader->add_action("wp_default_editor", $plugin_admin, "ml_default_editor");
         $this->loader->add_filter('tiny_mce_version', $plugin_admin, 'force_mce_refresh');
