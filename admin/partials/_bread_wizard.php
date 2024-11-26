@@ -57,7 +57,7 @@
             </div>
         </div>
         <div id="step-3" class="tab-pane" role="tabpanel" aria-labelledby="step-3">
-            Step content
+          <h3>Step 3: Page Layout</h3>
         </div>
         <div id="step-4" class="tab-pane" role="tabpanel" aria-labelledby="step-4">
        //<?php submit_button(__('Create Meeting List'), 'button-primary', 'create_meeting_list', false); ?>

@@ -104,6 +104,11 @@ class Bread_Admin
         wp_enqueue_script("fetch-jsonp", plugin_dir_url(__FILE__) . "js/fetch-jsonp.js", array('jquery'), "1.30", true);
         wp_enqueue_script("smartWizard", plugin_dir_url(__FILE__) . "js/jquery.smartWizard.js", array('jquery'), "6.0.6", true);
         wp_enqueue_script("breadWizard", plugin_dir_url(__FILE__) . "js/bread-Wizard.js", array('smartWizard'), "2.8.0", true);
+        /**
+         * Make some JSON from PHP available in JS.
+         */
+        $str = file_get_contents(plugin_dir_path(__FILE__) . 'partials/meeting_data_templates.json');
+        wp_add_inline_script( 'common', "meetingDataTemplates = $str", 'before' );
     }
 
     function ml_default_editor()
