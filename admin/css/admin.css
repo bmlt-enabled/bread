@@ -445,8 +445,8 @@ width: 4em !important;
 .mce-menu-item-normal.mce-active:focus .mce-text, .mce-menu-item-normal.mce-active:focus .mce-ico {
     color: #FFF !important;
 }
-h3.help-accordian { background-color: #F5F5F5 !important; color: #000 !important; font-weight: 400 !important; border: 1px solid #E5E5E5 !important;}
-.help-accordian .ui-icon { background-color: #0A8ADD; }
+h3.help-accordion { background-color: #F5F5F5 !important; color: #000 !important; font-weight: 400 !important; border: 1px solid #E5E5E5 !important;}
+.help-accordion .ui-icon { background-color: #0A8ADD; }
 .videocontent {
 	width:100%;
 	max-width: 100%;

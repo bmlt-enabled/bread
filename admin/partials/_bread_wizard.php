@@ -54,13 +54,22 @@
                 <option value=8>The is placeholder 1 Hello</option>
                 <option value=9>The is placeholder 1 Hello</option>
             </select>
+            <div id="wizard_service_body_result">
+            </div>
+            <p>If you want to limit the meeting list to a particular format, for instance, to create a language-specific meeting list, you can enter it here.
+            <br/><select style="width: 400px;" id="wizard_format_filter" name="wizard_format_filte">
+            </select></p>
             </div>
         </div>
         <div id="step-3" class="tab-pane" role="tabpanel" aria-labelledby="step-3">
           <h3>Step 3: Page Layout</h3>
+          <p>Number of meetings on list: <span id="wizard_meeting_count"></span></p>
+          <p>Select one of the layouts appropriate to the number of meetings</p>
+          <select id="wizard_layout" name="wizard_layout">
+          </select>
         </div>
         <div id="step-4" class="tab-pane" role="tabpanel" aria-labelledby="step-4">
-       //<?php submit_button(__('Create Meeting List'), 'button-primary', 'create_meeting_list', false); ?>
+        <?php submit_button(__('Create Meeting List'), 'button-primary', 'create_meeting_list', false); ?>
         </div>
     </div>
     <!-- Include optional progressbar HTML -->

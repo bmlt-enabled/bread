@@ -3,7 +3,7 @@ jQuery(document).ready(
     function($ml) {
         $ml(".connecting").hide();
         $ml(".saving").hide();
-        $ml(".bmlt-accrodian").accordion(
+        $ml(".bmlt-accordion").accordion(
             {
                 heightStyle: "content",
                 active: false,
@@ -11,7 +11,7 @@ jQuery(document).ready(
             }
         );
         $ml(".bmlt_color").spectrum({preferredFormat: 'hex', showInput: true, showPalette: false});
-        $ml("#col_color").on("click", ()=>$ml("#triggerSet").spectrum("set", this.val()));
+        $ml("#col_color").on("click", () => $ml("#triggerSet").spectrum("set", this.val()));
         $ml("#bmlt_meeting_list_options").on(
             "keypress", function(event) {
                 if(event.which == 13 && !event.shiftKey) {
@@ -137,14 +137,15 @@ jQuery(document).ready(
                 }
             }
         );
-        $ml('.my-tooltip').each(function(i,e) {
-        $ml(e).tooltipster(
-            {
-                contentAsHTML: true,
-                theme: 'tooltipster-noir',
-                trigger: 'click'
-            }
-        )});
+        $ml('.my-tooltip').each(function(i, e) {
+            $ml(e).tooltipster(
+                {
+                    contentAsHTML: true,
+                    theme: 'tooltipster-noir',
+                    trigger: 'click'
+                }
+            )
+        });
         $ml("#meeting-list-tabs").tabs(
             {
                 active: 0
@@ -254,21 +255,21 @@ jQuery(document).ready(
             let removeSpaces = $ml('input[name=remove_space]:checked').val()
             let startTime = '8:00 PM';
             let endTime = '9:00 PM';
-            if (clock == '24') {
+            if(clock == '24') {
                 startTime = '20:00';
                 endTime = '21:00';
-            } else if (clock == '24fr') {
+            } else if(clock == '24fr') {
                 startTime = '20h00';
                 endTime = '21h00';
             }
-            if (hasEndTime==2) {
-                startTime += ' - '+endTime;
+            if(hasEndTime == 2) {
+                startTime += ' - ' + endTime;
             }
-            if (hasEndTime==3) {
-                startTime = clock=='12' ? '8 - 9' : '';
+            if(hasEndTime == 3) {
+                startTime = clock == '12' ? '8 - 9' : '';
             }
-            if (removeSpaces!="0") {
-                startTime = startTime.replaceAll(' ','');
+            if(removeSpaces != "0") {
+                startTime = startTime.replaceAll(' ', '');
             }
             return startTime;
         }
@@ -276,8 +277,8 @@ jQuery(document).ready(
             $ml('label[for=option1]').html(calcTimeDisplay(1));
             $ml('label[for=option2]').html(calcTimeDisplay(2));
             $ml('label[for=option3]').html(calcTimeDisplay(3));
-            if ($ml('input[name=time_clock]:checked').val()!='12') {
-                if ($ml('input[name=time_clock]:checked').val()==3)
+            if($ml('input[name=time_clock]:checked').val() != '12') {
+                if($ml('input[name=time_clock]:checked').val() == 3)
                     $ml('#option2').prop('checked', true);
                 $ml('#option3').hide();
             } else $ml('#option3').show();
@@ -297,8 +298,8 @@ jQuery(document).ready(
             $ml('.booklet').hide();
             $ml('.single-page').show();
         }
-        $ml('.single-page-check').on('click',singlePageControlsShowHide);
-        $ml('.booklet-check').on('click',bookletControlsShowHide);
+        $ml('.single-page-check').on('click', singlePageControlsShowHide);
+        $ml('.booklet-check').on('click', bookletControlsShowHide);
         $ml('input[name=page_fold]:checked').hasClass('booklet-check') && bookletControlsShowHide();
         $ml('input[name=page_fold]:checked').hasClass('single-page-check') && singlePageControlsShowHide();
         $ml(".service_body_select").chosen(
@@ -404,49 +405,49 @@ jQuery(document).ready(
  */
 function getTabKey(href) {
     return href.replace('#', '');
-  }
-  /**
-   * Hide all tabs
-   */
-  function hideAllTabs() {
-      tabs.each(function(){
-          var href = getTabKey(jQuery(this).attr('href'));
-          jQuery('#' + href).hide();
-      });
-  }
-  /**
-   * Activate Tab
-   */
-  function activateTab(tab) {
-      var href = getTabKey(tab.attr('href'));
-      tabs.removeClass('nav-tab-active');
-      tab.addClass('nav-tab-active');
-      jQuery('#' + href).show();
-  }
-  jQuery(document).ready(function($){
-      var activeTab, firstTab;
-      // First load, activate first tab or tab with nav-tab-active class
-      firstTab = false;
-      activeTab = false;
-      tabs = $('a.nav-tab');
-      hideAllTabs();
-      tabs.each(function(){
-          var href = $(this).attr('href').replace('#', '');
-          if (!firstTab) {
-              firstTab = $(this);
-          }
-          if ($(this).hasClass('nav-tab-active')) {
-              activeTab = $(this);
-          }
-      });
-      if (!activeTab) {
-          activeTab = firstTab;
-      }
-      activateTab(activeTab);
-      //Click tab
-      tabs.click(function(e) {
-          e.preventDefault();
-          hideAllTabs();
-          activateTab($(this));
-      });
-  });
+}
+/**
+ * Hide all tabs
+ */
+function hideAllTabs() {
+    tabs.each(function() {
+        var href = getTabKey(jQuery(this).attr('href'));
+        jQuery('#' + href).hide();
+    });
+}
+/**
+ * Activate Tab
+ */
+function activateTab(tab) {
+    var href = getTabKey(tab.attr('href'));
+    tabs.removeClass('nav-tab-active');
+    tab.addClass('nav-tab-active');
+    jQuery('#' + href).show();
+}
+jQuery(document).ready(function($) {
+    var activeTab, firstTab;
+    // First load, activate first tab or tab with nav-tab-active class
+    firstTab = false;
+    activeTab = false;
+    tabs = $('a.nav-tab');
+    hideAllTabs();
+    tabs.each(function() {
+        var href = $(this).attr('href').replace('#', '');
+        if(!firstTab) {
+            firstTab = $(this);
+        }
+        if($(this).hasClass('nav-tab-active')) {
+            activeTab = $(this);
+        }
+    });
+    if(!activeTab) {
+        activeTab = firstTab;
+    }
+    activateTab(activeTab);
+    //Click tab
+    tabs.click(function(e) {
+        e.preventDefault();
+        hideAllTabs();
+        activateTab($(this));
+    });
+});

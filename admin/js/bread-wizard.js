@@ -36,14 +36,15 @@ jQuery(document).ready(function($){
             $('#wizard_root_server_result').removeClass('invalid-feedback').removeClass('valid-feedback')
                 .html('Verify that this is valid root server URL before continuing');
         }
-        write_service_body_with_childern = function(options, sb, parents, level) {
+        write_service_body_with_childern = function(options, sb, parents, my_parent, level) {
             let prefix = '';
             for (i=0; i<level; i++) prefix += '-';
-            options.push('<option value="'+sb.id+'">'+prefix+sb.name+'</option>');
+            const sbVal = [sb.name,sb.id,sb.parent_id, my_parent].join(',');
+            options.push('<option value="'+sbVal+'">'+prefix+sb.name+'</option>');
             found = parents.find((p) => p.id == sb.id);
             if (typeof found !== 'undefined')
                 found.children.forEach((child) =>
-                    options = write_service_body_with_childern(options, child, parents, level+1));
+                    options = write_service_body_with_childern(options, child, parents, sb.name, level+1));
             return options;
         }
         fill_service_bodies = function(service_bodies) {
@@ -60,18 +61,47 @@ jQuery(document).ready(function($){
             }, []);
             let options = [];
             roots.forEach((sb) => {
-                options = write_service_body_with_childern(options, sb, parents, 0);
+                options = write_service_body_with_childern(options, sb, parents, 'ROOT', 0);
             });
             $('#wizard_service_bodies').html(options.join(''));
             $('#wizard_service_bodies').trigger("chosen:updated");
         }
-        service_body_error = function(error) {
+        fill_formats = function(formats) {
+            const options = formats.reduce((carry,item) => {
+                carry.push('<option value="'+item.id+'">Only '+item.name_string+'</option>');
+                return carry;
+            }, ['<option value="0" selected>All Meetings</option>']);
+            $('#wizard_format_filter').html(options.join(''));
+        }
+        layout_options = function(meetings) {
+            const meeting_count = meetings.length;
+            $('#wizard_meeting_count').html(meeting_count);
+            const layouts = breadLayouts.find((layouts) => meeting_count <= Number(layouts.maxSize));
+            const options = layouts.configurations.reduce((carry,item) => {
+                const selected = (carry.length === 0) ? ' selected' : '';
+                carry.push('<option value="'+layouts.maxSize+'/'+item+'"'+selected+'>'+item+'</option>');
+                return carry;
+            }, []);
+            $('#wizard_layout').html(options.join(''));
+        }
+        handle_error = function(error) {
             console.log(error);
+            $('#bread-wizard').smartWizard("goToStep", 0);
         }
         BreadWizard.prototype.getContent = function(idx, stepDirection, stepPosition, selStep, callback) {
             switch(idx) {
                 case 1:
-                    ask_bmlt('switcher=GetServiceBodies', fill_service_bodies, service_body_error);
+                    ask_bmlt('switcher=GetServiceBodies', fill_service_bodies, handle_error);
+                    ask_bmlt('switcher=GetFormats', fill_formats, handle_error);
+                    break;
+                case 2:
+                    const services = $('#wizard_service_bodies').val().reduce((carry,item) => {
+                        carry += '&services[]='+item.split(',')[1];
+                        return carry;
+                    }, '');
+                    const formats = (Number($('#wizard_format_filter').val()) > 0) ? '&formats='+$('#wizard_format_filter').val() : '';
+
+                    ask_bmlt('switcher=GetSearchResults'+services+formats, layout_options, handle_error);
                     break;
                 default:
                     break;
@@ -102,7 +132,11 @@ jQuery(document).ready(function($){
                 const ret = $('#wizard_root_server_result').hasClass('valid-feedback');
                 if (!ret) $('#wizard_root_server_result').html('Verify that this is valid root server URL before continuing');
                 return ret;
-
+            case 1:
+                if ($('#wizard_service_bodies').val().length == 0 && stepDirection=='forward') {
+                    $('#wizard_service_body_result').html('You must select a service body before continuing');
+                    return false;
+                }
             default:
                 break;
         }

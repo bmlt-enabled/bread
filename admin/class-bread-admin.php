@@ -109,8 +109,38 @@ class Bread_Admin
          */
         $str = file_get_contents(plugin_dir_path(__FILE__) . 'templates/meeting_data_templates.json');
         wp_add_inline_script('common', "meetingDataTemplates = $str", 'before');
+        $str = $this->get_meeting_list_templates_json(plugin_dir_path(__FILE__) . 'templates');
+        wp_add_inline_script('breadWizard', "breadLayouts = $str", 'before');
     }
-
+    /**
+     * This allows us to simply add a file to the appropriate directory
+     * to make the configuration available for selection in the wizard.
+     *
+     * @param string $root the directory where we will search for configurations.  The configurations must be in
+     * a directory with a numeric name, where the numeric value is the maximum number of meetings for the configurations stored there.
+     * The filenames of the configurations must have a specific format, which is used to describe the configurations in the UI.
+     * @return string
+     */
+    function get_meeting_list_templates_json(string $root): string
+    {
+        $sizes = [];
+        foreach(scandir($root) as $dir) {
+            if (!(is_numeric($dir))) {
+                continue;
+            }
+            $files = [];
+            foreach(scandir($root.'/'.$dir) as $file) {
+                if (substr($file,0,1) !== '.') {
+                    $files[] = $file;
+                }
+            }
+            $sizes[] = array(
+                'maxSize' => $dir,
+                'configurations' => $files,
+            );
+        }
+        return json_encode($sizes);
+    }
     function ml_default_editor()
     {
         global $my_admin_page;
@@ -396,7 +426,7 @@ class Bread_Admin
                 case 'import_settings':
                     $this->pwsix_process_settings_import();
                     break;
-                case 'import_settings':
+                case 'wizard':
                     $this->pwsix_process_wizard();
                     break;
                 default:
@@ -411,6 +441,27 @@ class Bread_Admin
         if (! wp_verify_nonce($_POST['pwsix_wizard_nonce'], 'pwsix_wizard_nonce')) {
             return;
         }
+        if (!$this->current_user_can_create()) {
+            return;
+        }
+        $encode_options = file_get_contents(plugin_dir_path(__FILE__) . 'templates/'.$_POST['wizard_layout']);
+        while (0 === strpos(bin2hex($encode_options), 'efbbbf')) {
+            $encode_options = substr($encode_options, 3);
+        }
+        $settings = json_decode($encode_options, true);
+        $id = $this->maxSetting + 1;
+        $optionsName = $this->bread->generateOptionName($id);
+        $settings['authors'] = array();
+        $settings['root_server'] = sanitize_url($_POST['wizard_root_server']);
+        for ($i=0; $i<count($_POST['wizard_service_bodies']); $i++) {
+            $j = $i+1;
+            $settings['service_body_'.$j] = sanitize_text_field($_POST['wizard_service_bodies'][$i]);
+        }
+        $settings['used_format_1'] = intval('wizard_format');
+        update_option($optionsName, $settings);
+        $this->bread->renameSetting($id, 'Setting '.$id);
+        setcookie('current-meeting-list', $id, time()+10);
+        wp_safe_redirect(admin_url('?page=class-bread-admin.php'));
     }
     function pwsix_process_settings_admin()
     {

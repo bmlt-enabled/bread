@@ -11,8 +11,8 @@ global $wp_version;
 ?>
 <div id="poststuff">
     <div id="postbox-container" class="postbox-container">
-        <div id="accordion" class="bmlt-accrodian">
-            <h3 class="help-accordian"><strong>Read This Section First</strong></h3>
+        <div id="accordion" class="bmlt-accordion">
+            <h3 class="help-accordion"><strong>Read This Section First</strong></h3>
             <div>
                 <h2>Getting Started</h2>
                 <p>bread is first activated using a "Tri Fold - Landscape - Letter Size" layout. This is a "starter" meeting list that uses an Area with about 100 meetings. The starter meeting list will contain standard content for a basic meeting list that can be printed on a home computer. A basic NA logo will be added to your media libray. The starter meeting list uses a logo being hosted on <a target="_blank" href="https://nameetinglist.org">https://nameetinglist.org</a>.</p>
@@ -31,9 +31,9 @@ global $wp_version;
                 <p>Please allow yourself to experiment with mixing and matching different settings and content. There is a good chance you can find a way to match or at least come very close to your current meeting list.</p>
                 <p>When setting up the meeting list it is helpful to have some knowledge of HTML when using the editors. Very little or no knowledge of HTML is required to maintain the meeting list after the setup. If you get stuck or would like some help with the setup, read the Support section below.</p>
             </div>
-            <h3 class="help-accordian">Meeting List Setup Wizard</h3>
+            <h3 class="help-accordion">Meeting List Setup Wizard</h3>
             <?php include '_bread_wizard.php'; ?>
-            <h3 class="help-accordian">Multiple Meeting Lists</h3>
+            <h3 class="help-accordion">Multiple Meeting Lists</h3>
             <div>
                 <p>This tool supports multiple meeting lists per site.</p>
                 <p>This feature is configured from the Configuration Tab. There, each concurrent meeting list can be given a
@@ -42,7 +42,7 @@ global $wp_version;
                 <p>After switching to another concurrent meeting list, any changes in the admin UI impact the currently selected meeting list</p>
                 <p>If you want to give another user access to bread you can give that use the "manage_bread" capability using a custom role editor.</p>
             </div>
-            <h3 class="help-accordian">Reusable Templating</h3>
+            <h3 class="help-accordion">Reusable Templating</h3>
             <div>
                 <p>You can dynamically set some of the options to create a reusable template.</p>
                 <p>In order to change the meeting information you can pass a dynamic custom query using &custom_query=, ensure you are using URL encoding.</p>
@@ -50,7 +50,7 @@ global $wp_version;
                 <p>You can use any HTML characters, including line breaks.</p>
                 <p>Here is a video of it in action: <a target="_blank">https://bmlt.app/reusable-templates-with-bread-1-6-x/</a></p>
             </div>
-            <h3 class="help-accordian">Support and Help</h3>
+            <h3 class="help-accordion">Support and Help</h3>
             <div>
                 <p>File an issue <a href="https://github.com/radius314/bread/issues">https://github.com/bmlt-enabled/bread/issues</a></p>
                 <u>Debug Information</u>

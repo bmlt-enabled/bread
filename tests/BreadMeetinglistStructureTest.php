@@ -53,7 +53,7 @@ final class BreadMeetinglistStructureTest extends TestCase
     public function testBerlinByDayMain()
     {
         $this->doTest(
-            'berlin-booklet',
+            'berlin-booklet',[],
             'berlin',
             'berlin-formats-de',
             'german-formats',
@@ -67,6 +67,9 @@ final class BreadMeetinglistStructureTest extends TestCase
     {
         $this->doTest(
             'berlin-booklet',
+            [
+                'additional_list_sort_order' => 'weekday_tinyint,start_time'
+            ],
             'berlin',
             'berlin-formats-de',
             'german-formats',
@@ -76,10 +79,23 @@ final class BreadMeetinglistStructureTest extends TestCase
             'de'
         );
     }
+    public function testBerlinByDayAdditionalSortSame()
+    {
+        $this->doTest(
+            'berlin-booklet',[],
+            'berlin',
+            'berlin-formats-de',
+            'german-formats',
+            1,
+            ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'],
+            [[0], [0], [0], [0], [0], [0], [0]],
+            'de'
+        );
+    }
     public function testBerlinByCityPlusDayMain()
     {
         $this->doTest(
-            'berlin-by-city-plus-day',
+            'berlin-by-city-plus-day',[],
             'berlin',
             'berlin-formats-de',
             'german-formats',
@@ -93,6 +109,9 @@ final class BreadMeetinglistStructureTest extends TestCase
     {
         $this->doTest(
             'berlin-booklet',
+            [
+                'additional_list_sort_order' => 'weekday_tinyint,start_time'
+            ],
             'berlin',
             'berlin-formats-de',
             'german-formats',
@@ -105,7 +124,7 @@ final class BreadMeetinglistStructureTest extends TestCase
     public function testBerlinByDayThenCityPlusDayAdditionalMain()
     {
         $this->doTest(
-            'berlin-by-day-then-city-plus-day',
+            'berlin-by-day-then-city-plus-day',[],
             'berlin',
             'berlin-formats-de',
             'german-formats',
@@ -118,7 +137,7 @@ final class BreadMeetinglistStructureTest extends TestCase
     public function testBerlinByDayThenCityPlusDayAdditional()
     {
         $this->doTest(
-            'berlin-by-day-then-city-plus-day',
+            'berlin-by-day-then-city-plus-day',[],
             'berlin',
             'berlin-formats-de',
             'german-formats',
@@ -128,9 +147,12 @@ final class BreadMeetinglistStructureTest extends TestCase
             'de'
         );
     }
-    public function doTest($config, $meetingJson, $usedFormats, $formatBase, $include, $expectedHeading, $expectedSubHeading, $lang): void
+    public function doTest($config, $changes, $meetingJson, $usedFormats, $formatBase, $include, $expectedHeading, $expectedSubHeading, $lang): void
     {
         $options = $this->getConfiguration($config);
+        foreach($changes as $key=>$value) {
+            $options[$key] = $value;
+        }
         $bread = new Bread($options);
         $meetings = $this->getMeetings($meetingJson);
         $bread->bmlt()->setFormatBase($formatBase);
