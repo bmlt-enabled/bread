@@ -53,7 +53,8 @@ final class BreadMeetinglistStructureTest extends TestCase
     public function testBerlinByDayMain()
     {
         $this->doTest(
-            'berlin-booklet',[],
+            'berlin-booklet',
+            [],
             'berlin',
             'berlin-formats-de',
             'german-formats',
@@ -82,7 +83,8 @@ final class BreadMeetinglistStructureTest extends TestCase
     public function testBerlinByDayAdditionalSortSame()
     {
         $this->doTest(
-            'berlin-booklet',[],
+            'berlin-booklet',
+            [],
             'berlin',
             'berlin-formats-de',
             'german-formats',
@@ -95,7 +97,8 @@ final class BreadMeetinglistStructureTest extends TestCase
     public function testBerlinByCityPlusDayMain()
     {
         $this->doTest(
-            'berlin-by-city-plus-day',[],
+            'berlin-by-city-plus-day',
+            [],
             'berlin',
             'berlin-formats-de',
             'german-formats',
@@ -124,7 +127,8 @@ final class BreadMeetinglistStructureTest extends TestCase
     public function testBerlinByDayThenCityPlusDayAdditionalMain()
     {
         $this->doTest(
-            'berlin-by-day-then-city-plus-day',[],
+            'berlin-by-day-then-city-plus-day',
+            [],
             'berlin',
             'berlin-formats-de',
             'german-formats',
@@ -137,7 +141,8 @@ final class BreadMeetinglistStructureTest extends TestCase
     public function testBerlinByDayThenCityPlusDayAdditional()
     {
         $this->doTest(
-            'berlin-by-day-then-city-plus-day',[],
+            'berlin-by-day-then-city-plus-day',
+            [],
             'berlin',
             'berlin-formats-de',
             'german-formats',
@@ -150,7 +155,7 @@ final class BreadMeetinglistStructureTest extends TestCase
     public function doTest($config, $changes, $meetingJson, $usedFormats, $formatBase, $include, $expectedHeading, $expectedSubHeading, $lang): void
     {
         $options = $this->getConfiguration($config);
-        foreach($changes as $key=>$value) {
+        foreach ($changes as $key => $value) {
             $options[$key] = $value;
         }
         $bread = new Bread($options);

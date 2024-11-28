@@ -21,6 +21,12 @@
         <li class="nav-item">
           <a class="nav-link " href="#step-4">
             <span class="num">4</span>
+            Meeting List Options
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link " href="#step-4">
+            <span class="num">5</span>
             Create Meeting List
           </a>
         </li>
@@ -69,6 +75,21 @@
           </select>
         </div>
         <div id="step-4" class="tab-pane" role="tabpanel" aria-labelledby="step-4">
+          <h3>Step 4: Select Options</h3>
+          <p>Choose a language (only applies to names of days and format code descriptions):</p>
+          <select id="wizard_language" name="wizard_language">
+          </select><br/>
+          <p>Where should virtual meetings be included:
+          <fieldset id="wizard_virtual_meetings">
+              <input type="radio" value="1" name="wizard_virtual_meetings" id="wizard_additional_list" checked>
+              <label for="wizard_additional_list">Place virtual meetings in a separate list, with specialized format.</label><br/>
+              <input type="radio" value="0" name="wizard_virtual_meetings" id="wizard_no_additional_list">
+              <label for="wizard_no_additional_list">Include virtual meetings in main meeting list.</label><br/>
+              <input type="radio" value="-1" name="wizard_virtual_meetings" id="wizard_no_virtual_meetings">
+              <label for="wizard_no_virtual_meetings">Don't include virtual meetings at all.</label><br/>
+          </fieldset></p>
+        </div>
+        <div id="step-5" class="tab-pane" role="tabpanel" aria-labelledby="step-5">
         <?php submit_button(__('Create Meeting List'), 'button-primary', 'create_meeting_list', false); ?>
         </div>
     </div>

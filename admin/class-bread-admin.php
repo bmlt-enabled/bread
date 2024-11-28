@@ -109,8 +109,13 @@ class Bread_Admin
          */
         $str = file_get_contents(plugin_dir_path(__FILE__) . 'templates/meeting_data_templates.json');
         wp_add_inline_script('common', "meetingDataTemplates = $str", 'before');
-        $str = $this->get_meeting_list_templates_json(plugin_dir_path(__FILE__) . 'templates');
-        wp_add_inline_script('breadWizard', "breadLayouts = $str", 'before');
+        $strTemplates = $this->get_meeting_list_templates_json(plugin_dir_path(__FILE__) . 'templates');
+        $langs = [];
+        foreach ($this->bread->getTranslateTable() as $key => $value) {
+            $langs[] = ['key' => $key, 'name' => $value['LANG_NAME']];
+        }
+        $strLangs = json_encode($langs);
+        wp_add_inline_script('breadWizard', "breadLayouts = $strTemplates; breadTranslations = $strLangs", 'before');
     }
     /**
      * This allows us to simply add a file to the appropriate directory
@@ -124,13 +129,13 @@ class Bread_Admin
     function get_meeting_list_templates_json(string $root): string
     {
         $sizes = [];
-        foreach(scandir($root) as $dir) {
+        foreach (scandir($root) as $dir) {
             if (!(is_numeric($dir))) {
                 continue;
             }
             $files = [];
-            foreach(scandir($root.'/'.$dir) as $file) {
-                if (substr($file,0,1) !== '.') {
+            foreach (scandir($root.'/'.$dir) as $file) {
+                if (substr($file, 0, 1) !== '.') {
                     $files[] = $file;
                 }
             }
@@ -457,11 +462,31 @@ class Bread_Admin
             $j = $i+1;
             $settings['service_body_'.$j] = sanitize_text_field($_POST['wizard_service_bodies'][$i]);
         }
-        $settings['used_format_1'] = intval('wizard_format');
+        $settings['used_format_1'] = intval($_POST['wizard_format_filter']);
+        $settings['weekday_language'] = sanitize_key($_POST['wizard_language']);
+        $vm_flag = intval($_POST['wizard_virtual_meetings']);
+        if ($vm_flag != '0') {
+            $settings['additional_list_format_key'] = '@Virtual@';
+        }
+        if ($vm_flag == '1') {
+            $settings['custom_section_content'] =
+            '<table style="width: 100%;">
+            <tbody>
+            <tr>
+            <td style="padding: 2pt; background-color: #000000; text-align: center;"><span style="color: #ffffff;"><span style="font-size: 12px;"><b>ONLINE-MEETINGS</b></span></span></td>
+            </tr>
+            </tbody>
+            </table>
+            <p>[additional_meetinglist]</p>'.$settings['custom_section_content'];
+            $str = file_get_contents(plugin_dir_path(__FILE__) . 'templates/meeting_data_templates.json');
+            $meeting_templates = json_decode($str);
+            $settings['additional_list_template_content'] = $meeting_templates['Online Meeting Two Column'];
+        }
+
         update_option($optionsName, $settings);
         $this->bread->renameSetting($id, 'Setting '.$id);
-        setcookie('current-meeting-list', $id, time()+10);
-        wp_safe_redirect(admin_url('?page=class-bread-admin.php'));
+        $this->bread->getMLOptions($id);
+        $this->loaded_setting = $id;
     }
     function pwsix_process_settings_admin()
     {

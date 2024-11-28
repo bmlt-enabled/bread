@@ -70,7 +70,7 @@ jQuery(document).ready(function($){
             const options = formats.reduce((carry,item) => {
                 carry.push('<option value="'+item.id+'">Only '+item.name_string+'</option>');
                 return carry;
-            }, ['<option value="0" selected>All Meetings</option>']);
+            }, ['<option value="" selected>All Meetings</option>']);
             $('#wizard_format_filter').html(options.join(''));
         }
         layout_options = function(meetings) {
@@ -83,6 +83,14 @@ jQuery(document).ready(function($){
                 return carry;
             }, []);
             $('#wizard_layout').html(options.join(''));
+        }
+        lang_options = function() {
+            const options = breadTranslations.reduce((carry,item)=>{
+                const selected = (item.key==='en') ? ' selected' : '';
+                carry.push('<option value="'+item.key+'"'+selected+'>'+item.name+'</option>')
+                return carry;
+            }, []);
+            $('#wizard_language').html(options.join(''));
         }
         handle_error = function(error) {
             console.log(error);
@@ -103,6 +111,10 @@ jQuery(document).ready(function($){
 
                     ask_bmlt('switcher=GetSearchResults'+services+formats, layout_options, handle_error);
                     break;
+                case 3:
+                    lang_options();
+                case 3:
+                    if ($("wizard_layout").val()=='') handle_error('Layout not defined');
                 default:
                     break;
             }
@@ -116,6 +128,7 @@ jQuery(document).ready(function($){
         {
             theme: 'dots',
             autoAdjustHeight: false,
+            enableUrlHash: false,
             keyboard: {
                 keyNavigation: false,
             },
