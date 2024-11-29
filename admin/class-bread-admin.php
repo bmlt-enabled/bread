@@ -49,8 +49,6 @@ class Bread_Admin
      * @param string    $version    The version of this plugin.
      */
     var $outside_meeting_result = array();
-    var $maxSetting = 1;
-    var $loaded_setting = 1;
     var $bmltEnabled_admin;
     private Bread $bread;
     public function __construct($plugin_name, $version, $bmltEnabled_admin, $bread)
@@ -134,7 +132,7 @@ class Bread_Admin
                 continue;
             }
             $files = [];
-            foreach (scandir($root.'/'.$dir) as $file) {
+            foreach (scandir($root . '/' . $dir) as $file) {
                 if (substr($file, 0, 1) !== '.') {
                     $files[] = $file;
                 }
@@ -181,10 +179,10 @@ class Bread_Admin
         $plugins_array = array();
         $screen = get_current_screen();
         if ($screen->id == $my_admin_page) {
-            $plugins = array('table', 'code', 'contextmenu' ); //Add any more plugins you want to load here
+            $plugins = array('table', 'code', 'contextmenu'); //Add any more plugins you want to load here
             //Build the response - the key is the plugin name, value is the URL to the plugin JS
             foreach ($plugins as $plugin) {
-                $plugins_array[ $plugin ] = plugins_url('tinymce/', __FILE__) . $plugin . '/plugin.min.js';
+                $plugins_array[$plugin] = plugins_url('tinymce/', __FILE__) . $plugin . '/plugin.min.js';
             }
             $shortcode_menu = array();
             $shortcode_menu['front_page_button'] = plugins_url('tinymce/', __FILE__) . 'front_page_button/plugin.min.js';
@@ -205,9 +203,9 @@ class Bread_Admin
             $initArray['fontsize_formats'] = "5pt 6pt 7pt 8pt 9pt 10pt 11pt 12pt 13pt 14pt 15pt 16pt 17pt 18pt 19pt 20pt 22pt 24pt 26pt 28pt 30pt 32pt 34pt 36pt 38pt";
             $initArray['theme_advanced_blockformats'] = 'h2,h3,h4,p';
             $initArray['wordpress_adv_hidden'] = false;
-            $initArray['font_formats']='Arial (Default)=arial;';
-            $initArray['font_formats'].='Times (Sans-Serif)=times;';
-            $initArray['font_formats'].='Courier (Monospace)=courier;';
+            $initArray['font_formats'] = 'Arial (Default)=arial;';
+            $initArray['font_formats'] .= 'Times (Sans-Serif)=times;';
+            $initArray['font_formats'] .= 'Courier (Monospace)=courier;';
             $initArray['content_style'] = 'body { font-family: Arial; }';
         }
         return $initArray;
@@ -241,7 +239,7 @@ class Bread_Admin
             return;
         }
         $this->bread->getMLOptions($this->bread->getRequestedSetting());
-        $this->bread->renameSetting($this->loaded_setting, sanitize_text_field($_POST['setting_descr']));
+        $this->bread->setAndSaveSetting($this->bread->getRequestedSetting(), sanitize_text_field($_POST['setting_descr']));
     }
     /**
      * Process a settings export that generates a .json file of the shop settings
@@ -255,11 +253,11 @@ class Bread_Admin
             return;
         }
         $this->bread->getMLOptions($this->bread->getRequestedSetting());
-        $blogname = str_replace(" - ", " ", get_option('blogname').'-'.$this->bread->getSettingName($this->loaded_setting));
+        $blogname = str_replace(" - ", " ", get_option('blogname') . '-' . $this->bread->getSettingName($this->bread->getRequestedSetting()));
         $blogname = str_replace(" ", "-", $blogname);
         $date = date("m-d-Y");
         $blogname = trim(preg_replace('/[^a-z0-9]+/', '-', strtolower($blogname)), '-');
-        $json_name = $blogname.$date.".json"; // Naming the filename will be generated.
+        $json_name = $blogname . $date . ".json"; // Naming the filename will be generated.
         $settings = get_option($this->bread->getOptionsName());
         foreach ($settings as $key => $value) {
             $value = maybe_unserialize($value);
@@ -267,10 +265,13 @@ class Bread_Admin
         }
         $json_file = json_encode($need_options); // Encode data into json data
         ignore_user_abort(true);
+        ob_clean();
         header('Content-Type: application/json; charset=utf-8');
         header("Content-Disposition: attachment; filename=$json_name");
         header("Expires: 0");
-        echo json_encode($settings);
+        $data = json_encode($settings);
+        header('Content-Length: ' . strlen($data));
+        file_put_contents('php://output', $data);
         exit;
     }
     function current_user_can_modify()
@@ -331,8 +332,8 @@ class Bread_Admin
         $settings = json_decode($encode_options, true);
         $settings['authors'] = array(wp_get_current_user()->ID);
         update_option($this->bread->getOptionsName(), $settings);
-        setcookie('pwsix_action', "import_settings", time()+10);
-        setcookie('current-meeting-list', $this->loaded_setting, time()+10);
+        setcookie('pwsix_action', "import_settings", time() + 10);
+        setcookie('current-meeting-list', $this->bread->getRequestedSetting(), time() + 10);
         wp_safe_redirect(admin_url('?page=class-bread-admin.php'));
     }
     function my_theme_add_editor_styles()
@@ -352,9 +353,9 @@ class Bread_Admin
         array_unshift($links, $settings_link); // before other links
         return $links;
     }
-        /**
-         * Saves the admin options to the database.
-         */
+    /**
+     * Saves the admin options to the database.
+     */
     function save_admin_options()
     {
         $this->bread->updateOptions();
@@ -373,21 +374,22 @@ class Bread_Admin
     }
     function get($url, $cookies = array())
     {
-            $args = array(
-                'timeout' => '120',
-                'cookies' => $cookies,
+        $args = array(
+            'timeout' => '120',
+            'cookies' => $cookies,
+        );
+        if (
+            isset($this->options['user_agent'])
+            && $this->bread->getOption('user_agent') != 'None'
+        ) {
+            $args['headers'] = array(
+                'User-Agent' => $this->bread->getOption('user_agent')
             );
-            if (isset($this->options['user_agent'])
-                && $this->bread->getOption('user_agent') != 'None'
-            ) {
-                $args['headers'] = array(
-                    'User-Agent' => $this->bread->getOption('user_agent')
-                );
-            }
-            if ($this->bread->getOption('sslverify') == '1') {
-                $args['sslverify'] = false;
-            }
-            return wp_remote_get($url, $args);
+        }
+        if ($this->bread->getOption('sslverify') == '1') {
+            $args['sslverify'] = false;
+        }
+        return wp_remote_get($url, $args);
     }
     function submenu_slug($slugs)
     {
@@ -398,9 +400,9 @@ class Bread_Admin
         $slugs[] = basename(__FILE__);
         return $slugs;
     }
-            /**
-             * @desc Adds the options sub-panel
-             */
+    /**
+     * @desc Adds the options sub-panel
+     */
     function admin_submenu_link($parent_slug)
     {
         activate_bread();
@@ -438,7 +440,7 @@ class Bread_Admin
                     break;
             }
         }
-        include_once plugin_dir_path(__FILE__).'partials/bread-admin-display.php';
+        include_once plugin_dir_path(__FILE__) . 'partials/bread-admin-display.php';
         (new Bread_AdminDisplay($this))->admin_options_page();
     }
     function pwsix_process_wizard()
@@ -449,18 +451,20 @@ class Bread_Admin
         if (!$this->current_user_can_create()) {
             return;
         }
-        $encode_options = file_get_contents(plugin_dir_path(__FILE__) . 'templates/'.$_POST['wizard_layout']);
+        $layout = sanitize_url($_POST['wizard_layout']);
+        $encode_options = file_get_contents(plugin_dir_path(__FILE__) . 'templates/' . $layout);
         while (0 === strpos(bin2hex($encode_options), 'efbbbf')) {
             $encode_options = substr($encode_options, 3);
         }
         $settings = json_decode($encode_options, true);
-        $id = $this->maxSetting + 1;
+        $ncols = substr_count($settings['meeting_template_content'], '<td');
+        $id = $this->bread->getMaxSetting() + 1;
         $optionsName = $this->bread->generateOptionName($id);
         $settings['authors'] = array();
         $settings['root_server'] = sanitize_url($_POST['wizard_root_server']);
-        for ($i=0; $i<count($_POST['wizard_service_bodies']); $i++) {
-            $j = $i+1;
-            $settings['service_body_'.$j] = sanitize_text_field($_POST['wizard_service_bodies'][$i]);
+        for ($i = 0; $i < count($_POST['wizard_service_bodies']); $i++) {
+            $j = $i + 1;
+            $settings['service_body_' . $j] = sanitize_text_field($_POST['wizard_service_bodies'][$i]);
         }
         $settings['used_format_1'] = intval($_POST['wizard_format_filter']);
         $settings['weekday_language'] = sanitize_key($_POST['wizard_language']);
@@ -468,25 +472,32 @@ class Bread_Admin
         if ($vm_flag != '0') {
             $settings['additional_list_format_key'] = '@Virtual@';
         }
+        $str = file_get_contents(plugin_dir_path(__FILE__) . 'templates/meeting_data_templates.json');
+        $meeting_templates = json_decode($str);
         if ($vm_flag == '1') {
             $settings['custom_section_content'] =
-            '<table style="width: 100%;">
+                '<table style="width: 100%;">
             <tbody>
             <tr>
             <td style="padding: 2pt; background-color: #000000; text-align: center;"><span style="color: #ffffff;"><span style="font-size: 12px;"><b>ONLINE-MEETINGS</b></span></span></td>
             </tr>
             </tbody>
             </table>
-            <p>[additional_meetinglist]</p>'.$settings['custom_section_content'];
-            $str = file_get_contents(plugin_dir_path(__FILE__) . 'templates/meeting_data_templates.json');
-            $meeting_templates = json_decode($str);
+            <p>[additional_meetinglist]</p>' . $settings['custom_section_content'];
             $settings['additional_list_template_content'] = $meeting_templates['Online Meeting Two Column'];
         }
-
+        $settings['meeting_sort'] = sanitize_text_field($_POST['wizard_meeting_sort']);
+        if ($settings['meeting_sort'] != 'day') {
+            $ncols = substr_count($settings['meeting_template_content'], '<td');
+            if ($ncols < 2) {
+                $settings['meeting_template_content'] = $meeting_templates["One Column Template with Day [Day Time Meeting Data]"];
+            } else {
+                $settings['meeting_template_content'] = $meeting_templates["Two Column Template with Day [Day/Time] [Meeting Data]"];
+            }
+        }
         update_option($optionsName, $settings);
-        $this->bread->renameSetting($id, 'Setting '.$id);
+        $this->bread->setAndSaveSetting($id, 'Setting ' . $id);
         $this->bread->getMLOptions($id);
-        $this->loaded_setting = $id;
     }
     function pwsix_process_settings_admin()
     {
@@ -498,23 +509,21 @@ class Bread_Admin
             if (!$this->current_user_can_modify()) {
                 return;
             }
-            if ($this->loaded_setting == 1) {
+            if ($this->bread->getRequestedSetting() == 1) {
                 return;
             }
-            $this->bread->deleteSetting($this->loaded_setting);
+            $this->bread->deleteSetting($this->bread->getRequestedSetting());
             $this->bread->getMLOptions(1);
-            $this->loaded_setting = 1;
             $this->bread->setRequestedSetting(1);
         } elseif (isset($_POST['duplicate'])) {
             if (!$this->current_user_can_create()) {
                 return;
             }
-            $id = $this->maxSetting + 1;
+            $id = $this->bread->getMaxSetting() + 1;
             $this->bread->setOptionsName($this->bread->generateOptionName($id));
             $this->bread->setOption('authors', array());
             $this->save_admin_options();
-            $this->bread->renameSetting($id, 'Setting '.$id);
-            $this->maxSetting = $id;
+            $this->bread->setAndSaveSetting($id, 'Setting ' . $id);
             $this->bread->getMLOptions($id);
         }
     }

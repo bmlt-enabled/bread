@@ -172,7 +172,7 @@ class Bread
         }
         return isset($holder['current-meeting-list']) ? intval($holder['current-meeting-list']) : 1;
     }
-    public function renameSetting($id, $name)
+    public function setAndSaveSetting($id, $name)
     {
         $this->allSettings[$id] = $name;
         update_option(Bread::SETTINGS, $this->allSettings);
@@ -643,7 +643,8 @@ class Bread
                 $this->options['root_server'] = 'http://' . $this->options['root_server'];
             }
         }
-        if (!isset($this->options['cont_header_shown'])
+        if (
+            !isset($this->options['cont_header_shown'])
             && isset($this->options['page_height_fix'])
         ) {
             $fix = floatval($this->options['page_height_fix']);
@@ -702,5 +703,9 @@ class Bread
     public static function get_TransientKey($setting)
     {
         return '_bread__' . $setting;
+    }
+    public function getMaxSetting()
+    {
+        return $this->maxSetting;
     }
 }

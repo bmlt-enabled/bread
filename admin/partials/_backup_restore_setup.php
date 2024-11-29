@@ -13,11 +13,11 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         <?php _e('that generates the meeting list (eg, ?current-meeting-list=2 generates the meeting list with ID 2.') ?></p>
                     <h4>Current Meeting List</h4>
                     <form method="post">
-                        <p>Meeting List ID: <?php echo $this->admin->loaded_setting ?>
-                            <input type="hidden" name="pwsix_action" value="rename_setting" /><input type="hidden" name="current-meeting-list" value="<?php echo $this->admin->loaded_setting ?>" />
+                        <p>Meeting List ID: <?php echo $this->bread->getRequestedSetting() ?>
+                            <input type="hidden" name="pwsix_action" value="rename_setting" /><input type="hidden" name="current-meeting-list" value="<?php echo $this->bread->getRequestedSetting() ?>" />
                         </p>
                         <?php wp_nonce_field('pwsix_rename_nonce', 'pwsix_rename_nonce'); ?>
-                        <br>Configuration Name: <input type="text" name="setting_descr" value="<?php echo $this->bread->getSettingName($this->admin->loaded_setting) ?>" />
+                        <br>Configuration Name: <input type="text" name="setting_descr" value="<?php echo $this->bread->getSettingName($this->bread->getRequestedSetting()) ?>" />
                         <?php submit_button(__('Save Configuration Name'), 'button-primary', 'submit_settings_name', false); ?>
                     </form>
                     </p>
@@ -27,7 +27,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                             <label for="current_setting">Select Configuration: </label>
                             <select class="setting_select" id="setting_select" name="current-meeting-list">
                                 <?php foreach ($this->bread->getSettingNames() as $aKey => $aDescr) { ?>
-                                    <option <?php echo (($aKey == $this->admin->loaded_setting) ? 'selected' : "") ?> value="<?php echo $aKey ?>"><?php echo $aKey . ': ' . $aDescr ?></option>
+                                    <option <?php echo (($aKey == $this->bread->getRequestedSetting()) ? 'selected' : "") ?> value="<?php echo $aKey ?>"><?php echo $aKey . ': ' . $aDescr ?></option>
                                 <?php } ?>
                             </select>
                             <?php wp_nonce_field('pwsix_load_nonce', 'pwsix_load_nonce'); ?>
@@ -36,11 +36,11 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     <?php } ?>
                     <hr />
                     <form method="post">
-                        <p><input type="hidden" name="pwsix_action" value="settings_admin" /><input type="hidden" name="current-meeting-list" value="<?php echo $this->admin->loaded_setting ?>" /></p>
+                        <p><input type="hidden" name="pwsix_action" value="settings_admin" /><input type="hidden" name="current-meeting-list" value="<?php echo $this->bread->getRequestedSetting() ?>" /></p>
                         </p>
                         <?php wp_nonce_field('pwsix_settings_admin_nonce', 'pwsix_settings_admin_nonce'); ?>
                         <?php submit_button(__('Duplicate Current Configuration'), 'button-primary', 'duplicate', false); ?>
-                        <?php if (1 < $this->admin->loaded_setting) { ?>
+                        <?php if (1 < $this->bread->getRequestedSetting()) { ?>
                             <?php submit_button(__('Delete Current Configuration'), 'button-primary', 'delete_settings', false); ?>
                         <?php } ?>
                     </form>
@@ -55,7 +55,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     <p><?php _e('This allows you to easily import meeting list settings into another site.'); ?></p>
                     <p><?php _e('Also useful for backing up before making significant changes to the meeting list settings.'); ?></p>
                     <form method="post">
-                        <p><input type="hidden" name="pwsix_action" value="export_settings" /><input type="hidden" name="current-meeting-list" value="<?php echo $this->admin->loaded_setting ?>" /></p>
+                        <p><input type="hidden" name="pwsix_action" value="export_settings" /><input type="hidden" name="current-meeting-list" value="<?php echo $this->bread->getRequestedSetting() ?>" /></p>
                         <p>
                             <?php wp_nonce_field('pwsix_export_nonce', 'pwsix_export_nonce'); ?>
                             <?php submit_button(__('Export'), 'button-primary', 'submit', false); ?>
@@ -70,7 +70,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     <form id="form_import_file" method="post" enctype="multipart/form-data">
                         <p><input type="file" required name="import_file" /></p>
                         <p>
-                            <input type="hidden" name="pwsix_action" value="import_settings" /><input type="hidden" name="current-meeting-list" value="<?php echo $this->admin->loaded_setting ?>" />
+                            <input type="hidden" name="pwsix_action" value="import_settings" /><input type="hidden" name="current-meeting-list" value="<?php echo $this->bread->getRequestedSetting() ?>" />
                             <?php wp_nonce_field('pwsix_import_nonce', 'pwsix_import_nonce'); ?>
                             <?php submit_button(__('Import'), 'button-primary', 'submit_import_file', false, array('id' => 'submit_import_file')); ?>
                         </p>
@@ -87,5 +87,5 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
         </div>
     </div>
     <br class="clear">
-    <p style="display: inline; margin-top:.5em;margin-bottom:1.0em;margin-left:.2em;"><a target="_blank" class="button-primary" href="<?php echo home_url(); ?>/?current-meeting-list=<?php echo $this->admin->loaded_setting; ?>">Generate Meeting List</a></p>
+    <p style="display: inline; margin-top:.5em;margin-bottom:1.0em;margin-left:.2em;"><a target="_blank" class="button-primary" href="<?php echo home_url(); ?>/?current-meeting-list=<?php echo $this->bread->getRequestedSetting(); ?>">Generate Meeting List</a></p>
 </div>

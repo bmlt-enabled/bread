@@ -238,7 +238,7 @@ class Bread_AdminDisplay
             } else {
                 $this->admin->save_admin_options();
                 echo '<div class="updated"><p style="color: #F00;">Your changes were successfully saved!</p>';
-                $num = delete_transient($this->bread->get_TransientKey($this->admin->loaded_setting));
+                $num = delete_transient($this->bread->get_TransientKey($this->bread->getRequestedSetting()));
                 if ($num > 0) {
                     echo "<p>$num Cache entries deleted</p>";
                 }
@@ -246,10 +246,10 @@ class Bread_AdminDisplay
             echo '</div>';
         } elseif (isset($_REQUEST['pwsix_action']) && $_REQUEST['pwsix_action'] == "import_settings") {
             echo '<div class="updated"><p style="color: #F00;">Your file was successfully imported!</p></div>';
-            $num = delete_transient($this->bread->get_TransientKey($this->admin->loaded_setting));
+            $num = delete_transient($this->bread->get_TransientKey($this->bread->getRequestedSetting()));
         } elseif (isset($_REQUEST['pwsix_action']) && $_REQUEST['pwsix_action'] == "default_settings_success") {
             echo '<div class="updated"><p style="color: #F00;">Your default settings were successfully updated!</p></div>';
-            $num = delete_transient($this->bread->get_TransientKey($this->admin->loaded_setting));
+            $num = delete_transient($this->bread->get_TransientKey($this->bread->getRequestedSetting()));
         }
         global $wpdb;
         $query = "SELECT COUNT(*) FROM {$wpdb->posts} WHERE guid LIKE '%default_nalogo.jpg%'";
@@ -281,7 +281,7 @@ class Bread_AdminDisplay
                         <a href="#custom-section" class="nav-tab"><?php _e('Custom Content', 'root-server'); ?></a>
                     </nav>
                     <form style=" display:inline!important;" method="POST" id="bmlt_meeting_list_options">
-                        <input type="hidden" name="current-meeting-list" value="<?php echo $this->admin->loaded_setting ?>" />
+                        <input type="hidden" name="current-meeting-list" value="<?php echo $this->bread->getRequestedSetting() ?>" />
         <?php wp_nonce_field('closedpostboxes', 'closedpostboxesnonce', false); ?>
         <?php wp_nonce_field('meta-box-order', 'meta-box-order-nonce', false); ?>
         <?php wp_nonce_field('bmltmeetinglistupdate-options'); ?>
@@ -304,8 +304,8 @@ class Bread_AdminDisplay
                         <?php if ($this->admin->current_user_can_modify()) {?>
     <input type="submit" value="Save Changes" id="bmltmeetinglistsave" name="bmltmeetinglistsave" class="button-primary" />
     <input type="submit" value="Preview" id="bmltmeetinglistpreview" name="bmltmeetinglistpreview" class="button-primary" formtarget="_blank" />
-    <p style="display: inline; margin-top:.5em;margin-bottom:1.0em;margin-left:.2em;"><a target="_blank" class="button-primary" href="<?php echo home_url();?>/?current-meeting-list=' . $this->admin->loaded_setting . '">Generate Meeting List</a></p>
-    <div style="display:inline;"><i>&nbsp;&nbsp;Save Changes before Generate Meeting List.</i></div>
+    <p style="display: inline; margin-top:.5em;margin-bottom:1.0em;margin-left:.2em;"><a target="_blank" class="button-primary" href="<?php echo home_url();?>/?current-meeting-list=<?php echo $this->bread->getRequestedSetting();?>">Generate Meeting List</a></p>
+    <div style="display:inline;"><i>&nbsp;&nbsp;Save Changes before Generating Meeting List.</i></div>
     <br class="clear">
                         <?php } ?>
                     </form>

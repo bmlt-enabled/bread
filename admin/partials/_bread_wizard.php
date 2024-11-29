@@ -88,6 +88,12 @@
               <input type="radio" value="-1" name="wizard_virtual_meetings" id="wizard_no_virtual_meetings">
               <label for="wizard_no_virtual_meetings">Don't include virtual meetings at all.</label><br/>
           </fieldset></p>
+          <p>Organize the meetings by:
+          <select name="wizard_meeting_sort">
+            <option value="day">Day</option>
+            <option value="city">City</option>
+            <option value="group">Group</option>
+          </select>
         </div>
         <div id="step-5" class="tab-pane" role="tabpanel" aria-labelledby="step-5">
         <?php submit_button(__('Create Meeting List'), 'button-primary', 'create_meeting_list', false); ?>
