@@ -92,8 +92,8 @@ foreach ($all_users as $user) {
                 <h3 class="hndle">Include Extra Meetings<span class="my-tooltip" data-tooltip-content="#extrameetings-tooltip-content"><span class="tooltipster-icon">(?)</span></span></h3>
                 <div class="inside">
                     <p class="ctrl_key" style="display:none; color: #00AD00;">Hold CTRL Key down to select multiple meetings.</p>
-                    <select class="chosen-select" style="width: 100%;" data-placeholder="
-                    <?php
+                    <select class="chosen-select" style="width: 100%;" data-placeholder=
+                    "<?php
                     if ($this->bread->getOption('extra_meetings_enabled') == 0) {
                         echo 'Not Enabled';
                     } elseif (!$this->connected) {

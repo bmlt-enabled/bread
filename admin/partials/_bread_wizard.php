@@ -34,6 +34,7 @@
     <form method="post" id="wizard_form">
         <?php wp_nonce_field('pwsix_wizard_nonce', 'pwsix_wizard_nonce'); ?>
         <input type="hidden" name="pwsix_action" value="wizard" />
+        <input type="hidden" id="wizard_setting_id" name="wizard_setting_id" value="" />
     <div class="tab-content">
         <div id="step-1" class="tab-pane" role="tabpanel" aria-labelledby="step-1">
         <h3>Step 1: Enter your BMLT root server</h3>
@@ -83,10 +84,12 @@
           <h3>Step 3: Page Layout</h3>
           <div class="step-description">
           <p>Most areas try to fit their meetings onto a single sheet of paper.  And it is particularly adventageous to
-            use a tri-fold format, so that the list can be printed at home and placed along side the pamphlets.  Remember though, that when fonts become
-            too small, the meeting list becomes unreadable.  For many areas, a booklet format is better, even
-            if the reqire more effort or expense to print.</p>
-          <p>In this step we suggest suitible formats based on your meeting count.</p>
+            use a tri-fold format, so that the list can be printed at home and placed along side the pamphlets. The priority should always be that the
+            meeting list is readable.  For many areas, a booklet format is better, even if the reqire more effort or expense to print.</p>
+          <p>In this step we suggest suitible formats based on your meeting count.  Having the meetings fit on a single side has the advantage
+            that the list can be posted on a bulleitin board, and this will be used when suggesting a page layout.  However, you may
+            also wish to have the meetings "overflow" on to the back side of the paper.  If so, select a layout <em>above</em> layout
+            that the wizard pre-selects for you.</p>
           </div>
           <p>Number of meetings on list: <span id="wizard_meeting_count"></span></p>
           <p>Select one of the layouts appropriate to the number of meetings</p>
@@ -138,6 +141,8 @@
             <button type="button" class="btn btn-primary" onClick="breadWizard.generate_meeting_list()">Generate Meeting List</button>
             <p>
               To add a link to the meeting list on your website, use the following link.
+            </p><div id="wizard-show-link"></div>
+            <p>If you want to try a different layout: <button type="button" class="btn btn-primary" onClick="breadWizard.redo_layout()">Go Back</button>
             </p><div id="wizard-show-link"></div>
           </div>
         </div>

@@ -566,8 +566,9 @@ class Bread
         $this->fillUnsetStringOption('city_suffix', 'City');
         $this->fillUnsetStringOption('meeting_template_content', '');
         //TODO:remove....clean up after a bug...
-        if (is_array($this->options['additional_list_template_content']))
+        if (is_array($this->options['additional_list_template_content'])) {
             $this->options['additional_list_template_content'] = join('', $this->options['additional_list_template_content']);
+        }
         $this->fillUnsetStringOption('additional_list_template_content', '');
         $this->fillUnsetOption('column_line', 0);
         $this->fillUnsetOption('col_color', '#bfbfbf');

@@ -457,7 +457,7 @@ class Bread_Admin
         }
         $settings = json_decode($encode_options, true);
         $ncols = substr_count($settings['meeting_template_content'], '<td');
-        $id = $this->bread->getMaxSetting() + 1;
+        $id = (is_numeric($_POST['wizard_setting_id'])) ? intval($_POST['wizard_setting_id']) : $this->bread->getMaxSetting() + 1;
         $optionsName = $this->bread->generateOptionName($id);
         $settings['authors'] = array();
         $settings['root_server'] = sanitize_url($_POST['wizard_root_server']);
@@ -496,7 +496,7 @@ class Bread_Admin
         }
         update_option($optionsName, $settings);
         $setting_name = sanitize_title($_POST['wizard-setting-name']);
-        $setting_name = $setting_name == '' ? $setting_name : 'Setting ' . $id;
+        $setting_name = $setting_name == '' ? 'Setting ' . $id : $setting_name;
         $this->bread->setAndSaveSetting($id, $setting_name);
         $this->bread->getMLOptions($id);
         $this->bread->setRequestedSetting($id);

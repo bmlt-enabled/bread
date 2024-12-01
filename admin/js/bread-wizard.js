@@ -42,16 +42,22 @@ jQuery(document).ready(function($){
               });
           }
         var href;
+        var setting;
         finalInstructions = function(response) {
             $('#wizard-before-create').hide();
             $('#wizard-after-create').show();
             href = window.location.href.substring(0, window.location.href.indexOf('/wp-admin'));
-            href = href+"?current-meeting-list="+response.result.setting;
-            const tag = '<pre>&lt;a href="'+href+'"&gt;'+href+'</pre>';
+            setting = response.result.setting;
+            href = href+"?current-meeting-list="+setting;
+            const tag = '<div class="step-description"><pre>'+href+'</pre>';
             $('#wizard-show-link').html(tag);
         }
         BreadWizard.prototype.generate_meeting_list = function() {
             window.open(href, '_blank').focus();
+        }
+        BreadWizard.prototype.redo_layout = function() {
+            $('#wizard_setting_id').val(setting);
+            $('#bread-wizard').smartWizard("goToStep", 2);
         }
         BreadWizard.prototype.test_root_server = function() {
             ask_bmlt("switcher=GetServerInfo",
