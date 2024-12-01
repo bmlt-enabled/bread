@@ -277,12 +277,17 @@ class Bread_Public
             } elseif ($this->options['page_size'] == 'A4') {
                 $page_type_settings = ['format' => array(99.0, 210.0), 'margin_footer' => $this->options['margin_footer']];
             }
+        } elseif ($this->options['page_size'] == '5inch') {
+            $this->options['page_fold'] = 'full';
+            $page_type_settings = ['format' => array(197.2,279.4), 'margin_footer' => $this->options['margin_footer']];
         } elseif ($this->options['page_fold'] == 'full') {
             $ps = $this->options['page_size'];
             if ($ps == 'ledger') {
                 $ps = 'tabloid';
             }
             $page_type_settings = ['format' => $ps . "-" . $this->options['page_orientation'], 'margin_footer' => $this->options['margin_footer']];
+        } elseif ($this->options['page_size'] == '5inch') {
+            $page_type_settings = ['format' => array(197.2,279.4), 'margin_footer' => $this->options['margin_footer']];
         } else {
             $ps = $this->options['page_size'];
             if ($ps == 'ledger') {

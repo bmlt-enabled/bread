@@ -378,8 +378,7 @@ class Bread_Admin
             'timeout' => '120',
             'cookies' => $cookies,
         );
-        if (
-            isset($this->options['user_agent'])
+        if (isset($this->options['user_agent'])
             && $this->bread->getOption('user_agent') != 'None'
         ) {
             $args['headers'] = array(
@@ -451,7 +450,7 @@ class Bread_Admin
         if (!$this->current_user_can_create()) {
             return;
         }
-        $layout = sanitize_url($_POST['wizard_layout']);
+        $layout = sanitize_text_field($_POST['wizard_layout']);
         $encode_options = file_get_contents(plugin_dir_path(__FILE__) . 'templates/' . $layout);
         while (0 === strpos(bin2hex($encode_options), 'efbbbf')) {
             $encode_options = substr($encode_options, 3);
@@ -473,7 +472,7 @@ class Bread_Admin
             $settings['additional_list_format_key'] = '@Virtual@';
         }
         $str = file_get_contents(plugin_dir_path(__FILE__) . 'templates/meeting_data_templates.json');
-        $meeting_templates = json_decode($str);
+        $meeting_templates = json_decode($str, true);
         if ($vm_flag == '1') {
             $settings['custom_section_content'] =
                 '<table style="width: 100%;">
@@ -484,7 +483,7 @@ class Bread_Admin
             </tbody>
             </table>
             <p>[additional_meetinglist]</p>' . $settings['custom_section_content'];
-            $settings['additional_list_template_content'] = $meeting_templates['Online Meeting Two Column'];
+            $settings['additional_list_template_content'] = join('', $meeting_templates['Online Meeting Two Column - Link in QR-Code']);
         }
         $settings['meeting_sort'] = sanitize_text_field($_POST['wizard_meeting_sort']);
         if ($settings['meeting_sort'] != 'day') {
@@ -496,8 +495,19 @@ class Bread_Admin
             }
         }
         update_option($optionsName, $settings);
-        $this->bread->setAndSaveSetting($id, 'Setting ' . $id);
+        $setting_name = sanitize_title($_POST['wizard-setting-name']);
+        $setting_name = $setting_name == '' ? $setting_name : 'Setting ' . $id;
+        $this->bread->setAndSaveSetting($id, $setting_name);
         $this->bread->getMLOptions($id);
+        $this->bread->setRequestedSetting($id);
+        ignore_user_abort(true);
+        ob_clean();
+        header('Content-Type: application/json; charset=utf-8');
+        header("Expires: 0");
+        $message = ['result' => ['setting' => $id]];
+        $data = json_encode($message);
+        header('Content-Length: ' . strlen($data));
+        file_put_contents('php://output', $data);
     }
     function pwsix_process_settings_admin()
     {
@@ -505,7 +515,7 @@ class Bread_Admin
             return;
         }
         $this->bread->getMLOptions($this->bread->getRequestedSetting());
-        if (isset($_POST['delete'])) {
+        if (isset($_POST['delete_settings'])) {
             if (!$this->current_user_can_modify()) {
                 return;
             }

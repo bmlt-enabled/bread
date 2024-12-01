@@ -18,15 +18,50 @@ jQuery(document).ready(function($){
                 return false;
             })
         }
+        BreadWizard.prototype.ajax_submit = function() {
+            var myform = document.getElementById("wizard_form");
+
+            var formData = new FormData(myform);
+
+            fetch(window.location.href, {
+              method: "POST",
+              body: formData,
+            })
+              .then((response) => {
+                if (!response.ok) {
+                  throw new Error("network returns error");
+                }
+                return response.json();
+              })
+              .then((resp) => {
+                finalInstructions(resp);
+              })
+              .catch((error) => {
+                // Handle error
+                console.log("error ", error);
+              });
+          }
+        var href;
+        finalInstructions = function(response) {
+            $('#wizard-before-create').hide();
+            $('#wizard-after-create').show();
+            href = window.location.href.substring(0, window.location.href.indexOf('/wp-admin'));
+            href = href+"?current-meeting-list="+response.result.setting;
+            const tag = '<pre>&lt;a href="'+href+'"&gt;'+href+'</pre>';
+            $('#wizard-show-link').html(tag);
+        }
+        BreadWizard.prototype.generate_meeting_list = function() {
+            window.open(href, '_blank').focus();
+        }
         BreadWizard.prototype.test_root_server = function() {
             ask_bmlt("switcher=GetServerInfo",
             (info) => {
-                $('#wizard_root_server_result').removeClass('invalid-feedback')
-                    .addClass('valid-feedback').html('BMLT Server version '+info[0]['version']);
+                $('#wizard_root_server_result').removeClass('invalid-feedback dashicons-dismiss')
+                    .addClass('valid-feedback dashicons-before dashicons-yes-alt').html('Connected! - BMLT Server version '+info[0]['version']);
             },
             (error) => {
-                $('#wizard_root_server_result').removeClass('valid-feedback')
-                    .addClass('invalid-feedback').html('Could not connect: Check spelling and internet connection.');
+                $('#wizard_root_server_result').removeClass('valid-feedback dashicons-yes-alt')
+                    .addClass('invalid-feedback dashicons-before dashicons-dismiss').html('Could not connect: Check spelling and internet connection.');
             });
         }
         BreadWizard.prototype.root_server_keypress = function(event) {
@@ -113,8 +148,10 @@ jQuery(document).ready(function($){
                     break;
                 case 3:
                     lang_options();
-                case 3:
+                case 4:
                     if ($("wizard_layout").val()=='') handle_error('Layout not defined');
+                    $('#wizard-before-create').show();
+                    $('#wizard-after-create').hide();
                 default:
                     break;
             }

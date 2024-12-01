@@ -214,7 +214,7 @@ class Bread_AdminDisplay
                     $this->bread->setOption('extra_meetings', wp_kses_post($extra));
                 }
             }
-            $authors = $_POST['authors_select'];
+            $authors = isset($_POST['author_chosen']) ? $_POST['author_chosen'] : [];
             $this->bread->setOption('authors', array());
             foreach ($authors as $author) {
                 $this->bread->appendOption('authors', intval($author));
@@ -251,12 +251,6 @@ class Bread_AdminDisplay
             echo '<div class="updated"><p style="color: #F00;">Your default settings were successfully updated!</p></div>';
             $num = delete_transient($this->bread->get_TransientKey($this->bread->getRequestedSetting()));
         }
-        global $wpdb;
-        $query = "SELECT COUNT(*) FROM {$wpdb->posts} WHERE guid LIKE '%default_nalogo.jpg%'";
-        if ($wpdb->get_var($query) == 0) {
-            $url = plugin_dir_url(__FILE__) . "includes/default_nalogo.jpg";
-            media_sideload_image($url, 0);
-        }
         $this->bread->fillUnsetOptions();
         ?>
         <div class="hide wrap" id="meeting-list-tabs-wrapper">
@@ -266,8 +260,8 @@ class Bread_AdminDisplay
             <div id="meeting-list-tabs">
                 <ul class="nav">
                     <li><a href="#instructions"><?php _e('Getting Started', 'root-server'); ?></a></li>
-                    <li><a href="#editor"><?php _e('Editor', 'root-server'); ?></a></li>
-                    <li><a href="#import-export"><?php _e('Configuration', 'root-server'); ?></a></li>
+                    <li><a href="#editor"><?php _e('Customizer', 'root-server'); ?></a></li>
+                    <li><a href="#import-export"><?php _e('Backup/ Restore', 'root-server'); ?></a></li>
                 </ul>
                 <div id="instructions">
         <?php include '_meeting_list_setup.php'; ?>

@@ -509,3 +509,17 @@ select.service_body_select {
 .chosen-container-multi .chosen-choices li.search-field input[type=text] {
     font-family: "Open Sans",sans-serif !important;
 }
+.step-description {
+    margin: 10px;
+    border: solid;
+    padding: 10px;
+    background-color: cornsilk;
+}
+.invalid-feedback {
+    color: red;
+    font-weight: bold;
+}
+.valid-feedback {
+    color: green;
+    font-weight: bold;
+}

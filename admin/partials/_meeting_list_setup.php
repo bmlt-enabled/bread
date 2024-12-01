@@ -12,34 +12,15 @@ global $wp_version;
 <div id="poststuff">
     <div id="postbox-container" class="postbox-container">
         <div id="accordion" class="bmlt-accordion">
-            <h3 class="help-accordion"><strong>Read This Section First</strong></h3>
-            <div>
-                <h2>Getting Started</h2>
-                <p>bread is first activated using a "Tri Fold - Landscape - Letter Size" layout. This is a "starter" meeting list that uses an Area with about 100 meetings. The starter meeting list will contain standard content for a basic meeting list that can be printed on a home computer. A basic NA logo will be added to your media libray. The starter meeting list uses a logo being hosted on <a target="_blank" href="https://nameetinglist.org">https://nameetinglist.org</a>.</p>
-                <h2>Step 1.</h2>
-                <p>Click on the BMLT Server tab to the left. Change the BMLT Server and click the Save Changes button.</p>
-                <p><em>To find your BMLT Server click on the red question (?) mark.</em></p>
-                <h2>Step 2.</h2>
-                <p>From the Service Body 1 dropdown select your Area or Region. Then click Save Changes.</p>
-                <h2>Step 3.</h2>
-                <p>Click Generate Meeting List. Your meeting list will open in a new tab or window.</p>
-                <h2>Step 4.</h2>
-                <p>See the "Meeting List Setup" section below for additional defaults.</p>
-                <p><em>Repeat steps 1, 2 and 3 after changing to new Default Settings.</em></p>
-                <h2>What Now?</h2>
-                <p>From here you will move forward with setting up your meeting list by exploring the Page Layout, Front Page, Custom Section, Meetings, etc tabs. There are countless ways to setup a meeting list.</p>
-                <p>Please allow yourself to experiment with mixing and matching different settings and content. There is a good chance you can find a way to match or at least come very close to your current meeting list.</p>
-                <p>When setting up the meeting list it is helpful to have some knowledge of HTML when using the editors. Very little or no knowledge of HTML is required to maintain the meeting list after the setup. If you get stuck or would like some help with the setup, read the Support section below.</p>
-            </div>
-            <h3 class="help-accordion">Meeting List Setup Wizard</h3>
+            <h3 class="help-accordion"><strong>Start Here: Meeting List Setup Wizard</strong></h3>
             <?php include '_bread_wizard.php'; ?>
             <h3 class="help-accordion">Multiple Meeting Lists</h3>
             <div>
                 <p>This tool supports multiple meeting lists per site.</p>
-                <p>This feature is configured from the Configuration Tab. There, each concurrent meeting list can be given a
+                <p>This feature is configured from the <pre>Backup/Restore</pre> Tab. There, each concurrent meeting list can be given a
                     name, and the system gives the meeting list a numberic identifier. The meeting list can then be generated using </p>
                 a link of the form http://[host]?current-meeting-list=[id]</p>
-                <p>After switching to another concurrent meeting list, any changes in the admin UI impact the currently selected meeting list</p>
+                <p>After switching to another meeting list, any changes in the admin UI impact the currently selected meeting list</p>
                 <p>If you want to give another user access to bread you can give that use the "manage_bread" capability using a custom role editor.</p>
             </div>
             <h3 class="help-accordion">Reusable Templating</h3>
@@ -49,6 +30,28 @@ global $wp_version;
                 <p>You can also use any combinations of [querystring_custom_*], where * is any digit. You can then override that specific value using it in querystring as &querystring_custom_1= (for instance).</p>
                 <p>You can use any HTML characters, including line breaks.</p>
                 <p>Here is a video of it in action: <a target="_blank">https://bmlt.app/reusable-templates-with-bread-1-6-x/</a></p>
+            </div>
+            <h3 class="help-accordion">Extending Bread</h3>
+            <div>
+                <p>Advanced users can extend the functionality of Bread using the WordPress <a href="https://developer.wordpress.org/plugins/hooks/filters/">filter</a> mechanism.</p>
+                <p>The <code>Bread_Enrich_Meeting_Data</code> filter allows the user to expose calculated fields in their the templates to their meetings.
+            An example for the use of this is to make meetings in other languages easier to find by modifying the name of such a meeting to include a text in the other language. (Normally, other languages are
+            just noted in the formats, which make the meetings quite hard to find.)</p>
+                <p>This extension has the form:</p>
+                <pre>
+                add_filter('Bread_Enrich_Meeting_Data', 'enrichMeetingData', 10, 2);
+                function enrichMeetingData($value, $formatsByKey) {...}
+                </pre>
+                where <code>$value</code> is an array containing the properties of the meeting, and <code>formatsByKey</code> is a list of the available formats and their properties.
+                <p>Similarly, the <code>Bread_Section_Shortcodes</code> filter allows the user to make additional commands available in the Front-Page and Custom-Section parts of their meeting lists.
+                <p>This can be used to exposed additional mPdf commands.
+                <p>This extension has the form:</p>
+                <pre>
+                add_filter('Bread_Section_Shortcodes', 'sectionShortcodes', 10, 3);
+                function sectionShortcodes($section_shortcodes, $areas, $formats_used) {...}
+                </pre>
+                where <code>$section_shortcodes</code> is an array containing the default shortcodes, <code>areas</code> is a list of the service bodies and their metadata and <code>formats_used</code> is an array of format metadata.
+
             </div>
             <h3 class="help-accordion">Support and Help</h3>
             <div>

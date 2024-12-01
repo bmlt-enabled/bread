@@ -565,6 +565,9 @@ class Bread
         $this->fillUnsetStringOption('neighborhood_suffix', 'Neighborhood');
         $this->fillUnsetStringOption('city_suffix', 'City');
         $this->fillUnsetStringOption('meeting_template_content', '');
+        //TODO:remove....clean up after a bug...
+        if (is_array($this->options['additional_list_template_content']))
+            $this->options['additional_list_template_content'] = join('', $this->options['additional_list_template_content']);
         $this->fillUnsetStringOption('additional_list_template_content', '');
         $this->fillUnsetOption('column_line', 0);
         $this->fillUnsetOption('col_color', '#bfbfbf');
@@ -643,8 +646,7 @@ class Bread
                 $this->options['root_server'] = 'http://' . $this->options['root_server'];
             }
         }
-        if (
-            !isset($this->options['cont_header_shown'])
+        if (!isset($this->options['cont_header_shown'])
             && isset($this->options['page_height_fix'])
         ) {
             $fix = floatval($this->options['page_height_fix']);
