@@ -19,10 +19,9 @@ jQuery(document).ready(function($){
             })
         }
         BreadWizard.prototype.ajax_submit = function() {
+            $(".saving").show();
             var myform = document.getElementById("wizard_form");
-
             var formData = new FormData(myform);
-
             fetch(window.location.href, {
               method: "POST",
               body: formData,
@@ -44,6 +43,7 @@ jQuery(document).ready(function($){
         var href;
         var setting;
         finalInstructions = function(response) {
+            $(".saving").hide();
             $('#wizard-before-create').hide();
             $('#wizard-after-create').show();
             href = window.location.href.substring(0, window.location.href.indexOf('/wp-admin'));
@@ -74,8 +74,14 @@ jQuery(document).ready(function($){
             if (event.code == 'Enter') this.test_root_server();
         }
         BreadWizard.prototype.root_server_changed = function() {
-            $('#wizard_root_server_result').removeClass('invalid-feedback').removeClass('valid-feedback')
-                .html('Verify that this is valid root server URL before continuing');
+            $('#wizard_root_server_result').removeClass('valid-feedback').addClass('invalid-feedback dashicons-before dashicons-dismiss')
+                .html('Test that this is valid root server URL before continuing');
+        }
+        BreadWizard.prototype.finish = function() {
+            $('#bread-wizard').smartWizard("reset");
+            const url = location.href;
+            location.href = "#editor";
+            history.replaceState(null,null,url);
         }
         write_service_body_with_childern = function(options, sb, parents, my_parent, level) {
             let prefix = '';
@@ -118,12 +124,27 @@ jQuery(document).ready(function($){
             const meeting_count = meetings.length;
             $('#wizard_meeting_count').html(meeting_count);
             const layouts = breadLayouts.find((layouts) => meeting_count <= Number(layouts.maxSize));
-            const options = layouts.configurations.reduce((carry,item) => {
-                const selected = (carry.length === 0) ? ' selected' : '';
-                carry.push('<option value="'+layouts.maxSize+'/'+item+'"'+selected+'>'+item+'</option>');
+            const options = breadLayouts.reduce((carry,group) => {
+                carry.push('<optgroup label="Approx. '+group.maxSize+' meetings">');
+                group.configurations.reduce((carryGroup, item) => {
+                    carryGroup.push(...getOptionsFromFilename(group.maxSize, item));
+                    return carryGroup;
+                }, carry);
+                carry.push('</optgroup>');
                 return carry;
             }, []);
             $('#wizard_layout').html(options.join(''));
+        }
+        getOptionsFromFilename = function(size, filename) {
+            const type = filename.split('-');
+            const fold = type[0];
+            const orientation = type[1];
+            const font = type[2];
+            const papersize = (fold=='booklet') ? ['5inch','A5'] : ['letter','A4'];
+            return papersize.reduce((carry,item) => {
+                carry.push('<option value="'+size+'/'+filename+','+item+'">'+fold+' - '+item+' paper/ '+orientation+' orientation</option>');
+                return carry;
+            },[]);
         }
         lang_options = function() {
             const options = breadTranslations.reduce((carry,item)=>{

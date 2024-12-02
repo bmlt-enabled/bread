@@ -20,81 +20,9 @@ jQuery(document).ready(
                 }
             }
         );
-        $ml("#bmltmeetinglistsave").click(
+        $ml(".gears-working").click(
             function(e) {
                 $ml(".saving").show();
-            }
-        );
-        $ml("#submit_booklet").click(
-            function(e) {
-                e.preventDefault();
-                $ml('#basicModal3').dialog('open');
-            }
-        );
-        $ml('#basicModal3').dialog(
-            {
-                autoOpen: false,
-                width: 'auto',
-                title: "Are you sure?",
-                modal: true,
-                buttons: {
-                    "Confirm": function(e) {
-                        $ml(this).dialog('close');
-                        $ml(".saving").show();
-                        $ml("#booklet_default_settings").submit();
-                    },
-                    "Cancel": function() {
-                        $ml(this).dialog('close');
-                    }
-                }
-            }
-        );
-        $ml("#submit_four_column").click(
-            function(e) {
-                e.preventDefault();
-                $ml('#basicModal2').dialog('open');
-            }
-        );
-        $ml('#basicModal2').dialog(
-            {
-                autoOpen: false,
-                width: 'auto',
-                title: "Are you sure?",
-                modal: true,
-                buttons: {
-                    "Confirm": function(e) {
-                        $ml(this).dialog('close');
-                        $ml(".saving").show();
-                        $ml("#four_column_default_settings").submit();
-                    },
-                    "Cancel": function() {
-                        $ml(this).dialog('close');
-                    }
-                }
-            }
-        );
-        $ml("#submit_three_column").click(
-            function(e) {
-                e.preventDefault();
-                $ml('#basicModal1').dialog('open');
-            }
-        );
-        $ml('#basicModal1').dialog(
-            {
-                autoOpen: false,
-                width: 'auto',
-                title: "Are you sure?",
-                modal: true,
-                buttons: {
-                    "Confirm": function(e) {
-                        $ml(this).dialog('close');
-                        $ml(".saving").show();
-                        $ml("#three_column_default_settings").submit();
-                    },
-                    "Cancel": function() {
-                        $ml(this).dialog('close');
-                    }
-                }
             }
         );
         $ml('input[name="submit_import_file"]').on(
@@ -115,24 +43,6 @@ jQuery(document).ready(
                 buttons: {
                     Ok: function() {
                         $ml(this).dialog("close");
-                    }
-                }
-            }
-        );
-        $ml('#basicModal').dialog(
-            {
-                autoOpen: false,
-                width: 'auto',
-                title: "Are you sure?",
-                modal: true,
-                buttons: {
-                    "Confirm": function(e) {
-                        $ml(this).dialog('close');
-                        $ml(".saving").show();
-                        $ml('#form_import_file').submit();
-                    },
-                    "Cancel": function() {
-                        $ml(this).dialog('close');
                     }
                 }
             }

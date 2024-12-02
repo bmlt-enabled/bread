@@ -296,7 +296,7 @@ class Bread_AdminDisplay
         <?php include '_custom_section_setup.php'; ?>
                         </div>
                         <?php if ($this->admin->current_user_can_modify()) {?>
-    <input type="submit" value="Save Changes" id="bmltmeetinglistsave" name="bmltmeetinglistsave" class="button-primary" />
+    <input type="submit" value="Save Changes" id="bmltmeetinglistsave" name="bmltmeetinglistsave" class="button-primary gears-working" />
     <input type="submit" value="Preview" id="bmltmeetinglistpreview" name="bmltmeetinglistpreview" class="button-primary" formtarget="_blank" />
     <p style="display: inline; margin-top:.5em;margin-bottom:1.0em;margin-left:.2em;"><a target="_blank" class="button-primary" href="<?php echo home_url();?>/?current-meeting-list=<?php echo $this->bread->getRequestedSetting();?>">Generate Meeting List</a></p>
     <div style="display:inline;"><i>&nbsp;&nbsp;Save Changes before Generating Meeting List.</i></div>

@@ -503,12 +503,6 @@ select.service_body_select {
 .chosen-container-multi .chosen-choices li.search-field input[type=text] {
     width: 100% !important;
 }
-.chosen-container-multi * {
-    font-family: 'Courier New', Courier, monospace;
-}
-.chosen-container-multi .chosen-choices li.search-field input[type=text] {
-    font-family: "Open Sans",sans-serif !important;
-}
 .step-description {
     margin: 10px;
     border: solid;

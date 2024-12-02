@@ -138,12 +138,16 @@
             <button type="button" class="btn btn-primary" onClick="breadWizard.ajax_submit()">Create Meeting List</button>
           </div>
           <div id="wizard-after-create">
+            <p class="valid-feedback dashicons-before dashicons-yes-alt">Congratulations! The meeting list configuration has been created!</p>
+            <p>The first thing you probably want to do is have a look at the meeting list:</p>
             <button type="button" class="btn btn-primary" onClick="breadWizard.generate_meeting_list()">Generate Meeting List</button>
             <p>
               To add a link to the meeting list on your website, use the following link.
             </p><div id="wizard-show-link"></div>
             <p>If you want to try a different layout: <button type="button" class="btn btn-primary" onClick="breadWizard.redo_layout()">Go Back</button>
             </p><div id="wizard-show-link"></div>
+            <p>You probably want to add some content to the first page or the custom content:</p>
+            <button type="button" class="btn btn-primary" onClick="breadWizard.finish()">Open customizer</button>
           </div>
         </div>
     </div>

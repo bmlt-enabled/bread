@@ -68,6 +68,7 @@ class Bread
     private $options = array();
     private $translate = array();
     private $generating_meeting_list = false;
+    private $initial_setting = false;
     private Bread_Bmlt $bread_bmlt;
     public function bmlt(): Bread_Bmlt
     {
@@ -241,6 +242,8 @@ class Bread
                     update_option(Bread::SETTINGS, $this->allSettings);
                     die('Undefined setting: ' . $current_setting);
                 }
+                //TODO fix default here, or force user to wizard
+                $this->initial_setting = true;
                 $import_file = plugin_dir_path(__FILE__) . "includes/three_column_settings.json";
                 $encode_options = file_get_contents($import_file);
                 $theOptions = json_decode($encode_options, true);
@@ -323,6 +326,15 @@ class Bread
     public function getProtocol()
     {
         return $this->protocol;
+    }
+    /**
+     * Did any settings exist before?
+     *
+     * @return bool true when no setting existed previously, ie, if we should create setting 1.
+     */
+    public function getInitialSetting()
+    {
+        return $this->initial_setting;
     }
     /**
      * Load the required dependencies for this plugin.
@@ -565,10 +577,6 @@ class Bread
         $this->fillUnsetStringOption('neighborhood_suffix', 'Neighborhood');
         $this->fillUnsetStringOption('city_suffix', 'City');
         $this->fillUnsetStringOption('meeting_template_content', '');
-        //TODO:remove....clean up after a bug...
-        if (is_array($this->options['additional_list_template_content'])) {
-            $this->options['additional_list_template_content'] = join('', $this->options['additional_list_template_content']);
-        }
         $this->fillUnsetStringOption('additional_list_template_content', '');
         $this->fillUnsetOption('column_line', 0);
         $this->fillUnsetOption('col_color', '#bfbfbf');

@@ -48,7 +48,6 @@ class Bread_Admin
      * @param string    $plugin_name       The name of this plugin.
      * @param string    $version    The version of this plugin.
      */
-    var $outside_meeting_result = array();
     var $bmltEnabled_admin;
     private Bread $bread;
     public function __construct($plugin_name, $version, $bmltEnabled_admin, $bread)
@@ -450,15 +449,17 @@ class Bread_Admin
         if (!$this->current_user_can_create()) {
             return;
         }
-        $layout = sanitize_text_field($_POST['wizard_layout']);
-        $encode_options = file_get_contents(plugin_dir_path(__FILE__) . 'templates/' . $layout);
+        $layoutInfos = explode(',', sanitize_text_field($_POST['wizard_layout']));
+        $encode_options = file_get_contents(plugin_dir_path(__FILE__) . 'templates/' . $layoutInfos[0]);
         while (0 === strpos(bin2hex($encode_options), 'efbbbf')) {
             $encode_options = substr($encode_options, 3);
         }
         $settings = json_decode($encode_options, true);
         $ncols = substr_count($settings['meeting_template_content'], '<td');
-        $id = (is_numeric($_POST['wizard_setting_id'])) ? intval($_POST['wizard_setting_id']) : $this->bread->getMaxSetting() + 1;
+        $id = $this->bread->getInitialSetting() ? 1 :
+            ((is_numeric($_POST['wizard_setting_id'])) ? intval($_POST['wizard_setting_id']) : $this->bread->getMaxSetting() + 1);
         $optionsName = $this->bread->generateOptionName($id);
+        $settings['page_size'] = $layoutInfos[1];
         $settings['authors'] = array();
         $settings['root_server'] = sanitize_url($_POST['wizard_root_server']);
         for ($i = 0; $i < count($_POST['wizard_service_bodies']); $i++) {
@@ -478,7 +479,7 @@ class Bread_Admin
                 '<table style="width: 100%;">
             <tbody>
             <tr>
-            <td style="padding: 2pt; background-color: #000000; text-align: center;"><span style="color: #ffffff;"><span style="font-size: 12px;"><b>ONLINE-MEETINGS</b></span></span></td>
+            <td style="padding: 2pt; background-color: #000000; text-align: center;"><span style="color: #ffffff;"><span style="font-size: '.$settings['header_fontsize'].'px;"><b>ONLINE-MEETINGS</b></span></span></td>
             </tr>
             </tbody>
             </table>
