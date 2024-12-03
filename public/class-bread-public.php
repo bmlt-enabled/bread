@@ -89,7 +89,7 @@ class Bread_Public
         if (!$this->bread->generatingMeetingList()) {
             return;
         }
-        $this->options = $this->bread->getMLOptions($this->bread->getRequestedSetting());
+        $this->options = $this->bread->getConfigurationForSettingId($this->bread->getRequestedSetting());
         $import_streams = [];
         ini_set('max_execution_time', 600); // tomato server can take a long time to generate a schedule, override the server setting
 
@@ -106,7 +106,8 @@ class Bread_Public
             exit;
         }
 
-        if (intval($this->options['cache_time']) > 0 && ! isset($_GET['nocache'])
+        if (
+            intval($this->options['cache_time']) > 0 && ! isset($_GET['nocache'])
             && ! isset($_GET['custom_query'])
         ) {
             if (false !== ($content = get_transient($this->bread->get_TransientKey($this->bread->getRequestedSetting())))) {
@@ -124,7 +125,6 @@ class Bread_Public
             }
         }
         $page_type_settings = $this->constuct_page_type_settings();
-        $this->bread->UpgradeSettings();
         $default_font = $this->options['base_font'] == "freesans" ? "dejavusanscondensed" : $this->options['base_font'];
         $mode = 's';
         $mpdf_init_options = $this->construct_init_options($default_font, $mode, $page_type_settings);
@@ -149,7 +149,8 @@ class Bread_Public
         $this->mpdf->WriteHTML($header_stylesheet, 1); // The parameter 1 tells that this is css/style only and no body/html/text
         $this->mpdf->SetDefaultBodyCSS('line-height', $this->options['content_line_height']);
         $this->mpdf->SetDefaultBodyCSS('background-color', '#ffffff00');
-        if ($this->options['column_line'] == 1
+        if (
+            $this->options['column_line'] == 1
             && ($this->options['page_fold'] == 'tri' || $this->options['page_fold'] == 'quad')
         ) {
             $this->drawLinesSeperatingColumns($mode, $mpdf_init_options['format'], $default_font);
@@ -232,7 +233,8 @@ class Bread_Public
         if (headers_sent()) {
             echo '<div id="message" class="error"><p>Headers already sent before PDF generation</div>';
         } else {
-            if (intval($this->options['cache_time']) > 0 && ! isset($_GET['nocache'])
+            if (
+                intval($this->options['cache_time']) > 0 && ! isset($_GET['nocache'])
                 && !isset($_GET['custom_query'])
             ) {
                 $content = $this->mpdf->Output('', 'S');
@@ -279,7 +281,7 @@ class Bread_Public
             }
         } elseif ($this->options['page_size'] == '5inch') {
             $this->options['page_fold'] = 'full';
-            $page_type_settings = ['format' => array(197.2,279.4), 'margin_footer' => $this->options['margin_footer']];
+            $page_type_settings = ['format' => array(197.2, 279.4), 'margin_footer' => $this->options['margin_footer']];
         } elseif ($this->options['page_fold'] == 'full') {
             $ps = $this->options['page_size'];
             if ($ps == 'ledger') {
@@ -287,7 +289,7 @@ class Bread_Public
             }
             $page_type_settings = ['format' => $ps . "-" . $this->options['page_orientation'], 'margin_footer' => $this->options['margin_footer']];
         } elseif ($this->options['page_size'] == '5inch') {
-            $page_type_settings = ['format' => array(197.2,279.4), 'margin_footer' => $this->options['margin_footer']];
+            $page_type_settings = ['format' => array(197.2, 279.4), 'margin_footer' => $this->options['margin_footer']];
         } else {
             $ps = $this->options['page_size'];
             if ($ps == 'ledger') {

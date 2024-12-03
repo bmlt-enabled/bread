@@ -3,18 +3,12 @@
 /**
  * The admin-specific functionality of the plugin.
  *
- * @link  https://bmlt.app
- * @since 2.8.0
- *
- * @package    Bread
- * @subpackage Bread/admin
- */
-
-/**
- * The admin-specific functionality of the plugin.
- *
  * Defines the plugin name, version, and two examples hooks for how to
  * enqueue the admin-specific stylesheet and JavaScript.
+ *
+ * Process requests coming from the admin UI: customizing the configuration, setting up a configuration from the wizard, etc.
+ *
+ * There is also a lot of code here setting up the TimyMCE editors for Bread.
  *
  * @package    Bread
  * @subpackage Bread/admin
@@ -237,7 +231,7 @@ class Bread_Admin
         if (! $this->current_user_can_modify()) {
             return;
         }
-        $this->bread->getMLOptions($this->bread->getRequestedSetting());
+        $this->bread->getConfigurationForSettingId($this->bread->getRequestedSetting());
         $this->bread->setAndSaveSetting($this->bread->getRequestedSetting(), sanitize_text_field($_POST['setting_descr']));
     }
     /**
@@ -251,7 +245,11 @@ class Bread_Admin
         if (! current_user_can('manage_bread')) {  // TODO: Is this necessary? Why not let the user make a copy
             return;
         }
-        $this->bread->getMLOptions($this->bread->getRequestedSetting());
+        $this->download_settings();
+    }
+    function download_settings()
+    {
+        $this->bread->getConfigurationForSettingId($this->bread->getRequestedSetting());
         $blogname = str_replace(" - ", " ", get_option('blogname') . '-' . $this->bread->getSettingName($this->bread->getRequestedSetting()));
         $blogname = str_replace(" ", "-", $blogname);
         $date = date("m-d-Y");
@@ -309,7 +307,7 @@ class Bread_Admin
         if (! current_user_can('manage_bread')) {
             return;
         }
-        $this->bread->getMLOptions($this->bread->getRequestedSetting());
+        $this->bread->getConfigurationForSettingId($this->bread->getRequestedSetting());
         $file_name = $_FILES['import_file']['name'];
         $tmp = explode('.', $file_name);
         $extension = end($tmp);
@@ -377,7 +375,8 @@ class Bread_Admin
             'timeout' => '120',
             'cookies' => $cookies,
         );
-        if (isset($this->options['user_agent'])
+        if (
+            isset($this->options['user_agent'])
             && $this->bread->getOption('user_agent') != 'None'
         ) {
             $args['headers'] = array(
@@ -456,8 +455,7 @@ class Bread_Admin
         }
         $settings = json_decode($encode_options, true);
         $ncols = substr_count($settings['meeting_template_content'], '<td');
-        $id = $this->bread->getInitialSetting() ? 1 :
-            ((is_numeric($_POST['wizard_setting_id'])) ? intval($_POST['wizard_setting_id']) : $this->bread->getMaxSetting() + 1);
+        $id = $this->bread->getInitialSetting() ? 1 : ((is_numeric($_POST['wizard_setting_id'])) ? intval($_POST['wizard_setting_id']) : $this->bread->getMaxSetting() + 1);
         $optionsName = $this->bread->generateOptionName($id);
         $settings['page_size'] = $layoutInfos[1];
         $settings['authors'] = array();
@@ -480,7 +478,7 @@ class Bread_Admin
                 '<table style="width: 100%;">
             <tbody>
             <tr>
-            <td style="padding: 2pt; background-color: #000000; text-align: center;"><span style="color: #ffffff;"><span style="font-size: '.$settings['header_fontsize'].'px;"><b>ONLINE-MEETINGS</b></span></span></td>
+            <td style="padding: 2pt; background-color: #000000; text-align: center;"><span style="color: #ffffff;"><span style="font-size: ' . $settings['header_fontsize'] . 'px;"><b>ONLINE-MEETINGS</b></span></span></td>
             </tr>
             </tbody>
             </table>
@@ -500,7 +498,7 @@ class Bread_Admin
         $setting_name = sanitize_title($_POST['wizard-setting-name']);
         $setting_name = $setting_name == '' ? 'Setting ' . $id : $setting_name;
         $this->bread->setAndSaveSetting($id, $setting_name);
-        $this->bread->getMLOptions($id);
+        $this->bread->getConfigurationForSettingId($id);
         $this->bread->setRequestedSetting($id);
         ignore_user_abort(true);
         ob_clean();
@@ -516,7 +514,7 @@ class Bread_Admin
         if (! wp_verify_nonce($_POST['pwsix_settings_admin_nonce'], 'pwsix_settings_admin_nonce')) {
             return;
         }
-        $this->bread->getMLOptions($this->bread->getRequestedSetting());
+        $this->bread->getConfigurationForSettingId($this->bread->getRequestedSetting());
         if (isset($_POST['delete_settings'])) {
             if (!$this->current_user_can_modify()) {
                 return;
@@ -525,7 +523,7 @@ class Bread_Admin
                 return;
             }
             $this->bread->deleteSetting($this->bread->getRequestedSetting());
-            $this->bread->getMLOptions(1);
+            $this->bread->getConfigurationForSettingId(1);
             $this->bread->setRequestedSetting(1);
         } elseif (isset($_POST['duplicate'])) {
             if (!$this->current_user_can_create()) {
@@ -536,7 +534,7 @@ class Bread_Admin
             $this->bread->setOption('authors', array());
             $this->save_admin_options();
             $this->bread->setAndSaveSetting($id, 'Setting ' . $id);
-            $this->bread->getMLOptions($id);
+            $this->bread->getConfigurationForSettingId($id);
         }
     }
 }

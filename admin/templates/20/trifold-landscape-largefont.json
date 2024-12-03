@@ -31,7 +31,7 @@
     "margin_left": 5,
     "margin_bottom": 5,
     "margin_top": 5,
-    "meeting_template_content": "<table style=\"width: 100%;padding: 0\" cellspacing=\"0\" cellpadding=\"1\">\r\n<tbody>\r\n<tr>\r\n<td style=\"width: 4.3em;border-bottom: 1px solid #dddddd;vertical-align: top;text-align: center\"><strong>time</strong><br/>wheelchair</td>\r\n<td style=\"border-bottom: 1px solid #dddddd;vertical-align: top\"><strong>group</strong>, location, info, street, city, state, zip (formats) <em>comments</em><br />virtual_meeting_link<br />virtual_meeting_additional_info</td>\r\n</tr>\r\n</tbody>\r\n</table>",
+    "meeting_template_content": "<table style=\"width: 100%;padding: 0\" cellspacing=\"0\" cellpadding=\"1\">\r\n<tbody>\r\n<tr>\r\n<td style=\"width: 4.3em;border-bottom: 1px solid #dddddd;vertical-align: top;text-align: left;\"><strong>time</strong><br/>wheelchair</td>\r\n<td style=\"border-bottom: 1px solid #dddddd;vertical-align: top\"><strong>group</strong>, location, info, street, city, state, zip (formats) <em>comments</em><br />virtual_meeting_link<br />virtual_meeting_additional_info</td>\r\n</tr>\r\n</tbody>\r\n</table>",
     "col_color": "#bfbfbf",
     "time_clock": "12",
     "header_text_color": "#ffffff",

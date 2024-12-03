@@ -30,7 +30,7 @@
     "margin_left": 5,
     "margin_bottom": 5,
     "margin_top": 5,
-    "meeting_template_content": "<table style=\"width: 100%;padding: 0\" cellspacing=\"0\" cellpadding=\"1\">\r\n<tbody>\r\n<tr>\r\n<td style=\"width: 18%;border-bottom: 1px solid #dddddd;vertical-align: top;text-align: center\"><strong>time<\/strong><\/td>\r\n<td style=\"border-bottom: 1px solid #dddddd;vertical-align: top\">group, location, info, street,\u00a0city, state,\u00a0zip\u00a0(formats)\u00a0<em>comments<\/em><\/td>\r\n<\/tr>\r\n<\/tbody>\r\n<\/table>",
+    "meeting_template_content": "<table style=\"width: 100%;padding: 0\" cellspacing=\"0\" cellpadding=\"1\">\r\n<tbody>\r\n<tr>\r\n<td style=\"width: 18%;border-bottom: 1px solid #dddddd;vertical-align: top;text-align: left;\"><strong>time<\/strong><\/td>\r\n<td style=\"border-bottom: 1px solid #dddddd;vertical-align: top\">group, location, info, street,\u00a0city, state,\u00a0zip\u00a0(formats)\u00a0<em>comments<\/em><\/td>\r\n<\/tr>\r\n<\/tbody>\r\n<\/table>",
     "col_color": "#274fae",
     "header_text_color": "#ffffff",
     "header_background_color": "#000000",

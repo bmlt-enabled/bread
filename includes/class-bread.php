@@ -1,26 +1,18 @@
 <?php
 
 /**
- * The file that defines the core plugin class
- *
- * A class definition that includes attributes and functions used across both the
- * public-facing side of the site and the admin area.
- *
- * @link  https://bmlt.app
- * @since 2.8.0
- *
- * @package    Bread
- * @subpackage Bread/includes
- */
-
-/**
  * The core plugin class.
  *
- * This is used to define internationalization, admin-specific hooks, and
+ * Defines internationalization, admin-specific hooks, and
  * public-facing site hooks.
  *
- * Also maintains the unique identifier of this plugin as well as the current
- * version of the plugin.
+ * This class manages the Wordpress options for the setting.  The process is a little more complex than usual, because
+ * Bread stores 2 levels of options.  The bottom layer is the configuration of an individual meeting list.  But because
+ * Bread can manage the options for multiple meeting lists, the main layer is a list of "settings", which name and point to
+ * the lower level.  The WP options mechanism is used for both levels.
+ *
+ * The admin side edits the options, the public sides uses them, so this is a central class that will be passed around to
+ * the classes that do the actual work.
  *
  * @since      2.8.0
  * @package    Bread
@@ -62,19 +54,45 @@ class Bread
     private $optionsName;
     private $allSettings = array();
     private $maxSetting = 1;
-    private $requested_setting = 1;
+    /**
+     * The setting we are editing, generating or otherwise working with.  Generally set with query string "?current-meeting-list".
+     *
+     * @var integer
+     */
+    private int $requested_setting = 1;
     private $protocol;
-    private $tmp_dir;
-    private $options = array();
-    private $translate = array();
-    private $generating_meeting_list = false;
-    private $initial_setting = false;
+    private string $tmp_dir;
+    /**
+     * The settings that detemine how the meeting list should be generated.
+     *
+     * @var array
+     */
+    private array $options = array();
+    /**
+     * Translations for things like weekday names.  Two dimensions, first is language code, second is key value for text.
+     *
+     * @var array
+     */
+    private array $translate = array();
+    private bool $generating_meeting_list = false;
+    private bool $exporting_meeting_list = false;
+    /**
+     * The wizard wants to know if we are generating the first meeting list for this site.
+     *
+     * @var boolean
+     */
+    private bool $initial_setting = false;
+    /**
+     * The helper class for accessing the BMLT root server.
+     *
+     * @var Bread_Bmlt
+     */
     private Bread_Bmlt $bread_bmlt;
     public function bmlt(): Bread_Bmlt
     {
         return $this->bread_bmlt;
     }
-    public function temp_dir()
+    public function temp_dir(): string
     {
         return $this->tmp_dir;
     }
@@ -85,7 +103,7 @@ class Bread
         }
         return $this->options[$name];
     }
-    public function emptyOption($name)
+    public function emptyOption($name): bool
     {
         return empty($this->options[$name]);
     }
@@ -101,7 +119,13 @@ class Bread
     {
         return $this->options[$name][] = $value;
     }
-    private static function setup_temp_dir()
+    /**
+     * mPDF needs to have a temporary directory available.  This is a problem for some hosting providers, so we need some
+     * logic to make sure it is available, and also to clean up after ourselves, to save disk space.
+     *
+     * @return string
+     */
+    private static function setup_temp_dir(): string
     {
         $dir = get_temp_dir();
         $dir = rtrim($dir, DIRECTORY_SEPARATOR);
@@ -173,7 +197,14 @@ class Bread
         }
         return isset($holder['current-meeting-list']) ? intval($holder['current-meeting-list']) : 1;
     }
-    public function setAndSaveSetting($id, $name)
+    /**
+     * Undocumented function
+     *
+     * @param [type] $id
+     * @param [type] $name
+     * @return void
+     */
+    public function setAndSaveSetting($id, $name): void
     {
         $this->allSettings[$id] = $name;
         update_option(Bread::SETTINGS, $this->allSettings);
@@ -191,7 +222,13 @@ class Bread
         unset($this->allSettings[$id]);
         update_option(Bread::SETTINGS, $this->allSettings);
     }
-    private function getCurrentMeetingListHolder()
+    /**
+     * Example the superglobals $_REQUEST, $_SESSION and $_COOKIE and try to determine the settings-id, putting the
+     * results in a container.
+     *
+     * @return array
+     */
+    private function getCurrentMeetingListHolder(): array
     {
         $ret = array();
         if (isset(($_REQUEST['preview-meeting-list'])) && !is_admin()) {
@@ -202,17 +239,28 @@ class Bread
         }
         if (isset($_REQUEST['current-meeting-list'])) {
             $ret['current-meeting-list'] = $_REQUEST['current-meeting-list'];
+        } elseif (isset($_REQUEST['current-meeting-list'])) {
+            $ret['current-meeting-list'] = $_REQUEST['export-meeting-list'];
+            $this->exporting_meeting_list = true;
         } elseif (isset($_COOKIE['current-meeting-list'])) {
             $ret['current-meeting-list'] = $_COOKIE['current-meeting-list'];
         }
-        $this->generating_meeting_list = !empty($ret) && !is_admin();
+        $this->generating_meeting_list = !empty($ret) && !is_admin() && !$this->exporting_meeting_list;
         return $ret;
     }
-    public function generatingMeetingList()
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
+    public function generatingMeetingList(): bool
     {
         return $this->generating_meeting_list;
     }
-
+    public function exportingMeetingList(): bool
+    {
+        return $this->exporting_meeting_list;
+    }
     public function generateOptionName($current_setting)
     {
         return Bread::OPTIONS_NAME . '_' . $current_setting;
@@ -222,7 +270,7 @@ class Bread
      *
      * @return array
      */
-    public function &getMLOptions($current_setting)
+    public function &getConfigurationForSettingId($current_setting)
     {
         if ($current_setting < 1) {
             $current_setting = is_admin() ? 1 : $this->requested_setting;
@@ -427,6 +475,10 @@ class Bread
         $this->loader->add_action("admin_init", $plugin_admin, "my_theme_add_editor_styles");
         $this->loader->add_action("wp_default_editor", $plugin_admin, "ml_default_editor");
         $this->loader->add_filter('tiny_mce_version', $plugin_admin, 'force_mce_refresh');
+
+        // This is a public function.  nameetinglists.org wants to let people see each others settings.
+        // It's OK now, since there is no more login stuff.
+        $this->loader->add_action('plugins_loaded', $plugin_admin, 'download_settings');
     }
 
     /**
@@ -508,19 +560,19 @@ class Bread
         }
         return $this->translate[$language][$key][$day];
     }
-    function fillUnsetOption($option, $default)
+    private function fillUnsetOption($option, $default)
     {
         if (!isset($this->options[$option]) || strlen(trim($this->options[$option])) == 0) {
             $this->options[$option] = $default;
         }
     }
-    function fillUnsetStringOption($option, $default)
+    private function fillUnsetStringOption($option, $default)
     {
         if (!isset($this->options[$option])) {
             $this->options[$option] = $default;
         }
     }
-    function fillUnsetArrayOption($option, $default)
+    private function fillUnsetArrayOption($option, $default)
     {
         if (!isset($this->options[$option])) {
             $this->options[$option] = $default;
@@ -532,18 +584,23 @@ class Bread
             }
         }
     }
+    /**
+     * Make sure the data from frontend or from DB is usuable.  This might involve upgrading data from earlier versions of Bread.
+     *
+     * @return void
+     */
     public function fillUnsetOptions()
     {
         $this->fillUnsetOptionsInner();
         $this->removeDeprecated();
     }
-    function removeDeprecated()
+    private function removeDeprecated()
     {
         unset($this->options['include_meeting_email']);
         unset($this->options['bmlt_login_id']);
         unset($this->options['bmlt_login_password']);
     }
-    function fillUnsetOptionsInner()
+    private function fillUnsetOptionsInner()
     {
         $this->fillUnsetOption('front_page_line_height', '1.0');
         $this->fillUnsetOption('front_page_font_size', '10');
@@ -618,13 +675,11 @@ class Bread
         $this->fillUnsetStringOption('meeting1_footer', $this->options['nonmeeting_footer']);
         $this->fillUnsetStringOption('meeting2_footer', $this->options['nonmeeting_footer']);
     }
-    public function upgradeSettings()
+    /**
+     * Does the work of upgrading from earlier versions.
+    */
+    private function upgrade_settings(): void
     {
-        $this->upgrade_settings();
-    }
-    function upgrade_settings()
-    {
-        // upgrade
         if (!isset($this->options['bread_version'])) {
             if (!($this->options['meeting_sort'] === 'weekday_area'
                 || $this->options['meeting_sort'] === 'weekday_city'
@@ -655,7 +710,8 @@ class Bread
                 $this->options['root_server'] = 'http://' . $this->options['root_server'];
             }
         }
-        if (!isset($this->options['cont_header_shown'])
+        if (
+            !isset($this->options['cont_header_shown'])
             && isset($this->options['page_height_fix'])
         ) {
             $fix = floatval($this->options['page_height_fix']);
@@ -707,15 +763,20 @@ class Bread
             }
         }
     }
+    /**
+     * Stores the current settings in the Wordpress Options DB.
+     *
+     * @return void
+     */
     public function updateOptions()
     {
         update_option(Bread::getOptionsName(), $this->options);
     }
-    public static function get_TransientKey($setting)
+    public static function get_TransientKey($setting): string
     {
         return '_bread__' . $setting;
     }
-    public function getMaxSetting()
+    public function getMaxSetting(): int
     {
         return $this->maxSetting;
     }
