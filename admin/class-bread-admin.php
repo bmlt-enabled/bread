@@ -245,9 +245,15 @@ class Bread_Admin
         if (! current_user_can('manage_bread')) {  // TODO: Is this necessary? Why not let the user make a copy
             return;
         }
-        $this->download_settings();
+        $this->download_settings_inner();
     }
     function download_settings()
+    {
+        if ($this->bread->exportingMeetingList()) {
+            $this->download_settings_inner();
+        }
+    }
+    private function download_settings_inner()
     {
         $this->bread->getConfigurationForSettingId($this->bread->getRequestedSetting());
         $blogname = str_replace(" - ", " ", get_option('blogname') . '-' . $this->bread->getSettingName($this->bread->getRequestedSetting()));

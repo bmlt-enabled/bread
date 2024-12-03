@@ -47,6 +47,22 @@ jQuery(document).ready(
                 }
             }
         );
+        $ml('#basicModal').dialog({
+            autoOpen: false,
+            width: 'auto',
+            title: "Are you sure?",
+            modal: true,
+            buttons: {
+                "Confirm": function(e) {
+                    $ml(this).dialog('close');
+                    $ml(".saving").show();
+                    $ml('#form_import_file').submit();
+                },
+                "Cancel": function() {
+                    $ml(this).dialog('close');
+                }
+            }
+        });
         $ml('.my-tooltip').each(function(i, e) {
             $ml(e).tooltipster(
                 {

@@ -239,7 +239,7 @@ class Bread
         }
         if (isset($_REQUEST['current-meeting-list'])) {
             $ret['current-meeting-list'] = $_REQUEST['current-meeting-list'];
-        } elseif (isset($_REQUEST['current-meeting-list'])) {
+        } elseif (isset($_REQUEST['export-meeting-list'])) {
             $ret['current-meeting-list'] = $_REQUEST['export-meeting-list'];
             $this->exporting_meeting_list = true;
         } elseif (isset($_COOKIE['current-meeting-list'])) {
