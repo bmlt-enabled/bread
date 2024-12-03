@@ -19,7 +19,7 @@ $(VENDOR_AUTOLOAD):
 $(ZIP_FILE): $(VENDOR_AUTOLOAD)
 	git archive --format=zip --output=${ZIP_FILENAME} $(COMMIT)
 	$(shell ./simplify-mpdf.sh)
-	zip -r ${ZIP_FILENAME} mpdf/
+	zip -r ${ZIP_FILENAME} vendor/mpdf/
 	mkdir -p ${BUILD_DIR} && mv ${ZIP_FILENAME} ${BUILD_DIR}/
 
 .PHONY: build

@@ -75,7 +75,7 @@
     "booklet_pages": true,
     "additional_list_template_content": "<table style=\"margin-top: 3px;width: 100%;padding: 0px\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\r\n<tbody>\r\n<tr>\r\n<td style=\"width: 23%;vertical-align: top\">\r\n<p><span style=\"font-size: 9pt\"><strong>time<\/strong><\/span><\/p>\r\n<p style=\"text-align: center\"><span style=\"font-size: 9pt\"><strong>[QRCode code=\\\"virtual_meeting_link\\\" size=\\\"0.70\\\"]<br \/><\/strong><\/span><\/p>\r\n<\/td>\r\n<td style=\"vertical-align: top;text-align: left\"><span style=\"font-size: 9pt\"><strong>original_name<\/strong><\/span>\r\n<p><span style=\"font-size: 8.4pt\"><em>comments\u00a0<\/em><\/span><\/p>\r\n<p><span style=\"font-size: 8.4pt\">fmt_names<\/span><\/p>\r\n<p><span style=\"font-size: 8.4pt\">Telefoneinwahl: +49 6950 500 952<\/span><\/p>\r\n<p><span style=\"font-size: 8.4pt\">Zoom Code: zoom_code<\/span><\/p>\r\n<p><span style=\"font-size: 8.4pt\">virtual_meeting_additional_info<\/span><\/p>\r\n<\/td>\r\n<\/tr>\r\n<\/tbody>\r\n<\/table>",
     "retrieve_all_fields": 1,
-    "weekday_start": "1",
+    "weekday_start": "2",
     "additional_list_format_key": "@Virtual@",
     "additional_list_sort_order": "same",
     "additional_list_logged_in": false,
