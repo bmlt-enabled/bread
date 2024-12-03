@@ -710,8 +710,7 @@ class Bread
                 $this->options['root_server'] = 'http://' . $this->options['root_server'];
             }
         }
-        if (
-            !isset($this->options['cont_header_shown'])
+        if (!isset($this->options['cont_header_shown'])
             && isset($this->options['page_height_fix'])
         ) {
             $fix = floatval($this->options['page_height_fix']);

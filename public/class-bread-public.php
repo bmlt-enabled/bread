@@ -106,8 +106,7 @@ class Bread_Public
             exit;
         }
 
-        if (
-            intval($this->options['cache_time']) > 0 && ! isset($_GET['nocache'])
+        if (intval($this->options['cache_time']) > 0 && ! isset($_GET['nocache'])
             && ! isset($_GET['custom_query'])
         ) {
             if (false !== ($content = get_transient($this->bread->get_TransientKey($this->bread->getRequestedSetting())))) {
@@ -149,8 +148,7 @@ class Bread_Public
         $this->mpdf->WriteHTML($header_stylesheet, 1); // The parameter 1 tells that this is css/style only and no body/html/text
         $this->mpdf->SetDefaultBodyCSS('line-height', $this->options['content_line_height']);
         $this->mpdf->SetDefaultBodyCSS('background-color', '#ffffff00');
-        if (
-            $this->options['column_line'] == 1
+        if ($this->options['column_line'] == 1
             && ($this->options['page_fold'] == 'tri' || $this->options['page_fold'] == 'quad')
         ) {
             $this->drawLinesSeperatingColumns($mode, $mpdf_init_options['format'], $default_font);
@@ -233,8 +231,7 @@ class Bread_Public
         if (headers_sent()) {
             echo '<div id="message" class="error"><p>Headers already sent before PDF generation</div>';
         } else {
-            if (
-                intval($this->options['cache_time']) > 0 && ! isset($_GET['nocache'])
+            if (intval($this->options['cache_time']) > 0 && ! isset($_GET['nocache'])
                 && !isset($_GET['custom_query'])
             ) {
                 $content = $this->mpdf->Output('', 'S');

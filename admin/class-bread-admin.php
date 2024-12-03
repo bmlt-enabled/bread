@@ -375,8 +375,7 @@ class Bread_Admin
             'timeout' => '120',
             'cookies' => $cookies,
         );
-        if (
-            isset($this->options['user_agent'])
+        if (isset($this->options['user_agent'])
             && $this->bread->getOption('user_agent') != 'None'
         ) {
             $args['headers'] = array(
