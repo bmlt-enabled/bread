@@ -260,7 +260,7 @@ class Bread_AdminDisplay
             <div id="meeting-list-tabs">
                 <ul class="nav">
                     <li><a href="#instructions"><?php _e('Getting Started', 'root-server'); ?></a></li>
-                    <li><a href="#editor"><?php _e('Customizer', 'root-server'); ?></a></li>
+                    <li><a href="#editor" id='click-customizer'><?php _e('Customizer', 'root-server'); ?></a></li>
                     <li><a href="#import-export"><?php _e('Backup/ Restore', 'root-server'); ?></a></li>
                 </ul>
                 <div id="instructions">

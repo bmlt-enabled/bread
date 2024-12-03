@@ -1,25 +1,24 @@
-
 {
         "One Column Template [Time Meeting Data]": "<table style='width: 100%; padding: 0;' cellspacing='0' cellpadding='1'><tbody><tr><td style='border-bottom: 1px solid #dddddd; vertical-align: top;'><strong>time group</strong>, location, info, street, city, state, zip (formats) <em>comments</em><br/>virtual_meeting_link<br/>virtual_meeting_additional_info</td></tr></tbody></table>",
-        "Two Column Template [Time] [Meeting Data]": "<table style='width: 100%; padding: 0;' cellspacing='0' cellpadding='1'><tbody><tr><td style='width: 4.2em; border-bottom: 1px solid #dddddd; vertical-align: top; text-align: center;'><strong>time</strong></td><td style='border-bottom: 1px solid #dddddd; vertical-align: top;'><strong>group</strong>, location, info, street, city, state, zip (formats) <em>comments</em><br/>virtual_meeting_link<br/>virtual_meeting_additional_info</td></tr></tbody></table>",
+        "Two Column Template [Time] [Meeting Data]": "<table style='width: 100%; padding: 0;' cellspacing='0' cellpadding='1'><tbody><tr><td style='width: 4.2em; border-bottom: 1px solid #dddddd; vertical-align: top; text-align: center;'><strong>time</strong><br/>wheelchair</td><td style='border-bottom: 1px solid #dddddd; vertical-align: top;'><strong>group</strong>, location, info, street, city, state, zip (formats) <em>comments</em><br/>virtual_meeting_link<br/>virtual_meeting_additional_info</td></tr></tbody></table>",
         "One Column Template with Day [Day Time Meeting Data]": "<table style='width: 100%; padding: 0;' cellspacing='0' cellpadding='1'><tbody><tr><td style='border-bottom: 1px solid #dddddd; vertical-align: top;'><strong>day_abbr time group</strong>, location, info, street,city, state,zip(formats)<em>comments</em><br/>virtual_meeting_link<br/>virtual_meeting_additional_info</td></tr></tbody></table>",
-        "Two Column Template with Day [Day/Time] [Meeting Data]": "<table style='width: 100%; padding: 0;' cellspacing='0' cellpadding='1'><tbody><tr><td style='width: 4.2em; border-bottom: 1px solid #dddddd; vertical-align: top; text-align: center;'><strong>day_abbr<br/>time</strong></td><td style='border-bottom: 1px solid #dddddd; vertical-align: top;'><strong>group</strong>, location, info, street, city, state, zip (formats) <em>comments</em><br/>virtual_meeting_link<br/>virtual_meeting_additional_info</td></tr></tbody></table>",
+        "Two Column Template with Day [Day/Time] [Meeting Data]": "<table style='width: 100%; padding: 0;' cellspacing='0' cellpadding='1'><tbody><tr><td style='width: 4.2em; border-bottom: 1px solid #dddddd; vertical-align: top; text-align: center;'><strong>day_abbr<br/>time</strong><br/>wheelchair</td><td style='border-bottom: 1px solid #dddddd; vertical-align: top;'><strong>group</strong>, location, info, street, city, state, zip (formats) <em>comments</em><br/>virtual_meeting_link<br/>virtual_meeting_additional_info</td></tr></tbody></table>",
         "Online Meeting Two Column - Link in QR-Code": [
-"<table style='margin-top: 3px; width: 100%; padding: 0px;' border='0' cellspacing='0' cellpadding='0'>'",
-"<tbody>",
-"<tr>",
-"<td style='width: 4.2em; vertical-align: top;'>",
-"<strong>day_abbr<br/>time</strong>",
-"<p style='text-align: center;'><strong>[QRCode code='virtual_meeting_link' size='0.50']<br /></strong></p>",
-"</td>",
-"<td style='vertical-align: top; text-align: left;'><strong>group</strong>",
-"<p><em>comments</em></p>",
-"<p>formats</p>",
-"<p>phone_meeting_number</p>",
-"<p>virtual_meeting_additional_info</p>",
-"</td>",
-"</tr>",
-"</tbody>",
-"</table>"
-       ]
+                "<table style='margin-top: 3px; width: 100%; padding: 0px;' border='0' cellspacing='0' cellpadding='0'>'",
+                "<tbody>",
+                "<tr>",
+                "<td style='width: 4.2em; vertical-align: top;'>",
+                "<strong>day_abbr<br/>time</strong>",
+                "<p style='text-align: center;'><strong>[QRCode code='virtual_meeting_link' size='0.50']<br /></strong></p>",
+                "</td>",
+                "<td style='vertical-align: top; text-align: left;'><strong>group</strong>",
+                "<p><em>comments</em></p>",
+                "<p>formats</p>",
+                "<p>phone_meeting_number</p>",
+                "<p>virtual_meeting_additional_info</p>",
+                "</td>",
+                "</tr>",
+                "</tbody>",
+                "</table>"
+        ]
 }

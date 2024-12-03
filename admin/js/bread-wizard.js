@@ -79,9 +79,16 @@ jQuery(document).ready(function($){
         }
         BreadWizard.prototype.finish = function() {
             $('#bread-wizard').smartWizard("reset");
-            const url = location.href;
-            location.href = "#editor";
-            history.replaceState(null,null,url);
+            var form = document.createElement("form");
+            form.method = "POST";
+            form.action = window.location.href;
+            var input = document.createElement("input");
+            input.type = "hidden";
+            input.name = "current-meeting-list";
+            input.value = setting;
+            form.appendChild(input);
+            document.body.appendChild(form);
+            form.submit();
         }
         write_service_body_with_childern = function(options, sb, parents, my_parent, level) {
             let prefix = '';
@@ -125,9 +132,10 @@ jQuery(document).ready(function($){
             $('#wizard_meeting_count').html(meeting_count);
             const layouts = breadLayouts.find((layouts) => meeting_count <= Number(layouts.maxSize));
             const options = breadLayouts.reduce((carry,group) => {
-                carry.push('<optgroup label="Approx. '+group.maxSize+' meetings">');
-                group.configurations.reduce((carryGroup, item) => {
-                    carryGroup.push(...getOptionsFromFilename(group.maxSize, item));
+                const name = (group.maxSize == '99999') ? 'Very Large Fellowships' : 'Approx. '+group.maxSize+' meetings';
+                carry.push('<optgroup label="'+name+'">');
+                group.configurations.reduce((carryGroup, item, idx) => {
+                    carryGroup.push(...getOptionsFromFilename(group.maxSize, item, idx, layouts));
                     return carryGroup;
                 }, carry);
                 carry.push('</optgroup>');
@@ -135,14 +143,15 @@ jQuery(document).ready(function($){
             }, []);
             $('#wizard_layout').html(options.join(''));
         }
-        getOptionsFromFilename = function(size, filename) {
+        getOptionsFromFilename = function(size, filename, idx, layouts) {
             const type = filename.split('-');
             const fold = type[0];
             const orientation = type[1];
+            const selected = (idx==0 && layouts.maxSize == size) ? ' selected' : '';
             const font = type[2];
             const papersize = (fold=='booklet') ? ['5inch','A5'] : ['letter','A4'];
             return papersize.reduce((carry,item) => {
-                carry.push('<option value="'+size+'/'+filename+','+item+'">'+fold+' - '+item+' paper/ '+orientation+' orientation</option>');
+                carry.push('<option value="'+size+'/'+filename+','+item+'"'+selected+'>'+fold+' - '+item+' paper/ '+orientation+' orientation</option>');
                 return carry;
             },[]);
         }
@@ -168,7 +177,7 @@ jQuery(document).ready(function($){
                     const services = $('#wizard_service_bodies').val().reduce((carry,item) => {
                         carry += '&services[]='+item.split(',')[1];
                         return carry;
-                    }, '');
+                    }, '&recursive=1');
                     const formats = (Number($('#wizard_format_filter').val()) > 0) ? '&formats='+$('#wizard_format_filter').val() : '';
 
                     ask_bmlt('switcher=GetSearchResults'+services+formats, layout_options, handle_error);

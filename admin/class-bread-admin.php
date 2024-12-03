@@ -471,6 +471,7 @@ class Bread_Admin
         $vm_flag = intval($_POST['wizard_virtual_meetings']);
         if ($vm_flag != '0') {
             $settings['additional_list_format_key'] = '@Virtual@';
+            $settings['additional_list_sort_order'] = 'weekday_tinyint,start_time';
         }
         $str = file_get_contents(plugin_dir_path(__FILE__) . 'templates/meeting_data_templates.json');
         $meeting_templates = json_decode($str, true);
