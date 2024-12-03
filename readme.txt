@@ -4,8 +4,8 @@ Contributors: odathp, radius314, pjaudiomv, klgrimley, jbraswell, otrok7, alanb2
 Tags: meeting list, bmlt, narcotics anonymous, na
 Requires PHP: 8.1
 Requires at least: 6.2
-Tested up to: 6.6.1
-Stable tag: 2.7.14
+Tested up to: 6.7.1
+Stable tag: 2.8.0
 
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -54,6 +54,12 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 - Read here for more information: https://github.com/bmlt-enabled/bread/blob/main/contribute.md
 
 == Changelog ==
+
+= 2.8.0 =
+* Wizard to help getting started on Bread
+* Preview meeting lists without saving
+* UI Improvements including combining with crouton in WP Admin-Menu
+* Major refactoring of code structure
 
 = 2.7.13 =
 * Multilingual [month_upper].
