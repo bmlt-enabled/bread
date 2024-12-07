@@ -101,7 +101,8 @@
           <p>Choose a language (only applies to names of days and format code descriptions):</p>
           <select id="wizard_language" name="wizard_language">
           </select><br/>
-          <p>Where should virtual meetings be included:
+          <div id="wizard-virtual-meeting-section">
+          Where should virtual meetings be included:
           <fieldset id="wizard_virtual_meetings">
               <input type="radio" value="1" name="wizard_virtual_meetings" id="wizard_additional_list" checked>
               <label for="wizard_additional_list">Place virtual meetings in a separate list, with specialized format.</label><br/>
@@ -109,7 +110,7 @@
               <label for="wizard_no_additional_list">Include virtual meetings in main meeting list.</label><br/>
               <input type="radio" value="-1" name="wizard_virtual_meetings" id="wizard_no_virtual_meetings">
               <label for="wizard_no_virtual_meetings">Don't include virtual meetings at all.</label><br/>
-          </fieldset></p>
+          </fieldset></div>
           <p>Organize the meetings by:
           <select name="wizard_meeting_sort">
             <option value="day">Day</option>

@@ -75,9 +75,11 @@ class Bread_AdminDisplay
             <option <?php echo $selected; ?> value="<?php echo $area ?>"><?php echo $descr ?></option><?php
         }
     }
-                                                                                                /**
-                                                                                                 * Adds settings/options page
-                                                                                                 */
+    /**
+     * Main function for the admin page.
+     *
+     * @return void
+     */
     function admin_options_page()
     {
         $this->bread->getConfigurationForSettingId($this->bread->getRequestedSetting());

@@ -127,8 +127,10 @@ jQuery(document).ready(function($){
             }, ['<option value="" selected>All Meetings</option>']);
             $('#wizard_format_filter').html(options.join(''));
         }
+        var hasVirtualMeetings = false;
         layout_options = function(meetings) {
             const meeting_count = meetings.length;
+            hasVirtualMeetings = meetings.some((m) => m.formats.split(',').some(format => ['VM','HY'].includes(format)));
             $('#wizard_meeting_count').html(meeting_count);
             const layouts = breadLayouts.find((layouts) => meeting_count <= Number(layouts.maxSize));
             const options = breadLayouts.reduce((carry,group) => {
@@ -162,6 +164,10 @@ jQuery(document).ready(function($){
                 return carry;
             }, []);
             $('#wizard_language').html(options.join(''));
+            if (!hasVirtualMeetings) {
+                $('#wizard_no_virtual_meetings').prop("checked", true);
+                $('#wizard-virtual-meeting-section').hide();
+            }
         }
         handle_error = function(error) {
             console.log(error);
