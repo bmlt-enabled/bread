@@ -290,9 +290,8 @@ class Bread
                     update_option(Bread::SETTINGS, $this->allSettings);
                     die('Undefined setting: ' . $current_setting);
                 }
-                //TODO fix default here, or force user to wizard
                 $this->initial_setting = true;
-                $import_file = plugin_dir_path(__FILE__) . "includes/three_column_settings.json";
+                $import_file = plugin_dir_path(__FILE__) . "../admin/templates/30/trifold-landscape-largefont.json";
                 $encode_options = file_get_contents($import_file);
                 $theOptions = json_decode($encode_options, true);
                 update_option($this->optionsName, $theOptions);

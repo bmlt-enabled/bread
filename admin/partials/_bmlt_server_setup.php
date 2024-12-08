@@ -41,7 +41,7 @@ foreach ($all_users as $user) {
                         <?php }
                     } else {
                         ?><span style='color: #f00;'>
-                            <div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-dismiss'></div>ERROR: Problem Connecting to BMLT Server<br /><?php echo $this->bread->bmlt()->$connection_error; ?>
+                            <div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-dismiss'></div>ERROR: Problem Connecting to BMLT Server<br /><?php echo $this->bread->bmlt()->connection_error; ?>
                         </span>
                         <p>
                             <label for="user_agent">Try a different user agent or "None" for Wordpress default: "</label>
