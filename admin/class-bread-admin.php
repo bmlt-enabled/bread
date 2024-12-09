@@ -261,7 +261,7 @@ class Bread_Admin
         $date = date("m-d-Y");
         $blogname = trim(preg_replace('/[^a-z0-9]+/', '-', strtolower($blogname)), '-');
         $json_name = $blogname . $date . ".json"; // Naming the filename will be generated.
-        $settings = get_option($this->bread->getOptionsName());
+        $settings = $this->bread->getOptions();
         foreach ($settings as $key => $value) {
             $value = maybe_unserialize($value);
             $need_options[$key] = $value;
@@ -334,7 +334,8 @@ class Bread_Admin
         }
         $settings = json_decode($encode_options, true);
         $settings['authors'] = array(wp_get_current_user()->ID);
-        update_option($this->bread->getOptionsName(), $settings);
+        $this->bread->setOptions($settings);
+        update_option($this->bread->getOptionsName(), $this->bread->getOptions());
         setcookie('pwsix_action', "import_settings", time() + 10);
         setcookie('current-meeting-list', $this->bread->getRequestedSetting(), time() + 10);
         wp_safe_redirect(admin_url('?page=class-bread-admin.php'));

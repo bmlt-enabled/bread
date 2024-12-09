@@ -296,9 +296,7 @@ class Bread
                 $theOptions = json_decode($encode_options, true);
                 update_option($this->optionsName, $theOptions);
             }
-            $this->options = $theOptions;
-            $this->fillUnsetOptions();
-            $this->upgrade_settings();
+            $this->setOptions($theOptions);
         }
 
         $this->requested_setting = $current_setting;
@@ -307,6 +305,12 @@ class Bread
     public function getOptions()
     {
         return $this->options;
+    }
+    public function setOptions(array $theOptions)
+    {
+        $this->options = $theOptions;
+        $this->fillUnsetOptions();
+        $this->upgrade_settings();
     }
     public function getOptionsName()
     {
