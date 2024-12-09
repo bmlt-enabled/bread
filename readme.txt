@@ -60,6 +60,8 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 * Preview meeting lists without saving
 * UI Improvements including combining with crouton in WP Admin-Menu
 * Major refactoring of code structure
+* Removed ASM table as alternative to additional meeting template
+* Removed BMLT Login during printing of additional meetings.
 
 = 2.7.13 =
 * Multilingual [month_upper].
