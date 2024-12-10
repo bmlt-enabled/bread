@@ -43,8 +43,6 @@
     "meeting_template": null,
     "custom_section_font_size": 6.5,
     "include_meeting_email": true,
-    "bmlt_login_id": "go_admin",
-    "bmlt_login_password": "#go#admin",
     "last_page_font_size": 10,
     "column_line": true,
     "used_format_1": "",
