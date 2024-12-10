@@ -94,7 +94,7 @@ class Bread_Admin
         wp_enqueue_script("chosen", plugin_dir_url(__FILE__) . "js/chosen.jquery.min.js", array('jquery'), "1.2", true);
         wp_enqueue_script("fetch-jsonp", plugin_dir_url(__FILE__) . "js/fetch-jsonp.js", array('jquery'), "1.30", true);
         wp_enqueue_script("smartWizard", plugin_dir_url(__FILE__) . "js/jquery.smartWizard.js", array('jquery'), "6.0.6", true);
-        wp_enqueue_script("breadWizard", plugin_dir_url(__FILE__) . "js/bread-Wizard.js", array('smartWizard'), "2.8.0", true);
+        wp_enqueue_script("breadWizard", plugin_dir_url(__FILE__) . "js/bread-wizard.js", array('smartWizard'), "2.8.0", true);
         /**
          * Make some JSON from PHP available in JS.
          */

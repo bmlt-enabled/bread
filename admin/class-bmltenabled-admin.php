@@ -34,7 +34,7 @@ class BmltEnabled_Admin
             $cap = 'manage_bread';
         }
         $slugs = apply_filters('BmltEnabled_Slugs', []);
-        $icon = apply_filters("BmltEnabled_IconSVG", 'dashicons-locations-alt');
+        $icon = apply_filters("BmltEnabled_IconSVG", 'dashicons-location-alt');
         $slug = $slugs[0];
         add_menu_page(
             'Meeting List',
