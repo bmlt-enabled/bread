@@ -186,7 +186,7 @@ class Bread
         }
         if ($this->allSettings === false) {
             $this->allSettings = array();
-            $this->allSettings[1] = array();
+            $this->allSettings[1] = "Default Setting";
             $this->maxSetting = 1;
         } else {
             foreach ($this->allSettings as $key => $value) {
