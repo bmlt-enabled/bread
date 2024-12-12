@@ -482,6 +482,8 @@ class Bread
         // This is a public function.  nameetinglists.org wants to let people see each others settings.
         // It's OK now, since there is no more login stuff.
         $this->loader->add_action('plugins_loaded', $plugin_admin, 'download_settings');
+        // This needs to be called earlier than the other actions, because we have to prevent WP generating the stuff around the page.
+        $this->loader->add_action("admin_init", $plugin_admin, "pwsix_process_settings_export");
     }
 
     /**
