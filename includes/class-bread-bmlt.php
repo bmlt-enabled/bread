@@ -232,6 +232,7 @@ class Bread_Bmlt
         }
         array_multisort($keys, $sortType, $array);
     }
+    private $default_query = false;
     /**
      * Generate that part of the BMLT query-string that reflects the service bodies being queried.
      *
@@ -241,13 +242,16 @@ class Bread_Bmlt
     {
         // addServiceBody has the side effect that
         // the service body option is overridden, so that it contains
-        // only the name of the service body.
-        $services = $this->addServiceBody('service_body_1');
-        $services .= $this->addServiceBody('service_body_2');
-        $services .= $this->addServiceBody('service_body_3');
-        $services .= $this->addServiceBody('service_body_4');
-        $services .= $this->addServiceBody('service_body_5');
-        return $services;
+        // only the name of the service body.  So we cache the value so it only
+        // needs to be called once.
+        if (!$this->default_query) {
+            $this->default_query = $this->addServiceBody('service_body_1');
+            $this->default_query .= $this->addServiceBody('service_body_2');
+            $this->default_query .= $this->addServiceBody('service_body_3');
+            $this->default_query .= $this->addServiceBody('service_body_4');
+            $this->default_query .= $this->addServiceBody('service_body_5');
+        }
+        return $this->default_query;
     }
     private function addServiceBody($service_body_name)
     {

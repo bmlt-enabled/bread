@@ -239,7 +239,7 @@ class Bread_Admin
      */
     function pwsix_process_settings_export()
     {
-        if (! wp_verify_nonce($_POST['pwsix_export_nonce'], 'pwsix_export_nonce')) {
+        if (!isset($_POST['pwsix_export_nonce']) || ! wp_verify_nonce($_POST['pwsix_export_nonce'], 'pwsix_export_nonce')) {
             return;
         }
         if (! current_user_can('manage_bread')) {  // TODO: Is this necessary? Why not let the user make a copy
@@ -272,9 +272,8 @@ class Bread_Admin
         header('Content-Type: application/json; charset=utf-8');
         header("Content-Disposition: attachment; filename=$json_name");
         header("Expires: 0");
-        $data = json_encode($settings);
-        header('Content-Length: ' . strlen($data));
-        file_put_contents('php://output', $data);
+        header('Content-Length: ' . strlen($json_file));
+        file_put_contents('php://output', $json_file);
         exit;
     }
     function current_user_can_modify()

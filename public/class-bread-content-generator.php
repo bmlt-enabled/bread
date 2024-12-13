@@ -555,27 +555,18 @@ class Bread_ContentGenerator
         $additional_meetinglist_result = $this->result_meetings;
         /**
          * If we are selecting the meetings in the second list based on some format, we don't need another BMLT query.
-         * Except if its an service meeting (format code ASM).  Then we need a second query because of the protected fields.
          */
-        if (empty($this->options['additional_list_format_key']) || $this->options['additional_list_format_key'] == 'ASM') {
+        if (empty($this->options['additional_list_format_key'])) {
             $additional_list_query = true;
             $sort_order = $this->options['additional_list_sort_order'];
             if ($sort_order == 'same') {
                 $sort_order = 'weekday_tinyint,start_time';
             }
-            $additional_list_id = "";
-            if ($this->options['additional_list_format_key'] === 'ASM') {
-                $additional_list_id = '&formats[]=' . $this->formatsManager->getFormatByKey($this->options['weekday_language'], 'ASM');
-            }
             $services = $this->bread->bmlt()->generateDefaultQuery();
             if (!empty($this->options['additional_list_custom_query'])) {
                 $services = $this->options['additional_list_custom_query'];
             }
-            $additional_list_query = "client_interface/json/?switcher=GetSearchResults$services$additional_list_id&sort_keys=$sort_order";
-            // additional_list can contain E-Mail and phone numbers that require logins.
-            if ($this->options['additional_list_format_key'] === 'ASM') {
-                $additional_list_query .= "&advanced_published=0";
-            }
+            $additional_list_query = "client_interface/json/?switcher=GetSearchResults$services&sort_keys=$sort_order";
             $additional_meetinglist_result = $this->bread->bmlt()->get_configured_root_server_request($additional_list_query);
             $this->adjust_timezone($additional_meetinglist_result, $this->target_timezone);
         }
