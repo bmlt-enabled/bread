@@ -484,6 +484,7 @@ class Bread
         $this->loader->add_action('plugins_loaded', $plugin_admin, 'download_settings');
         // This needs to be called earlier than the other actions, because we have to prevent WP generating the stuff around the page.
         $this->loader->add_action("admin_init", $plugin_admin, "pwsix_process_settings_export");
+        $this->loader->add_action("admin_init", $plugin_admin, "process_customize_form");
     }
 
     /**
