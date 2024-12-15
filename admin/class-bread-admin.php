@@ -335,8 +335,8 @@ class Bread_Admin
         $settings['authors'] = array(wp_get_current_user()->ID);
         $this->bread->setOptions($settings);
         update_option($this->bread->getOptionsName(), $this->bread->getOptions());
-        setcookie('pwsix_action', "import_settings", time() + 10);
         setcookie('current-meeting-list', $this->bread->getRequestedSetting(), time() + 10);
+        setcookie('bread_import_file', $import_file, time() + 10);
         wp_safe_redirect(admin_url('?page=class-bread-admin.php'));
     }
     function my_theme_add_editor_styles()
@@ -442,6 +442,9 @@ class Bread_Admin
                     break;
             }
         }
+        if (empty($this->bread->getOptions())) {
+            $this->bread->getConfigurationForSettingId($this->bread->getRequestedSetting());
+        }
         include_once plugin_dir_path(__FILE__) . 'partials/bread-admin-display.php';
         (new Bread_AdminDisplay($this))->admin_options_page();
     }
@@ -460,7 +463,8 @@ class Bread_Admin
         }
         $settings = json_decode($encode_options, true);
         $ncols = substr_count($settings['meeting_template_content'], '<td');
-        $id = $this->bread->getInitialSetting() ? 1 : ((is_numeric($_POST['wizard_setting_id'])) ? intval($_POST['wizard_setting_id']) : $this->bread->getMaxSetting() + 1);
+        $id = $this->bread->loadAllSettings([]);
+        $id = $this->bread->isInitialSetting() ? 1 : ((is_numeric($_POST['wizard_setting_id'])) ? intval($_POST['wizard_setting_id']) : $this->bread->getMaxSetting() + 1);
         $optionsName = $this->bread->generateOptionName($id);
         $settings['page_size'] = $layoutInfos[1];
         $settings['authors'] = array();
@@ -504,7 +508,6 @@ class Bread_Admin
         $setting_name = $setting_name == '' ? 'Setting ' . $id : $setting_name;
         $this->bread->setAndSaveSetting($id, $setting_name);
         $this->bread->getConfigurationForSettingId($id);
-        $this->bread->setRequestedSetting($id);
         ignore_user_abort(true);
         ob_clean();
         header('Content-Type: application/json; charset=utf-8');
@@ -529,7 +532,6 @@ class Bread_Admin
             }
             $this->bread->deleteSetting($this->bread->getRequestedSetting());
             $this->bread->getConfigurationForSettingId(1);
-            $this->bread->setRequestedSetting(1);
         } elseif (isset($_POST['duplicate'])) {
             if (!$this->current_user_can_create()) {
                 return;
@@ -544,17 +546,14 @@ class Bread_Admin
     }
     function process_customize_form()
     {
-        $this->bread->getConfigurationForSettingId($this->bread->getRequestedSetting());
-        if (!isset($_POST['bmltmeetinglistsave'])) {
-            $_POST['bmltmeetinglistsave'] = false;
-        }
-        if (!isset($_POST['bmltmeetinglistpreview'])) {
-            $_POST['bmltmeetinglistpreview'] = false;
-        }
+        $_POST['bmltmeetinglistsave'] = isset($_POST['bmltmeetinglistsave']);
+        $_POST['bmltmeetinglistpreview'] = isset($_POST['bmltmeetinglistpreview']);
+
         if ($_POST['bmltmeetinglistsave'] || $_POST['bmltmeetinglistpreview']) {
             if (!wp_verify_nonce($_POST['_wpnonce'], 'bmltmeetinglistupdate-options')) {
                 die('Whoops! There was a problem with the data you posted. Please go back and try again.');
             }
+            $this->bread->getConfigurationForSettingId($this->bread->getRequestedSetting());
             $this->bread->setOption('bread_version', sanitize_text_field($_POST['bread_version']));
             $this->bread->setOption('front_page_content', wp_kses_post($_POST['front_page_content']));
             $this->bread->setOption('front_page_line_height', $_POST['front_page_line_height']);
@@ -691,12 +690,6 @@ class Bread_Admin
                 wp_redirect(home_url() . "?preview-meeting-list=1");
                 exit();
             }
-        } elseif (isset($_REQUEST['pwsix_action']) && $_REQUEST['pwsix_action'] == "import_settings") {
-            echo '<div class="updated"><p style="color: #F00;">Your file was successfully imported!</p></div>';
-            $num = delete_transient($this->bread->get_TransientKey($this->bread->getRequestedSetting()));
-        } elseif (isset($_REQUEST['pwsix_action']) && $_REQUEST['pwsix_action'] == "default_settings_success") {
-            echo '<div class="updated"><p style="color: #F00;">Your default settings were successfully updated!</p></div>';
-            $num = delete_transient($this->bread->get_TransientKey($this->bread->getRequestedSetting()));
         }
     }
 }

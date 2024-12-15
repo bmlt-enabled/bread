@@ -90,6 +90,9 @@ class Bread_AdminDisplay
             set_transient('admin_notice', 'Please put down your weapon. You have 20 seconds to comply.');
         if (!$this->admin->current_user_can_modify()) {
             echo '<div class="updated"><p style="color: #F00;">You do not have permission to save this configuation!</p>';
+        } elseif (isset($_COOKIE['bread_import_file'])) {
+            echo '<div class="updated"><p style="color: #F00;">File loaded.</p>';
+            delete_transient($this->bread->get_TransientKey($this->bread->getRequestedSetting()));
         } else {
             $this->admin->save_admin_options();
             echo '<div class="updated"><p style="color: #F00;">Your changes were successfully saved!</p>';
@@ -99,7 +102,7 @@ class Bread_AdminDisplay
             }
         }
             echo '</div>';
-        
+
         $this->bread->fillUnsetOptions();
         ?>
         <div class="hide wrap" id="meeting-list-tabs-wrapper">

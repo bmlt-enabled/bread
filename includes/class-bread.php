@@ -59,7 +59,7 @@ class Bread
      *
      * @var integer
      */
-    private int $requested_setting = 1;
+    private int $requested_setting = 0;
     private $protocol;
     private string $tmp_dir;
     /**
@@ -74,7 +74,6 @@ class Bread
      * @var array
      */
     private array $translate = array();
-    private bool $generating_meeting_list = false;
     private bool $exporting_meeting_list = false;
     /**
      * The wizard wants to know if we are generating the first meeting list for this site.
@@ -176,7 +175,7 @@ class Bread
             @rmdir($dir);
         }
     }
-    private function loadAllSettings($holder): int
+    public function loadAllSettings($holder): int
     {
         if (isset($holder['bread_preview_settings'])) {
             $this->allSettings = array();
@@ -188,6 +187,7 @@ class Bread
             $this->allSettings = array();
             $this->allSettings[1] = "Default Setting";
             $this->maxSetting = 1;
+            $this->initial_setting = true;
         } else {
             foreach ($this->allSettings as $key => $value) {
                 if ($key > $this->maxSetting) {
@@ -241,29 +241,26 @@ class Bread
             $ret['current-meeting-list'] = $_REQUEST['current-meeting-list'];
         } elseif (isset($_REQUEST['export-meeting-list'])) {
             $ret['current-meeting-list'] = $_REQUEST['export-meeting-list'];
-            $this->exporting_meeting_list = true;
         } elseif (isset($_COOKIE['current-meeting-list'])) {
             $ret['current-meeting-list'] = $_COOKIE['current-meeting-list'];
         }
-        $this->generating_meeting_list = !empty($ret) && !is_admin() && !$this->exporting_meeting_list;
         return $ret;
     }
-    /**
-     * Undocumented function
-     *
-     * @return void
-     */
     public function generatingMeetingList(): bool
     {
-        return $this->generating_meeting_list;
+        return (isset($_REQUEST['current-meeting-list']) || isset($_REQUEST['preview-meeting-list'])) && !is_admin();
     }
     public function exportingMeetingList(): bool
     {
-        return $this->exporting_meeting_list;
+        return isset($_REQUEST['export-meeting-list']) && !is_admin();
     }
     public function generateOptionName($current_setting)
     {
-        return Bread::OPTIONS_NAME . '_' . $current_setting;
+        if ($current_setting != 1) {
+            return Bread::OPTIONS_NAME . '_' . $current_setting;
+        } else {
+            return Bread::OPTIONS_NAME;
+        }
     }
     /**
      * Retrieves the plugin options from the database.
@@ -278,11 +275,7 @@ class Bread
         if (is_array($this->allSettings[$current_setting])) {
             $this->options = $this->allSettings[$current_setting];
         } else {
-            if ($current_setting != 1) {
-                $this->optionsName = $this->generateOptionName($current_setting);
-            } else {
-                $this->optionsName = Bread::OPTIONS_NAME;
-            }
+            $this->optionsName = $this->generateOptionName($current_setting);
             //Don't forget to set up the default options
             if (!$theOptions = get_option($this->optionsName)) {
                 if ($current_setting != 1) {
@@ -290,7 +283,6 @@ class Bread
                     update_option(Bread::SETTINGS, $this->allSettings);
                     die('Undefined setting: ' . $current_setting);
                 }
-                $this->initial_setting = true;
                 $import_file = plugin_dir_path(__FILE__) . "../admin/templates/30/trifold-landscape-largefont.json";
                 $encode_options = file_get_contents($import_file);
                 $theOptions = json_decode($encode_options, true);
@@ -322,11 +314,11 @@ class Bread
     }
     public function getRequestedSetting()
     {
+        if ($this->requested_setting == 0) {
+            $holder = $this->getCurrentMeetingListHolder();
+            $this->requested_setting = $this->loadAllSettings($holder);
+        }
         return $this->requested_setting;
-    }
-    public function setRequestedSetting($id)
-    {
-        $this->requested_setting = $id;
     }
     /**
      * Define the core functionality of the plugin.
@@ -347,9 +339,6 @@ class Bread
         $this->plugin_name = 'bread';
         $this->tmp_dir = $this->setup_temp_dir();
         $this->protocol = (strpos(strtolower(home_url()), "https") !== false ? "https" : "http") . "://";
-
-        $holder = $this->getCurrentMeetingListHolder();
-        $this->requested_setting = $this->loadAllSettings($holder);
         $this->bread_bmlt = new Bread_Bmlt($this);
 
         $this->load_dependencies();
@@ -383,7 +372,7 @@ class Bread
      *
      * @return bool true when no setting existed previously, ie, if we should create setting 1.
      */
-    public function getInitialSetting()
+    public function isInitialSetting()
     {
         return $this->initial_setting;
     }
@@ -775,7 +764,7 @@ class Bread
      */
     public function updateOptions()
     {
-        update_option(Bread::getOptionsName(), $this->options);
+        update_option($this->getOptionsName(), $this->options);
     }
     public static function get_TransientKey($setting): string
     {
