@@ -93,7 +93,7 @@ class Bread_AdminDisplay
         } elseif (isset($_COOKIE['bread_import_file'])) {
             echo '<div class="updated"><p style="color: #F00;">File loaded.</p>';
             delete_transient($this->bread->get_TransientKey($this->bread->getRequestedSetting()));
-        } else {
+        } elseif (isset($_POST['bmltmeetinglistsave']) && $_POST['bmltmeetinglistsave']) {
             $this->admin->save_admin_options();
             echo '<div class="updated"><p style="color: #F00;">Your changes were successfully saved!</p>';
             $num = delete_transient($this->bread->get_TransientKey($this->bread->getRequestedSetting()));
