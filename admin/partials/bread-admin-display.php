@@ -87,21 +87,22 @@ class Bread_AdminDisplay
         <div class="connecting"></div>
         <div class="saving"></div>
         <?php
-            set_transient('admin_notice', 'Please put down your weapon. You have 20 seconds to comply.');
+        set_transient('admin_notice', 'Please put down your weapon. You have 20 seconds to comply.');
+        echo '<div class="updated">';
         if (!$this->admin->current_user_can_modify()) {
-            echo '<div class="updated"><p style="color: #F00;">You do not have permission to save this configuation!</p>';
+            echo '<p style="color: #F00;">You do not have permission to save this configuation!</p>';
         } elseif (isset($_COOKIE['bread_import_file'])) {
-            echo '<div class="updated"><p style="color: #F00;">File loaded.</p>';
+            echo '<p style="color: #F00;">File loaded.</p>';
             delete_transient($this->bread->get_TransientKey($this->bread->getRequestedSetting()));
         } elseif (isset($_POST['bmltmeetinglistsave']) && $_POST['bmltmeetinglistsave']) {
             $this->admin->save_admin_options();
-            echo '<div class="updated"><p style="color: #F00;">Your changes were successfully saved!</p>';
+            echo '<p style="color: #F00;">Your changes were successfully saved!</p>';
             $num = delete_transient($this->bread->get_TransientKey($this->bread->getRequestedSetting()));
             if ($num > 0) {
                 echo "<p>$num Cache entries deleted</p>";
             }
         }
-            echo '</div>';
+        echo '</div>';
 
         $this->bread->fillUnsetOptions();
         ?>
