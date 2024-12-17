@@ -513,6 +513,7 @@ class Bread_Admin
         $data = json_encode($message);
         header('Content-Length: ' . strlen($data));
         file_put_contents('php://output', $data);
+        exit();
     }
     function pwsix_process_settings_admin()
     {
