@@ -158,8 +158,8 @@ class Bread_Meetingslist_Structure
         $meeting_sort = $this->options['meeting_sort'];
         if ($include_additional_list > 0) {
             switch ($this->options['additional_list_sort_order']) {
-                case 'meeting_name':
-                    $meeting_sort = 'meeting_name';
+                case 'name':
+                    $meeting_sort = 'group';
                     $this->suppress_heading = true;
                     break;
                 case 'weekday_tinyint,start_time':
