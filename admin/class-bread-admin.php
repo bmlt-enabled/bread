@@ -435,9 +435,6 @@ class Bread_Admin
                 case 'import_settings':
                     $this->pwsix_process_settings_import();
                     break;
-                case 'wizard':
-                    $this->pwsix_process_wizard();
-                    break;
                 default:
                     break;
             }
@@ -450,7 +447,7 @@ class Bread_Admin
     }
     function pwsix_process_wizard()
     {
-        if (! wp_verify_nonce($_POST['pwsix_wizard_nonce'], 'pwsix_wizard_nonce')) {
+        if (isset($_POST['pwsix_wizard_nonce']) || !wp_verify_nonce($_POST['pwsix_wizard_nonce'], 'pwsix_wizard_nonce')) {
             return;
         }
         if (!$this->current_user_can_create()) {
