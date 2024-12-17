@@ -134,6 +134,9 @@ class Bread_Meetingslist_Structure
         } else {
             $this->options['main_grouping'] = 'day';
         }
+        if (!empty($this->options['subgrouping']) && $this->options['sub_header_shown'] == 'combined') {
+            $this->options['combine_headings'] = 'main_grouping - subgrouping';
+        }
     }
     /**
      * Setup for structuring the meeting list
@@ -435,7 +438,7 @@ class Bread_Meetingslist_Structure
         }
         $this_heading = $this->remove_sort_key($this->main_heading_raw);
         $this_subheading = $this->remove_sort_key($this->sub_heading_raw);
-        if (($this->meeting_index == 1) && !empty($options['combine_headings'])) {
+        if (($this->meeting_index == 1) && !empty($this->options['combine_headings'])) {
             $header_string =  $this->options['combine_headings'];
             $header_string =  str_replace('main_grouping', $this_heading, $header_string);
             $header_string =  str_replace('subgrouping', $this_subheading, $header_string);
@@ -477,8 +480,9 @@ class Bread_Meetingslist_Structure
             }
             $header_string =  $this->options['combine_headings'];
             $header_string =  str_replace('main_grouping', $this->remove_sort_key($this->main_heading_raw), $header_string);
-            $header_string =  str_replace('subgrouping', $this->remove_sort_key($this->main_heading_raw), $header_string);
+            $header_string =  str_replace('subgrouping', $this->remove_sort_key($this->sub_heading_raw), $header_string);
             $header .= "<div style='" . $this->header_style . "'>" . $header_string . $cont . "</div>";
+            return $header;
         } else if (!$this->newMainHeading) {
             $cont = $this->cont;
         }
