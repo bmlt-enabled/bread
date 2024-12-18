@@ -139,7 +139,7 @@ class Bread_Admin
     }
     function ml_default_editor($r)
     {
-        if (!function_exists( 'get_current_screen' )) {
+        if (!function_exists('get_current_screen')) {
             return $r;
         }
         global $my_admin_page;
