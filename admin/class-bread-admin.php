@@ -137,13 +137,17 @@ class Bread_Admin
         }
         return json_encode($sizes);
     }
-    function ml_default_editor()
+    function ml_default_editor($r)
     {
+        if (!function_exists( 'get_current_screen' )) {
+            return $r;
+        }
         global $my_admin_page;
         $screen = get_current_screen();
         if ($screen->id == $my_admin_page) {
             return "tinymce";
         }
+        return $r;
     }
 
     function force_mce_refresh($ver)
