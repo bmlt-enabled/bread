@@ -139,33 +139,37 @@ class Bread_Admin
     }
     function ml_default_editor($r)
     {
-        if (!function_exists('get_current_screen')) {
-            return $r;
-        }
-        global $my_admin_page;
-        $screen = get_current_screen();
-        if ($screen->id == $my_admin_page) {
-            return "tinymce";
+        if (function_exists('get_current_screen')) {
+            global $my_admin_page;
+            $screen = get_current_screen();
+            if ($screen->id == $my_admin_page) {
+                return "tinymce";
+            }
         }
         return $r;
     }
 
     function force_mce_refresh($ver)
     {
-        global $my_admin_page;
-        $screen = get_current_screen();
-        if ($screen->id == $my_admin_page) {
-            return $ver + 99;
+        if (function_exists('get_current_screen')) {
+            global $my_admin_page;
+            $screen = get_current_screen();
+            if ($screen->id == $my_admin_page) {
+                return $ver + 99;
+            }
         }
+        return $ver;
     }
 
     // Register new button in the editor
     function my_register_mce_button($buttons)
     {
-        global $my_admin_page;
-        $screen = get_current_screen();
-        if ($screen->id == $my_admin_page) {
-            array_push($buttons, 'front_page_button', 'custom_template_button_1', 'custom_template_button_2');
+        if (function_exists('get_current_screen')) {
+            global $my_admin_page;
+            $screen = get_current_screen();
+            if ($screen->id == $my_admin_page) {
+                array_push($buttons, 'front_page_button', 'custom_template_button_1', 'custom_template_button_2');
+            }
         }
         return $buttons;
     }
@@ -174,6 +178,9 @@ class Bread_Admin
     {
         global $my_admin_page;
         $plugins_array = array();
+        if (!function_exists('get_current_screen')) {
+            return $plugins_array;
+        }
         $screen = get_current_screen();
         if ($screen->id == $my_admin_page) {
             $plugins = array('table', 'code', 'contextmenu'); //Add any more plugins you want to load here
@@ -194,6 +201,7 @@ class Bread_Admin
     // Enable font size & font family selects in the editor
     function tiny_tweaks($initArray)
     {
+        if (function_exists('get_current_screen')) {
         global $my_admin_page;
         $screen = get_current_screen();
         if ($screen->id == $my_admin_page) {
@@ -205,10 +213,14 @@ class Bread_Admin
             $initArray['font_formats'] .= 'Courier (Monospace)=courier;';
             $initArray['content_style'] = 'body { font-family: Arial; }';
         }
+    }
         return $initArray;
     }
     function is_root_server_missing()
     {
+        if (!function_exists('get_current_screen')) {
+            return;
+        }
         global $my_admin_page;
         $screen = get_current_screen();
         if ($screen->id == $my_admin_page) {
@@ -345,6 +357,9 @@ class Bread_Admin
     }
     function my_theme_add_editor_styles()
     {
+        if (!function_exists('get_current_screen')) {
+            return;
+        }
         global $my_admin_page;
         $screen = get_current_screen();
         if (isset($screen) && $screen->id == $my_admin_page) {
