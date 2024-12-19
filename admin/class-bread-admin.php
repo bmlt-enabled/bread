@@ -202,18 +202,18 @@ class Bread_Admin
     function tiny_tweaks($initArray)
     {
         if (function_exists('get_current_screen')) {
-        global $my_admin_page;
-        $screen = get_current_screen();
-        if ($screen->id == $my_admin_page) {
-            $initArray['fontsize_formats'] = "5pt 6pt 7pt 8pt 9pt 10pt 11pt 12pt 13pt 14pt 15pt 16pt 17pt 18pt 19pt 20pt 22pt 24pt 26pt 28pt 30pt 32pt 34pt 36pt 38pt";
-            $initArray['theme_advanced_blockformats'] = 'h2,h3,h4,p';
-            $initArray['wordpress_adv_hidden'] = false;
-            $initArray['font_formats'] = 'Arial (Default)=arial;';
-            $initArray['font_formats'] .= 'Times (Sans-Serif)=times;';
-            $initArray['font_formats'] .= 'Courier (Monospace)=courier;';
-            $initArray['content_style'] = 'body { font-family: Arial; }';
+            global $my_admin_page;
+            $screen = get_current_screen();
+            if ($screen->id == $my_admin_page) {
+                $initArray['fontsize_formats'] = "5pt 6pt 7pt 8pt 9pt 10pt 11pt 12pt 13pt 14pt 15pt 16pt 17pt 18pt 19pt 20pt 22pt 24pt 26pt 28pt 30pt 32pt 34pt 36pt 38pt";
+                $initArray['theme_advanced_blockformats'] = 'h2,h3,h4,p';
+                $initArray['wordpress_adv_hidden'] = false;
+                $initArray['font_formats'] = 'Arial (Default)=arial;';
+                $initArray['font_formats'] .= 'Times (Sans-Serif)=times;';
+                $initArray['font_formats'] .= 'Courier (Monospace)=courier;';
+                $initArray['content_style'] = 'body { font-family: Arial; }';
+            }
         }
-    }
         return $initArray;
     }
     function is_root_server_missing()
