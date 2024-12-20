@@ -563,10 +563,7 @@ class Bread_Admin
     }
     function process_customize_form()
     {
-        $_POST['bmltmeetinglistsave'] = isset($_POST['bmltmeetinglistsave']);
-        $_POST['bmltmeetinglistpreview'] = isset($_POST['bmltmeetinglistpreview']);
-
-        if ($_POST['bmltmeetinglistsave'] || $_POST['bmltmeetinglistpreview']) {
+        if (isset($_POST['bmltmeetinglistsave']) || isset($_POST['bmltmeetinglistpreview'])) {
             if (!wp_verify_nonce($_POST['_wpnonce'], 'bmltmeetinglistupdate-options')) {
                 die('Whoops! There was a problem with the data you posted. Please go back and try again.');
             }
