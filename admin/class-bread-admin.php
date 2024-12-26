@@ -230,11 +230,6 @@ class Bread_Admin
                 $url = admin_url('options-general.php?page=class-bread-admin.php');
                 echo "<p><a href='$url'>Settings</a></p>";
                 echo '</div>';
-            } else if (!$this->bread->temp_dir()) {
-                echo '<div id="message" class="error"><p>' . $this->bread->temp_dir() . ' temporary directory is not writable.</p>';
-                $url = admin_url('options-general.php?page=class-bread-admin.php');
-                echo "<p><a href='$url'>Settings</a></p>";
-                echo '</div>';
             }
         }
     }

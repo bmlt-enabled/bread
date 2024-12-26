@@ -93,6 +93,9 @@ class Bread
     }
     public function temp_dir(): string
     {
+        if (empty($this->tmp_dir)) {
+            $this->tmp_dir = Bread::setup_temp_dir();
+        }
         return $this->tmp_dir;
     }
     public function getOption($name): mixed
@@ -337,7 +340,6 @@ class Bread
             $this->version = '2.8.0';
         }
         $this->plugin_name = 'bread';
-        $this->tmp_dir = $this->setup_temp_dir();
         $this->protocol = (strpos(strtolower(home_url()), "https") !== false ? "https" : "http") . "://";
         $this->bread_bmlt = new Bread_Bmlt($this);
 
