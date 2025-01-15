@@ -233,7 +233,7 @@ class Bread_ContentGenerator
         $strpos = strpos($data, "[month_$case" . "_");
         if ($strpos !== false) {
             $locLang = substr($data, $strpos + 13, 2);
-            if (!isset($this->translate[$locLang])) {
+            if (!isset($this->bread->getTranslateTable()[$locLang])) {
                 $locLang = 'en';
             }
             $fmt = new IntlDateFormatter(
