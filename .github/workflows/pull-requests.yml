@@ -35,3 +35,4 @@ jobs:
         uses: wordpress/plugin-check-action@v1.0.6
         with:
           build-dir: "./build-bread"
+          exclude-directories: 'vendor'
