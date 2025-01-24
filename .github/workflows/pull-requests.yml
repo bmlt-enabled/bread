@@ -4,13 +4,12 @@ on:
   pull_request:
     branches: [ 'main' ]
 
-env:
-  PLUGIN: bread
-  BUILD_DIR: build
-
 jobs:
   lint:
     runs-on: ubuntu-22.04
+    env:
+      PLUGIN: bread
+      BUILD_DIR: build
     steps:
       - name: Check out code 🛒
         uses: actions/checkout@v4
@@ -30,9 +29,9 @@ jobs:
           export ZIP_FILENAME=${PLUGIN}-build-${GITHUB_RUN_NUMBER}-${GITHUB_SHA}.zip
           echo "ZIP_FILENAME=${ZIP_FILENAME}" >> $GITHUB_ENV
           PROD=1 make build
-          unzip "${BUILD_DIR}/${ZIP_FILENAME}" -d "./build-${PLUGIN}"
+          unzip "${BUILD_DIR}/${ZIP_FILENAME}" -d "./build-bread"
 
       - name: Run plugin check
         uses: wordpress/plugin-check-action@v1.0.6
         with:
-          build-dir: "./build-${PLUGIN}"
+          build-dir: "./build-bread"
