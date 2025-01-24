@@ -4,13 +4,6 @@ on:
   push:
     branches: [ 'main' ]
 
-env:
-  PLUGIN: "bread"
-  BUILD_DIR: build
-  DIST_DIR_S3: dist/s3
-  S3_BUCKET: archives.bmlt.app
-  S3_KEY: bread
-
 jobs:
   lint:
     runs-on: ubuntu-22.04
@@ -30,19 +23,6 @@ jobs:
         id: php-codesniffer
         run: make lint
 
-      - name: Build 🔧
-        run: |
-          FILENAME="${PLUGIN}-build-${GITHUB_RUN_NUMBER}-${GITHUB_SHA}"
-          ZIP_FILENAME="${FILENAME}.zip"
-          echo "ZIP_FILENAME=${ZIP_FILENAME}" >> $GITHUB_ENV
-          PROD=1 make build
-          unzip "${BUILD_DIR}/${ZIP_FILENAME}" "./${FILENAME}"
-
-      - name: Run plugin check
-        uses: wordpress/plugin-check-action@v1.0.6
-        with:
-          build-dir: "./${FILENAME}"
-
   deploy:
     runs-on: ubuntu-22.04
     permissions:
@@ -50,6 +30,10 @@ jobs:
       contents: write
     env:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      S3_BUCKET: archives.bmlt.app
+      S3_KEY: bread
+      BUILD_DIR: build
+      DIST_DIR_S3: dist/s3
       PLUGIN: "bread"
     needs: [ lint ]
     steps:
@@ -65,27 +49,27 @@ jobs:
 
       - name: Prepare to deploy 🔧
         run: |
-          FILENAME="${PLUGIN}-build-${GITHUB_RUN_NUMBER}-${GITHUB_SHA}"
-          ZIP_FILENAME="${FILENAME}.zip"
+          export FILENAME=${PLUGIN}-build-${GITHUB_RUN_NUMBER}-${GITHUB_SHA}
+          export ZIP_FILENAME=$FILENAME.zip
           echo "ZIP_FILENAME=${ZIP_FILENAME}" >> $GITHUB_ENV
           PROD=1 make build
-          mkdir -p "${DIST_DIR_S3}" && cp "${BUILD_DIR}/${ZIP_FILENAME}" "${DIST_DIR_S3}/${ZIP_FILENAME}"
+          mkdir -p ${DIST_DIR_S3} && cp ${BUILD_DIR}/${ZIP_FILENAME} ${DIST_DIR_S3}/${ZIP_FILENAME}
 
-      - name: Configure AWS credentials 🪪
+      - name: configure aws credentials 🪪
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions/gh-ci-s3-artifact
           role-session-name: gh-actions-${{ env.PLUGIN }}
           aws-region: us-east-1
 
-      - name: Copy artifact to S3 🪣
+      - name: copy artifact to s3 🪣
         run: |
-          aws s3 cp "${DIST_DIR_S3}/${ZIP_FILENAME}" "s3://${S3_BUCKET}/${S3_KEY}/${ZIP_FILENAME}"
+          aws s3 cp $DIST_DIR_S3/$ZIP_FILENAME s3://$S3_BUCKET/$S3_KEY/$ZIP_FILENAME
 
       - name: Publish Release to Latest WP 🎉
         id: publish_latest
         uses: bmlt-enabled/wordpress-releases-github-action@v1.3
         with:
-          file: "${DIST_DIR_S3}/${ZIP_FILENAME}"
-          s3_key: "${S3_KEY}"
+          file: ${{ env.DIST_DIR_S3 }}/${{ env.ZIP_FILENAME }}
+          s3_key: ${{ env.S3_KEY }}
           aws_account_id: ${{ secrets.AWS_ACCOUNT_ID }}

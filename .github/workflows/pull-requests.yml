@@ -7,6 +7,9 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-22.04
+    env:
+      PLUGIN: bread
+      BUILD_DIR: build
     steps:
       - name: Check out code 🛒
         uses: actions/checkout@v4
