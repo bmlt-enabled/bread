@@ -1,4 +1,4 @@
-COMMIT := 221fc97
+COMMIT := $(shell git rev-parse --short=8 HEAD)
 ZIP_FILENAME := $(or $(ZIP_FILENAME), $(shell echo "$${PWD\#\#*/}.zip"))
 BUILD_DIR := $(or $(BUILD_DIR),build)
 VENDOR_AUTOLOAD := vendor/autoload.php

@@ -26,8 +26,8 @@ jobs:
 
       - name: Build 🔧
         run: |
-          FILENAME="${PLUGIN}-build-${GITHUB_RUN_NUMBER}-${GITHUB_SHA}"
-          ZIP_FILENAME="${FILENAME}.zip"
+          export FILENAME=${PLUGIN}-build-${GITHUB_RUN_NUMBER}-${GITHUB_SHA}
+          export ZIP_FILENAME=$FILENAME.zip
           echo "ZIP_FILENAME=${ZIP_FILENAME}" >> $GITHUB_ENV
           PROD=1 make build
           unzip "${BUILD_DIR}/${ZIP_FILENAME}" "./${FILENAME}"
