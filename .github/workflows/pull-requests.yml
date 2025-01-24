@@ -30,7 +30,7 @@ jobs:
           export ZIP_FILENAME=$FILENAME.zip
           echo "ZIP_FILENAME=${ZIP_FILENAME}" >> $GITHUB_ENV
           PROD=1 make build
-          unzip "${BUILD_DIR}/${ZIP_FILENAME}" "./${FILENAME}"
+          unzip "${BUILD_DIR}/${ZIP_FILENAME}" -d "./${FILENAME}"
 
       - name: Run plugin check
         uses: wordpress/plugin-check-action@v1.0.6
