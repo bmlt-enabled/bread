@@ -25,3 +25,6 @@ jobs:
       - name: PHPCS checker 🧹
         id: php-codesniffer
         run: make lint
+
+      - name: Run plugin check
+        uses: wordpress/plugin-check-action@v1
