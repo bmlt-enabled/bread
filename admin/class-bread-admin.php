@@ -228,7 +228,7 @@ class Bread_Admin
             if ($root_server == '') {
                 echo '<div id="message" class="error"><p>Missing BMLT Server in settings for bread.</p>';
                 $url = admin_url('options-general.php?page=class-bread-admin.php');
-                echo "<p><a href='$url'>Settings</a></p>";
+                echo "<p><a href='".esc_url($url)-"'>Settings</a></p>";
                 echo '</div>';
             }
         }
@@ -328,15 +328,15 @@ class Bread_Admin
         $tmp = explode('.', $file_name);
         $extension = end($tmp);
         if ($extension != 'json') {
-            wp_die(__('Please upload a valid .json file'));
+            wp_die(esc_html(__('Please upload a valid .json file', 'bread')));
         }
         $import_file = $_FILES['import_file']['tmp_name'];
         if (empty($import_file)) {
-            wp_die(__('Please upload a file to import'));
+            wp_die(esc_html(__('Please upload a file to import', 'bread')));
         }
         $file_size = $_FILES['import_file']['size'];
         if ($file_size > 500000) {
-            wp_die(__('File size greater than 500k'));
+            wp_die(esc_html(__('File size greater than 500k', 'bread')));
         }
         $encode_options = file_get_contents($import_file);
         while (0 === strpos(bin2hex($encode_options), 'efbbbf')) {
@@ -360,15 +360,6 @@ class Bread_Admin
         if (isset($screen) && $screen->id == $my_admin_page) {
             add_editor_style(plugin_dir_url(__FILE__) . "css/editor-style.css");
         }
-    }
-    /**
-     * @desc Adds the Settings link to the plugin activate/deactivate page
-     */
-    function filter_plugin_actions($links, $file)
-    {
-        $settings_link = '<a href="options-general.php?page=' . basename(__FILE__) . '">' . __('Settings') . '</a>';
-        array_unshift($links, $settings_link); // before other links
-        return $links;
     }
     /**
      * Saves the admin options to the database.

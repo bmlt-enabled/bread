@@ -58,12 +58,12 @@ global $wp_version;
                 <p>File an issue <a href="https://github.com/radius314/bread/issues">https://github.com/bmlt-enabled/bread/issues</a></p>
                 <u>Debug Information</u>
                 <ul>
-                    <li><b>Bread Version:</b> <?php echo $plugin_version; ?></li>
-                    <li><b>Wordpress Version:</b> <?php echo $wp_version; ?></li>
-                    <li><b>Protocol:</b> <?php echo $this->bread->getProtocol(); ?></li>
-                    <li><b>PHP Version:</b> <?php echo phpversion(); ?></li>
-                    <li><b>Server Version:</b> <?php echo $_SERVER["SERVER_SOFTWARE"]; ?></li>
-                    <li><b>Temporary Directory:</b> <?php echo get_temp_dir(); ?></li>
+                    <li><b>Bread Version:</b> <?php echo esc_html($plugin_version); ?></li>
+                    <li><b>Wordpress Version:</b> <?php echo esc_html($wp_version); ?></li>
+                    <li><b>Protocol:</b> <?php echo esc_html($this->bread->getProtocol()); ?></li>
+                    <li><b>PHP Version:</b> <?php echo esc_html(phpversion()); ?></li>
+                    <li><b>Server Version:</b> <?php echo esc_html($_SERVER["SERVER_SOFTWARE"]); ?></li>
+                    <li><b>Temporary Directory:</b> <?php echo esc_html(get_temp_dir()); ?></li>
                 </ul>
             </div>
         </div>

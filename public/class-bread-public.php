@@ -119,7 +119,11 @@ class Bread_Public
                 header('Pragma: public');
                 header('Expires: Sat, 26 Jul 1997 05:00:00 GMT');
                 header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
-                echo $content;
+                $temp = tmpfile();
+                fwrite($temp, $content);
+                rewind($temp);
+                @fpassthru($temp);
+                fclose($temp);
                 exit;
             }
         }
@@ -175,7 +179,7 @@ class Bread_Public
             echo "<script type='text/javascript'>\n";
             echo "document.body.innerHTML = ''";
             echo "</script>";
-            echo '<div style="font-size: 20px;text-align:center;font-weight:normal;color:#F00;margin:0 auto;margin-top: 30px;"><p>No Meetings Found</p><p>Or</p><p>Internet or Server Problem</p><p>' . $this->options['root_server'] . '</p><p>Please try again or contact your BMLT Administrator</p></div>';
+            echo '<div style="font-size: 20px;text-align:center;font-weight:normal;color:#F00;margin:0 auto;margin-top: 30px;"><p>No Meetings Found</p><p>Or</p><p>Internet or Server Problem</p><p>' . esc_url($this->options['root_server']) . '</p><p>Please try again or contact your BMLT Administrator</p></div>';
             exit;
         }
         if (!empty($this->options['extra_meetings'])) {

@@ -284,7 +284,7 @@ class Bread
                 if ($current_setting != 1) {
                     unset($this->allSettings[$current_setting]);
                     update_option(Bread::SETTINGS, $this->allSettings);
-                    die('Undefined setting: ' . $current_setting);
+                    die('Undefined setting: ' . esc_html($current_setting));
                 }
                 $import_file = plugin_dir_path(__FILE__) . "../admin/templates/30/trifold-landscape-largefont.json";
                 $encode_options = file_get_contents($import_file);

@@ -16,8 +16,8 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                 </div>
                 <h3 class="hndle">Front Page Content<span data-tooltip-content="#frontpage-tooltip-content" class="my-tooltip"><span class="tooltipster-icon">(?)</span></span></h3>
                 <div class="inside">
-                    <p>Default Font Size: <input min="4" max="18" step=".1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="front_page_font_size" name="front_page_font_size" value="<?php echo $this->bread->getOptionForDisplay('front_page_font_size', '10'); ?>" />&nbsp;&nbsp;
-                        Line Height: <input min="1" max="3" step=".1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="front_page_line_height" type="text" maxlength="3" size="3" name="front_page_line_height" value="<?php echo $this->bread->getOptionForDisplay('front_page_line_height', '1.0'); ?>" /></p>
+                    <p>Default Font Size: <input min="4" max="18" step=".1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="front_page_font_size" name="front_page_font_size" value="<?php echo esc_attr($this->bread->getOptionForDisplay('front_page_font_size', '10')); ?>" />&nbsp;&nbsp;
+                        Line Height: <input min="1" max="3" step=".1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="front_page_line_height" type="text" maxlength="3" size="3" name="front_page_line_height" value="<?php echo esc_attr($this->bread->getOptionForDisplay('front_page_line_height', '1.0')); ?>" /></p>
                     <div style="margin-top:15px; margin-bottom:20px; max-width:100%; width:100%;">
                         <?php
                         $editor_id = "front_page_content";
