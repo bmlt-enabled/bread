@@ -105,7 +105,7 @@ class Bread_Admin
         foreach ($this->bread->getTranslateTable() as $key => $value) {
             $langs[] = ['key' => $key, 'name' => $value['LANG_NAME']];
         }
-        $strLangs = json_encode($langs);
+        $strLangs = wp_json_encode($langs);
         wp_add_inline_script('breadWizard', "breadLayouts = $strTemplates; breadTranslations = $strLangs", 'before');
     }
     /**
@@ -135,7 +135,7 @@ class Bread_Admin
                 'configurations' => $files,
             );
         }
-        return json_encode($sizes);
+        return wp_json_encode($sizes);
     }
     function ml_default_editor($r)
     {
@@ -228,7 +228,7 @@ class Bread_Admin
             if ($root_server == '') {
                 echo '<div id="message" class="error"><p>Missing BMLT Server in settings for bread.</p>';
                 $url = admin_url('options-general.php?page=class-bread-admin.php');
-                echo "<p><a href='".esc_url($url)-"'>Settings</a></p>";
+                echo "<p><a href='" . esc_url($url) - "'>Settings</a></p>";
                 echo '</div>';
             }
         }
@@ -269,7 +269,7 @@ class Bread_Admin
         $this->bread->getConfigurationForSettingId($this->bread->getRequestedSetting());
         $blogname = str_replace(" - ", " ", get_option('blogname') . '-' . $this->bread->getSettingName($this->bread->getRequestedSetting()));
         $blogname = str_replace(" ", "-", $blogname);
-        $date = date("m-d-Y");
+        $date = gmdate("m-d-Y");
         $blogname = trim(preg_replace('/[^a-z0-9]+/', '-', strtolower($blogname)), '-');
         $json_name = $blogname . $date . ".json"; // Naming the filename will be generated.
         $settings = $this->bread->getOptions();
@@ -277,7 +277,7 @@ class Bread_Admin
             $value = maybe_unserialize($value);
             $need_options[$key] = $value;
         }
-        $json_file = json_encode($need_options); // Encode data into json data
+        $json_file = wp_json_encode($need_options); // Encode data into json data
         ignore_user_abort(true);
         ob_clean();
         header('Content-Type: application/json; charset=utf-8');
@@ -515,7 +515,7 @@ class Bread_Admin
         header('Content-Type: application/json; charset=utf-8');
         header("Expires: 0");
         $message = ['result' => ['setting' => $id]];
-        $data = json_encode($message);
+        $data = wp_json_encode($message);
         header('Content-Length: ' . strlen($data));
         file_put_contents('php://output', $data);
         exit();
@@ -684,7 +684,7 @@ class Bread_Admin
             if (!in_array($user->ID, $this->bread->getOption('authors'))) {
                 $this->bread->setOption('authors', $user->ID);
             }
-            if ($_POST['bmltmeetinglistpreview']) {
+            if (isset($_POST['bmltmeetinglistpreview'])) {
                 session_start();
                 $_SESSION['bread_preview_settings'] = $this->bread->getOptions();
                 wp_redirect(home_url() . "?preview-meeting-list=1");

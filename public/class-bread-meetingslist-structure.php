@@ -398,7 +398,7 @@ class Bread_Meetingslist_Structure
         $format_key = $this->options['additional_list_format_key'];
         if ($format_key == "@Virtual@") {
             //TODO: Is this correct?  For now, I'm just refactoring, so leaving it in.
-            if ($flag && $this->isHybrid($value)) {
+            if (!$flag && $this->isHybrid($value)) {
                 return false;
             }
             return $this->isVirtual($value) || $this->isHybrid($value);

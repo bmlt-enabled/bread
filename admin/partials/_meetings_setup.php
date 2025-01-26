@@ -294,7 +294,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                             }
                         } else { ?>
                             <option selected="selected" value="Not Connected"></option><?php
-                                                                                    } ?>
+                        } ?>
                     </select>
                 </div>
             </div>
@@ -319,7 +319,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                                         <option selected value="<?php echo esc_attr($used_formats[$count]['key_string']) ?>"><?php echo esc_html($used_formats[$count]['name_string']) ?></option>
                                     <?php   } else { ?>
                                         <option value="<?php echo esc_attr($used_formats[$count]['key_string']) ?>"><?php echo esc_html($used_formats[$count]['name_string']) ?></option>
-                            <?php   }
+                                    <?php   }
                                 }
                             } ?>
                         </select>
@@ -352,7 +352,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         </select>
                     </p>
                     <?php if ($this->bread->getOption('page_fold') == 'half' || $this->bread->getOption('page_fold') == 'full') {
-                    ?>
+                        ?>
                         <div class="meeting2_footer_div booklet">
                             <label for="meeting2_footer">Custom Footer: </label>
                             <input name="meeting2_footer" type="text" size="50" value="<?php echo esc_attr($this->bread->getOption('meeting2_footer')); ?>">

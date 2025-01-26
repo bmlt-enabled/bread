@@ -35,14 +35,14 @@ class Bread_Meeting_Enhancer
             $time_format = "H:i";
         }
         if ($this->options['time_option'] == 1 || $this->options['time_option'] == '') {
-            $meeting_value['start_time'] = date($time_format, strtotime($meeting_value['start_time']));
+            $meeting_value['start_time'] = gmdate($time_format, strtotime($meeting_value['start_time']));
             if ($meeting_value['start_time'] == '12:00PM' || $meeting_value['start_time'] == '12:00 PM') {
                 $meeting_value['start_time'] = 'NOON';
             }
         } elseif ($this->options['time_option'] == '2') {
             $addtime = '+ ' . $minutes . ' minutes';
-            $end_time = date($time_format, strtotime($meeting_value['start_time'] . ' ' . $addtime));
-            $meeting_value['start_time'] = date($time_format, strtotime($meeting_value['start_time']));
+            $end_time = gmdate($time_format, strtotime($meeting_value['start_time'] . ' ' . $addtime));
+            $meeting_value['start_time'] = gmdate($time_format, strtotime($meeting_value['start_time']));
             if ($lang == 'fa') {
                 $meeting_value['start_time'] = $this->toPersianNum($end_time) . $space . '-' . $space . $this->toPersianNum($meeting_value['start_time']);
             } else {
@@ -50,24 +50,24 @@ class Bread_Meeting_Enhancer
             }
         } elseif ($this->options['time_option'] == '3') {
             $time_array = array("1:00", "2:00", "3:00", "4:00", "5:00", "6:00", "7:00", "8:00", "9:00", "10:00", "11:00", "12:00");
-            $temp_start_time = date("g:i", strtotime($meeting_value['start_time']));
-            $temp_start_time_2 = date("g:iA", strtotime($meeting_value['start_time']));
+            $temp_start_time = gmdate("g:i", strtotime($meeting_value['start_time']));
+            $temp_start_time_2 = gmdate("g:iA", strtotime($meeting_value['start_time']));
             if ($temp_start_time_2 == '12:00PM') {
                 $start_time = 'NOON';
             } elseif (in_array($temp_start_time, $time_array)) {
-                $start_time = date("g", strtotime($meeting_value['start_time']));
+                $start_time = gmdate("g", strtotime($meeting_value['start_time']));
             } else {
-                $start_time = date("g:i", strtotime($meeting_value['start_time']));
+                $start_time = gmdate("g:i", strtotime($meeting_value['start_time']));
             }
             $addtime = '+ ' . $minutes . ' minutes';
-            $temp_end_time = date("g:iA", strtotime($meeting_value['start_time'] . ' ' . $addtime));
-            $temp_end_time_2 = date("g:i", strtotime($meeting_value['start_time'] . ' ' . $addtime));
+            $temp_end_time = gmdate("g:iA", strtotime($meeting_value['start_time'] . ' ' . $addtime));
+            $temp_end_time_2 = gmdate("g:i", strtotime($meeting_value['start_time'] . ' ' . $addtime));
             if ($temp_end_time == '12:00PM') {
                 $end_time = 'NOON';
             } elseif (in_array($temp_end_time_2, $time_array)) {
-                $end_time = date("g" . $space . "A", strtotime($temp_end_time));
+                $end_time = gmdate("g" . $space . "A", strtotime($temp_end_time));
             } else {
-                $end_time = date("g:i" . $space . "A", strtotime($temp_end_time));
+                $end_time = gmdate("g:i" . $space . "A", strtotime($temp_end_time));
             }
             $meeting_value['start_time'] = $start_time . $space . '-' . $space . $end_time;
         }

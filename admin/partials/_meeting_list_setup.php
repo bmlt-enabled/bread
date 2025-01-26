@@ -2,7 +2,7 @@
 if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
     die('Sorry, but you cannot access this page directly.');
 }
-$plugin_data = get_plugin_data(WP_PLUGIN_DIR . '/bread/bread.php');
+$plugin_data = get_plugin_data(WP_PLUGIN_DIR . '/bread/bmlt-meeting-list.php');
 $plugin_version = "could not access version";
 if ($plugin_data) {
     $plugin_version = $plugin_data['Version'];

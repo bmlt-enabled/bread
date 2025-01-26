@@ -65,8 +65,8 @@ class Bread_Bmlt
                 }
             }
 
-            $value['start_time'] = date("g:iA", strtotime($value['start_time']));
-            $all_meetings[$value['id_bigint']] = strip_tags($value['meeting_name'] . ' - ' . $this->bread->getday($value['weekday_tinyint'], true, $lang) . ' ' . $value['start_time'] . ' in ' . $area_name . ' at ' . $value['location_text']);
+            $value['start_time'] = gmdate("g:iA", strtotime($value['start_time']));
+            $all_meetings[$value['id_bigint']] = wp_strip_all_tags($value['meeting_name'] . ' - ' . $this->bread->getday($value['weekday_tinyint'], true, $lang) . ' ' . $value['start_time'] . ' in ' . $area_name . ' at ' . $value['location_text']);
         }
 
         return $all_meetings;

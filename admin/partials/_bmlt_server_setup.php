@@ -23,13 +23,13 @@ foreach ($all_users as $user) {
                     </p>
                     <?php
                     if ($this->connected) {
-                        echo esc_html($this->server_version);
+                        echo wp_kses($this->server_version, 'post');
                         echo '<input type="hidden" id="user_agent" value="' . esc_html($this->bread->getOption('user_agent')) . '" />';
                         if ($this->bread->getOption('sslverify') == '1') { ?>
                             <p>
                                 <input type="checkbox" id="sslverify" name="sslverify" value="1" checked />
                                 <label for="sslverify">Disable SSL verification of server</label>
-                            <?php }
+                        <?php }
                     } elseif ($this->bread->emptyOption('root_server')) {
                         echo "<span style='color: #f00;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-dismiss'></div>ERROR: Please enter a BMLT Server</span>";
                         echo '<input type="hidden" id="user_agent" value="' . esc_html($this->bread->getOption('user_agent')) . '" />';
@@ -51,7 +51,7 @@ foreach ($all_users as $user) {
                             <input type="checkbox" id="sslverify" name="sslverify" value="1" <?php echo esc_html($this->bread->getOption('sslverify')) ? 'checked' : ''; ?> />
                             <label for="sslverify">Disable SSL verification of server</label>
                         </p>
-                    <?php
+                        <?php
                     }
                     ?>
                     <p>
@@ -93,13 +93,13 @@ foreach ($all_users as $user) {
                 <div class="inside">
                     <p class="ctrl_key" style="display:none; color: #00AD00;">Hold CTRL Key down to select multiple meetings.</p>
                     <select class="chosen-select" style="width: 100%;" data-placeholder="<?php
-                                                                                            if ($this->bread->getOption('extra_meetings_enabled') == 0) {
-                                                                                                echo 'Not Enabled';
-                                                                                            } elseif (!$this->connected) {
-                                                                                                echo 'Not Connected';
-                                                                                            } else {
-                                                                                                echo 'Select Extra Meetings';
-                                                                                            } ?>" id="extra_meetings" name="extra_meetings[]" multiple="multiple">
+                    if ($this->bread->getOption('extra_meetings_enabled') == 0) {
+                        echo 'Not Enabled';
+                    } elseif (!$this->connected) {
+                        echo 'Not Connected';
+                    } else {
+                        echo 'Select Extra Meetings';
+                    } ?>" id="extra_meetings" name="extra_meetings[]" multiple="multiple">
                         <?php
                         if ($this->connected && $this->bread->getOption('extra_meetings_enabled') == 1) {
                             $extra_meetings_array = $this->bread->bmlt()->get_all_meetings();

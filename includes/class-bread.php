@@ -129,30 +129,29 @@ class Bread
      */
     private static function setup_temp_dir(): string
     {
+        $filesystem = new WP_Filesystem_Direct(null);
         $dir = get_temp_dir();
         $dir = rtrim($dir, DIRECTORY_SEPARATOR);
-        if (!is_dir($dir) || !is_writable($dir)) {
+        if (!$filesystem->is_dir($dir) || !$filesystem->is_writable($dir)) {
             return false;
         }
-        Bread::brute_force_cleanup($dir);
+        Bread::brute_force_cleanup($filesystem, $dir);
         $attempts = 0;
         $path = '';
         do {
-            $path = sprintf('%s%s%s%s', $dir, DIRECTORY_SEPARATOR, 'bread', mt_rand(100000, mt_getrandmax()));
-        } while (!mkdir($path) && $attempts++ < 100);
+            $path = sprintf('%s%s%s%s', $dir, DIRECTORY_SEPARATOR, 'bread', wp_rand(100000));
+        } while (!$filesystem->mkdir($path, 0777) && $attempts++ < 100);
         return $path;
     }
-    private static function brute_force_cleanup($dir)
+    private static function brute_force_cleanup($filesystem, $dir)
     {
-        if (is_dir($dir)) {
-            $objects = scandir($dir);
+        if ($filesystem->is_dir($dir)) {
+            $objects = $filesystem->dirlist($dir);
             foreach ($objects as $object) {
-                if ($object != "." && $object != "..") {
-                    if (str_starts_with($object, "bread")) {
-                        $filename = $dir . DIRECTORY_SEPARATOR . $object;
-                        if (time() - filemtime($filename . (is_dir($filename) ? '/.' : '')) > 24 * 3600) {
-                            Bread::rrmdir($filename);
-                        }
+                if (str_starts_with($object['name'], "bread")) {
+                    if (time() - $object['lastmodunix'] > 24 * 3600) {
+                        $filename = $dir . DIRECTORY_SEPARATOR . $object['name'];
+                        Bread::rrmdir($filesystem, $filename);
                     }
                 }
             }
@@ -160,22 +159,12 @@ class Bread
     }
     public function removeTempDir()
     {
-        Bread::rrmdir($this->temp_dir());
+        Bread::rrmdir(new WP_Filesystem_Direct(null), $this->temp_dir());
     }
-    private static function rrmdir($dir)
+    private static function rrmdir($filesystem, $dir)
     {
-        if (is_dir($dir)) {
-            $objects = scandir($dir);
-            foreach ($objects as $object) {
-                if ($object != "." && $object != "..") {
-                    if (is_dir($dir . DIRECTORY_SEPARATOR . $object) && !is_link($dir . "/" . $object)) {
-                        Bread::rrmdir($dir . DIRECTORY_SEPARATOR . $object);
-                    } else {
-                        @unlink($dir . DIRECTORY_SEPARATOR . $object);
-                    }
-                }
-            }
-            @rmdir($dir);
+        if ($filesystem->is_dir($dir)) {
+            $filesystem->delete($dir, true, 'd');
         }
     }
     public function loadAllSettings($holder): int
@@ -287,7 +276,7 @@ class Bread
                     die('Undefined setting: ' . esc_html($current_setting));
                 }
                 $import_file = plugin_dir_path(__FILE__) . "../admin/templates/30/trifold-landscape-largefont.json";
-                $encode_options = file_get_contents($import_file);
+                $encode_options = (new WP_Filesystem_Direct(null))->get_contents($import_file);
                 $theOptions = json_decode($encode_options, true);
                 update_option($this->optionsName, $theOptions);
             }
@@ -342,6 +331,10 @@ class Bread
         $this->plugin_name = 'bread';
         $this->protocol = (strpos(strtolower(home_url()), "https") !== false ? "https" : "http") . "://";
         $this->bread_bmlt = new Bread_Bmlt($this);
+        if (! class_exists('WP_Filesystem_Direct')) {
+            require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php';
+            require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php';
+        }
 
         $this->load_dependencies();
         $this->set_locale();

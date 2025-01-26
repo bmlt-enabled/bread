@@ -247,7 +247,7 @@ class Bread_Public
             $this->mpdf->Output($FilePath, 'I');
         }
         foreach ($import_streams as $FilePath => $stream) {
-            @unlink($FilePath);
+            wp_delete_file($FilePath);
         }
         $this->bread->removeTempDir();
         exit;
@@ -570,7 +570,7 @@ class Bread_Public
         if (is_multisite()) {
             $site = get_current_blog_id() . '_';
         }
-        return "meetinglist_" . $site . $this->bread->getRequestedSetting() . $pos . '_' . strtolower(date("njYghis")) . ".pdf";
+        return "meetinglist_" . $site . $this->bread->getRequestedSetting() . $pos . '_' . strtolower(gmdate("njYghis")) . ".pdf";
     }
 
     function getSingleLanguage($lang)
