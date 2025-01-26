@@ -98,7 +98,7 @@ class Bread_Admin
         /**
          * Make some JSON from PHP available in JS.
          */
-        $str = file_get_contents(plugin_dir_path(__FILE__) . 'templates/meeting_data_templates.json');
+        $str = (new WP_Filesystem_Direct(null))->get_contents(plugin_dir_path(__FILE__) . 'templates/meeting_data_templates.json');
         wp_add_inline_script('common', "meetingDataTemplates = $str", 'before');
         $strTemplates = $this->get_meeting_list_templates_json(plugin_dir_path(__FILE__) . 'templates');
         $langs = [];
@@ -338,7 +338,7 @@ class Bread_Admin
         if ($file_size > 500000) {
             wp_die(esc_html(__('File size greater than 500k', 'bread')));
         }
-        $encode_options = file_get_contents($import_file);
+        $encode_options = (new WP_Filesystem_Direct(null))->get_contents($import_file);
         while (0 === strpos(bin2hex($encode_options), 'efbbbf')) {
             $encode_options = substr($encode_options, 3);
         }
@@ -459,7 +459,7 @@ class Bread_Admin
             return;
         }
         $layoutInfos = explode(',', sanitize_text_field($_POST['wizard_layout']));
-        $encode_options = file_get_contents(plugin_dir_path(__FILE__) . 'templates/' . $layoutInfos[0]);
+        $encode_options = (new WP_Filesystem_Direct(null))->get_contents(plugin_dir_path(__FILE__) . 'templates/' . $layoutInfos[0]);
         while (0 === strpos(bin2hex($encode_options), 'efbbbf')) {
             $encode_options = substr($encode_options, 3);
         }
@@ -482,7 +482,7 @@ class Bread_Admin
             $settings['additional_list_format_key'] = '@Virtual@';
             $settings['additional_list_sort_order'] = 'weekday_tinyint,start_time';
         }
-        $str = file_get_contents(plugin_dir_path(__FILE__) . 'templates/meeting_data_templates.json');
+        $str = (new WP_Filesystem_Direct(null))->get_contents(plugin_dir_path(__FILE__) . 'templates/meeting_data_templates.json');
         $meeting_templates = json_decode($str, true);
         if ($vm_flag == '1') {
             $settings['custom_section_content'] =

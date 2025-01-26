@@ -31,7 +31,7 @@ class Bread_Bmlt
     }
     public function get_formats_by_language(string $lang)
     {
-        $json = file_get_contents('tests/formats/' . $this->format_base . '-' . $lang . ".json");
+        $json = (new WP_Filesystem_Direct(null))->get_contents('tests/formats/' . $this->format_base . '-' . $lang . ".json");
         return json_decode($json, true);
     }
     public static function sortBySubkey(array &$array, string $subkey, int $sortType = SORT_ASC): void

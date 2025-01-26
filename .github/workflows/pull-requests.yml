@@ -36,3 +36,5 @@ jobs:
         with:
           build-dir: "./build-bread"
           exclude-directories: 'vendor'
+          categories: 'plugin_repo'
+          ignore-warnings: true

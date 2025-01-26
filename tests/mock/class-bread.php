@@ -6,6 +6,11 @@ class Bread
     private Bread_Bmlt $bmlt1;
     function __construct($options)
     {
+        if (! class_exists('WP_Filesystem_Direct')) {
+            require_once '../../../wp-admin/includes/class-wp-filesystem-base.php';
+            require_once '../../../wp-admin/includes/class-wp-filesystem-direct.php';
+            require_once '../../../wp-includes/class-wp-error.php';
+        }
         $this->load_translations();
         $this->options = $options;
         $this->bmlt1 = new Bread_Bmlt($this);

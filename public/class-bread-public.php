@@ -120,10 +120,11 @@ class Bread_Public
                 header('Expires: Sat, 26 Jul 1997 05:00:00 GMT');
                 header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
                 $temp = tmpfile();
-                fwrite($temp, $content);
+                $filesystem = new WP_Filesystem_Direct(null);
+                $filesystem->put_contents($temp, $content);
                 rewind($temp);
                 @fpassthru($temp);
-                fclose($temp);
+                $filesystem->delete($temp);
                 exit;
             }
         }
@@ -148,7 +149,7 @@ class Bread_Public
         $this->mpdf->mirrorMargins = false;
         $this->mpdf->list_indent_first_level = 1; // 1 or 0 - whether to indent the first level of a list
         // LOAD a stylesheet
-        $header_stylesheet = file_get_contents(plugin_dir_path(__FILE__) . 'css/mpdfstyletables.css');
+        $header_stylesheet = (new WP_Filesystem_Direct(null))->get_contents(plugin_dir_path(__FILE__) . 'css/mpdfstyletables.css');
         $this->mpdf->WriteHTML($header_stylesheet, 1); // The parameter 1 tells that this is css/style only and no body/html/text
         $this->mpdf->SetDefaultBodyCSS('line-height', $this->options['content_line_height']);
         $this->mpdf->SetDefaultBodyCSS('background-color', '#ffffff00');
@@ -403,10 +404,7 @@ class Bread_Public
         $mpdf_column->WriteHTML($html);
         $FilePath = $this->bread->temp_dir() . DIRECTORY_SEPARATOR . $this->get_FilePath('_column');
         $mpdf_column->Output($FilePath, 'F');
-        $h = \fopen($FilePath, 'rb');
-        $stream = new \setasign\Fpdi\PdfParser\StreamReader($h, false);
-        $import_streams[$FilePath] = $stream;
-        $pagecount = $this->mpdf->SetSourceFile($stream);
+        $pagecount = $this->mpdf->SetSourceFile($FilePath);
         $tplId = $this->mpdf->importPage($pagecount);
         $this->mpdf->SetPageTemplate($tplId);
     }
@@ -442,10 +440,7 @@ class Bread_Public
             $oh = $mpdftmp->w;
             $pw = $mpdftmp->w / 2;
             $ph = $mpdftmp->h;
-            $h = \fopen($FilePath, 'rb');
-            $stream = new \setasign\Fpdi\PdfParser\StreamReader($h, false);
-            $import_streams[$FilePath] = $stream;
-            $pagecount = $mpdftmp->SetSourceFile($stream);
+            $pagecount = $mpdftmp->SetSourceFile($FilePath);
             $pp = $this->get_booklet_pages($pagecount);
             foreach ($pp as $v) {
                 $mpdftmp->AddPage();
@@ -478,11 +473,7 @@ class Bread_Public
             $mpdfOptions = apply_filters("Bread_Mpdf_Init_Options", $mpdfOptions, $this->options);
             $mpdftmp = new mPDF($mpdfOptions);
             $this->mpdf->shrink_tables_to_fit = 1;
-            //$mpdftmp->SetImportUse();
-            $h = \fopen($FilePath, 'rb');
-            $stream = new \setasign\Fpdi\PdfParser\StreamReader($h, false);
-            $import_streams[$FilePath] = $stream;
-            $np = $mpdftmp->SetSourceFile($stream);
+            $np = $mpdftmp->SetSourceFile($FilePath);
             $pp = 4 * ceil($np / 4);
             for ($i = 1; $i < $np; $i++) {
                 $mpdftmp->AddPage();
@@ -514,11 +505,7 @@ class Bread_Public
             ];
             $mpdftmp = new mPDF($mpdfOptions);
             $this->mpdf->shrink_tables_to_fit = 1;
-            //$mpdftmp->SetImportUse();
-            $h = \fopen($FilePath, 'rb');
-            $stream = new \setasign\Fpdi\PdfParser\StreamReader($h, false);
-            $import_streams[$FilePath] = $stream;
-            $np = $mpdftmp->SetSourceFile($stream);
+            $np = $mpdftmp->SetSourceFile($FilePath);
             $ow = $mpdftmp->w;
             $oh = $mpdftmp->h;
             $fw = $ow / 3;
