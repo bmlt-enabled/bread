@@ -29,12 +29,12 @@ jobs:
           export ZIP_FILENAME=${PLUGIN}-build-${GITHUB_RUN_NUMBER}-${GITHUB_SHA}.zip
           echo "ZIP_FILENAME=${ZIP_FILENAME}" >> $GITHUB_ENV
           PROD=1 make build
-          unzip "${BUILD_DIR}/${ZIP_FILENAME}" -d "./build-bread"
+          unzip "${BUILD_DIR}/${ZIP_FILENAME}" -d "./bread"
 
       - name: Run plugin check
         uses: wordpress/plugin-check-action@v1.0.6
         with:
-          build-dir: "./build-bread"
+          build-dir: "./bread"
           exclude-directories: 'vendor'
           categories: 'plugin_repo'
           ignore-warnings: true

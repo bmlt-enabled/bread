@@ -119,12 +119,7 @@ class Bread_Public
                 header('Pragma: public');
                 header('Expires: Sat, 26 Jul 1997 05:00:00 GMT');
                 header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
-                $temp = tmpfile();
-                $filesystem = new WP_Filesystem_Direct(null);
-                $filesystem->put_contents($temp, $content);
-                rewind($temp);
-                @fpassthru($temp);
-                $filesystem->delete($temp);
+                echo $content; // phpcs:ignore
                 exit;
             }
         }
