@@ -46,18 +46,18 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     <div class="group_by" style="margin-right: 10px; display: inline;">
                         <label for="meeting_sort">Group Meetings By: </label>
                         <select id="meeting_sort" name="meeting_sort">
-                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'day' ? 'selected="selected"' : '') ?> value="day">Weekday</option>
-                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'city' ? 'selected="selected"' : '') ?> value="city">City</option>
-                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'group' ? 'selected="selected"' : '') ?> value="group">Group</option>
-                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'county' ? 'selected="selected"' : '') ?> value="county">County</option>
-                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'borough' ? 'selected="selected"' : '') ?> value="borough">Borough</option>
-                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'borough_county' ? 'selected="selected"' : '') ?> value="borough_county">Borough+County</option>
-                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'neighborhood_city' ? 'selected="selected"' : '') ?> value="neighborhood_city">Neighborhood+City</option>
-                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'state' ? 'selected="selected"' : '') ?> value="state">State+City</option>
-                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'weekday_area' ? 'selected="selected"' : '') ?> value="weekday_area">Weekday+Area</option>
-                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'weekday_city' ? 'selected="selected"' : '') ?> value="weekday_city">Weekday+City</option>
-                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'weekday_county' ? 'selected="selected"' : '') ?> value="weekday_county">Weekday+County</option>
-                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'user_defined' ? 'selected="selected"' : '') ?> value="user_defined">User Defined</option>
+                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'day' ? 'selected' : '') ?> value="day">Weekday</option>
+                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'city' ? 'selected' : '') ?> value="city">City</option>
+                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'group' ? 'selected' : '') ?> value="group">Group</option>
+                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'county' ? 'selected' : '') ?> value="county">County</option>
+                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'borough' ? 'selected' : '') ?> value="borough">Borough</option>
+                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'borough_county' ? 'selected' : '') ?> value="borough_county">Borough+County</option>
+                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'neighborhood_city' ? 'selected' : '') ?> value="neighborhood_city">Neighborhood+City</option>
+                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'state' ? 'selected' : '') ?> value="state">State+City</option>
+                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'weekday_area' ? 'selected' : '') ?> value="weekday_area">Weekday+Area</option>
+                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'weekday_city' ? 'selected' : '') ?> value="weekday_city">Weekday+City</option>
+                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'weekday_county' ? 'selected' : '') ?> value="weekday_county">Weekday+County</option>
+                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'user_defined' ? 'selected' : '') ?> value="user_defined">User Defined</option>
                         </select>
                     </div>
                     <div class="borough_by_suffix">
@@ -99,13 +99,13 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         <p>
                             <label for="main_grouping">Main Grouping: </label>
                             <select id="main_grouping" name="main_grouping">
-                                <option <?php echo ($this->bread->getOption('main_grouping') == 'day' ? 'selected="selected"' : '') ?> value="day">Weekday</option>
-                                <option <?php echo ($this->bread->getOption('main_grouping') == 'location_municipality' ? 'selected="selected"' : '') ?> value="location_municipality">City</option>
-                                <option <?php echo ($this->bread->getOption('main_grouping') == 'location_neighborhood' ? 'selected="selected"' : '') ?> value="location_neighborhood">Neighborhood</option>
-                                <option <?php echo ($this->bread->getOption('main_grouping') == 'group' ? 'selected="selected"' : '') ?> value="group">Group</option>
-                                <option <?php echo ($this->bread->getOption('main_grouping') == 'location_sub_province' ? 'selected="selected"' : '') ?> value="location_sub_province">County</option>
-                                <option <?php echo ($this->bread->getOption('main_grouping') == 'location_city_subsection' ? 'selected="selected"' : '') ?> value="location_city_subsection">Borough</option>
-                                <option <?php echo ($this->bread->getOption('main_grouping') == 'location_province' ? 'selected="selected"' : '') ?> value="location_province">State</option>
+                                <option <?php echo ($this->bread->getOption('main_grouping') == 'day' ? 'selected' : '') ?> value="day">Weekday</option>
+                                <option <?php echo ($this->bread->getOption('main_grouping') == 'location_municipality' ? 'selected' : '') ?> value="location_municipality">City</option>
+                                <option <?php echo ($this->bread->getOption('main_grouping') == 'location_neighborhood' ? 'selected' : '') ?> value="location_neighborhood">Neighborhood</option>
+                                <option <?php echo ($this->bread->getOption('main_grouping') == 'group' ? 'selected' : '') ?> value="group">Group</option>
+                                <option <?php echo ($this->bread->getOption('main_grouping') == 'location_sub_province' ? 'selected' : '') ?> value="location_sub_province">County</option>
+                                <option <?php echo ($this->bread->getOption('main_grouping') == 'location_city_subsection' ? 'selected' : '') ?> value="location_city_subsection">Borough</option>
+                                <option <?php echo ($this->bread->getOption('main_grouping') == 'location_province' ? 'selected' : '') ?> value="location_province">State</option>
                                 <?php
                                 $fks = $this->bread->bmlt()->get_nonstandard_fieldkeys();
                                 foreach ($fks as $fk) {
@@ -119,14 +119,14 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                             </select>
                             <label for="subgrouping">Sub-Grouping: </label>
                             <select id="subgrouping" name="subgrouping">
-                                <option <?php echo (empty($this->bread->getOption('subgrouping')) ? 'selected="selected"' : '') ?> value="">None</option>
-                                <option <?php echo ($this->bread->getOption('subgrouping') == 'day' ? 'selected="selected"' : '') ?> value="day">Weekday</option>
-                                <option <?php echo ($this->bread->getOption('subgrouping') == 'location_municipality' ? 'selected="selected"' : '') ?> value="location_municipality">City</option>
-                                <option <?php echo ($this->bread->getOption('subgrouping') == 'location_neighborhood' ? 'selected="selected"' : '') ?> value="location_neighborhood">Neighborhood</option>
-                                <option <?php echo ($this->bread->getOption('subgrouping') == 'group' ? 'selected="selected"' : '') ?> value="group">Group</option>
-                                <option <?php echo ($this->bread->getOption('subgrouping') == 'location_sub_province' ? 'selected="selected"' : '') ?> value="location_sub_province">County</option>
-                                <option <?php echo ($this->bread->getOption('subgrouping') == 'location_city_subsection' ? 'selected="selected"' : '') ?> value="location_city_subsection">Borough</option>
-                                <option <?php echo ($this->bread->getOption('subgrouping') == 'location_province' ? 'selected="selected"' : '') ?> value="location_province">State</option>
+                                <option <?php echo (empty($this->bread->getOption('subgrouping')) ? 'selected' : '') ?> value="">None</option>
+                                <option <?php echo ($this->bread->getOption('subgrouping') == 'day' ? 'selected' : '') ?> value="day">Weekday</option>
+                                <option <?php echo ($this->bread->getOption('subgrouping') == 'location_municipality' ? 'selected' : '') ?> value="location_municipality">City</option>
+                                <option <?php echo ($this->bread->getOption('subgrouping') == 'location_neighborhood' ? 'selected' : '') ?> value="location_neighborhood">Neighborhood</option>
+                                <option <?php echo ($this->bread->getOption('subgrouping') == 'group' ? 'selected' : '') ?> value="group">Group</option>
+                                <option <?php echo ($this->bread->getOption('subgrouping') == 'location_sub_province' ? 'selected' : '') ?> value="location_sub_province">County</option>
+                                <option <?php echo ($this->bread->getOption('subgrouping') == 'location_city_subsection' ? 'selected' : '') ?> value="location_city_subsection">Borough</option>
+                                <option <?php echo ($this->bread->getOption('subgrouping') == 'location_province' ? 'selected' : '') ?> value="location_province">State</option>
                                 <?php
                                 foreach ($fks as $fk) {
                                     $selected = '';
@@ -293,8 +293,8 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                                 echo "<option " . esc_attr($selected) . " value='" . esc_attr($id) . "'>" . esc_html($str) . "</option>";
                             }
                         } else { ?>
-                            <option selected="selected" value="Not Connected"></option><?php
-                        } ?>
+                            <option selected value="Not Connected"></option><?php
+                                                                        } ?>
                     </select>
                 </div>
             </div>
@@ -319,7 +319,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                                         <option selected value="<?php echo esc_attr($used_formats[$count]['key_string']) ?>"><?php echo esc_html($used_formats[$count]['name_string']) ?></option>
                                     <?php   } else { ?>
                                         <option value="<?php echo esc_attr($used_formats[$count]['key_string']) ?>"><?php echo esc_html($used_formats[$count]['name_string']) ?></option>
-                                    <?php   }
+                            <?php   }
                                 }
                             } ?>
                         </select>
@@ -352,7 +352,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         </select>
                     </p>
                     <?php if ($this->bread->getOption('page_fold') == 'half' || $this->bread->getOption('page_fold') == 'full') {
-                        ?>
+                    ?>
                         <div class="meeting2_footer_div booklet">
                             <label for="meeting2_footer">Custom Footer: </label>
                             <input name="meeting2_footer" type="text" size="50" value="<?php echo esc_attr($this->bread->getOption('meeting2_footer')); ?>">

@@ -228,7 +228,7 @@ class Bread_Admin
             if ($root_server == '') {
                 echo '<div id="message" class="error"><p>Missing BMLT Server in settings for bread.</p>';
                 $url = admin_url('options-general.php?page=class-bread-admin.php');
-                echo "<p><a href='" . esc_url($url) - "'>Settings</a></p>";
+                echo "<p><a href='" . esc_url($url) . "'>Settings</a></p>";
                 echo '</div>';
             }
         }

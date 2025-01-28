@@ -48,7 +48,7 @@ foreach ($all_users as $user) {
                             <input class="bmlt-input" id="user_agent" type="text" name="user_agent" value="<?php echo esc_attr($this->bread->getOption('user_agent')); ?>" />
                         </p>
                         <p>
-                            <input type="checkbox" id="sslverify" name="sslverify" value="1" <?php echo esc_html($this->bread->getOption('sslverify')) ? 'checked' : ''; ?> />
+                            <input type="checkbox" id="sslverify" name="sslverify" value="1" <?php echo $this->bread->getOption('sslverify') ? 'checked' : ''; ?> />
                             <label for="sslverify">Disable SSL verification of server</label>
                         </p>
                         <?php
@@ -104,7 +104,7 @@ foreach ($all_users as $user) {
                         if ($this->connected && $this->bread->getOption('extra_meetings_enabled') == 1) {
                             $extra_meetings_array = $this->bread->bmlt()->get_all_meetings();
                             foreach ($extra_meetings_array as $id => $descr) {
-                                $selected = $this->bread->getOption('extra_meetings') != '' && in_array($id, $this->bread->getOption('extra_meetings')) ? 'selected="selected"' : '';
+                                $selected = $this->bread->getOption('extra_meetings') != '' && in_array($id, $this->bread->getOption('extra_meetings')) ? 'selected' : '';
                                 echo "<option " . esc_attr($selected) . " value='" . esc_attr($id) . "'>" . esc_html($descr) . "</option>";
                             }
                         } ?>
