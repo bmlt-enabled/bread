@@ -672,17 +672,14 @@ class Bread_Admin
                     $this->bread->setOption('extra_meetings', wp_kses_post($extra));
                 }
             }
-            $authors = isset($_POST['author_chosen']) ? $_POST['author_chosen'] : [];
+            $authors = isset($_POST['authors_select']) ? $_POST['authors_select'] : [];
             $this->bread->setOption('authors', array());
             foreach ($authors as $author) {
                 $this->bread->appendOption('authors', intval($author));
             }
             $user = wp_get_current_user();
-            if (!is_array($this->bread->getOption('authors'))) {
-                $this->bread->setOption('authors', array($this->bread->getOption('authors')));
-            }
             if (!in_array($user->ID, $this->bread->getOption('authors'))) {
-                $this->bread->setOption('authors', $user->ID);
+                $this->bread->appendOption('authors', $user->ID);
             }
             if (isset($_POST['bmltmeetinglistpreview'])) {
                 session_start();
