@@ -217,8 +217,8 @@ jQuery(document).ready(
             $ml('.booklet').show();
             $ml('.single-page').hide();
             $ml('#half').prop('checked') && $ml('#A6').hide();
-            $ml('#A6').is(":visible") && $ml("label[for=A6]").show();
-            $ml('#A6').is(":hidden") && $ml("label[for=A6]").hide();
+            $ml('#half').prop('checked') && $ml('#A6').hide();
+            $ml('#half').prop('checked') && $ml("label[for=A6]").hide();
         }
         function singlePageControlsShowHide() {
             $ml('.booklet').hide();

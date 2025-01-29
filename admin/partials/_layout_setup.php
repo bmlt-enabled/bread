@@ -53,7 +53,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                 </div>
                 <h3 class="hndle">Page Layout<span data-tooltip-content="#pagelayout-tooltip-content" class="my-tooltip"><span class="tooltipster-icon">(?)</span></span></h3>
                 <div class="inside">
-                    <input name="bread_version" value=<?php echo BREAD_VERSION; ?> type="hidden">
+                    <input name="bread_version" value=<?php echo esc_html(BREAD_VERSION); ?> type="hidden">
                     <div style="display:flex;">
                         <div style="border:solid;flex:1;margin-right:10px;padding:2px 6px 6px 6px;line-height:1.5;">Single Page<br />
                             <input class="mlg single-page-check" id="flyer" type="radio" name="page_fold" value="flyer" <?php echo ($this->bread->getOption('page_fold') == 'flyer' ? 'checked' : '') ?>><label for="flyer">Flyer&nbsp;&nbsp;&nbsp;</label>
@@ -81,10 +81,10 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         <input class="mlg booklet" id="A5" type="radio" name="page_size" value="A5" <?php echo ($this->bread->getOption('page_size') == 'A5' ? 'checked' : '') ?>><label for="A5" class="booklet">A5&nbsp;&nbsp;&nbsp;</label>
                         <input class="mlg booklet A6" id="A6" type="radio" name="page_size" value="A6" <?php echo ($this->bread->getOption('page_size') == 'A6' ? 'checked' : '') ?>><label for="A6" class="booklet A6">A6&nbsp;&nbsp;&nbsp;</label>
                         <div id="marginsdiv" style="border-top: 1px solid #EEE;">
-                            Page Margin Top: <input min="0" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="margin_top" name="margin_top" value="<?php echo $this->bread->getOptionForDisplay('margin_top', '3'); ?>" />&nbsp;&nbsp;&nbsp;
-                            Bottom: <input min="0" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="margin_bottom" name="margin_bottom" value="<?php echo $this->bread->getOptionForDisplay('margin_bottom', '3'); ?>" />&nbsp;&nbsp;&nbsp;
-                            Left: <input min="0" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="margin_left" name="margin_left" value="<?php echo $this->bread->getOptionForDisplay('margin_left', '3'); ?>" />&nbsp;&nbsp;&nbsp;
-                            Right: <input min="0" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="margin_right" name="margin_right" value="<?php echo $this->bread->getOptionForDisplay('margin_right', '3'); ?>" />&nbsp;&nbsp;&nbsp;
+                            Page Margin Top: <input min="0" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="margin_top" name="margin_top" value="<?php echo esc_attr($this->bread->getOptionForDisplay('margin_top', '3')); ?>" />&nbsp;&nbsp;&nbsp;
+                            Bottom: <input min="0" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="margin_bottom" name="margin_bottom" value="<?php echo esc_attr($this->bread->getOptionForDisplay('margin_bottom', '3')); ?>" />&nbsp;&nbsp;&nbsp;
+                            Left: <input min="0" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="margin_left" name="margin_left" value="<?php echo esc_attr($this->bread->getOptionForDisplay('margin_left', '3')); ?>" />&nbsp;&nbsp;&nbsp;
+                            Right: <input min="0" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="margin_right" name="margin_right" value="<?php echo esc_attr($this->bread->getOptionForDisplay('margin_right', '3')); ?>" />&nbsp;&nbsp;&nbsp;
                         </div>
                     </div>
                 </div>
@@ -106,31 +106,31 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                 <div class="inside">
                     <div id="watermarkandheaderdiv" style="border-top: 1px solid #EEE;" class="single-page">
                         The page header is a title that goes across the entire page above the meetings.<br />
-                        <label for="pageheader_fontsize">Font Size: </label><input min="4" max="40" step=".1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="pageheader_fontsize" name="pageheader_fontsize" value="<?php echo $this->bread->getOption('pageheader_fontsize'); ?>" />
-                        <label for="pageheader_textcolor" style="margin-left:10px;">Text Color:</label> <input style="display: inline-block !important; width: 70px; margin-right: 5px;" type='color' class="bmlt_color" id="pageheader_textcolor" name="pageheader_textcolor" value="<?php echo $this->bread->getOption('pageheader_textcolor'); ?>" />
-                        <label for="pageheader_backgroundcolor" style="margin-left:10px;">Background Color:</label> <input style="display: inline-block !important; width: 70px; margin-right: 5px;" type='color' id="pageheader_backgroundcolor" class="bmlt_color" name="pageheader_backgroundcolor" value="<?php echo $this->bread->getOption('pageheader_backgroundcolor'); ?>" />
-                        Header Margin Top: <input min="0" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="margin_header" name="margin_header" value="<?php echo esc_html($this->bread->getOption('margin_header')); ?>" />&nbsp;&nbsp;&nbsp;
-                        <br>Header Text: <input size="100" type="text" id="pageheader_content" name="pageheader_content" value="<?php echo $this->bread->getOptionForDisplay('pageheader_content', ''); ?>" />&nbsp;&nbsp;&nbsp;
-                        <br>Watermark: <input size="100" type="text" id="watermark" name="watermark" autocomplete="off" value="<?php echo $this->bread->getOptionForDisplay('watermark', ''); ?>" />&nbsp;&nbsp;&nbsp;
+                        <label for="pageheader_fontsize">Font Size: </label><input min="4" max="40" step=".1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="pageheader_fontsize" name="pageheader_fontsize" value="<?php echo esc_attr($this->bread->getOption('pageheader_fontsize')); ?>" />
+                        <label for="pageheader_textcolor" style="margin-left:10px;">Text Color:</label> <input style="display: inline-block !important; width: 70px; margin-right: 5px;" type='color' class="bmlt_color" id="pageheader_textcolor" name="pageheader_textcolor" value="<?php echo esc_attr($this->bread->getOption('pageheader_textcolor')); ?>" />
+                        <label for="pageheader_backgroundcolor" style="margin-left:10px;">Background Color:</label> <input style="display: inline-block !important; width: 70px; margin-right: 5px;" type='color' id="pageheader_backgroundcolor" class="bmlt_color" name="pageheader_backgroundcolor" value="<?php echo esc_attr($this->bread->getOption('pageheader_backgroundcolor')); ?>" />
+                        Header Margin Top: <input min="0" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="margin_header" name="margin_header" value="<?php echo esc_attr($this->bread->getOption('margin_header')); ?>" />&nbsp;&nbsp;&nbsp;
+                        <br>Header Text: <input size="100" type="text" id="pageheader_content" name="pageheader_content" value="<?php echo esc_attr($this->bread->getOptionForDisplay('pageheader_content', '')); ?>" />&nbsp;&nbsp;&nbsp;
+                        <br>Watermark: <input size="100" type="text" id="watermark" name="watermark" autocomplete="off" value="<?php echo esc_url($this->bread->getOptionForDisplay('watermark', '')); ?>" />&nbsp;&nbsp;&nbsp;
                     </div>
                     <div class="myfooter_div booklet">
                         <label for="nonmeeting_footer">Custom Footer: </label>
-                        <input name="nonmeeting_footer" type="text" size="50" value="<?php echo $this->bread->getOption('nonmeeting_footer'); ?>">
+                        <input name="nonmeeting_footer" type="text" size="50" value="<?php echo esc_attr($this->bread->getOption('nonmeeting_footer')); ?>">
                         <br />
                         <label for="margin_footer">Margin Footer: </label>
-                        <input min="0" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="margin_footer" name="margin_footer" value="<?php echo $this->bread->getOptionForDisplay('margin_footer', '5'); ?>" />
+                        <input min="0" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="margin_footer" name="margin_footer" value="<?php echo esc_attr($this->bread->getOptionForDisplay('margin_footer', '5')); ?>" />
 
                     </div>
                     <div id="pagenodiv" style="border-top: 1px solid #EEE;" class="booklet">
-                        Page Numbers Font Size: <input min="1" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="pagenumbering_font_size" name="pagenumbering_font_size" value="<?php echo $this->bread->getOptionForDisplay('pagenumbering_font_size', '9'); ?>" />
+                        Page Numbers Font Size: <input min="1" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="pagenumbering_font_size" name="pagenumbering_font_size" value="<?php echo esc_attr($this->bread->getOptionForDisplay('pagenumbering_font_size', '9')); ?>" />
                     </div>
                     <div id="columngapdiv" style="border-top: 1px solid #EEE;" class="single-page">
-                        Column Gap Width: <input min="1" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="column_gap" name="column_gap" value="<?php echo $this->bread->getOptionForDisplay('column_gap', '5'); ?>" />
+                        Column Gap Width: <input min="1" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="column_gap" name="column_gap" value="<?php echo esc_attr($this->bread->getOptionForDisplay('column_gap', '5')); ?>" />
                     </div>
                     <div id="columnseparatordiv" style="border-top: 1px solid #EEE;" class="single-page">
                         <input class="mlg" name="column_line" value="0" type="hidden">
                         Separator: <input type="checkbox" name="column_line" value="1" <?php echo ($this->bread->getOption('column_line') == '1' ? 'checked' : '') ?> /></td>
-                        <label for="col_color">Color:</label> <input style="display: inline-block !important; width: 70px; margin-right: 5px;" type='color' class="bmlt-color" id="col_color" name="col_color" value="<?php echo $this->bread->getOptionForDisplay('col_color', '#bfbfbf'); ?>" />
+                        <label for="col_color">Color:</label> <input style="display: inline-block !important; width: 70px; margin-right: 5px;" type='color' class="bmlt-color" id="col_color" name="col_color" value="<?php echo esc_html($this->bread->getOptionForDisplay('col_color', '#bfbfbf')); ?>" />
                     </div>
                 </div>
             </div>
@@ -185,7 +185,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                             <input type="password" style="height:0;width:0;background: transparent; color: transparent;border: none;" data-description="dummyPassword">
                         </div>
                         <label for="protection_password">Password: </label>
-                        <input class="protection_pass" id="protection_password" type="password" name="protection_password" value="<?php echo $this->bread->getOptionForDisplay('protection_password', ''); ?>" />
+                        <input class="protection_pass" id="protection_password" type="password" name="protection_password" value="<?php echo esc_attr($this->bread->getOptionForDisplay('protection_password', '')); ?>" />
                     </div>
                 </div>
             </div>

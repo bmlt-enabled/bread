@@ -387,7 +387,11 @@ class Bread_Meetingslist_Structure
      * Does the meeting belong in the additional list.
      *
      * @param array $value the meeting.
-     * @param boolean $flag true if we are generating the additonal list.  Hybrid meetings don't belong if virtual meetings are being selected.
+     * @param boolean $flag true if we are generating the additonal list.
+     * The logic says meetings belong in main list iff they don't belong in additional list,
+     * but when the additional list is virtual, we want hybrid meetings in the main list, too.
+     * So, wierdly, when generating the main list, we want to say hybrid meetings are NOT in the
+     * additional list.
      * @return boolean true if the meeting belongs in the addional list.
      */
     private function additional_list_test(array $value, $flag = false): bool
@@ -398,7 +402,7 @@ class Bread_Meetingslist_Structure
         $format_key = $this->options['additional_list_format_key'];
         if ($format_key == "@Virtual@") {
             //TODO: Is this correct?  For now, I'm just refactoring, so leaving it in.
-            if ($flag && $this->isHybrid($value)) {
+            if (!$flag && $this->isHybrid($value)) {
                 return false;
             }
             return $this->isVirtual($value) || $this->isHybrid($value);

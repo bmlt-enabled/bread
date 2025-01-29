@@ -98,14 +98,14 @@ class Bread_Admin
         /**
          * Make some JSON from PHP available in JS.
          */
-        $str = file_get_contents(plugin_dir_path(__FILE__) . 'templates/meeting_data_templates.json');
+        $str = (new WP_Filesystem_Direct(null))->get_contents(plugin_dir_path(__FILE__) . 'templates/meeting_data_templates.json');
         wp_add_inline_script('common', "meetingDataTemplates = $str", 'before');
         $strTemplates = $this->get_meeting_list_templates_json(plugin_dir_path(__FILE__) . 'templates');
         $langs = [];
         foreach ($this->bread->getTranslateTable() as $key => $value) {
             $langs[] = ['key' => $key, 'name' => $value['LANG_NAME']];
         }
-        $strLangs = json_encode($langs);
+        $strLangs = wp_json_encode($langs);
         wp_add_inline_script('breadWizard', "breadLayouts = $strTemplates; breadTranslations = $strLangs", 'before');
     }
     /**
@@ -135,7 +135,7 @@ class Bread_Admin
                 'configurations' => $files,
             );
         }
-        return json_encode($sizes);
+        return wp_json_encode($sizes);
     }
     function ml_default_editor($r)
     {
@@ -228,7 +228,7 @@ class Bread_Admin
             if ($root_server == '') {
                 echo '<div id="message" class="error"><p>Missing BMLT Server in settings for bread.</p>';
                 $url = admin_url('options-general.php?page=class-bread-admin.php');
-                echo "<p><a href='$url'>Settings</a></p>";
+                echo "<p><a href='" . esc_url($url) . "'>Settings</a></p>";
                 echo '</div>';
             }
         }
@@ -269,7 +269,7 @@ class Bread_Admin
         $this->bread->getConfigurationForSettingId($this->bread->getRequestedSetting());
         $blogname = str_replace(" - ", " ", get_option('blogname') . '-' . $this->bread->getSettingName($this->bread->getRequestedSetting()));
         $blogname = str_replace(" ", "-", $blogname);
-        $date = date("m-d-Y");
+        $date = gmdate("m-d-Y");
         $blogname = trim(preg_replace('/[^a-z0-9]+/', '-', strtolower($blogname)), '-');
         $json_name = $blogname . $date . ".json"; // Naming the filename will be generated.
         $settings = $this->bread->getOptions();
@@ -277,7 +277,7 @@ class Bread_Admin
             $value = maybe_unserialize($value);
             $need_options[$key] = $value;
         }
-        $json_file = json_encode($need_options); // Encode data into json data
+        $json_file = wp_json_encode($need_options); // Encode data into json data
         ignore_user_abort(true);
         ob_clean();
         header('Content-Type: application/json; charset=utf-8');
@@ -328,17 +328,17 @@ class Bread_Admin
         $tmp = explode('.', $file_name);
         $extension = end($tmp);
         if ($extension != 'json') {
-            wp_die(__('Please upload a valid .json file'));
+            wp_die(esc_html(__('Please upload a valid .json file', 'bread')));
         }
         $import_file = $_FILES['import_file']['tmp_name'];
         if (empty($import_file)) {
-            wp_die(__('Please upload a file to import'));
+            wp_die(esc_html(__('Please upload a file to import', 'bread')));
         }
         $file_size = $_FILES['import_file']['size'];
         if ($file_size > 500000) {
-            wp_die(__('File size greater than 500k'));
+            wp_die(esc_html(__('File size greater than 500k', 'bread')));
         }
-        $encode_options = file_get_contents($import_file);
+        $encode_options = (new WP_Filesystem_Direct(null))->get_contents($import_file);
         while (0 === strpos(bin2hex($encode_options), 'efbbbf')) {
             $encode_options = substr($encode_options, 3);
         }
@@ -360,15 +360,6 @@ class Bread_Admin
         if (isset($screen) && $screen->id == $my_admin_page) {
             add_editor_style(plugin_dir_url(__FILE__) . "css/editor-style.css");
         }
-    }
-    /**
-     * @desc Adds the Settings link to the plugin activate/deactivate page
-     */
-    function filter_plugin_actions($links, $file)
-    {
-        $settings_link = '<a href="options-general.php?page=' . basename(__FILE__) . '">' . __('Settings') . '</a>';
-        array_unshift($links, $settings_link); // before other links
-        return $links;
     }
     /**
      * Saves the admin options to the database.
@@ -468,7 +459,7 @@ class Bread_Admin
             return;
         }
         $layoutInfos = explode(',', sanitize_text_field($_POST['wizard_layout']));
-        $encode_options = file_get_contents(plugin_dir_path(__FILE__) . 'templates/' . $layoutInfos[0]);
+        $encode_options = (new WP_Filesystem_Direct(null))->get_contents(plugin_dir_path(__FILE__) . 'templates/' . $layoutInfos[0]);
         while (0 === strpos(bin2hex($encode_options), 'efbbbf')) {
             $encode_options = substr($encode_options, 3);
         }
@@ -491,7 +482,7 @@ class Bread_Admin
             $settings['additional_list_format_key'] = '@Virtual@';
             $settings['additional_list_sort_order'] = 'weekday_tinyint,start_time';
         }
-        $str = file_get_contents(plugin_dir_path(__FILE__) . 'templates/meeting_data_templates.json');
+        $str = (new WP_Filesystem_Direct(null))->get_contents(plugin_dir_path(__FILE__) . 'templates/meeting_data_templates.json');
         $meeting_templates = json_decode($str, true);
         if ($vm_flag == '1') {
             $settings['custom_section_content'] =
@@ -524,7 +515,7 @@ class Bread_Admin
         header('Content-Type: application/json; charset=utf-8');
         header("Expires: 0");
         $message = ['result' => ['setting' => $id]];
-        $data = json_encode($message);
+        $data = wp_json_encode($message);
         header('Content-Length: ' . strlen($data));
         file_put_contents('php://output', $data);
         exit();
@@ -681,19 +672,16 @@ class Bread_Admin
                     $this->bread->setOption('extra_meetings', wp_kses_post($extra));
                 }
             }
-            $authors = isset($_POST['author_chosen']) ? $_POST['author_chosen'] : [];
+            $authors = isset($_POST['authors_select']) ? $_POST['authors_select'] : [];
             $this->bread->setOption('authors', array());
             foreach ($authors as $author) {
                 $this->bread->appendOption('authors', intval($author));
             }
             $user = wp_get_current_user();
-            if (!is_array($this->bread->getOption('authors'))) {
-                $this->bread->setOption('authors', array($this->bread->getOption('authors')));
-            }
             if (!in_array($user->ID, $this->bread->getOption('authors'))) {
-                $this->bread->setOption('authors', $user->ID);
+                $this->bread->appendOption('authors', $user->ID);
             }
-            if ($_POST['bmltmeetinglistpreview']) {
+            if (isset($_POST['bmltmeetinglistpreview'])) {
                 session_start();
                 $_SESSION['bread_preview_settings'] = $this->bread->getOptions();
                 wp_redirect(home_url() . "?preview-meeting-list=1");

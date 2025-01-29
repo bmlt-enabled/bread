@@ -107,11 +107,11 @@ class Bread_ContentGenerator
             '[new_column]'                  =>  '<columnbreak />',
             '[page_break no_page_number]'   => '<pagebreak /><sethtmlpagefooter name="" value="0" />',
             '[start_page_numbers]'          => '<sethtmlpagefooter name="MyFooter" page="ALL" value="1" />',
-            "[month_lower]"                 => date("F"),
-            "[month_upper]"                 => strtoupper(date("F")),
-            "[month]"                       => strtoupper(date("F")),
-            "[day]"                         => strtoupper(date("j")),
-            "[year]"                        => strtoupper(date("Y")),
+            "[month_lower]"                 => gmdate("F"),
+            "[month_upper]"                 => strtoupper(gmdate("F")),
+            "[month]"                       => strtoupper(gmdate("F")),
+            "[day]"                         => strtoupper(gmdate("j")),
+            "[year]"                        => strtoupper(gmdate("Y")),
             "[service_body]"                => strtoupper($this->options['service_body_1']),
             "[service_body_1]"              => strtoupper($this->options['service_body_1']),
             "[service_body_2]"              => strtoupper($this->options['service_body_2']),
@@ -215,7 +215,7 @@ class Bread_ContentGenerator
         $data = $this->locale_month_replacement($data, 'upper');
         $data = str_replace($search_strings, $replacements, $data);
         $this->replace_format_shortcodes($data, $page);
-        $data = str_replace("[date]", strtoupper(date("F Y")), $data);
+        $data = str_replace("[date]", strtoupper(gmdate("F Y")), $data);
         if ($this->target_timezone) {
             $data = str_replace('[timezone]', $this->target_timezone->getName(), $data);
         }

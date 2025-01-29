@@ -8,17 +8,17 @@ final class BreadMeetinglistStructureTest extends TestCase
 {
     private function getConfiguration(string $config): array
     {
-        $json = file_get_contents('tests/configurations/' . $config . ".json");
+        $json = (new WP_Filesystem_Direct(null))->get_contents('tests/configurations/' . $config . ".json");
         return json_decode($json, true);
     }
     private function getMeetings(string $service_body): array
     {
-        $json = file_get_contents('tests/serviceBodies/' . $service_body . ".json");
+        $json = (new WP_Filesystem_Direct(null))->get_contents('tests/serviceBodies/' . $service_body . ".json");
         return json_decode($json, true);
     }
     private function getFormats($formats)
     {
-        $json = file_get_contents('tests/formats/' . $formats . ".json");
+        $json = (new WP_Filesystem_Direct(null))->get_contents('tests/formats/' . $formats . ".json");
         return json_decode($json, true);
     }
     private function getFormatMgr($usedFormat, $lang, $bread)

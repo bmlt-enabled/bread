@@ -43,12 +43,12 @@ class Bread_AdminDisplay
     private function select_service_bodies()
     {
         for ($i = 1; $i <= 5; $i++) { ?>
-            <li><label for="service_body_<?php echo $i; ?>">Service Body <?php echo $i; ?>: </label>
-                <select class="service_body_select" id="service_body_<?php echo $i; ?>" name="service_body_<?php echo $i; ?>"><?php
+            <li><label for="service_body_<?php echo esc_html($i); ?>">Service Body <?php echo esc_html($i); ?>: </label>
+                <select class="service_body_select" id="service_body_<?php echo esc_html($i); ?>" name="service_body_<?php echo esc_html($i); ?>"><?php
                 if ($this->connected) {
                     $this->select_service_body_options($i);
                 } else { ?>
-                        <option selected="selected" value="<?php esc_html($this->bread->getOption("service_body_$i")); ?>"><?php echo 'Not Connected - Can not get Service Bodies'; ?></option><?php
+                        <option selected value="<?php esc_html($this->bread->getOption("service_body_$i")); ?>"><?php echo 'Not Connected - Can not get Service Bodies'; ?></option><?php
                 } ?>
                 </select>
             </li><?php
@@ -70,16 +70,16 @@ class Bread_AdminDisplay
             $sb = esc_html($this->bread->getOption("service_body_$i"));
             $area_selected = explode(',', $sb);
             if ($this->bread->arraySafeGet($area_selected) != "Not Used" && $area_id == $this->bread->arraySafeGet($area_selected, 1)) {
-                $selected = 'selected = "selected"';
+                $selected = 'selected';
             } ?>
-            <option <?php echo $selected; ?> value="<?php echo $area ?>"><?php echo $descr ?></option><?php
+            <option <?php echo esc_attr($selected); ?> value="<?php echo esc_html($area) ?>"><?php echo esc_html($descr) ?></option><?php
         }
     }
-    /**
-     * Main function for the admin page.
-     *
-     * @return void
-     */
+                                                                                                                            /**
+                                                                                                                             * Main function for the admin page.
+                                                                                                                             *
+                                                                                                                             * @return void
+                                                                                                                             */
     function admin_options_page()
     {
         $this->lang = $this->bread->bmlt()->get_bmlt_server_lang();
@@ -99,7 +99,7 @@ class Bread_AdminDisplay
             echo '<p style="color: #F00;">Your changes were successfully saved!</p>';
             $num = delete_transient($this->bread->get_TransientKey($this->bread->getRequestedSetting()));
             if ($num > 0) {
-                echo "<p>$num Cache entries deleted</p>";
+                echo "<p>" . esc_attr($num) . " Cache entries deleted</p>";
             }
         }
         echo '</div>';
@@ -108,27 +108,27 @@ class Bread_AdminDisplay
         ?>
         <div class="hide wrap" id="meeting-list-tabs-wrapper">
             <div id="tallyBannerContainer">
-                <img id="tallyBannerImage" src="<?php echo plugin_dir_url(__FILE__) ?>../css/images/banner.png">
+                <img id="tallyBannerImage" src="<?php echo esc_url(plugin_dir_url(__FILE__) . "../css/images/banner.png") ?>">
             </div>
             <div id="meeting-list-tabs">
                 <ul class="nav">
-                    <li><a href="#instructions"><?php _e('Getting Started', 'root-server'); ?></a></li>
-                    <li><a href="#editor" id='click-customizer'><?php _e('Customizer', 'root-server'); ?></a></li>
-                    <li><a href="#import-export"><?php _e('Backup/ Restore', 'root-server'); ?></a></li>
+                    <li><a href="#instructions"><?php esc_html_e('Getting Started', 'bread'); ?></a></li>
+                    <li><a href="#editor" id='click-customizer'><?php esc_html_e('Customizer', 'bread'); ?></a></li>
+                    <li><a href="#import-export"><?php esc_html_e('Backup/ Restore', 'bread'); ?></a></li>
                 </ul>
                 <div id="instructions">
         <?php include '_meeting_list_setup.php'; ?>
                 </div>
                 <div id="editor">
                     <nav class="nav-tab-wrapper">
-                        <a href="#tabs-first" class="nav-tab nav-tab-active"><?php _e('BMLT Server', 'root-server'); ?></a>
-                        <a href="#layout" class="nav-tab"><?php _e('Page Layout', 'root-server'); ?></a>
-                        <a href="#front-page" class="nav-tab"><?php _e('Front Page', 'root-server'); ?></a>
-                        <a href="#meetings" class="nav-tab"><?php _e('Meetings', 'root-server'); ?></a>
-                        <a href="#custom-section" class="nav-tab"><?php _e('Custom Content', 'root-server'); ?></a>
+                        <a href="#tabs-first" class="nav-tab nav-tab-active"><?php esc_html_e('BMLT Server', 'bread'); ?></a>
+                        <a href="#layout" class="nav-tab"><?php esc_html_e('Page Layout', 'bread'); ?></a>
+                        <a href="#front-page" class="nav-tab"><?php esc_html_e('Front Page', 'bread'); ?></a>
+                        <a href="#meetings" class="nav-tab"><?php esc_html_e('Meetings', 'bread'); ?></a>
+                        <a href="#custom-section" class="nav-tab"><?php esc_html_e('Custom Content', 'bread'); ?></a>
                     </nav>
                     <form style=" display:inline!important;" method="POST" id="bmlt_meeting_list_options">
-                        <input type="hidden" name="current-meeting-list" value="<?php echo $this->bread->getRequestedSetting() ?>" />
+                        <input type="hidden" name="current-meeting-list" value="<?php echo esc_attr($this->bread->getRequestedSetting()) ?>" />
         <?php wp_nonce_field('closedpostboxes', 'closedpostboxesnonce', false); ?>
         <?php wp_nonce_field('meta-box-order', 'meta-box-order-nonce', false); ?>
         <?php wp_nonce_field('bmltmeetinglistupdate-options'); ?>
@@ -151,7 +151,7 @@ class Bread_AdminDisplay
         <?php if ($this->admin->current_user_can_modify()) { ?>
                             <input type="submit" value="Save Changes" id="bmltmeetinglistsave" name="bmltmeetinglistsave" class="button-primary gears-working" />
                             <input type="submit" value="Preview" id="bmltmeetinglistpreview" name="bmltmeetinglistpreview" class="button-primary" formtarget="_blank" />
-                            <p style="display: inline; margin-top:.5em;margin-bottom:1.0em;margin-left:.2em;"><a target="_blank" class="button-primary" href="<?php echo home_url(); ?>/?current-meeting-list=<?php echo $this->bread->getRequestedSetting(); ?>">Generate Meeting List</a></p>
+                            <p style="display: inline; margin-top:.5em;margin-bottom:1.0em;margin-left:.2em;"><a target="_blank" class="button-primary" href="<?php echo esc_url(home_url() . "/?current-meeting-list=" . $this->bread->getRequestedSetting()); ?>">Generate Meeting List</a></p>
                             <div style="display:inline;"><i>&nbsp;&nbsp;Save Changes before Generating Meeting List.</i></div>
                             <br class="clear">
         <?php } ?>

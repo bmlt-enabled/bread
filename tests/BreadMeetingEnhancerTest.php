@@ -9,7 +9,7 @@ final class BreadMeetingEnhancerTest extends TestCase
 {
     private function getFormats($formats): array
     {
-        $json = file_get_contents('tests/formats/' . $formats . ".json");
+        $json = (new WP_Filesystem_Direct(null))->get_contents('tests/formats/' . $formats . ".json");
         return json_decode($json, true)['formats'];
     }
     private function getFormatMgr($usedFormat, $lang, $bmlt)
