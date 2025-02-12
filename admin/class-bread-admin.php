@@ -142,7 +142,7 @@ class Bread_Admin
         if (function_exists('get_current_screen')) {
             global $my_admin_page;
             $screen = get_current_screen();
-            if ($screen->id == $my_admin_page) {
+            if ($screen != null && $screen->id == $my_admin_page) {
                 return "tinymce";
             }
         }
@@ -154,7 +154,7 @@ class Bread_Admin
         if (function_exists('get_current_screen')) {
             global $my_admin_page;
             $screen = get_current_screen();
-            if ($screen->id == $my_admin_page) {
+            if ($screen != null && $screen->id == $my_admin_page) {
                 return $ver + 99;
             }
         }
@@ -167,7 +167,7 @@ class Bread_Admin
         if (function_exists('get_current_screen')) {
             global $my_admin_page;
             $screen = get_current_screen();
-            if ($screen->id == $my_admin_page) {
+            if ($screen != null && $screen->id == $my_admin_page) {
                 array_push($buttons, 'front_page_button', 'custom_template_button_1', 'custom_template_button_2');
             }
         }
@@ -182,7 +182,7 @@ class Bread_Admin
             return $plugins_array;
         }
         $screen = get_current_screen();
-        if ($screen->id == $my_admin_page) {
+        if ($screen != null && $screen->id == $my_admin_page) {
             $plugins = array('table', 'code', 'contextmenu'); //Add any more plugins you want to load here
             //Build the response - the key is the plugin name, value is the URL to the plugin JS
             foreach ($plugins as $plugin) {
@@ -204,7 +204,7 @@ class Bread_Admin
         if (function_exists('get_current_screen')) {
             global $my_admin_page;
             $screen = get_current_screen();
-            if ($screen->id == $my_admin_page) {
+            if ($screen != null && $screen->id == $my_admin_page) {
                 $initArray['fontsize_formats'] = "5pt 6pt 7pt 8pt 9pt 10pt 11pt 12pt 13pt 14pt 15pt 16pt 17pt 18pt 19pt 20pt 22pt 24pt 26pt 28pt 30pt 32pt 34pt 36pt 38pt";
                 $initArray['theme_advanced_blockformats'] = 'h2,h3,h4,p';
                 $initArray['wordpress_adv_hidden'] = false;
@@ -223,7 +223,7 @@ class Bread_Admin
         }
         global $my_admin_page;
         $screen = get_current_screen();
-        if ($screen->id == $my_admin_page) {
+        if ($screen != null && $screen->id == $my_admin_page) {
             $root_server = $this->bread->getOption('root_server');
             if ($root_server == '') {
                 echo '<div id="message" class="error"><p>Missing BMLT Server in settings for bread.</p>';
