@@ -157,9 +157,38 @@ class Bread
             }
         }
     }
+    public static function get_log_files():array {
+        $filesystem = new WP_Filesystem_Direct(null);
+        $dir = get_temp_dir();
+        $dir = rtrim($dir, DIRECTORY_SEPARATOR);
+        $ret = [];
+        if (!$filesystem->is_dir($dir) || !$filesystem->is_writable($dir)) {
+            return $ret;
+        }
+        $objects = $filesystem->dirlist($dir);
+        foreach ($objects as $object) {
+            if (!str_starts_with($object['name'], "bread")) {
+                continue;
+            }
+            $filename = $dir . DIRECTORY_SEPARATOR . $object['name'];
+            if (!$filesystem->is_dir($filename)) {
+                continue;
+            }
+            $logs = $filesystem->dirlist($filename);
+            foreach ($logs as $log) {
+                if (!str_starts_with($log['name'], "mpdf") || !str_ends_with($log['name'], ".log")) {
+                    continue;
+                }
+                $ret[] = $log;
+            }
+        }
+        return $ret;
+    }
     public function removeTempDir()
     {
-        Bread::rrmdir(new WP_Filesystem_Direct(null), $this->temp_dir());
+        if (!isset($this->options['logging'])) {
+            Bread::rrmdir(new WP_Filesystem_Direct(null), $this->temp_dir());
+        }
     }
     private static function rrmdir($filesystem, $dir)
     {

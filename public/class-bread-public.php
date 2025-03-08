@@ -1,6 +1,9 @@
 <?php
 
 use Mpdf\Mpdf;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+use Monolog\Level;
 
 /**
  * Main class for generating the PDF meeting list.
@@ -127,6 +130,9 @@ class Bread_Public
         $default_font = $this->options['base_font'] == "freesans" ? "dejavusanscondensed" : $this->options['base_font'];
         $mode = 's';
         $mpdf_init_options = $this->construct_init_options($default_font, $mode, $page_type_settings);
+        if (isset($this->options['packTabledata']) && $this->options['packTabledata']) {
+            $mpdf_init_options['packTabledata'] = true;
+        }
         @ob_end_clean();
         // We load mPDF only when we need to and as late as possible.  This prevents
         // conflicts with other plugins that use the same PSRs in different versions
@@ -136,6 +142,20 @@ class Bread_Public
         require_once __DIR__ . '/class-bread-content-generator.php';
         require_once __DIR__ . '/class-bread-format-manager.php';
         $this->mpdf = new mPDF($mpdf_init_options);
+        if (isset($this->options['logging']) && $this->options['logging']) {
+            $logger = new Logger('bread-log');
+            $site = '';
+            if (is_multisite()) {
+                $site = get_current_blog_id() . '_';
+            }
+            $logfile = $this->bread->temp_dir()."/mpdf" . $site . $this->bread->getRequestedSetting() . '_' . strtolower(gmdate("n_j_Y_gh_i_s")) . '.log';
+            $logger->pushHandler(new StreamHandler($logfile, Level::Debug));
+            $this->mpdf->showImageErrors = true;
+            $this->mpdf->setLogger($logger);
+        }
+        if (isset($this->options['simpleTables']) && $this->options['simpleTables']) {
+            $this->mpdf->simpleTables = true;
+        }
         $this->mpdf->setAutoBottomMargin = 'pad';
         $this->mpdf->shrink_tables_to_fit = 1;
 

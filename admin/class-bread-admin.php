@@ -555,6 +555,9 @@ class Bread_Admin
             }
             $this->bread->getConfigurationForSettingId($this->bread->getRequestedSetting());
             $this->bread->setOption('bread_version', sanitize_text_field($_POST['bread_version']));
+            $this->bread->setOption('logging', isset($_POST['logging']));
+            $this->bread->setOption('simpleTables', isset($_POST['simpleTables']));
+            $this->bread->setOption('packTabledata', isset($_POST['packTabledata']));
             $this->bread->setOption('front_page_content', wp_kses_post($_POST['front_page_content']));
             $this->bread->setOption('front_page_line_height', $_POST['front_page_line_height']);
             $this->bread->setOption('front_page_font_size', floatval($_POST['front_page_font_size']));
