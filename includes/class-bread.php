@@ -157,7 +157,8 @@ class Bread
             }
         }
     }
-    public static function get_log_files():array {
+    public static function get_log_files():array
+    {
         $filesystem = new WP_Filesystem_Direct(null);
         $dir = get_temp_dir();
         $dir = rtrim($dir, DIRECTORY_SEPARATOR);
