@@ -305,7 +305,8 @@ class Bread_Admin
         }
         exit;
     }
-    function exportLogFile($file) {
+    function exportLogFile($file)
+    {
         ignore_user_abort(true);
         header('Content-Description: File Transfer');
         header('Content-Type: text/html; charset=utf-8');

@@ -149,7 +149,7 @@ foreach ($all_users as $user) {
                     if (!empty($logs)) {?>
                         <br/><h4>Download Log Files</h4>
                         <?php
-                        foreach($logs as $log) {
+                        foreach ($logs as $log) {
                             ?>
                             <a href="<?php echo home_url();?>/?export-mpdf-log=<?php echo $log['name'];?>"><?php echo $log['name'];?></a>
                             <?php
