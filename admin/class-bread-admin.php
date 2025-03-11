@@ -264,6 +264,12 @@ class Bread_Admin
             $this->download_settings_inner();
         }
     }
+    function download_mpdf_log()
+    {
+        if ($this->bread->exportingLogFile()) {
+            $this->download_log_file();
+        }
+    }
     private function download_settings_inner()
     {
         $this->bread->getConfigurationForSettingId($this->bread->getRequestedSetting());
@@ -285,6 +291,32 @@ class Bread_Admin
         header("Expires: 0");
         header('Content-Length: ' . strlen($json_file));
         file_put_contents('php://output', $json_file);
+        exit;
+    }
+    function download_log_file()
+    {
+        if (!isset($_REQUEST['export-mpdf-log'])) {
+            exit;
+        }
+        foreach (Bread::get_log_files() as $log) {
+            if ($log['name'] === $_REQUEST['export-mpdf-log']) {
+                $this->exportLogFile($log['path']);
+            }
+        }
+        exit;
+    }
+    function exportLogFile($file) {
+        ignore_user_abort(true);
+        header('Content-Description: File Transfer');
+        header('Content-Type: text/html; charset=utf-8');
+        header('Content-Disposition: attachment; filename="'.basename($file).'"');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+        header('Content-Length: ' . filesize($file));
+        ob_end_flush();
+        readfile($file);
+        ob_end_flush();
         exit;
     }
     function current_user_can_modify()
@@ -672,7 +704,7 @@ class Bread_Admin
             $this->bread->setOption('extra_meetings', array());
             if (isset($_POST['extra_meetings'])) {
                 foreach ($_POST['extra_meetings'] as $extra) {
-                    $this->bread->setOption('extra_meetings', wp_kses_post($extra));
+                    $this->bread->appendOption('extra_meetings', wp_kses_post($extra));
                 }
             }
             $authors = isset($_POST['authors_select']) ? $_POST['authors_select'] : [];

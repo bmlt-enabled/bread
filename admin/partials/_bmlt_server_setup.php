@@ -144,6 +144,19 @@ foreach ($all_users as $user) {
                     <br/>
                     <input type="checkbox" name="packTabledata" id="packTabledata" <?php echo $this->bread->emptyOption('packTabledata') ? '' : 'checked'; ?>>
                     <label for="packTabledata">Pack Table Data</label>
+                    <?php
+                    $logs = Bread::get_log_files();
+                    if (!empty($logs)) {?>
+                        <br/><h4>Download Log Files</h4>
+                        <?php
+                        foreach($logs as $log) {
+                            ?>
+                            <a href="<?php echo home_url();?>/?export-mpdf-log=<?php echo $log['name'];?>"><?php echo $log['name'];?></a>
+                            <?php
+                        }
+                    }
+                    ?>
+                    <br/>
                 </div>
             </div>
             <div id="meetinglistcachediv" class="postbox">

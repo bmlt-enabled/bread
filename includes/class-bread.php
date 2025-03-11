@@ -74,7 +74,6 @@ class Bread
      * @var array
      */
     private array $translate = array();
-    private bool $exporting_meeting_list = false;
     /**
      * The wizard wants to know if we are generating the first meeting list for this site.
      *
@@ -119,6 +118,9 @@ class Bread
     }
     public function appendOption($name, $value)
     {
+        if (!is_array($this->options[$name])) {
+            $this->options[$name];
+        }
         return $this->options[$name][] = $value;
     }
     /**
@@ -180,7 +182,10 @@ class Bread
                 if (!str_starts_with($log['name'], "mpdf") || !str_ends_with($log['name'], ".log")) {
                     continue;
                 }
-                $ret[] = $log;
+                $item = [];
+                $item['name'] = $log['name'];
+                $item['path'] = $filename . DIRECTORY_SEPARATOR . $log['name'];
+                $ret[] = $item;
             }
         }
         return $ret;
@@ -275,6 +280,10 @@ class Bread
     public function exportingMeetingList(): bool
     {
         return isset($_REQUEST['export-meeting-list']) && !is_admin();
+    }
+    public function exportingLogFile(): bool
+    {
+        return isset($_REQUEST['export-mpdf-log']) && !is_admin();
     }
     public function generateOptionName($current_setting)
     {
@@ -500,6 +509,8 @@ class Bread
         $this->loader->add_action("admin_init", $plugin_admin, "pwsix_process_settings_export");
         $this->loader->add_action("admin_init", $plugin_admin, "process_customize_form");
         $this->loader->add_action("admin_init", $plugin_admin, "pwsix_process_wizard");
+
+        $this->loader->add_action('plugins_loaded', $plugin_admin, 'download_mpdf_log');
     }
 
     /**
