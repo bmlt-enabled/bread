@@ -316,7 +316,7 @@ class Bread_Admin
         header('Pragma: public');
         header('Content-Length: ' . filesize($file));
         ob_end_flush();
-        readfile($file);
+        readfile($file);// phpcs:ignore
         ob_end_flush();
         exit;
     }

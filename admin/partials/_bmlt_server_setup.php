@@ -151,7 +151,7 @@ foreach ($all_users as $user) {
                         <?php
                         foreach ($logs as $log) {
                             ?>
-                            <a href="<?php echo home_url();?>/?export-mpdf-log=<?php echo $log['name'];?>"><?php echo $log['name'];?></a>
+                            <a href="<?php echo esc_url(home_url().'/?export-mpdf-log='.$log['name']);?>"><?php echo esc_html($log['name']);?></a>
                             <?php
                         }
                     }
