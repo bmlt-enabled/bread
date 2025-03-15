@@ -216,7 +216,7 @@ class Bread_Public
                 }
 
                 array_multisort($weekday, SORT_ASC, $start_time, SORT_ASC, $result_meetings);
-                $formatsManager = new Bread_FormatsManager(array_merge($result['formats'], $extra_result['formats']), $this->options['weekday_language'], $this->bread->bmlt());
+                $formatsManager = new Bread_FormatsManager($result['formats'], $this->options['weekday_language'], $this->bread->bmlt(), $extra_result['formats']);
             } else {
                 $formatsManager = new Bread_FormatsManager($result['formats'], $this->options['weekday_language'], $this->bread->bmlt());
                 $result_meetings = $result['meetings'];

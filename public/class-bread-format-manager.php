@@ -44,10 +44,14 @@ class Bread_FormatsManager
      * @param array $usedFormats The array of formats actually used by meetings in the meeting list.
      * @param string $lang The language of the formats.
      */
-    function __construct(array &$usedFormats, string $lang, Bread_bmlt $bmlt)
+    function __construct(array &$usedFormats, string $lang, Bread_bmlt $bmlt, array &$extraFormats = [])
     {
         $this->usedFormats[$lang] = $usedFormats;
         $this->hashedFormats[$lang] = $this->hashFormats($usedFormats);
+        if (!empty($extraFormats)) {
+            $this->hashedFormats[$lang] = array_merge($this->hashedFormats[$lang], $this->hashFormats($extraFormats));
+            $this->usedFormats[$lang]  = array_values($this->hashedFormats[$lang]);
+        }
         $this->defaultLang = $lang;
         $this->bmlt = $bmlt;
     }
@@ -79,6 +83,21 @@ class Bread_FormatsManager
         $this->allFormats[$lang] = $this->bmlt->get_formats_by_language($lang);
         $this->bmlt->sortBySubkey($this->allFormats[$lang], 'key_string');
         $this->hashedFormats[$lang] = $this->hashFormats($this->allFormats[$lang]);
+    }
+    /**
+     * Returns the full list of formats for a particular language
+     *
+     * @param string $lang The language.
+     * @return array
+     */
+    private function getAllFormats(string $lang): array
+    {
+        $pos = strpos($lang, '_');
+        if ($pos > 0) {
+            $lang = substr($lang, 0, $pos);
+        }
+        $this->loadFormats($lang);
+        return $this->allFormats[$lang];
     }
     /**
      * ULookup the format having a particular field having a particular value. Null if none found.
@@ -201,7 +220,7 @@ class Bread_FormatsManager
      */
     public function write_formats(string $lang, bool $isAll, string $lineHeight, string $fontSize)
     {
-        $formats = $isAll ? $this->allFormats[$lang] : $this->getFormatsUsed($lang);
+        $formats = $isAll ? $this->getAllFormats($lang) : $this->getFormatsUsed($lang);
         if (empty($formats)) {
             return '';
         }
