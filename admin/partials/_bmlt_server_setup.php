@@ -133,6 +133,32 @@ foreach ($all_users as $user) {
                     </select>
                 </div>
             </div>
+            <div id="meetinglistloggingdiv" class="postbox">
+                <h3 class="hndle">Optimize/Debug mPDF<span title='<p>If there are problens during meeting list generation, you may enable debugging to help locate the error.</p><p><i>Please disable if not actively involved in locating problems.</i></p>' class="my-tooltip"><span class="tooltipster-icon">(?)</span></span></h3>
+                <div class="inside">
+                    <input type="checkbox" name="logging" id="logging" <?php echo $this->bread->emptyOption('logging') ? '' : 'checked'; ?>>
+                    <label for="logging">Enable Logging</label>
+                    <br/>
+                    <input type="checkbox" name="simpleTables" id="simpleTables" <?php echo $this->bread->emptyOption('simpleTables') ? '' : 'checked'; ?>>
+                    <label for="simpleTables">Enable SimpleTables</label>
+                    <br/>
+                    <input type="checkbox" name="packTabledata" id="packTabledata" <?php echo $this->bread->emptyOption('packTabledata') ? '' : 'checked'; ?>>
+                    <label for="packTabledata">Pack Table Data</label>
+                    <?php
+                    $logs = Bread::get_log_files();
+                    if (!empty($logs)) {?>
+                        <br/><h4>Download Log Files</h4>
+                        <?php
+                        foreach ($logs as $log) {
+                            ?>
+                            <a href="<?php echo esc_url(home_url().'/?export-mpdf-log='.$log['name']);?>"><?php echo esc_html($log['name']);?></a>
+                            <?php
+                        }
+                    }
+                    ?>
+                    <br/>
+                </div>
+            </div>
             <div id="meetinglistcachediv" class="postbox">
                 <h3 class="hndle">Meeting List Cache<span title='<p>Meeting List data is cached (as database transient) to generate a Meeting List faster.</p><p><i>CACHE is DELETED when you Save Changes.</i></p><p><b>The meeting list will not reflect changes to BMLT until the cache expires or is deleted.</b></p>' class="my-tooltip"><span class="tooltipster-icon">(?)</span></span></h3>
                 <div class="inside">

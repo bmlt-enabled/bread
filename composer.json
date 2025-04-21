@@ -10,6 +10,7 @@
   ],
   "require": {
     "mpdf/mpdf": "8.2.3",
+    "monolog/monolog": "3.8.1",
     "mpdf/qrcode": "^1.0",
     "myclabs/deep-copy": "1.11.1"
   },

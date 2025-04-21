@@ -74,7 +74,6 @@ class Bread
      * @var array
      */
     private array $translate = array();
-    private bool $exporting_meeting_list = false;
     /**
      * The wizard wants to know if we are generating the first meeting list for this site.
      *
@@ -119,6 +118,9 @@ class Bread
     }
     public function appendOption($name, $value)
     {
+        if (!is_array($this->options[$name])) {
+            $this->options[$name];
+        }
         return $this->options[$name][] = $value;
     }
     /**
@@ -157,9 +159,42 @@ class Bread
             }
         }
     }
+    public static function get_log_files():array
+    {
+        $filesystem = new WP_Filesystem_Direct(null);
+        $dir = get_temp_dir();
+        $dir = rtrim($dir, DIRECTORY_SEPARATOR);
+        $ret = [];
+        if (!$filesystem->is_dir($dir) || !$filesystem->is_writable($dir)) {
+            return $ret;
+        }
+        $objects = $filesystem->dirlist($dir);
+        foreach ($objects as $object) {
+            if (!str_starts_with($object['name'], "bread")) {
+                continue;
+            }
+            $filename = $dir . DIRECTORY_SEPARATOR . $object['name'];
+            if (!$filesystem->is_dir($filename)) {
+                continue;
+            }
+            $logs = $filesystem->dirlist($filename);
+            foreach ($logs as $log) {
+                if (!str_starts_with($log['name'], "mpdf") || !str_ends_with($log['name'], ".log")) {
+                    continue;
+                }
+                $item = [];
+                $item['name'] = $log['name'];
+                $item['path'] = $filename . DIRECTORY_SEPARATOR . $log['name'];
+                $ret[] = $item;
+            }
+        }
+        return $ret;
+    }
     public function removeTempDir()
     {
-        Bread::rrmdir(new WP_Filesystem_Direct(null), $this->temp_dir());
+        if (!isset($this->options['logging'])) {
+            Bread::rrmdir(new WP_Filesystem_Direct(null), $this->temp_dir());
+        }
     }
     private static function rrmdir($filesystem, $dir)
     {
@@ -245,6 +280,10 @@ class Bread
     public function exportingMeetingList(): bool
     {
         return isset($_REQUEST['export-meeting-list']) && !is_admin();
+    }
+    public function exportingLogFile(): bool
+    {
+        return isset($_REQUEST['export-mpdf-log']) && !is_admin();
     }
     public function generateOptionName($current_setting)
     {
@@ -470,6 +509,8 @@ class Bread
         $this->loader->add_action("admin_init", $plugin_admin, "pwsix_process_settings_export");
         $this->loader->add_action("admin_init", $plugin_admin, "process_customize_form");
         $this->loader->add_action("admin_init", $plugin_admin, "pwsix_process_wizard");
+
+        $this->loader->add_action('plugins_loaded', $plugin_admin, 'download_mpdf_log');
     }
 
     /**

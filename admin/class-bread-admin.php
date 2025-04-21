@@ -264,6 +264,12 @@ class Bread_Admin
             $this->download_settings_inner();
         }
     }
+    function download_mpdf_log()
+    {
+        if ($this->bread->exportingLogFile()) {
+            $this->download_log_file();
+        }
+    }
     private function download_settings_inner()
     {
         $this->bread->getConfigurationForSettingId($this->bread->getRequestedSetting());
@@ -285,6 +291,33 @@ class Bread_Admin
         header("Expires: 0");
         header('Content-Length: ' . strlen($json_file));
         file_put_contents('php://output', $json_file);
+        exit;
+    }
+    function download_log_file()
+    {
+        if (!isset($_REQUEST['export-mpdf-log'])) {
+            exit;
+        }
+        foreach (Bread::get_log_files() as $log) {
+            if ($log['name'] === $_REQUEST['export-mpdf-log']) {
+                $this->exportLogFile($log['path']);
+            }
+        }
+        exit;
+    }
+    function exportLogFile($file)
+    {
+        ignore_user_abort(true);
+        header('Content-Description: File Transfer');
+        header('Content-Type: text/html; charset=utf-8');
+        header('Content-Disposition: attachment; filename="'.basename($file).'"');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+        header('Content-Length: ' . filesize($file));
+        ob_end_flush();
+        readfile($file);// phpcs:ignore
+        ob_end_flush();
         exit;
     }
     function current_user_can_modify()
@@ -416,8 +449,8 @@ class Bread_Admin
         global $my_admin_page;
         $my_admin_page = add_submenu_page(
             $parent_slug,
-            'Printable Meeting List',
-            'Printable Meeting List',
+            'Printable Meeting Lists',
+            'Printable Meeting Lists',
             'manage_bread',
             basename(__FILE__),
             array(&$this, 'admin_options_page'),
@@ -555,6 +588,9 @@ class Bread_Admin
             }
             $this->bread->getConfigurationForSettingId($this->bread->getRequestedSetting());
             $this->bread->setOption('bread_version', sanitize_text_field($_POST['bread_version']));
+            $this->bread->setOption('logging', isset($_POST['logging']));
+            $this->bread->setOption('simpleTables', isset($_POST['simpleTables']));
+            $this->bread->setOption('packTabledata', isset($_POST['packTabledata']));
             $this->bread->setOption('front_page_content', wp_kses_post($_POST['front_page_content']));
             $this->bread->setOption('front_page_line_height', $_POST['front_page_line_height']);
             $this->bread->setOption('front_page_font_size', floatval($_POST['front_page_font_size']));
@@ -669,7 +705,7 @@ class Bread_Admin
             $this->bread->setOption('extra_meetings', array());
             if (isset($_POST['extra_meetings'])) {
                 foreach ($_POST['extra_meetings'] as $extra) {
-                    $this->bread->setOption('extra_meetings', wp_kses_post($extra));
+                    $this->bread->appendOption('extra_meetings', wp_kses_post($extra));
                 }
             }
             $authors = isset($_POST['authors_select']) ? $_POST['authors_select'] : [];

@@ -37,8 +37,8 @@ class BmltEnabled_Admin
         $icon = apply_filters("BmltEnabled_IconSVG", 'dashicons-location-alt');
         $slug = $slugs[0];
         add_menu_page(
-            'Meeting List',
-            'Meeting List',
+            'Meeting Lists',
+            'Meeting Lists',
             $cap,
             $slug,
             '',
