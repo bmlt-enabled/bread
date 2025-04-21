@@ -449,8 +449,8 @@ class Bread_Admin
         global $my_admin_page;
         $my_admin_page = add_submenu_page(
             $parent_slug,
-            'Printable Meeting List',
-            'Printable Meeting List',
+            'Printable Meeting Lists',
+            'Printable Meeting Lists',
             'manage_bread',
             basename(__FILE__),
             array(&$this, 'admin_options_page'),
