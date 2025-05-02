@@ -572,7 +572,7 @@ class Bread_ContentGenerator
         }
         if ($additional_list_query || $this->options['weekday_language'] != $this->options['additional_list_language']) {
             foreach ($additional_meetinglist_result as &$value) {
-                $value = $this->meetingEnhancer->enhance_meeting($value, $this->options['additional_list_language'], $this->formatsManager);
+                $value = $this->meetingEnhancer->enhance_meeting($value, $this->options['additional_list_language'], $this->formatsManager, false);
             }
         }
         $meetingslistStructure = new Bread_Meetingslist_Structure($this->bread, $additional_meetinglist_result, $this->options['additional_list_language'], 1);
