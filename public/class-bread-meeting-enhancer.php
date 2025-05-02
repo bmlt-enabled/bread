@@ -17,7 +17,7 @@ class Bread_Meeting_Enhancer
      * @param string $lang The language used when generating format descriptions, etc.
      * @return void
      */
-    public function enhance_meeting(&$meeting_value, $lang, $formatsManager, $formatStartTime=true)
+    public function enhance_meeting(&$meeting_value, $lang, $formatsManager, $formatStartTime = true)
     {
         if ($formatStartTime) {
             $duration = explode(':', $meeting_value['duration_time']);
