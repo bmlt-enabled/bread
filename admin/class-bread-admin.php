@@ -44,6 +44,7 @@ class Bread_Admin
      */
     var $bmltEnabled_admin;
     private Bread $bread;
+    private string $hook;
     public function __construct($plugin_name, $version, $bmltEnabled_admin, $bread)
     {
         $this->plugin_name = $plugin_name;
@@ -62,7 +63,7 @@ class Bread_Admin
      */
     public function enqueue_styles($hook)
     {
-        if (!str_ends_with($hook, 'page_class-bread-admin')) {
+        if (!str_ends_with($hook, $this->hook)) {
             return;
         }
         wp_enqueue_style("jquery-ui", plugin_dir_url(__FILE__) . "css/jquery-ui.min.css", false, "1.2", 'all');
@@ -81,7 +82,7 @@ class Bread_Admin
      */
     public function enqueue_scripts($hook)
     {
-        if (!str_ends_with($hook, 'page_class-bread-admin')) {
+        if (!str_ends_with($hook, $this->hook)) {
             return;
         }
         wp_enqueue_script('common');
@@ -431,28 +432,20 @@ class Bread_Admin
         }
         return wp_remote_get($url, $args);
     }
-    function submenu_slug($slugs)
-    {
-        $this->bmltEnabled_admin->createdMenu();
-        if (!is_array($slugs)) {
-            $slugs = array();
-        }
-        $slugs[] = basename(__FILE__);
-        return $slugs;
-    }
     /**
      * @desc Adds the options sub-panel
      */
     function admin_submenu_link($parent_slug)
     {
         activate_bread();
-        global $my_admin_page;
-        $my_admin_page = add_submenu_page(
+        $this->bmltEnabled_admin->createMenu();
+
+        $this->hook = add_submenu_page(
             $parent_slug,
             'Printable Meeting Lists',
             'Printable Meeting Lists',
             'manage_bread',
-            basename(__FILE__),
+            'bmlt-enabled-bread',
             array(&$this, 'admin_options_page'),
             2
         );

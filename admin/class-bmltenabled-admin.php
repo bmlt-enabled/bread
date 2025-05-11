@@ -10,6 +10,7 @@
 class BmltEnabled_Admin
 {
     private bool $menu_created = false;
+    private string $slug;
     /**
      * Initialize the class and set its properties.
      *
@@ -17,10 +18,11 @@ class BmltEnabled_Admin
      * @param string    $plugin_name       The name of this plugin.
      * @param string    $version    The version of this plugin.
      */
-    public function __construct()
+    public function __construct($slug)
     {
+        $this->slug = $slug;
     }
-    public function createdMenu()
+    public function createMenu()
     {
         $this->menu_created = true;
     }
@@ -33,18 +35,16 @@ class BmltEnabled_Admin
         if (!current_user_can($cap)) {
             $cap = 'manage_bread';
         }
-        $slugs = apply_filters('BmltEnabled_Slugs', []);
         $icon = apply_filters("BmltEnabled_IconSVG", 'dashicons-location-alt');
-        $slug = $slugs[0];
         add_menu_page(
             'Meeting Lists',
             'Meeting Lists',
             $cap,
-            $slug,
+            $this->slug,
             '',
             $icon,
             null
         );
-        do_action('BmltEnabled_Submenu', $slug);
+        do_action('BmltEnabled_Submenu', $this->slug);
     }
 }

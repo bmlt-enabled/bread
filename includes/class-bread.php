@@ -485,7 +485,7 @@ class Bread
      */
     private function define_admin_hooks()
     {
-        $bmltenabled_admin = new BmltEnabled_Admin();
+        $bmltenabled_admin = new BmltEnabled_Admin('bmlt-enabled-bread');
         $plugin_admin = new Bread_Admin($this->get_plugin_name(), $this->get_version(), $bmltenabled_admin, $this);
 
         $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
@@ -493,7 +493,6 @@ class Bread
 
         $this->loader->add_action("admin_menu", $bmltenabled_admin, "admin_menu_link");
         $this->loader->add_action("BmltEnabled_Submenu", $plugin_admin, "admin_submenu_link");
-        $this->loader->add_filter("BmltEnabled_Slugs", $plugin_admin, "submenu_slug");
         $this->loader->add_filter('tiny_mce_before_init', $plugin_admin, 'tiny_tweaks');
         $this->loader->add_filter('mce_external_plugins', $plugin_admin, 'my_custom_plugins');
         $this->loader->add_filter('mce_buttons', $plugin_admin, 'my_register_mce_button');
