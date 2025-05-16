@@ -44,7 +44,7 @@ class Bread_Admin
      */
     var $bmltEnabled_admin;
     private Bread $bread;
-    private string $hook;
+    private string $hook = "";
     public function __construct($plugin_name, $version, $bmltEnabled_admin, $bread)
     {
         $this->plugin_name = $plugin_name;
