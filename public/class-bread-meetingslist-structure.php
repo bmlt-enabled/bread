@@ -347,7 +347,7 @@ class Bread_Meetingslist_Structure
         }
         $grouping = '';
         $name = $this->options[$names['name']];
-        $name_alt = (!empty($names['name_alt'])) ? $this->options[$names['name_alt']] : '';
+        $name_alt = (!empty($names['name_alt'])) && !empty($this->options[$names['name_alt']]) ? $this->options[$names['name_alt']] : '';
         if ($name == 'service_body_bigint') {
             foreach ($this->bread->bmlt()->get_areas() as $unique_area) {
                 $area_data = explode(',', $unique_area);
