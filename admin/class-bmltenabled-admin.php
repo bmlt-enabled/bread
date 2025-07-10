@@ -22,6 +22,10 @@ class BmltEnabled_Admin
     {
         $this->slug = $slug;
     }
+    public function getSlug()
+    {
+        return $this->slug;
+    }
     public function createMenu()
     {
         $this->menu_created = true;

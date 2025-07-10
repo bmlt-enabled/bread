@@ -653,6 +653,7 @@ class Bread
         $this->fillUnsetOption('margin_bottom', 3);
         $this->fillUnsetOption('margin_left', 3);
         $this->fillUnsetOption('margin_right', 3);
+        $this->fillUnsetOption('margin_footer', 5);
         $this->fillUnsetOption('column_gap', "5");
         $this->fillUnsetOption('content_line_height', '1.0');
         $this->fillUnsetOption('page_size', 'legal');

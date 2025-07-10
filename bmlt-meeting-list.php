@@ -11,7 +11,7 @@
  * Plugin Name:       Bread
  * Plugin URI:        https://bmlt.app
  * Description:       Maintains and generates PDF Meeting Lists from BMLT.
- * Version:           2.9.4
+ * Version:           2.9.5
  * Author:            bmlt-enabled
  * Author URI:        https://bmlt.app/
  * License:           GPL-2.0+

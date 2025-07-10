@@ -141,9 +141,8 @@ class Bread_Admin
     function ml_default_editor($r)
     {
         if (function_exists('get_current_screen')) {
-            global $my_admin_page;
             $screen = get_current_screen();
-            if ($screen != null && $screen->id == $my_admin_page) {
+            if ($screen != null && str_ends_with($screen->id, $this->bmltEnabled_admin->getSlug())) {
                 return "tinymce";
             }
         }
@@ -153,9 +152,8 @@ class Bread_Admin
     function force_mce_refresh($ver)
     {
         if (function_exists('get_current_screen')) {
-            global $my_admin_page;
             $screen = get_current_screen();
-            if ($screen != null && $screen->id == $my_admin_page) {
+            if ($screen != null && str_ends_with($screen->id, $this->bmltEnabled_admin->getSlug())) {
                 return $ver + 99;
             }
         }
@@ -166,9 +164,8 @@ class Bread_Admin
     function my_register_mce_button($buttons)
     {
         if (function_exists('get_current_screen')) {
-            global $my_admin_page;
             $screen = get_current_screen();
-            if ($screen != null && $screen->id == $my_admin_page) {
+            if ($screen != null && str_ends_with($screen->id, $this->bmltEnabled_admin->getSlug())) {
                 array_push($buttons, 'front_page_button', 'custom_template_button_1', 'custom_template_button_2');
             }
         }
@@ -177,13 +174,12 @@ class Bread_Admin
 
     function my_custom_plugins()
     {
-        global $my_admin_page;
         $plugins_array = array();
         if (!function_exists('get_current_screen')) {
             return $plugins_array;
         }
         $screen = get_current_screen();
-        if ($screen != null && $screen->id == $my_admin_page) {
+        if ($screen != null && str_ends_with($screen->id, $this->bmltEnabled_admin->getSlug())) {
             $plugins = array('table', 'code', 'contextmenu'); //Add any more plugins you want to load here
             //Build the response - the key is the plugin name, value is the URL to the plugin JS
             foreach ($plugins as $plugin) {
@@ -203,9 +199,8 @@ class Bread_Admin
     function tiny_tweaks($initArray)
     {
         if (function_exists('get_current_screen')) {
-            global $my_admin_page;
             $screen = get_current_screen();
-            if ($screen != null && $screen->id == $my_admin_page) {
+            if ($screen != null && str_ends_with($screen->id, $this->bmltEnabled_admin->getSlug())) {
                 $initArray['fontsize_formats'] = "5pt 6pt 7pt 8pt 9pt 10pt 11pt 12pt 13pt 14pt 15pt 16pt 17pt 18pt 19pt 20pt 22pt 24pt 26pt 28pt 30pt 32pt 34pt 36pt 38pt";
                 $initArray['theme_advanced_blockformats'] = 'h2,h3,h4,p';
                 $initArray['wordpress_adv_hidden'] = false;
@@ -222,9 +217,8 @@ class Bread_Admin
         if (!function_exists('get_current_screen')) {
             return;
         }
-        global $my_admin_page;
         $screen = get_current_screen();
-        if ($screen != null && $screen->id == $my_admin_page) {
+        if ($screen != null && str_ends_with($screen->id, $this->bmltEnabled_admin->getSlug())) {
             $root_server = $this->bread->getOption('root_server');
             if ($root_server == '') {
                 echo '<div id="message" class="error"><p>Missing BMLT Server in settings for bread.</p>';
@@ -389,9 +383,8 @@ class Bread_Admin
         if (!function_exists('get_current_screen')) {
             return;
         }
-        global $my_admin_page;
         $screen = get_current_screen();
-        if (isset($screen) && $screen->id == $my_admin_page) {
+        if ($screen != null && str_ends_with($screen->id, $this->bmltEnabled_admin->getSlug())) {
             add_editor_style(plugin_dir_url(__FILE__) . "css/editor-style.css");
         }
     }
