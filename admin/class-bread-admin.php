@@ -356,15 +356,15 @@ class Bread_Admin
         $tmp = explode('.', $file_name);
         $extension = end($tmp);
         if ($extension != 'json') {
-            wp_die(esc_html(__('Please upload a valid .json file', 'bread-domain')));
+            wp_die(esc_html(__('Please upload a valid .json file', 'bread')));
         }
         $import_file = $_FILES['import_file']['tmp_name'];
         if (empty($import_file)) {
-            wp_die(esc_html(__('Please upload a file to import', 'bread-domain')));
+            wp_die(esc_html(__('Please upload a file to import', 'bread')));
         }
         $file_size = $_FILES['import_file']['size'];
         if ($file_size > 500000) {
-            wp_die(esc_html(__('File size greater than 500k', 'bread-domain')));
+            wp_die(esc_html(__('File size greater than 500k', 'bread')));
         }
         $encode_options = (new WP_Filesystem_Direct(null))->get_contents($import_file);
         while (0 === strpos(bin2hex($encode_options), 'efbbbf')) {

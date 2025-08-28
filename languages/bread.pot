@@ -14,7 +14,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Loco https://localise.biz/\n"
 "X-Loco-Version: 2.8.0; wp-6.8.2; php-8.2.0\n"
-"X-Domain: bread-domain"
+"X-Domain: bread"
 
 #: admin/partials/_custom_section_setup.php:10
 msgid ""

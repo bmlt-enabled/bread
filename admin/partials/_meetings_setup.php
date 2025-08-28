@@ -8,61 +8,61 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
             <div id="meetingsheaderdiv" class="postbox">
                 <div style="display:none;">
                     <div id="columnheader-tooltip-content">
-                        <?php _e('Customize how meetings are grouped and the headline that each group has.', 'bread-domain') ?>
+                        <?php esc_html_e('Customize how meetings are grouped and the headline that each group has.', 'bread') ?>
                     </div>
                 </div>
-                <h3 class="hndle"><?php _e('Meeting Group [Column] Header', 'bread-domain') ?><span data-tooltip-content="#columnheader-tooltip-content" class="my-tooltip"><span class="tooltipster-icon">(?)</span></span></h3>
+                <h3 class="hndle"><?php esc_html_e('Meeting Group [Column] Header', 'bread') ?><span data-tooltip-content="#columnheader-tooltip-content" class="my-tooltip"><span class="tooltipster-icon">(?)</span></span></h3>
                 <div class="inside">
                     <div>
                         <input name="suppress_heading" value="0" type="hidden">
-                        <label for="suppress_heading"><?php _e('Suppress Heading: ', 'bread-domain') ?></label><input type="checkbox" name="suppress_heading" id="suppress_heading" value="1" <?php echo ($this->bread->getOption('suppress_heading') == '1' ? 'checked' : '') ?>>
+                        <label for="suppress_heading"><?php esc_html_e('Suppress Heading: ', 'bread') ?></label><input type="checkbox" name="suppress_heading" id="suppress_heading" value="1" <?php echo ($this->bread->getOption('suppress_heading') == '1' ? 'checked' : '') ?>>
                         <table id="header_options_div">
                             <tr>
-                                <td style="padding-right: 10px;"><?php _e('Font Size: ', 'bread-domain') ?><input min="4" max="18" step=".1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="header_font_size" name="header_font_size" value="<?php echo esc_attr($this->bread->getOption('header_font_size')); ?>" /></td>
+                                <td style="padding-right: 10px;"><?php esc_html_e('Font Size: ', 'bread') ?><input min="4" max="18" step=".1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="header_font_size" name="header_font_size" value="<?php echo esc_attr($this->bread->getOption('header_font_size')); ?>" /></td>
                                 <td style="padding-right: 10px;">
                                     <div class="theme" id="sp-light">
-                                        <label for="header_text_color"><?php _e('Text Color:', 'bread-domain') ?></label> <input style="display: inline-block !important; width: 70px; margin-right: 5px;" type='color' id="header_text_color" class="bmlt_color" name="header_text_color" value="<?php echo esc_attr($this->bread->getOption('header_text_color')); ?>" />
+                                        <label for="header_text_color"><?php esc_html_e('Text Color:', 'bread') ?></label> <input style="display: inline-block !important; width: 70px; margin-right: 5px;" type='color' id="header_text_color" class="bmlt_color" name="header_text_color" value="<?php echo esc_attr($this->bread->getOption('header_text_color')); ?>" />
                                     </div>
                                 </td>
                                 <td style="padding-right: 10px;">
                                     <div class="theme" id="sp-light">
-                                        <label for="header_background_color"><?php _e('Background Color:', 'bread-domain') ?></label> <input style="display: inline-block !important; width: 70px; margin-right: 5px;" type='color' id="header_background_color" class="bmlt_color" name="header_background_color" value="<?php echo esc_attr($this->bread->getOption('header_background_color')); ?>" />
+                                        <label for="header_background_color"><?php esc_html_e('Background Color:', 'bread') ?></label> <input style="display: inline-block !important; width: 70px; margin-right: 5px;" type='color' id="header_background_color" class="bmlt_color" name="header_background_color" value="<?php echo esc_attr($this->bread->getOption('header_background_color')); ?>" />
                                     </div>
                                 </td>
                                 <td style="padding-right: 10px;">
                                     <input name="header_uppercase" value="0" type="hidden">
-                                <td><label for="header_uppercase"><?php _e('Uppercase: ', 'bread-domain') ?></label><input type="checkbox" name="header_uppercase" value="1" <?php echo ($this->bread->getOption('header_uppercase') == '1' ? 'checked' : '') ?>></td>
+                                <td><label for="header_uppercase"><?php esc_html_e('Uppercase: ', 'bread') ?></label><input type="checkbox" name="header_uppercase" value="1" <?php echo ($this->bread->getOption('header_uppercase') == '1' ? 'checked' : '') ?>></td>
                                 <td style="padding-right: 10px;">
                                     <input name="header_bold" value="0" type="hidden">
-                                <td><label for="header_bold"><?php _e('Bold: ', 'bread-domain') ?></label><input type="checkbox" name="header_bold" value="1" <?php echo ($this->bread->getOption('header_bold') == '1' ? 'checked' : '') ?>></td>
+                                <td><label for="header_bold"><?php esc_html_e('Bold: ', 'bread') ?></label><input type="checkbox" name="header_bold" value="1" <?php echo ($this->bread->getOption('header_bold') == '1' ? 'checked' : '') ?>></td>
                                 <td style="padding-right: 10px;">
                                     <input name="cont_header_shown" value="0" type="hidden">
-                                <td><label for="cont_header_shown"><?php _e('Display (Cont) Header: ', 'bread-domain') ?></label><input type="checkbox" name="cont_header_shown" value="1" <?php echo ($this->bread->getOption('cont_header_shown') == '1' ? 'checked' : '') ?>></td>
+                                <td><label for="cont_header_shown"><?php esc_html_e('Display (Cont) Header: ', 'bread') ?></label><input type="checkbox" name="cont_header_shown" value="1" <?php echo ($this->bread->getOption('cont_header_shown') == '1' ? 'checked' : '') ?>></td>
                             </tr>
                         </table>
                     </div>
                     <p>
                     <div class="group_by" style="margin-right: 10px; display: inline;">
-                        <label for="meeting_sort"><?php _e('Group Meetings By: ', 'bread-domain') ?></label>
+                        <label for="meeting_sort"><?php esc_html_e('Group Meetings By: ', 'bread') ?></label>
                         <select id="meeting_sort" name="meeting_sort">
-                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'day' ? 'selected' : '') ?> value="day"><?php _e('Weekday', 'bread-domain') ?></option>
-                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'city' ? 'selected' : '') ?> value="city"><?php _e('City', 'bread-domain') ?></option>
-                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'group' ? 'selected' : '') ?> value="group"><?php _e('Group', 'bread-domain') ?></option>
-                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'county' ? 'selected' : '') ?> value="county"><?php _e('County', 'bread-domain') ?></option>
-                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'borough' ? 'selected' : '') ?> value="borough"><?php _e('Borough', 'bread-domain') ?></option>
-                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'borough_county' ? 'selected' : '') ?> value="borough_county"><?php _e('Borough+County', 'bread-domain') ?></option>
-                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'neighborhood_city' ? 'selected' : '') ?> value="neighborhood_city"><?php _e('Neighborhood+City', 'bread-domain') ?></option>
-                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'state' ? 'selected' : '') ?> value="state"><?php _e('State+City', 'bread-domain') ?></option>
-                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'weekday_area' ? 'selected' : '') ?> value="weekday_area"><?php _e('Weekday+Area', 'bread-domain') ?></option>
-                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'weekday_city' ? 'selected' : '') ?> value="weekday_city"><?php _e('Weekday+City', 'bread-domain') ?></option>
-                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'weekday_county' ? 'selected' : '') ?> value="weekday_county"><?php _e('Weekday+County ', 'bread-domain') ?></option>
-                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'user_defined' ? 'selected' : '') ?> value="user_defined"><?php _e('User Defined', 'bread-domain') ?></option>
+                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'day' ? 'selected' : '') ?> value="day"><?php esc_html_e('Weekday', 'bread') ?></option>
+                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'city' ? 'selected' : '') ?> value="city"><?php esc_html_e('City', 'bread') ?></option>
+                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'group' ? 'selected' : '') ?> value="group"><?php esc_html_e('Group', 'bread') ?></option>
+                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'county' ? 'selected' : '') ?> value="county"><?php esc_html_e('County', 'bread') ?></option>
+                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'borough' ? 'selected' : '') ?> value="borough"><?php esc_html_e('Borough', 'bread') ?></option>
+                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'borough_county' ? 'selected' : '') ?> value="borough_county"><?php esc_html_e('Borough+County', 'bread') ?></option>
+                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'neighborhood_city' ? 'selected' : '') ?> value="neighborhood_city"><?php esc_html_e('Neighborhood+City', 'bread') ?></option>
+                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'state' ? 'selected' : '') ?> value="state"><?php esc_html_e('State+City', 'bread') ?></option>
+                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'weekday_area' ? 'selected' : '') ?> value="weekday_area"><?php esc_html_e('Weekday+Area', 'bread') ?></option>
+                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'weekday_city' ? 'selected' : '') ?> value="weekday_city"><?php esc_html_e('Weekday+City', 'bread') ?></option>
+                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'weekday_county' ? 'selected' : '') ?> value="weekday_county"><?php esc_html_e('Weekday+County ', 'bread') ?></option>
+                            <option <?php echo ($this->bread->getOption('meeting_sort') == 'user_defined' ? 'selected' : '') ?> value="user_defined"><?php esc_html_e('User Defined', 'bread') ?></option>
                         </select>
                     </div>
                     <div class="borough_by_suffix">
 
                         <p>
-                            <label for="borough_suffix"><?php _e('Borough Suffix: ', 'bread-domain') ?></label>
+                            <label for="borough_suffix"><?php esc_html_e('Borough Suffix: ', 'bread') ?></label>
                             <input class="borough-by-suffix" id="borough_suffix" type="text" name="borough_suffix" value="<?php echo esc_attr($this->bread->getOption('borough_suffix')); ?>" />
 
                         </p>
@@ -71,7 +71,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     <div class="county_by_suffix">
 
                         <p>
-                            <label for="county_suffix"><?php _e('County Suffix: ', 'bread-domain') ?></label>
+                            <label for="county_suffix"><?php esc_html_e('County Suffix: ', 'bread') ?></label>
                             <input class="county-by-suffix" id="county_suffix" type="text" name="county_suffix" value="<?php echo esc_attr($this->bread->getOption('county_suffix')); ?>" />
 
                         </p>
@@ -80,7 +80,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     <div class="neighborhood_by_suffix">
 
                         <p>
-                            <label for="neighborhood_suffix"><?php _e('Neighborhood Suffix: ', 'bread-domain') ?></label>
+                            <label for="neighborhood_suffix"><?php esc_html_e('Neighborhood Suffix: ', 'bread') ?></label>
                             <input class="neighborhood-by-suffix" id="neighborhood_suffix" type="text" name="neighborhood_suffix" value="<?php echo esc_attr($this->bread->getOption('neighborhood_suffix')); ?>" />
 
                         </p>
@@ -89,22 +89,22 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     <div class="city_by_suffix">
 
                         <p>
-                            <label for="county_suffix"><?php _e('City Suffix: ', 'bread-domain') ?></label>
+                            <label for="county_suffix"><?php esc_html_e('City Suffix: ', 'bread') ?></label>
                             <input class="city-by-suffix" id="city_suffix" type="text" name="city_suffix" value="<?php echo esc_attr($this->bread->getOption('city_suffix')); ?>" />
 
                         </p>
                     </div>
                     <div class="user_defined_headings">
                         <p>
-                            <label for="main_grouping"><?php _e('Main Grouping: ', 'bread-domain') ?></label>
+                            <label for="main_grouping"><?php esc_html_e('Main Grouping: ', 'bread') ?></label>
                             <select id="main_grouping" name="main_grouping">
-                                <option <?php echo ($this->bread->getOption('main_grouping') == 'day' ? 'selected' : '') ?> value="day"><?php _e('Weekday', 'bread-domain') ?></option>
-                                <option <?php echo ($this->bread->getOption('main_grouping') == 'location_municipality' ? 'selected' : '') ?> value="location_municipality"><?php _e('City', 'bread-domain') ?></option>
-                                <option <?php echo ($this->bread->getOption('main_grouping') == 'location_neighborhood' ? 'selected' : '') ?> value="location_neighborhood"><?php _e('Neighborhood', 'bread-domain') ?></option>
-                                <option <?php echo ($this->bread->getOption('main_grouping') == 'group' ? 'selected' : '') ?> value="group"><?php _e('Group', 'bread-domain') ?></option>
-                                <option <?php echo ($this->bread->getOption('main_grouping') == 'location_sub_province' ? 'selected' : '') ?> value="location_sub_province"><?php _e('County', 'bread-domain') ?></option>
-                                <option <?php echo ($this->bread->getOption('main_grouping') == 'location_city_subsection' ? 'selected' : '') ?> value="location_city_subsection"><?php _e('Borough', 'bread-domain') ?></option>
-                                <option <?php echo ($this->bread->getOption('main_grouping') == 'location_province' ? 'selected' : '') ?> value="location_province"><?php _e('State', 'bread-domain') ?></option>
+                                <option <?php echo ($this->bread->getOption('main_grouping') == 'day' ? 'selected' : '') ?> value="day"><?php esc_html_e('Weekday', 'bread') ?></option>
+                                <option <?php echo ($this->bread->getOption('main_grouping') == 'location_municipality' ? 'selected' : '') ?> value="location_municipality"><?php esc_html_e('City', 'bread') ?></option>
+                                <option <?php echo ($this->bread->getOption('main_grouping') == 'location_neighborhood' ? 'selected' : '') ?> value="location_neighborhood"><?php esc_html_e('Neighborhood', 'bread') ?></option>
+                                <option <?php echo ($this->bread->getOption('main_grouping') == 'group' ? 'selected' : '') ?> value="group"><?php esc_html_e('Group', 'bread') ?></option>
+                                <option <?php echo ($this->bread->getOption('main_grouping') == 'location_sub_province' ? 'selected' : '') ?> value="location_sub_province"><?php esc_html_e('County', 'bread') ?></option>
+                                <option <?php echo ($this->bread->getOption('main_grouping') == 'location_city_subsection' ? 'selected' : '') ?> value="location_city_subsection"><?php esc_html_e('Borough', 'bread') ?></option>
+                                <option <?php echo ($this->bread->getOption('main_grouping') == 'location_province' ? 'selected' : '') ?> value="location_province"><?php esc_html_e('State', 'bread') ?></option>
                                 <?php
                                 $fks = $this->bread->bmlt()->get_nonstandard_fieldkeys();
                                 foreach ($fks as $fk) {
@@ -116,16 +116,16 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                                 }
                                 ?>
                             </select>
-                            <label for="subgrouping"><?php _e('Sub-Grouping: ', 'bread-domain') ?></label>
+                            <label for="subgrouping"><?php esc_html_e('Sub-Grouping: ', 'bread') ?></label>
                             <select id="subgrouping" name="subgrouping">
-                                <option <?php echo (empty($this->bread->getOption('subgrouping')) ? 'selected' : '') ?> value=""><?php _e('None', 'bread-domain') ?></option>
-                                <option <?php echo ($this->bread->getOption('subgrouping') == 'day' ? 'selected' : '') ?> value="day"><?php _e('Weekday', 'bread-domain') ?></option>
-                                <option <?php echo ($this->bread->getOption('subgrouping') == 'location_municipality' ? 'selected' : '') ?> value="location_municipality"><?php _e('City', 'bread-domain') ?></option>
-                                <option <?php echo ($this->bread->getOption('subgrouping') == 'location_neighborhood' ? 'selected' : '') ?> value="location_neighborhood"><?php _e('Neighborhood', 'bread-domain') ?></option>
-                                <option <?php echo ($this->bread->getOption('subgrouping') == 'group' ? 'selected' : '') ?> value="group"><?php _e('Group', 'bread-domain') ?></option>
-                                <option <?php echo ($this->bread->getOption('subgrouping') == 'location_sub_province' ? 'selected' : '') ?> value="location_sub_province"><?php _e('County', 'bread-domain') ?></option>
-                                <option <?php echo ($this->bread->getOption('subgrouping') == 'location_city_subsection' ? 'selected' : '') ?> value="location_city_subsection"><?php _e('Borough', 'bread-domain') ?></option>
-                                <option <?php echo ($this->bread->getOption('subgrouping') == 'location_province' ? 'selected' : '') ?> value="location_province"><?php _e('State', 'bread-domain') ?></option>
+                                <option <?php echo (empty($this->bread->getOption('subgrouping')) ? 'selected' : '') ?> value=""><?php esc_html_e('None', 'bread') ?></option>
+                                <option <?php echo ($this->bread->getOption('subgrouping') == 'day' ? 'selected' : '') ?> value="day"><?php esc_html_e('Weekday', 'bread') ?></option>
+                                <option <?php echo ($this->bread->getOption('subgrouping') == 'location_municipality' ? 'selected' : '') ?> value="location_municipality"><?php esc_html_e('City', 'bread') ?></option>
+                                <option <?php echo ($this->bread->getOption('subgrouping') == 'location_neighborhood' ? 'selected' : '') ?> value="location_neighborhood"><?php esc_html_e('Neighborhood', 'bread') ?></option>
+                                <option <?php echo ($this->bread->getOption('subgrouping') == 'group' ? 'selected' : '') ?> value="group"><?php esc_html_e('Group', 'bread') ?></option>
+                                <option <?php echo ($this->bread->getOption('subgrouping') == 'location_sub_province' ? 'selected' : '') ?> value="location_sub_province"><?php esc_html_e('County', 'bread') ?></option>
+                                <option <?php echo ($this->bread->getOption('subgrouping') == 'location_city_subsection' ? 'selected' : '') ?> value="location_city_subsection"><?php esc_html_e('Borough', 'bread') ?></option>
+                                <option <?php echo ($this->bread->getOption('subgrouping') == 'location_province' ? 'selected' : '') ?> value="location_province"><?php esc_html_e('State', 'bread') ?></option>
                                 <?php
                                 foreach ($fks as $fk) {
                                     $selected = '';
@@ -140,22 +140,22 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     </div>
                     <div class="show_subheader">
                         <p>
-                            <label for="sub_header_shown"><?php _e('Display Subgrouping: ', 'bread-domain') ?></label>
+                            <label for="sub_header_shown"><?php esc_html_e('Display Subgrouping: ', 'bread') ?></label>
                             <select name="sub_header_shown">
                                 <option value="none" <?php echo ($this->bread->getOption('sub_header_shown') == 'none' ? 'selected' : '') ?>>
-                                    <?php _e('No header for subgroups', 'bread-domain') ?>
+                                    <?php esc_html_e('No header for subgroups', 'bread') ?>
                                 </option>
                                 <option value="display" <?php echo ($this->bread->getOption('sub_header_shown') == 'display' ? 'selected' : '') ?>>
-                                    <?php _e('Display each subgroup with its own header', 'bread-domain') ?>
+                                    <?php esc_html_e('Display each subgroup with its own header', 'bread') ?>
                                 </option>
                                 <option value="combined" <?php echo ($this->bread->getOption('sub_header_shown') == 'combined' ? 'selected' : '') ?>>
-                                    <?php _e('Combine main and subgroup into a single header', 'bread-domain') ?>
+                                    <?php esc_html_e('Combine main and subgroup into a single header', 'bread') ?>
                                 </option>
                             </select>
                         </p>
                     </div>
                     <div class="weekday_language_div">
-                        <label for="weekday_language"><?php _e('Weekday Language: ', 'bread-domain') ?></label>
+                        <label for="weekday_language"><?php esc_html_e('Weekday Language: ', 'bread') ?></label>
                         <select name="weekday_language">
                             <?php
                             foreach ($this->bread->getTranslateTable() as $key => $value) {
@@ -170,7 +170,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     </div>
 
                     <div class="weekday_start_div">
-                        <label for="weekday_start"><?php _e('Weekday Start: ', 'bread-domain') ?></label>
+                        <label for="weekday_start"><?php esc_html_e('Weekday Start: ', 'bread') ?></label>
                         <select name="weekday_start">
                             <?php
                             for ($d = 1; $d <= 7; $d++) {
@@ -184,7 +184,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         </select>
                     </div>
                     <div class="meeting1_footer_div booklet">
-                        <label for="meeting1_footer"><?php _e('Custom Footer: ', 'bread-domain') ?></label>
+                        <label for="meeting1_footer"><?php esc_html_e('Custom Footer: ', 'bread') ?></label>
                         <input name="meeting1_footer" type="text" size="50" value="<?php echo esc_attr($this->bread->getOption('meeting1_footer')); ?>">
                     </div>
                 </div>
@@ -204,13 +204,13 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         </div>
                     </div>
                 </div>
-                <h3 class="hndle"><?php _e('Meeting Template', 'bread-domain') ?><span data-tooltip-content="#meetingtemplate-tooltip-content" class="my-tooltip"><span class="tooltipster-icon">(?)</span></span></h3>
+                <h3 class="hndle"><?php esc_html_e('Meeting Template', 'bread') ?><span data-tooltip-content="#meetingtemplate-tooltip-content" class="my-tooltip"><span class="tooltipster-icon">(?)</span></span></h3>
                 <div class="inside">
                     <p>
-                        <?php _e('Default Font Size: ', 'bread-domain') ?><input min="4" max="18" step=".1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="content_font_size" name="content_font_size" value="<?php echo esc_attr($this->bread->getOption('content_font_size')); ?>" />&nbsp;&nbsp;
-                        <?php _e('Line Height: ', 'bread-domain') ?><input min="1" max="3" step=".1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="content_line_height" type="text" maxlength="3" size="3" name="content_line_height" value="<?php echo esc_attr($this->bread->getOption('content_line_height')); ?>" />&nbsp;&nbsp;
-                        <?php _e('Wheelchair Icon Size: ', 'bread-domain') ?><input size="5" maxlength="10" class="bmlt-input-field" style="display:inline;" id="wheelchair_size" type="text" name="wheelchair_size" value="<?php echo esc_attr($this->bread->getOption('wheelchair_size')); ?>" />&nbsp;&nbsp;
-                    <div><i><?php _e('Avoid using tables which will greatly slow down the generation time. Use CSS instead to get table-like effects if need be.', 'bread-domain') ?></i></div>
+                        <?php esc_html_e('Default Font Size: ', 'bread') ?><input min="4" max="18" step=".1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="content_font_size" name="content_font_size" value="<?php echo esc_attr($this->bread->getOption('content_font_size')); ?>" />&nbsp;&nbsp;
+                        <?php esc_html_e('Line Height: ', 'bread') ?><input min="1" max="3" step=".1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="content_line_height" type="text" maxlength="3" size="3" name="content_line_height" value="<?php echo esc_attr($this->bread->getOption('content_line_height')); ?>" />&nbsp;&nbsp;
+                        <?php esc_html_e('Wheelchair Icon Size: ', 'bread') ?><input size="5" maxlength="10" class="bmlt-input-field" style="display:inline;" id="wheelchair_size" type="text" name="wheelchair_size" value="<?php echo esc_attr($this->bread->getOption('wheelchair_size')); ?>" />&nbsp;&nbsp;
+                    <div><i><?php esc_html_e('Avoid using tables which will greatly slow down the generation time. Use CSS instead to get table-like effects if need be.', 'bread') ?></i></div>
                     <div style="margin-top:0px; margin-bottom:20px; max-width:100%; width:100%;">
                         <?php
                         $editor_id = "meeting_template_content";
@@ -233,36 +233,36 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                 </div>
             </div>
             <div id="starttimeformatdiv" class="postbox">
-                <h3 class="hndle"><?php _e('Start Time Format', 'bread-domain') ?><span title="Format the <strong>Start Time</strong> (start_time) field in the <strong>Meeting Template</strong>." class="my-tooltip"><span class="tooltipster-icon">(?)</span></span></h3>
+                <h3 class="hndle"><?php esc_html_e('Start Time Format', 'bread') ?><span title="Format the <strong>Start Time</strong> (start_time) field in the <strong>Meeting Template</strong>." class="my-tooltip"><span class="tooltipster-icon">(?)</span></span></h3>
                 <div class="inside">
                     <table>
                         <tr>
                             <td style="padding-right: 30px;">
-                                <div><input class="mlg recalcTimeLabel" id="time_clock12" type="radio" name="time_clock" value="12" <?php echo ($this->bread->getOption('time_clock') == '12' || $this->bread->getOption('time_clock') == '' ? 'checked' : '') ?>><label for="time_clock"><?php _e('12 Hour', 'bread-domain') ?></label></div>
+                                <div><input class="mlg recalcTimeLabel" id="time_clock12" type="radio" name="time_clock" value="12" <?php echo ($this->bread->getOption('time_clock') == '12' || $this->bread->getOption('time_clock') == '' ? 'checked' : '') ?>><label for="time_clock"><?php esc_html_e('12 Hour', 'bread') ?></label></div>
                             </td>
                             <td style="padding-right: 30px;">
                                 <div><input class="mlg" id="option1" type="radio" name="time_option" value="1" <?php echo ($this->bread->getOption('time_option') == '1' || $this->bread->getOption('time_option') == '' ? 'checked' : '') ?>><label for="option1"></label></div>
                             </td>
                             <td style="padding-right: 30px;">
                                 <?php $checked = $this->bread->getOption('remove_space') == '0' || $this->bread->getOption('remove_space') == '' ? 'checked' : ''; ?>
-                                <div><input class="mlg recalcTimeLabel" id="two" type="radio" name="remove_space" value="0" <?php echo esc_attr($checked); ?>><label for="two"><?php _e('Add White Space', 'bread-domain') ?></label></div>
+                                <div><input class="mlg recalcTimeLabel" id="two" type="radio" name="remove_space" value="0" <?php echo esc_attr($checked); ?>><label for="two"><?php esc_html_e('Add White Space', 'bread') ?></label></div>
                             </td>
                         </tr>
                         <tr>
                             <td style="padding-right: 30px;">
-                                <div><input class="mlg recalcTimeLabel" id="time_clock24" type="radio" name="time_clock" value="24" <?php echo ($this->bread->getOption('time_clock') == '24' ? 'checked' : '') ?>><label for="time_clock"><?php _e('24 Hour', 'bread-domain') ?></label></div>
+                                <div><input class="mlg recalcTimeLabel" id="time_clock24" type="radio" name="time_clock" value="24" <?php echo ($this->bread->getOption('time_clock') == '24' ? 'checked' : '') ?>><label for="time_clock"><?php esc_html_e('24 Hour', 'bread') ?></label></div>
                             </td>
                             <td style="padding-right: 30px;">
                                 <div><input class="mlg" id="option2" type="radio" name="time_option" value="2" <?php echo ($this->bread->getOption('time_option') == '2' ? 'checked' : '') ?>><label for="option2"></label></div>
                             </td>
                             <td style="padding-right: 30px;">
-                                <div><input class="mlg recalcTimeLabel" id="four" type="radio" name="remove_space" value="1" <?php echo ($this->bread->getOption('remove_space') == '1') ? 'checked' : ''; ?>><label for="four"><?php _e('Remove White Space', 'bread-domain') ?></label></div>
+                                <div><input class="mlg recalcTimeLabel" id="four" type="radio" name="remove_space" value="1" <?php echo ($this->bread->getOption('remove_space') == '1') ? 'checked' : ''; ?>><label for="four"><?php esc_html_e('Remove White Space', 'bread') ?></label></div>
                             </td>
                         </tr>
                         </tr>
                         <tr>
                             <td style="padding-right: 30px;">
-                                <div><input class="mlg recalcTimeLabel" id="time_clock24fr" type="radio" name="time_clock" value="24fr" <?php echo ($this->bread->getOption('time_clock') == '24fr' ? 'checked' : '') ?>><label for="time_clock"><?php _e('24 Hour French', 'bread-domain') ?></label></div>
+                                <div><input class="mlg recalcTimeLabel" id="time_clock24fr" type="radio" name="time_clock" value="24fr" <?php echo ($this->bread->getOption('time_clock') == '24fr' ? 'checked' : '') ?>><label for="time_clock"><?php esc_html_e('24 Hour French', 'bread') ?></label></div>
                             </td>
                             <td style="padding-right: 30px;">
                                 <div><input class="mlg" id="option3" type="radio" name="time_option" value="3" <?php echo ($this->bread->getOption('time_option') == '3' ? 'checked' : '') ?>><label for="option3"></label></div>
@@ -274,9 +274,9 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                 </div>
             </div>
             <div id="getusedformatsdiv" class="postbox">
-                <h3 class="hndle"><?php _e('Include Only This Meeting Format', 'bread-domain') ?><span title='Create a special interest meeting list.' class="my-tooltip"></span><span class="tooltipster-icon">(?)</span></span></h3>
+                <h3 class="hndle"><?php esc_html_e('Include Only This Meeting Format', 'bread') ?><span title='Create a special interest meeting list.' class="my-tooltip"></span><span class="tooltipster-icon">(?)</span></span></h3>
                 <div class="inside">
-                    <label for="used_format_1"><?php _e('Meeting Format: ', 'bread-domain') ?></label>
+                    <label for="used_format_1"><?php esc_html_e('Meeting Format: ', 'bread') ?></label>
                     <select id="used_format_1" name="used_format_1">
                         <?php
                         if ($this->connected) {
@@ -298,19 +298,19 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                 </div>
             </div>
             <div class="postbox">
-                <h3 class="hndle"><?php _e('Additional List', 'bread-domain') ?></h3>
+                <h3 class="hndle"><?php esc_html_e('Additional List', 'bread') ?></h3>
                 <div class="inside">
                     <p>
-                        <?php _e("This section allows the definition of an additional meeting list, containing meetings that should not be included in the main
-                        list. This is typically virtual meetings, but it can be any group of meetings identified by a format.", 'bread-domain') ?>
+                        <?php esc_html_e("This section allows the definition of an additional meeting list, containing meetings that should not be included in the main
+                        list. This is typically virtual meetings, but it can be any group of meetings identified by a format.", 'bread') ?>
                     </p>
                     <p>
-                        <label for="additional_list_format_key"><?php _e('Format of meetings in the additional list: ', 'bread-domain') ?></label>
+                        <label for="additional_list_format_key"><?php esc_html_e('Format of meetings in the additional list: ', 'bread') ?></label>
                         <select id="additional_list_format_key" name="additional_list_format_key">
-                            <option value=""><?php _e('Not Used', 'bread-domain') ?></option>
+                            <option value=""><?php esc_html_e('Not Used', 'bread') ?></option>
                             <?php if ($this->connected) { ?>
-                                <option value="@Virtual@" <?php echo $this->bread->getOption('additional_list_format_key') == '@Virtual@' ? 'selected' : '' ?>><?php _e('Virtual Meetings', 'bread-domain') ?></option>
-                                <option value="@F2F@" <?php echo $this->bread->getOption('additional_list_format_key') == '@F2F@' ? 'selected' : '' ?>><?php _e('Face-to-Face Meetings', 'bread-domain') ?></option>
+                                <option value="@Virtual@" <?php echo $this->bread->getOption('additional_list_format_key') == '@Virtual@' ? 'selected' : '' ?>><?php esc_html_e('Virtual Meetings', 'bread') ?></option>
+                                <option value="@F2F@" <?php echo $this->bread->getOption('additional_list_format_key') == '@F2F@' ? 'selected' : '' ?>><?php esc_html_e('Face-to-Face Meetings', 'bread') ?></option>
                                 <?php $used_formats = $this->bread->bmlt()->getFormatsForSelect(true);
                                 $countmax = count($used_formats);
                                 for ($count = 0; $count < $countmax; $count++) {
@@ -324,21 +324,21 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         </select>
                     </p>
                     <p>
-                        <label for="additional_list_sort_order"><?php _e('Select sort order for the additional list', 'bread-domain') ?></label>
+                        <label for="additional_list_sort_order"><?php esc_html_e('Select sort order for the additional list', 'bread') ?></label>
                         <select id="additional_list_sort_order" name="additional_list_sort_order">
-                            <option value="meeting_name" <?php echo $this->bread->getOption('additional_list_sort_order') == 'meeting_name' ? 'selected' : ''; ?>><?php _e('By Name', 'bread-domain') ?></option>
-                            <option value="weekday_tinyint,start_time" <?php echo $this->bread->getOption('additional_list_sort_order') == 'weekday_tinyint,start_time' ? 'selected' : ''; ?>><?php _e('By Day and Time', 'bread-domain') ?></option>
-                            <option value="same" <?php echo $this->bread->getOption('additional_list_sort_order') == 'same' ? 'selected' : ''; ?>><?php _e('Same as main list', 'bread-domain') ?></option>
+                            <option value="meeting_name" <?php echo $this->bread->getOption('additional_list_sort_order') == 'meeting_name' ? 'selected' : ''; ?>><?php esc_html_e('By Name', 'bread') ?></option>
+                            <option value="weekday_tinyint,start_time" <?php echo $this->bread->getOption('additional_list_sort_order') == 'weekday_tinyint,start_time' ? 'selected' : ''; ?>><?php esc_html_e('By Day and Time', 'bread') ?></option>
+                            <option value="same" <?php echo $this->bread->getOption('additional_list_sort_order') == 'same' ? 'selected' : ''; ?>><?php esc_html_e('Same as main list', 'bread') ?></option>
                         </select>
                     </p>
                     <p>
-                        <label for="additional_list_language"><?php _e('Select language for the additional list', 'bread-domain') ?></label>
+                        <label for="additional_list_language"><?php esc_html_e('Select language for the additional list', 'bread') ?></label>
                         <select id="additional_list_language" name="additional_list_language">
                             <?php
                             if ($this->bread->getOption('additional_list_language') == '') {
-                                echo "<option value=\"\" selected=\"selected\">".__('Same as main list', 'bread-domain')."</option>";
+                                echo "<option value=\"\" selected=\"selected\">".__('Same as main list', 'bread')."</option>";
                             } else {
-                                echo "<option value=\"\">".__('Same as main list', 'bread-domain')."</option>";
+                                echo "<option value=\"\">".__('Same as main list', 'bread')."</option>";
                             }
                             foreach ($this->bread->getTranslateTable() as $key => $value) {
                                 if ($this->bread->getOption('additional_list_language') == $key) {
@@ -359,12 +359,12 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     <?php }
                     ?>
                     <p>
-                        <label for="additional_list_custom_query"><?php _e('Custom Query: ', 'bread-domain') ?></label>
+                        <label for="additional_list_custom_query"><?php esc_html_e('Custom Query: ', 'bread') ?></label>
                         <input type="text" id="additional_list_custom_query" name="additional_list_custom_query" size="100" value="<?php echo esc_attr($this->bread->getOption('additional_list_custom_query')) ?>" />
                     </p>
                     <input name="include_additional_list" value="0" type="hidden">
-                    <p><input type="checkbox" name="include_additional_list" value="1" <?php echo ($this->bread->getOption('include_additional_list') == '1' ? 'checked' : '') ?>><?php _e('Include meetings with this format in the main list', 'bread-domain') ?></p>
-                    <?php _e('If you wish to define different contents for the additional list, use this template.', 'bread-domain') ?>
+                    <p><input type="checkbox" name="include_additional_list" value="1" <?php echo ($this->bread->getOption('include_additional_list') == '1' ? 'checked' : '') ?>><?php esc_html_e('Include meetings with this format in the main list', 'bread') ?></p>
+                    <?php esc_html_e('If you wish to define different contents for the additional list, use this template.', 'bread') ?>
                     <div style="margin-top:0px; margin-bottom:20px; max-width:100%; width:100%;">
                         <?php
                         $editor_id = "additional_list_template_content";

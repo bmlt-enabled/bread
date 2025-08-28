@@ -7,17 +7,17 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
         <div id="normal-sortables" class="meta-box-sortables ui-sortable">
             <div id="frontpagecontentdiv" class="postbox">
                 <div style="display:none;">
-                    <div id="frontpage-tooltip-content"><?php _e("
+                    <div id="frontpage-tooltip-content"><?php echo wp_filter_post_kses(__("
                         <p>The Front Page can be customized with text, graphics, tables, shortcodes, ect.</p>
                         <p><strong>Add Media</strong> button - upload and add graphics.</p>
                         <p><strong>Meeting List Shortcodes</strong> dropdown - insert custom data.</p>
-                        <p><strong>Default Font Size</strong> can be changed for specific text.</p>", 'bread-domain') ?>
+                        <p><strong>Default Font Size</strong> can be changed for specific text.</p>", 'bread')) ?>
                     </div>
                 </div>
-                <h3 class="hndle"><?php _e('Front Page Content', 'bread-domain') ?><span data-tooltip-content="#frontpage-tooltip-content" class="my-tooltip"><span class="tooltipster-icon">(?)</span></span></h3>
+                <h3 class="hndle"><?php esc_html_e('Front Page Content', 'bread') ?><span data-tooltip-content="#frontpage-tooltip-content" class="my-tooltip"><span class="tooltipster-icon">(?)</span></span></h3>
                 <div class="inside">
-                    <p><?php _e('Default Font Size: ', 'bread-domain') ?><input min="4" max="18" step=".1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="front_page_font_size" name="front_page_font_size" value="<?php echo esc_attr($this->bread->getOptionForDisplay('front_page_font_size', '10')); ?>" />&nbsp;&nbsp;
-                        <?php _e('Line Height: ', 'bread-domain') ?><input min="1" max="3" step=".1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="front_page_line_height" type="text" maxlength="3" size="3" name="front_page_line_height" value="<?php echo esc_attr($this->bread->getOptionForDisplay('front_page_line_height', '1.0')); ?>" /></p>
+                    <p><?php esc_html_e('Default Font Size: ', 'bread') ?><input min="4" max="18" step=".1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="front_page_font_size" name="front_page_font_size" value="<?php echo esc_attr($this->bread->getOptionForDisplay('front_page_font_size', '10')); ?>" />&nbsp;&nbsp;
+                        <?php esc_html_e('Line Height: ', 'bread') ?><input min="1" max="3" step=".1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="front_page_line_height" type="text" maxlength="3" size="3" name="front_page_line_height" value="<?php echo esc_attr($this->bread->getOptionForDisplay('front_page_line_height', '1.0')); ?>" /></p>
                     <div style="margin-top:15px; margin-bottom:20px; max-width:100%; width:100%;">
                         <?php
                         $editor_id = "front_page_content";

@@ -37,7 +37,7 @@ class Bread_i18n
     {
 
         load_plugin_textdomain(
-            'bread-domain',
+            'bread',
             false,
             dirname(dirname(plugin_basename(__FILE__))) . '/languages/'
         );
