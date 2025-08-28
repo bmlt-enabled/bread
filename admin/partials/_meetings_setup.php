@@ -336,9 +336,9 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                         <select id="additional_list_language" name="additional_list_language">
                             <?php
                             if ($this->bread->getOption('additional_list_language') == '') {
-                                echo "<option value=\"\" selected=\"selected\">".__('Same as main list', 'bread')."</option>";
+                                echo "<option value=\"\" selected=\"selected\">".esc_html(__('Same as main list', 'bread'))."</option>";
                             } else {
-                                echo "<option value=\"\">".__('Same as main list', 'bread')."</option>";
+                                echo "<option value=\"\">".esc_html(__('Same as main list', 'bread'))."</option>";
                             }
                             foreach ($this->bread->getTranslateTable() as $key => $value) {
                                 if ($this->bread->getOption('additional_list_language') == $key) {

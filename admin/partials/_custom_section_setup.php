@@ -7,7 +7,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
         <div id="normal-sortables" class="meta-box-sortables ui-sortable">
             <div id="custom-content-div" class="postbox">
                 <div style="display:none;">
-                    <div id="customsection-tooltip-content"><?php echo wp_filter_post_kses(__("
+                    <div id="customsection-tooltip-content"><?php echo wp_kses_post(__("
                         <p>The Custom Content can be customized with text, graphics, tables, shortcodes, etc.</p>
                         <p><strong>Default Font Size</strong> can be changed for specific text in the editor.</p>
                         <p><strong>Add Media</strong> button - upload and add graphics.</p>

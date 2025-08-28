@@ -7,7 +7,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
         <div id="normal-sortables" class="meta-box-sortables ui-sortable">
             <div id="frontpagecontentdiv" class="postbox">
                 <div style="display:none;">
-                    <div id="frontpage-tooltip-content"><?php echo wp_filter_post_kses(__("
+                    <div id="frontpage-tooltip-content"><?php echo wp_kses_post(__("
                         <p>The Front Page can be customized with text, graphics, tables, shortcodes, ect.</p>
                         <p><strong>Add Media</strong> button - upload and add graphics.</p>
                         <p><strong>Meeting List Shortcodes</strong> dropdown - insert custom data.</p>

@@ -36,6 +36,7 @@ class Bread_AdminDisplay
             if ($serverInfo[0]["aggregator_mode_enabled"] ?? false) {
                 $this->server_version = "<span style='color: #00AD00;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-admin-site'></div>".__('Using Tomato Server', 'bread')."</span>";
             } elseif ($this->connected) {
+                /* translators: string is the version number of the BMLT Server */
                 $this->server_version = "<span style='color: #0A8ADD;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-smiley'></div>".sprintf(__('Your BMLT Server is running %s', 'bread'), esc_html($this->connected)). "</span>";
             }
         }
@@ -43,7 +44,9 @@ class Bread_AdminDisplay
     private function select_service_bodies()
     {
         for ($i = 1; $i <= 5; $i++) { ?>
-            <li><label for="service_body_<?php echo esc_html($i); ?>"><?php echo sprintf(__('Service Body %s', 'bread'), esc_html($i)) ?>: </label>
+            <li><label for="service_body_<?php
+                /* translators: Bread can query up to five servers, the string is the number 1-5 */
+                echo esc_html($i); ?>"><?php echo esc_html(sprintf(__('Service Body %s', 'bread'), $i)) ?>: </label>
                 <select class="service_body_select" id="service_body_<?php echo esc_html($i); ?>" name="service_body_<?php echo esc_html($i); ?>"><?php
                 if ($this->connected) {
                     $this->select_service_body_options($i);
@@ -90,16 +93,17 @@ class Bread_AdminDisplay
         set_transient('admin_notice', 'Please put down your weapon. You have 20 seconds to comply.');
         echo '<div class="updated">';
         if (!$this->admin->current_user_can_modify()) {
-            echo '<p style="color: #F00;">'.__('You do not have permission to save this configuation!', 'bread').'</p>';
+            echo '<p style="color: #F00;">'.esc_html(__('You do not have permission to save this configuation!', 'bread')).'</p>';
         } elseif (isset($_COOKIE['bread_import_file'])) {
-            echo '<p style="color: #F00;">'.__('File loaded', 'bread').'</p>';
+            echo '<p style="color: #F00;">'.esc_html(__('File loaded', 'bread')).'</p>';
             delete_transient($this->bread->get_TransientKey($this->bread->getRequestedSetting()));
         } elseif (isset($_POST['bmltmeetinglistsave']) && $_POST['bmltmeetinglistsave']) {
             $this->admin->save_admin_options();
-            echo '<p style="color: #F00;">'.__('Your changes were successfully saved!', 'bread').'</p>';
+            echo '<p style="color: #F00;">'.esc_html(__('Your changes were successfully saved!', 'bread')).'</p>';
             $num = delete_transient($this->bread->get_TransientKey($this->bread->getRequestedSetting()));
             if ($num > 0) {
-                echo "<p>" . sprintf(__('%s Cache entries deleted', 'bread'), esc_attr($num))."</p>";
+                /* translators: string is number of cache entries deleted */
+                echo "<p>" . esc_html(sprintf(__('%s Cache entries deleted', 'bread')), esc_attr($num))."</p>";
             }
         }
         echo '</div>';

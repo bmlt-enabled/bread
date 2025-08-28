@@ -31,7 +31,7 @@ foreach ($all_users as $user) {
                                 <label for="sslverify"><?php esc_html_e('Disable SSL verification of server', 'bread') ?></label>
                         <?php }
                     } elseif ($this->bread->emptyOption('root_server')) {
-                        echo "<span style='color: #f00;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-dismiss'></div>".__('ERROR: Please enter a BMLT Server', 'bread')."</span>";
+                        echo "<span style='color: #f00;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-dismiss'></div>".esc_html(__('ERROR: Please enter a BMLT Server', 'bread'))."</span>";
                         echo '<input type="hidden" id="user_agent" value="' . esc_html($this->bread->getOption('user_agent')) . '" />';
                         if ($this->bread->getOption('sslverify') == '1') { ?>
                             <p>
@@ -70,7 +70,10 @@ foreach ($all_users as $user) {
                     <div id="customquery-tooltip-content">
                         <p>
                             <?php esc_html_e('This will be executed as part of the meeting search query. This will override any setting in the Service Body dropdowns.', 'bread') ?>
-                            <br /><?php echo sprintf(__('You can get help formulating a query using your sites <a href="%s">semantic interface</a>.', 'bread'), esc_url($this->bread->getOption('root_server')).'/semantic') ?>
+                            /* translators: draft saved date format, see http://php.net/date */
+                            <br /><?php
+                                /* translators: the string is a link to the semantic interface of the BMLT server */
+                                echo esc_html(sprintf(__('You can get help formulating a query using your sites <a href="%s">semantic interface</a>.', 'bread'), esc_url($this->bread->getOption('root_server'))).'/semantic') ?>
                         </p>
                     </div>
                 </div>
