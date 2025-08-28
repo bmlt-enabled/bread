@@ -234,7 +234,7 @@ jQuery(document).ready(function($){
         }
         return true;
     });
-    $("#wizard_service_bodies").chosen({
+    $("#wizard_service_bodies").select2({
         inherit_select_classes: true,
         max_selected_options:5,
         width: "62%"

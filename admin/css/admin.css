@@ -1,7 +1,7 @@
 .wpbody-content {
     margin-top: 0;
-    margin-left: 0;
-    margin-right: 0;
+    margin-inline-start: 0;
+    margin-inline-end: 0;
     height: 100%;
     width: 100%;
 }
@@ -34,7 +34,7 @@ and (orientation: portrait) {
 }
 
 .ui-accordion .ui-accordion-icons {
-  padding-left: 2.2em !important;
+  padding-inline-start: 2.2em !important;
 }
 img.box-description {
   margin: 0px 10px 0px 10px;
@@ -123,12 +123,12 @@ div#meeting-list-tabs-wrapper li {
 margin-top: 1px;
 color: #FFF;
 float: right;
-margin-right: 20px;
+margin-inline-end: 20px;
 }
 #meeting-list-tabs .icon-question2 {
 margin-top: 1px;
 color: #FFF;
-margin-left: 5px;
+margin-inline-start: 5px;
 }
 #meeting-list-tabs .icon-question2:before {
     content: "\e6b7";
@@ -205,8 +205,8 @@ a img.alignleft {
 
 a img.aligncenter {
     display: block;
-    margin-left: auto;
-    margin-right: auto
+    margin-inline-start: auto;
+    margin-inline-end: auto
 }
 
 .wp-caption {
@@ -273,7 +273,7 @@ width:410px;
 vertical-align: top;
 border: solid 1px #D5D5D5;
 padding: 10px 15px;
-margin-left: 5px;
+margin-inline-start: 5px;
 margin-bottom: 10px;
 display: -webkit-inline-box;
 color: #999;
@@ -293,10 +293,10 @@ font-size: 22px;
 }
 .tooltipster-icon {
   cursor: help;
-  margin-left: 10px;
+  margin-inline-start: 10px;
   background: url("images/help-image2.png") no-repeat;
   color: rgba(0, 0, 0, 0);
-  padding-right: 5px;
+  padding-inline-end: 5px;
 }
 .mlg.dashicons-search:before
 {
@@ -322,17 +322,17 @@ color: #222;
 .ui-tabs.ui-tabs-vertical .ui-widget-header {
     border: none;
 }
-.ui-tabs.ui-tabs-vertical .ui-tabs-nav {
+.bmlt-ltr .ui-tabs.ui-tabs-vertical .ui-tabs-nav {
     float: left;
     width: 10em;
     background: #CCC;
     border-radius: 4px 0 0 4px;
     border-right: 1px solid gray;
-	padding-right: 20px;
+	padding-inline-end: 20px;
 	padding-top: 7px;
-	padding-left: 0;
+	padding-inline-start: 0;
 }
-#meeting-list-tabs.ui-tabs.ui-tabs-vertical .ui-tabs-nav li {
+.bmlt-ltr #meeting-list-tabs.ui-tabs.ui-tabs-vertical .ui-tabs-nav li {
     clear: left;
     width: 100%;
     margin: 0.2em 0;
@@ -373,7 +373,7 @@ color: #000;
 #meeting-list-tabs.ui-tabs.ui-tabs-vertical .ui-tabs-nav li:last-child {
     margin-bottom: 10px;
 }
-#meeting-list-tabs.ui-tabs.ui-tabs-vertical .ui-tabs-panel {
+.bmlt-ltr #meeting-list-tabs.ui-tabs.ui-tabs-vertical .ui-tabs-panel {
     float: left;
     width: 50%;
     border-left: 0;
@@ -408,7 +408,7 @@ width: 4em !important;
 }
 .mce-listbox button {
   text-align: left;
-  padding-right: 20px !important;
+  padding-inline-end: 20px !important;
   position: relative;
 }
 /*
@@ -496,12 +496,9 @@ select.service_body_select {
 .extra_meetings_label {
     margin-top: 10px;
 }
-.exactCenter { width:800px; height:800px; position: fixed; top: 50%; left: 50%; margin-top: -100px; margin-left: -100px; }
+.exactCenter { width:800px; height:800px; position: fixed; top: 50%; left: 50%; margin-top: -100px; margin-inline-start: -100px; }
 #extra_meetings * {
     font-family: 'Courier New', Courier, monospace !important;
-}
-.chosen-container-multi .chosen-choices li.search-field input[type=text] {
-    width: 100% !important;
 }
 .step-description {
     margin: 10px;
@@ -517,3 +514,46 @@ select.service_body_select {
     color: green;
     font-weight: bold;
 }
+
+.bmlt-rtl .ui-tabs-vertical { width: 55em; }
+.bmlt-rtl .ui-tabs-vertical .ui-tabs-nav li a { display:block; }
+.bmlt-rtl .ui-tabs-vertical .ui-tabs-panel {
+    direction:rtl;
+    width: 60%;
+    position: relative;
+    float: right;
+}
+.bmlt-rtl .ui-tabs .ui-tabs-nav li a { float:none;}
+
+.bmlt-rtl .ui-tabs-vertical .ui-tabs-nav {
+    float: right;
+    width: 10em;
+    background: #CCC;
+    border-radius: 4px 0 0 4px;
+    border-right: 1px solid gray;
+	padding-inline-end: 20px;
+	padding-top: 7px;
+	padding-inline-start: 0;
+}
+.bmlt-rtl .ui-tabs-vertical .ui-tabs-nav li  {
+    clear: right;
+    width: 100%;
+    margin: 0.2em 0;
+    /* border: 1px solid gray; */
+    /* border-width: 1px 1px 1px 1px; */
+    /* border-radius: 4px 4px 4px 4px; */
+    overflow: hidden;
+    position: relative;
+    left: -2px;
+    z-index: 2;
+}
+.bmlt-rtl .ui-tabs .ui-tabs-nav li {
+    float: right !important
+}
+.select2-container {
+    width: 50% !important;
+}
+.nav-tab-wrapper {
+    width: max-content !important;
+}
+.select2-search--inline { display: contents; } .select2-search__field:placeholder-shown { width: 100% !important; }

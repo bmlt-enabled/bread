@@ -1,0 +1,752 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Bread\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-28 12:15+0000\n"
+"PO-Revision-Date: 2025-08-28 13:07+0000\n"
+"Last-Translator: \n"
+"Language-Team: Persian\n"
+"Language: fa_IR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Domain: bread-domain\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.8.0; wp-6.8.2; php-8.2.0"
+
+msgid ""
+"\n"
+"                        <p>The Custom Content can be customized with text, "
+"graphics, tables, shortcodes, etc.</p>\n"
+"                        <p><strong>Default Font Size</strong> can be changed "
+"for specific text in the editor.</p>\n"
+"                        <p><strong>Add Media</strong> button - upload and "
+"add graphics.</p>\n"
+"                        <p><strong>Meeting List Shortcodes</strong> dropdown "
+"- insert variable data.</p>\n"
+"                        <p><i>The Custom Content will print immediately "
+"after the meetings in the meeting list.</i></p>"
+msgstr ""
+"<p> محتوای سفارشی را می توان با متن ، گرافیک ، جداول ، کد کوتاه و غیره "
+"سفارشی کرد .___ html_1___\n"
+"                        <p><strong>default font size</strong> برای متن خاص "
+"در ویرایشگر قابل تغییر است .___ html_1___\n"
+"                        <p><strong>add media</strong> دکمه - بارگذاری و "
+"اضافه کردن گرافیک .___ html_1___\n"
+"                        <p><strong>Meeting لیست کوتاه کد های </strong> کشویی "
+"- داده های متغیر را وارد کنید .___ html_1___\n"
+"                        <p><i> محتوای سفارشی بلافاصله پس از جلسات در لیست "
+"جلسه چاپ می شود .___ html_16___</p>"
+
+msgid ""
+"\n"
+"                        <p>The Front Page can be customized with text, "
+"graphics, tables, shortcodes, ect.</p>\n"
+"                        <p><strong>Add Media</strong> button - upload and "
+"add graphics.</p>\n"
+"                        <p><strong>Meeting List Shortcodes</strong> dropdown "
+"- insert custom data.</p>\n"
+"                        <p><strong>Default Font Size</strong> can be changed "
+"for specific text.</p>"
+msgstr ""
+"<p> صفحه اول را می توان با متن ، گرافیک ، جداول ، کد کوتاه ، ect .___ "
+"html_1___ سفارشی سازی کرد.\n"
+"                        <p><strong>add media</strong> دکمه - بارگذاری و "
+"اضافه کردن گرافیک .___ html_1___\n"
+"                        <p><strong>meeting لیست کوتاه کد های </strong> کشویی "
+"- داده های سفارشی را وارد کنید .___ html_1___\n"
+"                        <p><strong>default font size</strong> برای متن خاص "
+"قابل تغییر است .___ html_1___"
+
+msgid "%s Cache entries deleted"
+msgstr "%s ورودی های حافظه نهان حذف شده"
+
+msgid "0 - 999 Hours (0 = disable cache)"
+msgstr "0 - 999 ساعت (0 = غیرفعال کردن حافظه پنهان)"
+
+msgid "12 Hour"
+msgstr "12 ساعته"
+
+msgid "24 Hour"
+msgstr "24 ساعته"
+
+msgid "24 Hour French"
+msgstr "24 ساعته فرانسوی"
+
+msgid "5 inch"
+msgstr "5 اینچ"
+
+msgid "A4"
+msgstr "A4"
+
+msgid "A5"
+msgstr "A5"
+
+msgid "A6"
+msgstr "A6"
+
+msgid "Add extra pages for booklet"
+msgstr "صفحات اضافی را برای جزوه اضافه کنید"
+
+msgid "Add White Space"
+msgstr "فضای سفید را اضافه کنید"
+
+msgid "Additional List"
+msgstr "لیست اضافی"
+
+msgid "All Meetings from your BMLT Server are shown in the list."
+msgstr "تمام جلسات از سرور BMLT شما در لیست نشان داده شده است."
+
+msgid ""
+"Also useful for backing up before making significant changes to the meeting "
+"list settings."
+msgstr ""
+"همچنین برای تهیه نسخه پشتیبان از قبل از ایجاد تغییرات مهم در تنظیمات لیست "
+"جلسه مفید است."
+
+msgid "Anything"
+msgstr "هر چیزی"
+
+msgid "Arial"
+msgstr "عیاشی"
+
+msgid ""
+"Avoid using tables which will greatly slow down the generation time. Use CSS "
+"instead to get table-like effects if need be."
+msgstr ""
+"از استفاده از جداول خودداری کنید که زمان تولید را به شدت کاهش می دهد. به جای "
+"آن از CSS استفاده کنید تا در صورت لزوم جلوه های جدول مانند را بدست آورید."
+
+msgid "Background Color:"
+msgstr "رنگ پس زمینه:"
+
+msgid "Backup/ Restore"
+msgstr "پشتیبان گیری/ بازیابی"
+
+msgid "Base Font: "
+msgstr "قلم پایه:"
+
+msgid "Base Fonts and Colors"
+msgstr "قلم ها و رنگ های پایه"
+
+msgid "BMLT Server"
+msgstr "سرور BMLT"
+
+msgid "BMLT Server URL: "
+msgstr "URL سرور BMLT:"
+
+#. Author of the plugin
+msgid "bmlt-enabled"
+msgstr "BMLT فعال"
+
+msgid "Bold: "
+msgstr "پررنگ:"
+
+msgid "Booklet"
+msgstr "کتاب"
+
+msgid "Booklets"
+msgstr "کتابفروشی"
+
+msgid "Borough"
+msgstr "ولگرد"
+
+msgid "Borough Suffix: "
+msgstr "پسوند بورو:"
+
+msgid "Borough+County"
+msgstr "ولسوالی+شهرستان"
+
+msgid "Bottom: "
+msgstr "پایین:"
+
+#. Name of the plugin
+msgid "Bread"
+msgstr "نان"
+
+msgid ""
+"Bread can support multiple meeting lists.  Each meeting list has an integer "
+"ID and a text description that help the user to identify\n"
+"                        the configuration (or \\'settings\\') that will be "
+"used to generate the meeting list.  The ID of the configuration is used in "
+"the link\n"
+"                        that generates the meeting list (eg, ?current-"
+"meeting-list=2 generates the meeting list with ID 2)."
+msgstr ""
+"نان می تواند از لیست های جلسات مختلف پشتیبانی کند.  هر لیست جلسه دارای شناسه "
+"عدد صحیح و توضیحات متن است که به کاربر کمک می کند تا شناسایی کند\n"
+"                        پیکربندی (یا \"تنظیمات \\\") که برای تولید لیست جلسه "
+"استفاده می شود.  شناسه پیکربندی در لینک استفاده می شود\n"
+"                        این لیست جلسه را ایجاد می کند (به عنوان مثال ، لیست "
+"شماره فعلی = 2 لیست جلسه را با شناسه 2 تولید می کند)."
+
+msgid "By Day and Time"
+msgstr "روز و زمان"
+
+msgid "By Name"
+msgstr "با نام"
+
+msgid "CACHE is DELETED when you Save Changes."
+msgstr "حافظه پنهان هنگام ذخیره تغییرات حذف می شود."
+
+msgid "Cache Time: "
+msgstr "زمان حافظه نهان:"
+
+msgid "City"
+msgstr "شهر"
+
+msgid "City Suffix: "
+msgstr "پسوند شهر:"
+
+msgid "CMYK"
+msgstr "cmyk"
+
+msgid "Color space: "
+msgstr "فضای رنگ:"
+
+msgid "Color:"
+msgstr "رنگ:"
+
+msgid "Column Gap Width: "
+msgstr "عرض شکاف ستون:"
+
+msgid "Combine main and subgroup into a single header"
+msgstr "اصلی و زیر گروه را در یک هدر واحد ترکیب کنید"
+
+msgid "Configuration Manager"
+msgstr "مدیر پیکربندی"
+
+msgid "Configuration Name: "
+msgstr "نام پیکربندی:"
+
+msgid "Configuration Selection"
+msgstr "انتخاب پیکربندی"
+
+msgid "Consider backing up your settings by using the Export function."
+msgstr "با استفاده از عملکرد صادرات ، از تنظیمات خود نسخه پشتیبان تهیه کنید."
+
+msgid "County"
+msgstr "شهرستان"
+
+msgid "County Suffix: "
+msgstr "پسوند شهرستان:"
+
+msgid "Courier"
+msgstr "پیک"
+
+msgid "Current Meeting List"
+msgstr "لیست جلسه فعلی"
+
+msgid "Current Meeting List Link"
+msgstr "پیوند لیست جلسه فعلی"
+
+msgid "Custom Content"
+msgstr "محتوای سفارشی"
+
+msgid "Custom Footer: "
+msgstr "پاورقی سفارشی:"
+
+msgid "Custom Query"
+msgstr "پرس و جو سفارشی"
+
+msgid "Custom Query: "
+msgstr "پرس و جو سفارشی:"
+
+msgid "Custom Section Content"
+msgstr "محتوای بخش سفارشی"
+
+msgid ""
+"Customize how meetings are grouped and the headline that each group has."
+msgstr "نحوه گروه بندی جلسات و تیتر هر گروه را سفارشی کنید."
+
+msgid "Customizer"
+msgstr "سفارشی ساز"
+
+msgid "Default Font Size: "
+msgstr "اندازه فونت پیش فرض:"
+
+msgid "DejaVu Sans Condensed"
+msgstr "dejavu sans متراکم"
+
+msgid "Delete Current Configuration"
+msgstr "پیکربندی فعلی را حذف کنید"
+
+msgid "Disable SSL verification of server"
+msgstr "تأیید SSL سرور را غیرفعال کنید"
+
+msgid "Display (Cont) Header: "
+msgstr "هدر نمایش (ادامه):"
+
+msgid "Display each subgroup with its own header"
+msgstr "هر زیر گروه را با عنوان خود نمایش دهید"
+
+msgid "Display Subgrouping: "
+msgstr "نمایش زیر گروه:"
+
+msgid "Download Log Files"
+msgstr "بارگیری پرونده های log"
+
+msgid "Duplicate Current Configuration"
+msgstr "پیکربندی فعلی کپی"
+
+msgid "Enable Logging"
+msgstr "ورود به سیستم را فعال کنید"
+
+msgid "Enable PDF Protection."
+msgstr "محافظت از PDF را فعال کنید."
+
+msgid "Enable Protection"
+msgstr "محافظت"
+
+msgid "Enable SimpleTables"
+msgstr "Simpleables را فعال کنید"
+
+msgid "Encrypted PDFs can be opened and printed."
+msgstr "PDF های رمزگذاری شده را می توان باز و چاپ کرد."
+
+msgid "Encrypts and sets the PDF document permissions for the PDF file."
+msgstr "مجوزهای سند PDF را برای پرونده PDF رمزگذاری و تنظیم می کند."
+
+msgid "ERROR: Please enter a BMLT Server"
+msgstr "خطا: لطفاً یک سرور BMLT وارد کنید"
+
+msgid "ERROR: Problem Connecting to BMLT Server"
+msgstr "خطا: اتصال به سرور BMLT"
+
+msgid "Export"
+msgstr "صادر کردن"
+
+msgid "Export Configuration"
+msgstr "پیکربندی صادرات"
+
+msgid "Export or backup meeting list settings."
+msgstr "تنظیمات لیست جلسات صادرات یا پشتیبان گیری."
+
+msgid "Extra Meetings Enabled"
+msgstr "جلسات اضافی فعال شده است"
+
+msgid "Face-to-Face Meetings"
+msgstr "جلسات چهره به چهره"
+
+msgid "File loaded"
+msgstr "پرونده بارگیری شده است"
+
+msgid "File size greater than 500k"
+msgstr "اندازه پرونده بیشتر از 500k"
+
+msgid "Flyer"
+msgstr "پروانه دار"
+
+msgid "Font Size: "
+msgstr "اندازه قلم:"
+
+msgid "Format of meetings in the additional list: "
+msgstr "قالب جلسات در لیست اضافی:"
+
+msgid "Front Page"
+msgstr "صفحه اول"
+
+msgid "Front Page Content"
+msgstr "محتوای صفحه اول"
+
+msgid "Full Page"
+msgstr "صفحه کامل"
+
+msgid "Generate Meeting List"
+msgstr "لیست جلسات را تولید کنید"
+
+msgid "Getting Started"
+msgstr "شروع"
+
+msgid "Greyscale"
+msgstr "گودال"
+
+msgid "Group"
+msgstr "گروه"
+
+msgid "Group Meetings By: "
+msgstr "جلسات گروهی توسط:"
+
+msgid "Half-Fold"
+msgstr "نیمی"
+
+msgid "Header Margin Top: "
+msgstr "بالای حاشیه هدر:"
+
+msgid "Header Text: "
+msgstr "متن هدر:"
+
+msgid "Hint: Type a group name, weekday or area to narrow down your choices."
+msgstr ""
+"نکته: برای محدود کردن انتخاب های خود ، نام گروهی ، روز هفته یا منطقه را تایپ "
+"کنید."
+
+#. URI of the plugin
+msgid "https://bmlt.app"
+msgstr "https://bmlt.app"
+
+#. Author URI of the plugin
+msgid "https://bmlt.app/"
+msgstr "https://bmlt.app/"
+
+msgid ""
+"If you wish to define different contents for the additional list, use this "
+"template."
+msgstr ""
+"اگر می خواهید مطالب مختلف را برای لیست اضافی تعریف کنید ، از این الگوی "
+"استفاده کنید."
+
+msgid "Import"
+msgstr "وارد کردن"
+
+msgid "Import Configuration"
+msgstr "پیکربندی واردات"
+
+msgid "Import meeting list settings from a previously exported meeting list."
+msgstr "تنظیمات لیست جلسه واردات از لیست جلسه قبلی صادر شده."
+
+msgid "Include Extra Meetings"
+msgstr "شامل جلسات اضافی"
+
+msgid "Include Extra Meetings from Another Service Body."
+msgstr "شامل جلسات اضافی از بدنه سرویس دیگر."
+
+msgid "Include meetings with this format in the main list"
+msgstr "جلسات با این قالب را در لیست اصلی قرار دهید"
+
+msgid "Include Only This Meeting Format"
+msgstr "فقط این قالب جلسه را درج کنید"
+
+msgid "Landscape"
+msgstr "چشم انداز"
+
+msgid "Large Area, Region, Metro"
+msgstr "منطقه بزرگ ، منطقه ، مترو"
+
+msgid "Ledger"
+msgstr "پیشخدمت"
+
+msgid "Left: "
+msgstr "سمت چپ:"
+
+msgid "Legal"
+msgstr "حقوقی"
+
+msgid "Letter"
+msgstr "نامه"
+
+msgid "Line Height: "
+msgstr "ارتفاع خط:"
+
+msgid "Load Configuration"
+msgstr "پیکربندی بار"
+
+msgid "Main Grouping: "
+msgstr "گروه بندی اصلی:"
+
+#. Description of the plugin
+msgid "Maintains and generates PDF Meeting Lists from BMLT."
+msgstr "لیست های جلسات PDF را از BMLT حفظ و تولید می کند."
+
+msgid "Margin Footer: "
+msgstr "پاورقی حاشیه:"
+
+msgid "Medium Area"
+msgstr "منطقه متوسط"
+
+msgid "Meeting Format: "
+msgstr "قالب جلسه:"
+
+msgid "Meeting Group [Column] Header"
+msgstr "گروه جلسات [ستون]"
+
+msgid "Meeting List Author(s)"
+msgstr "لیست جلسه نویسنده (ها)"
+
+msgid "Meeting List Cache"
+msgstr "حافظه پنهان لیست جلسه"
+
+msgid "Meeting List ID: "
+msgstr "شناسه لیست جلسه:"
+
+msgid "Meeting List Size"
+msgstr "اندازه لیست جلسه"
+
+msgid "Meeting Template"
+msgstr "الگوی جلسه"
+
+msgid "Meetings"
+msgstr "جلسات"
+
+msgid "Neighborhood"
+msgstr "محاصره"
+
+msgid "Neighborhood Suffix: "
+msgstr "پسوند محله:"
+
+msgid "Neighborhood+City"
+msgstr "محله+شهر"
+
+msgid "No header for subgroups"
+msgstr "بدون هدر برای زیر گروه ها"
+
+msgid "None"
+msgstr "هیچ کدام"
+
+msgid "Not Used"
+msgstr "استفاده نشده"
+
+msgid "Note: Be sure to select all meetings for each group."
+msgstr "توجه: حتماً تمام جلسات را برای هر گروه انتخاب کنید."
+
+msgid "Note: Encrypted PDFs cannot be opened in MS Word at all."
+msgstr "توجه: PDF های رمزگذاری شده به هیچ وجه نمی توانند در MS Word باز شوند."
+
+msgid "Optimize/Debug mPDF"
+msgstr "MPDF بهینه سازی/اشکال زدایی"
+
+msgid "Optional Password to allow editing in a PDF editor."
+msgstr "رمزعبور اختیاری برای ویرایش در ویرایشگر PDF."
+
+msgid "Orientation"
+msgstr "جهت گیری"
+
+msgid "Pack Table Data"
+msgstr "داده های جدول بسته بندی"
+
+msgid "Page Decorations"
+msgstr "دکوراسیون صفحه"
+
+msgid "Page Height"
+msgstr "ارتفاع صفحه"
+
+msgid "Page Layout"
+msgstr "چیدمان صفحه"
+
+msgid "Page Layout Defaults"
+msgstr "پیش فرض طرح بندی صفحه"
+
+msgid "Page Margin Top: "
+msgstr "بالای صفحه بالای صفحه:"
+
+msgid "Page Numbers Font Size: "
+msgstr "شماره صفحه اندازه فونت:"
+
+msgid "Page Size:"
+msgstr "اندازه صفحه:"
+
+msgid "Paper Size"
+msgstr "اندازه کاغذ"
+
+msgid "Password Protection"
+msgstr "محافظت از رمز عبور"
+
+msgid "Password: "
+msgstr "رمز عبور:"
+
+msgid "Please Choose a File."
+msgstr "لطفا یک پرونده را انتخاب کنید."
+
+msgid "Please upload a file to import"
+msgstr "لطفا یک پرونده را برای واردات بارگذاری کنید"
+
+msgid "Please upload a valid .json file"
+msgstr "لطفاً یک پرونده معتبر .json بارگذاری کنید"
+
+msgid "Portrait"
+msgstr "تصویر"
+
+msgid "Portrait, Landscape"
+msgstr "پرتره ، منظره"
+
+msgid "Preview"
+msgstr "پیش نمایش"
+
+msgid "Quad-Fold"
+msgstr "چهار برابر"
+
+msgid "Recurse Service Bodies"
+msgstr "مجدداً اجسام خدمات"
+
+msgid "Remove White Space"
+msgstr "فضای سفید را بردارید"
+
+msgid "RGB"
+msgstr "RGB"
+
+msgid "Right: "
+msgstr "سمت راست:"
+
+msgid "Same as main list"
+msgstr "همان لیست اصلی"
+
+msgid "Save Changes"
+msgstr "تغییرات را ذخیره کنید"
+
+msgid "Save Changes before Generating Meeting List."
+msgstr "قبل از تولید لیست جلسات ، تغییرات را ذخیره کنید."
+
+msgid "Save Configuration Name"
+msgstr "نام پیکربندی را ذخیره کنید"
+
+msgid "Select Configuration: "
+msgstr "پیکربندی را انتخاب کنید:"
+
+msgid "Select language for the additional list"
+msgstr "برای لیست اضافی زبان را انتخاب کنید"
+
+msgid "Select sort order for the additional list"
+msgstr "برای لیست اضافی ترتیب مرتب سازی را انتخاب کنید"
+
+msgid "Separator: "
+msgstr "جداکننده:"
+
+msgid "Service Body %s"
+msgstr "بدنه سرویس %s"
+
+msgid "Single Page"
+msgstr "یک صفحه"
+
+msgid "Smaller Areas"
+msgstr "مناطق کوچکتر"
+
+msgid "Start Time Format"
+msgstr "قالب زمان شروع"
+
+msgid "State"
+msgstr "حالت"
+
+msgid "State+City"
+msgstr "ایالت+شهر"
+
+msgid "Sub-Grouping: "
+msgstr "زیر گروهی:"
+
+msgid "Suppress Heading: "
+msgstr "سرکوب عنوان:"
+
+msgid "Text Color:"
+msgstr "رنگ متن:"
+
+msgid "The Meetings you select will be merged into your meeting list."
+msgstr "جلساتی که انتخاب می کنید در لیست جلسات شما ادغام می شوند."
+
+msgid ""
+"The page header is a title that goes across the entire page above the "
+"meetings."
+msgstr "عنوان صفحه عنوانی است که در کل صفحه بالاتر از جلسات قرار می گیرد."
+
+msgid ""
+"This allows you to easily import meeting list settings into another site."
+msgstr ""
+"این به شما امکان می دهد تنظیمات لیست جلسه را به راحتی در سایت دیگری وارد "
+"کنید."
+
+msgid ""
+"This section allows the definition of an additional meeting list, containing "
+"meetings that should not be included in the main\n"
+"                        list. This is typically virtual meetings, but it can "
+"be any group of meetings identified by a format."
+msgstr ""
+"این بخش اجازه می دهد تا تعریف یک لیست جلسات اضافی ، شامل جلساتی که نباید در "
+"قسمت اصلی گنجانده شوند\n"
+"                        لیست این معمولاً جلسات مجازی است ، اما می تواند هر "
+"گروهی از جلسات باشد که با یک فرمت مشخص می شود."
+
+msgid ""
+"This section describes things on the page other than the contents. Headers, "
+"footers, page numbers."
+msgstr ""
+"در این بخش مواردی در صفحه غیر از محتویات شرح داده شده است. هدرها ، پاورقی ها "
+"، شماره صفحه."
+
+msgid "This site is using an external object cache."
+msgstr "این سایت از حافظه نهان خارجی استفاده می کند."
+
+msgid ""
+"This will be executed as part of the meeting search query. This will "
+"override any setting in the Service Body dropdowns."
+msgstr ""
+"این به عنوان بخشی از پرس و جو جستجوی جلسه اجرا می شود. این امر باعث غلبه بر "
+"هر تنظیم در کشویی بدنه سرویس می شود."
+
+msgid "Times"
+msgstr "بار"
+
+msgid "Tri-Fold"
+msgstr "سه برابر"
+
+msgid "Try a different user agent or \"None\" for Wordpress default: "
+msgstr "یک عامل کاربر متفاوت یا \"هیچ\" را برای پیش فرض وردپرس امتحان کنید:"
+
+msgid "Unrestricted"
+msgstr "بدون محدودیت"
+
+msgid "Uppercase: "
+msgstr "حروف بزرگ:"
+
+msgid "Use Aggregator &#127813;"
+msgstr "از Aggregator &#127813 ؛"
+
+msgid "User Defined"
+msgstr "کاربر تعریف شده"
+
+msgid "Using Tomato Server"
+msgstr "با استفاده از سرور گوجه فرنگی"
+
+msgid "Virtual Meetings"
+msgstr "جلسات مجازی"
+
+msgid "Watermark: "
+msgstr "علامت علامت:"
+
+msgid "Weekday"
+msgstr "روز هفته"
+
+msgid "Weekday Language: "
+msgstr "زبان روز هفته:"
+
+msgid "Weekday Start: "
+msgstr "شروع روز هفته:"
+
+msgid "Weekday+Area"
+msgstr "روز هفته+منطقه"
+
+msgid "Weekday+City"
+msgstr "روز هفته+شهر"
+
+msgid "Weekday+County "
+msgstr "روز هفته+شهرستان"
+
+msgid "What options you see will be dependant on the layout selected."
+msgstr "چه گزینه هایی را می بینید که به طرح انتخاب شده بستگی دارد."
+
+msgid "Wheelchair Icon Size: "
+msgstr "اندازه نماد ویلچر:"
+
+msgid ""
+"When a layout is clicked defaults are reset for orientation, paper size and "
+"page height."
+msgstr ""
+"هنگامی که یک طرح کلیک می شود پیش فرض برای جهت گیری ، اندازه کاغذ و ارتفاع "
+"صفحه تنظیم مجدد می شود."
+
+msgid ""
+"You can get help formulating a query using your sites <a href=\"%s\">"
+"semantic interface</a>."
+msgstr ""
+"شما می توانید با استفاده از سایت های خود <a href=\"%s\">semantic "
+"Interface</a> کمک کنید."
+
+msgid "You do not have permission to save this configuation!"
+msgstr "شما اجازه ذخیره این پیکربندی را ندارید!"
+
+msgid "Your BMLT Server is running %s"
+msgstr "سرور BMLT شما در حال اجرا %s است"
+
+msgid "Your changes were successfully saved!"
+msgstr "تغییرات شما با موفقیت ذخیره شد!"
+
+msgid "Your current meeting list settings will be replaced and lost forever."
+msgstr "تنظیمات لیست فعلی جلسه شما برای همیشه جایگزین و از بین می رود."

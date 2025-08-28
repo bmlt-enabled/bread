@@ -34,16 +34,16 @@ class Bread_AdminDisplay
             $this->unique_areas = $this->bread->bmlt()->get_areas();
             asort($this->unique_areas);
             if ($serverInfo[0]["aggregator_mode_enabled"] ?? false) {
-                $this->server_version = "<span style='color: #00AD00;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-admin-site'></div>Using Tomato Server</span>";
+                $this->server_version = "<span style='color: #00AD00;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-admin-site'></div>".__('Using Tomato Server', 'bread-domain')."</span>";
             } elseif ($this->connected) {
-                $this->server_version = "<span style='color: #0A8ADD;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-smiley'></div>Your BMLT Server is running " . $this->connected . "</span>";
+                $this->server_version = "<span style='color: #0A8ADD;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-smiley'></div>".sprintf(__('Your BMLT Server is running %s', 'bread-domain'), esc_html($this->connected)). "</span>";
             }
         }
     }
     private function select_service_bodies()
     {
         for ($i = 1; $i <= 5; $i++) { ?>
-            <li><label for="service_body_<?php echo esc_html($i); ?>">Service Body <?php echo esc_html($i); ?>: </label>
+            <li><label for="service_body_<?php echo esc_html($i); ?>"><?php echo sprintf(__('Service Body %s', 'bread-domain'), esc_html($i)) ?>: </label>
                 <select class="service_body_select" id="service_body_<?php echo esc_html($i); ?>" name="service_body_<?php echo esc_html($i); ?>"><?php
                 if ($this->connected) {
                     $this->select_service_body_options($i);
@@ -90,42 +90,43 @@ class Bread_AdminDisplay
         set_transient('admin_notice', 'Please put down your weapon. You have 20 seconds to comply.');
         echo '<div class="updated">';
         if (!$this->admin->current_user_can_modify()) {
-            echo '<p style="color: #F00;">You do not have permission to save this configuation!</p>';
+            echo '<p style="color: #F00;">'.__('You do not have permission to save this configuation!', 'bread-domain').'</p>';
         } elseif (isset($_COOKIE['bread_import_file'])) {
-            echo '<p style="color: #F00;">File loaded.</p>';
+            echo '<p style="color: #F00;">'.__('File loaded', 'bread-domain').'</p>';
             delete_transient($this->bread->get_TransientKey($this->bread->getRequestedSetting()));
         } elseif (isset($_POST['bmltmeetinglistsave']) && $_POST['bmltmeetinglistsave']) {
             $this->admin->save_admin_options();
-            echo '<p style="color: #F00;">Your changes were successfully saved!</p>';
+            echo '<p style="color: #F00;">'.__('Your changes were successfully saved!', 'bread-domain').'</p>';
             $num = delete_transient($this->bread->get_TransientKey($this->bread->getRequestedSetting()));
             if ($num > 0) {
-                echo "<p>" . esc_attr($num) . " Cache entries deleted</p>";
+                echo "<p>" . sprintf( __('%s Cache entries deleted', 'bread-domain'), esc_attr($num))."</p>";
             }
         }
         echo '</div>';
 
         $this->bread->fillUnsetOptions();
+        $dir = str_starts_with(get_locale(), 'fa') ? 'rtl' : 'ltr';
         ?>
-        <div class="hide wrap" id="meeting-list-tabs-wrapper">
+        <div class="hide wrap bmlt-<?php echo esc_attr($dir) ?>" id="meeting-list-tabs-wrapper" dir="<?php echo esc_attr($dir); ?>">
             <div id="tallyBannerContainer">
                 <img id="tallyBannerImage" src="<?php echo esc_url(plugin_dir_url(__FILE__) . "../css/images/banner.png") ?>">
             </div>
             <div id="meeting-list-tabs">
                 <ul class="nav">
-                    <li><a href="#instructions"><?php esc_html_e('Getting Started', 'bread'); ?></a></li>
-                    <li><a href="#editor" id='click-customizer'><?php esc_html_e('Customizer', 'bread'); ?></a></li>
-                    <li><a href="#import-export"><?php esc_html_e('Backup/ Restore', 'bread'); ?></a></li>
+                    <li><a href="#instructions"><?php _e('Getting Started', 'bread-domain'); ?></a></li>
+                    <li><a href="#editor" id='click-customizer'><?php _e('Customizer', 'bread-domain'); ?></a></li>
+                    <li><a href="#import-export"><?php _e('Backup/ Restore', 'bread-domain'); ?></a></li>
                 </ul>
                 <div id="instructions">
         <?php include '_meeting_list_setup.php'; ?>
                 </div>
                 <div id="editor">
                     <nav class="nav-tab-wrapper">
-                        <a href="#tabs-first" class="nav-tab nav-tab-active"><?php esc_html_e('BMLT Server', 'bread'); ?></a>
-                        <a href="#layout" class="nav-tab"><?php esc_html_e('Page Layout', 'bread'); ?></a>
-                        <a href="#front-page" class="nav-tab"><?php esc_html_e('Front Page', 'bread'); ?></a>
-                        <a href="#meetings" class="nav-tab"><?php esc_html_e('Meetings', 'bread'); ?></a>
-                        <a href="#custom-section" class="nav-tab"><?php esc_html_e('Custom Content', 'bread'); ?></a>
+                        <a href="#tabs-first" class="nav-tab nav-tab-active"><?php _e('BMLT Server', 'bread-domain'); ?></a>
+                        <a href="#layout" class="nav-tab"><?php _e('Page Layout', 'bread-domain'); ?></a>
+                        <a href="#front-page" class="nav-tab"><?php _e('Front Page', 'bread-domain'); ?></a>
+                        <a href="#meetings" class="nav-tab"><?php _e('Meetings', 'bread-domain'); ?></a>
+                        <a href="#custom-section" class="nav-tab"><?php _e('Custom Content', 'bread-domain'); ?></a>
                     </nav>
                     <form style=" display:inline!important;" method="POST" id="bmlt_meeting_list_options">
                         <input type="hidden" name="current-meeting-list" value="<?php echo esc_attr($this->bread->getRequestedSetting()) ?>" />
@@ -149,10 +150,10 @@ class Bread_AdminDisplay
         <?php include '_custom_section_setup.php'; ?>
                         </div>
         <?php if ($this->admin->current_user_can_modify()) { ?>
-                            <input type="submit" value="Save Changes" id="bmltmeetinglistsave" name="bmltmeetinglistsave" class="button-primary gears-working" />
-                            <input type="submit" value="Preview" id="bmltmeetinglistpreview" name="bmltmeetinglistpreview" class="button-primary" formtarget="_blank" />
-                            <p style="display: inline; margin-top:.5em;margin-bottom:1.0em;margin-left:.2em;"><a target="_blank" class="button-primary" href="<?php echo esc_url(home_url() . "/?current-meeting-list=" . $this->bread->getRequestedSetting()); ?>">Generate Meeting List</a></p>
-                            <div style="display:inline;"><i>&nbsp;&nbsp;Save Changes before Generating Meeting List.</i></div>
+                            <input type="submit" value="<?php _e('Save Changes', 'bread-domain') ?>" id="bmltmeetinglistsave" name="bmltmeetinglistsave" class="button-primary gears-working" />
+                            <input type="submit" value="<?php _e('Preview', 'bread-domain') ?>" id="bmltmeetinglistpreview" name="bmltmeetinglistpreview" class="button-primary" formtarget="_blank" />
+                            <p style="display: inline; margin-top:.5em;margin-bottom:1.0em;margin-left:.2em;"><a target="_blank" class="button-primary" href="<?php echo esc_url(home_url() . "/?current-meeting-list=" . $this->bread->getRequestedSetting()); ?>"><?php _e('Generate Meeting List', 'bread-domain')?></a></p>
+                            <div style="display:inline;"><i>&nbsp;&nbsp;<?php _e('Save Changes before Generating Meeting List.', 'bread-domain') ?></i></div>
                             <br class="clear">
         <?php } ?>
                     </form>
@@ -161,9 +162,6 @@ class Bread_AdminDisplay
         <?php include '_backup_restore_setup.php'; ?>
                 </div>
             </div>
-        </div>
-        <div id="dialog" title="TinyMCE dialog" style="display: none">
-            <textarea>test</textarea>
         </div>
         <?php
     }

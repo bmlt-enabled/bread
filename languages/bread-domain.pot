@@ -1,0 +1,940 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Bread\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-28 12:15+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: \n"
+"Language: \n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.8.0; wp-6.8.2; php-8.2.0\n"
+"X-Domain: bread-domain"
+
+#: admin/partials/_custom_section_setup.php:10
+msgid ""
+"\n"
+"                        <p>The Custom Content can be customized with text, "
+"graphics, tables, shortcodes, etc.</p>\n"
+"                        <p><strong>Default Font Size</strong> can be changed "
+"for specific text in the editor.</p>\n"
+"                        <p><strong>Add Media</strong> button - upload and "
+"add graphics.</p>\n"
+"                        <p><strong>Meeting List Shortcodes</strong> dropdown "
+"- insert variable data.</p>\n"
+"                        <p><i>The Custom Content will print immediately "
+"after the meetings in the meeting list.</i></p>"
+msgstr ""
+
+#: admin/partials/_front_page_setup.php:10
+msgid ""
+"\n"
+"                        <p>The Front Page can be customized with text, "
+"graphics, tables, shortcodes, ect.</p>\n"
+"                        <p><strong>Add Media</strong> button - upload and "
+"add graphics.</p>\n"
+"                        <p><strong>Meeting List Shortcodes</strong> dropdown "
+"- insert custom data.</p>\n"
+"                        <p><strong>Default Font Size</strong> can be changed "
+"for specific text.</p>"
+msgstr ""
+
+#: admin/partials/bread-admin-display.php:102
+#, php-format
+msgid "%s Cache entries deleted"
+msgstr ""
+
+#: admin/partials/_bmlt_server_setup.php:166
+msgid "0 - 999 Hours (0 = disable cache)"
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:241
+msgid "12 Hour"
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:253
+msgid "24 Hour"
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:265
+msgid "24 Hour French"
+msgstr ""
+
+#: admin/partials/_layout_setup.php:76
+msgid "5 inch"
+msgstr ""
+
+#: admin/partials/_layout_setup.php:25 admin/partials/_layout_setup.php:32
+#: admin/partials/_layout_setup.php:46 admin/partials/_layout_setup.php:80
+msgid "A4"
+msgstr ""
+
+#: admin/partials/_layout_setup.php:39 admin/partials/_layout_setup.php:81
+msgid "A5"
+msgstr ""
+
+#: admin/partials/_layout_setup.php:82
+msgid "A6"
+msgstr ""
+
+#: admin/partials/_layout_setup.php:70
+msgid "Add extra pages for booklet"
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:248
+msgid "Add White Space"
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:301
+msgid "Additional List"
+msgstr ""
+
+#: admin/partials/_bmlt_server_setup.php:87
+msgid "All Meetings from your BMLT Server are shown in the list."
+msgstr ""
+
+#: admin/partials/_backup_restore_setup.php:56
+msgid ""
+"Also useful for backing up before making significant changes to the meeting "
+"list settings."
+msgstr ""
+
+#: admin/partials/_layout_setup.php:43
+msgid "Anything"
+msgstr ""
+
+#: admin/partials/_layout_setup.php:153
+msgid "Arial"
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:213
+msgid ""
+"Avoid using tables which will greatly slow down the generation time. Use CSS "
+"instead to get table-like effects if need be."
+msgstr ""
+
+#: admin/partials/_layout_setup.php:113 admin/partials/_meetings_setup.php:29
+msgid "Background Color:"
+msgstr ""
+
+#: admin/partials/bread-admin-display.php:118
+msgid "Backup/ Restore"
+msgstr ""
+
+#: admin/partials/_layout_setup.php:148
+msgid "Base Font: "
+msgstr ""
+
+#: admin/partials/_layout_setup.php:144
+msgid "Base Fonts and Colors"
+msgstr ""
+
+#: admin/partials/_bmlt_server_setup.php:18
+#: admin/partials/bread-admin-display.php:125
+msgid "BMLT Server"
+msgstr ""
+
+#: admin/partials/_bmlt_server_setup.php:21
+msgid "BMLT Server URL: "
+msgstr ""
+
+#. Author of the plugin
+msgid "bmlt-enabled"
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:37
+msgid "Bold: "
+msgstr ""
+
+#: admin/partials/_layout_setup.php:39
+msgid "Booklet"
+msgstr ""
+
+#: admin/partials/_layout_setup.php:66
+msgid "Booklets"
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:52 admin/partials/_meetings_setup.php:106
+#: admin/partials/_meetings_setup.php:127
+msgid "Borough"
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:65
+msgid "Borough Suffix: "
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:53
+msgid "Borough+County"
+msgstr ""
+
+#: admin/partials/_layout_setup.php:85
+msgid "Bottom: "
+msgstr ""
+
+#. Name of the plugin
+msgid "Bread"
+msgstr ""
+
+#: admin/partials/_backup_restore_setup.php:11
+msgid ""
+"Bread can support multiple meeting lists.  Each meeting list has an integer "
+"ID and a text description that help the user to identify\n"
+"                        the configuration (or \\'settings\\') that will be "
+"used to generate the meeting list.  The ID of the configuration is used in "
+"the link\n"
+"                        that generates the meeting list (eg, ?current-"
+"meeting-list=2 generates the meeting list with ID 2)."
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:330
+msgid "By Day and Time"
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:329
+msgid "By Name"
+msgstr ""
+
+#: admin/partials/_bmlt_server_setup.php:169
+msgid "CACHE is DELETED when you Save Changes."
+msgstr ""
+
+#: admin/partials/_bmlt_server_setup.php:165
+msgid "Cache Time: "
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:49 admin/partials/_meetings_setup.php:102
+#: admin/partials/_meetings_setup.php:123
+msgid "City"
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:92
+msgid "City Suffix: "
+msgstr ""
+
+#: admin/partials/_layout_setup.php:161
+msgid "CMYK"
+msgstr ""
+
+#: admin/partials/_layout_setup.php:156
+msgid "Color space: "
+msgstr ""
+
+#: admin/partials/_layout_setup.php:135
+msgid "Color:"
+msgstr ""
+
+#: admin/partials/_layout_setup.php:130
+msgid "Column Gap Width: "
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:152
+msgid "Combine main and subgroup into a single header"
+msgstr ""
+
+#: admin/partials/_backup_restore_setup.php:9
+msgid "Configuration Manager"
+msgstr ""
+
+#: admin/partials/_backup_restore_setup.php:20
+msgid "Configuration Name: "
+msgstr ""
+
+#: admin/partials/_backup_restore_setup.php:25
+msgid "Configuration Selection"
+msgstr ""
+
+#: admin/partials/_backup_restore_setup.php:79
+msgid "Consider backing up your settings by using the Export function."
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:51 admin/partials/_meetings_setup.php:105
+#: admin/partials/_meetings_setup.php:126
+msgid "County"
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:74
+msgid "County Suffix: "
+msgstr ""
+
+#: admin/partials/_layout_setup.php:151
+msgid "Courier"
+msgstr ""
+
+#: admin/partials/_backup_restore_setup.php:14
+msgid "Current Meeting List"
+msgstr ""
+
+#: admin/partials/_bmlt_server_setup.php:114
+msgid "Current Meeting List Link"
+msgstr ""
+
+#: admin/partials/bread-admin-display.php:129
+msgid "Custom Content"
+msgstr ""
+
+#: admin/partials/_layout_setup.php:119 admin/partials/_meetings_setup.php:187
+msgid "Custom Footer: "
+msgstr ""
+
+#: admin/partials/_bmlt_server_setup.php:77
+msgid "Custom Query"
+msgstr ""
+
+#: admin/partials/_bmlt_server_setup.php:79
+#: admin/partials/_meetings_setup.php:362
+msgid "Custom Query: "
+msgstr ""
+
+#: admin/partials/_custom_section_setup.php:18
+msgid "Custom Section Content"
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:11
+msgid ""
+"Customize how meetings are grouped and the headline that each group has."
+msgstr ""
+
+#: admin/partials/bread-admin-display.php:117
+msgid "Customizer"
+msgstr ""
+
+#: admin/partials/_custom_section_setup.php:20
+#: admin/partials/_front_page_setup.php:19
+#: admin/partials/_meetings_setup.php:210
+msgid "Default Font Size: "
+msgstr ""
+
+#: admin/partials/_layout_setup.php:150
+msgid "DejaVu Sans Condensed"
+msgstr ""
+
+#: admin/partials/_backup_restore_setup.php:44
+msgid "Delete Current Configuration"
+msgstr ""
+
+#: admin/partials/_bmlt_server_setup.php:31
+#: admin/partials/_bmlt_server_setup.php:39
+#: admin/partials/_bmlt_server_setup.php:52
+msgid "Disable SSL verification of server"
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:40
+msgid "Display (Cont) Header: "
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:149
+msgid "Display each subgroup with its own header"
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:143
+msgid "Display Subgrouping: "
+msgstr ""
+
+#: admin/partials/_bmlt_server_setup.php:144
+msgid "Download Log Files"
+msgstr ""
+
+#: admin/partials/_backup_restore_setup.php:42
+msgid "Duplicate Current Configuration"
+msgstr ""
+
+#: admin/partials/_bmlt_server_setup.php:134
+msgid "Enable Logging"
+msgstr ""
+
+#: admin/partials/_layout_setup.php:173
+msgid "Enable PDF Protection."
+msgstr ""
+
+#: admin/partials/_layout_setup.php:187
+msgid "Enable Protection"
+msgstr ""
+
+#: admin/partials/_bmlt_server_setup.php:137
+msgid "Enable SimpleTables"
+msgstr ""
+
+#: admin/partials/_layout_setup.php:176
+msgid "Encrypted PDFs can be opened and printed."
+msgstr ""
+
+#: admin/partials/_layout_setup.php:174
+msgid "Encrypts and sets the PDF document permissions for the PDF file."
+msgstr ""
+
+#: admin/partials/_bmlt_server_setup.php:34
+msgid "ERROR: Please enter a BMLT Server"
+msgstr ""
+
+#: admin/partials/_bmlt_server_setup.php:44
+msgid "ERROR: Problem Connecting to BMLT Server"
+msgstr ""
+
+#: admin/partials/_backup_restore_setup.php:61
+msgid "Export"
+msgstr ""
+
+#: admin/partials/_backup_restore_setup.php:52
+msgid "Export Configuration"
+msgstr ""
+
+#: admin/partials/_backup_restore_setup.php:54
+msgid "Export or backup meeting list settings."
+msgstr ""
+
+#: admin/partials/_bmlt_server_setup.php:108
+msgid "Extra Meetings Enabled"
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:313
+msgid "Face-to-Face Meetings"
+msgstr ""
+
+#: admin/partials/bread-admin-display.php:95
+msgid "File loaded"
+msgstr ""
+
+#: admin/class-bread-admin.php:367
+msgid "File size greater than 500k"
+msgstr ""
+
+#: admin/partials/_layout_setup.php:59
+msgid "Flyer"
+msgstr ""
+
+#: admin/partials/_layout_setup.php:111 admin/partials/_meetings_setup.php:21
+msgid "Font Size: "
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:308
+msgid "Format of meetings in the additional list: "
+msgstr ""
+
+#: admin/partials/bread-admin-display.php:127
+msgid "Front Page"
+msgstr ""
+
+#: admin/partials/_front_page_setup.php:17
+msgid "Front Page Content"
+msgstr ""
+
+#: admin/partials/_layout_setup.php:44 admin/partials/_layout_setup.php:68
+msgid "Full Page"
+msgstr ""
+
+#: admin/partials/_backup_restore_setup.php:90
+msgid "Generate Meeting List"
+msgstr ""
+
+#: admin/partials/bread-admin-display.php:116
+msgid "Getting Started"
+msgstr ""
+
+#: admin/partials/_layout_setup.php:159
+msgid "Greyscale"
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:50 admin/partials/_meetings_setup.php:104
+#: admin/partials/_meetings_setup.php:125
+msgid "Group"
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:46
+msgid "Group Meetings By: "
+msgstr ""
+
+#: admin/partials/_layout_setup.php:37 admin/partials/_layout_setup.php:67
+msgid "Half-Fold"
+msgstr ""
+
+#: admin/partials/_layout_setup.php:114
+msgid "Header Margin Top: "
+msgstr ""
+
+#: admin/partials/_layout_setup.php:115
+msgid "Header Text: "
+msgstr ""
+
+#: admin/partials/_bmlt_server_setup.php:105
+msgid "Hint: Type a group name, weekday or area to narrow down your choices."
+msgstr ""
+
+#. URI of the plugin
+msgid "https://bmlt.app"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://bmlt.app/"
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:367
+msgid ""
+"If you wish to define different contents for the additional list, use this "
+"template."
+msgstr ""
+
+#: admin/partials/_backup_restore_setup.php:75
+msgid "Import"
+msgstr ""
+
+#: admin/partials/_backup_restore_setup.php:67
+msgid "Import Configuration"
+msgstr ""
+
+#: admin/partials/_backup_restore_setup.php:69
+msgid "Import meeting list settings from a previously exported meeting list."
+msgstr ""
+
+#: admin/partials/_bmlt_server_setup.php:92
+msgid "Include Extra Meetings"
+msgstr ""
+
+#: admin/partials/_bmlt_server_setup.php:86
+msgid "Include Extra Meetings from Another Service Body."
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:366
+msgid "Include meetings with this format in the main list"
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:277
+msgid "Include Only This Meeting Format"
+msgstr ""
+
+#: admin/partials/_layout_setup.php:24 admin/partials/_layout_setup.php:31
+#: admin/partials/_layout_setup.php:38 admin/partials/_layout_setup.php:64
+msgid "Landscape"
+msgstr ""
+
+#: admin/partials/_layout_setup.php:36
+msgid "Large Area, Region, Metro"
+msgstr ""
+
+#: admin/partials/_layout_setup.php:79
+msgid "Ledger"
+msgstr ""
+
+#: admin/partials/_layout_setup.php:86
+msgid "Left: "
+msgstr ""
+
+#: admin/partials/_layout_setup.php:32 admin/partials/_layout_setup.php:46
+#: admin/partials/_layout_setup.php:78
+msgid "Legal"
+msgstr ""
+
+#: admin/partials/_layout_setup.php:25 admin/partials/_layout_setup.php:46
+#: admin/partials/_layout_setup.php:77
+msgid "Letter"
+msgstr ""
+
+#: admin/partials/_custom_section_setup.php:21
+#: admin/partials/_front_page_setup.php:20
+#: admin/partials/_meetings_setup.php:211
+msgid "Line Height: "
+msgstr ""
+
+#: admin/partials/_backup_restore_setup.php:34
+msgid "Load Configuration"
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:99
+msgid "Main Grouping: "
+msgstr ""
+
+#. Description of the plugin
+msgid "Maintains and generates PDF Meeting Lists from BMLT."
+msgstr ""
+
+#: admin/partials/_layout_setup.php:122
+msgid "Margin Footer: "
+msgstr ""
+
+#: admin/partials/_layout_setup.php:29
+msgid "Medium Area"
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:279
+msgid "Meeting Format: "
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:14
+msgid "Meeting Group [Column] Header"
+msgstr ""
+
+#: admin/partials/_bmlt_server_setup.php:121
+msgid "Meeting List Author(s)"
+msgstr ""
+
+#: admin/partials/_bmlt_server_setup.php:157
+msgid "Meeting List Cache"
+msgstr ""
+
+#: admin/partials/_backup_restore_setup.php:16
+msgid "Meeting List ID: "
+msgstr ""
+
+#: admin/partials/_layout_setup.php:15
+msgid "Meeting List Size"
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:207
+msgid "Meeting Template"
+msgstr ""
+
+#: admin/partials/bread-admin-display.php:128
+msgid "Meetings"
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:103
+#: admin/partials/_meetings_setup.php:124
+msgid "Neighborhood"
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:83
+msgid "Neighborhood Suffix: "
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:54
+msgid "Neighborhood+City"
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:146
+msgid "No header for subgroups"
+msgstr ""
+
+#: admin/partials/_layout_setup.php:47 admin/partials/_meetings_setup.php:121
+msgid "None"
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:310
+msgid "Not Used"
+msgstr ""
+
+#: admin/partials/_bmlt_server_setup.php:89
+msgid "Note: Be sure to select all meetings for each group."
+msgstr ""
+
+#: admin/partials/_layout_setup.php:180
+msgid "Note: Encrypted PDFs cannot be opened in MS Word at all."
+msgstr ""
+
+#: admin/partials/_bmlt_server_setup.php:131
+msgid "Optimize/Debug mPDF"
+msgstr ""
+
+#: admin/partials/_layout_setup.php:178
+msgid "Optional Password to allow editing in a PDF editor."
+msgstr ""
+
+#: admin/partials/_layout_setup.php:17
+msgid "Orientation"
+msgstr ""
+
+#: admin/partials/_bmlt_server_setup.php:140
+msgid "Pack Table Data"
+msgstr ""
+
+#: admin/partials/_layout_setup.php:106
+msgid "Page Decorations"
+msgstr ""
+
+#: admin/partials/_layout_setup.php:19
+msgid "Page Height"
+msgstr ""
+
+#: admin/partials/_layout_setup.php:16 admin/partials/_layout_setup.php:54
+#: admin/partials/bread-admin-display.php:126
+msgid "Page Layout"
+msgstr ""
+
+#: admin/partials/_layout_setup.php:11
+msgid "Page Layout Defaults"
+msgstr ""
+
+#: admin/partials/_layout_setup.php:84
+msgid "Page Margin Top: "
+msgstr ""
+
+#: admin/partials/_layout_setup.php:127
+msgid "Page Numbers Font Size: "
+msgstr ""
+
+#: admin/partials/_layout_setup.php:75
+msgid "Page Size:"
+msgstr ""
+
+#: admin/partials/_layout_setup.php:18
+msgid "Paper Size"
+msgstr ""
+
+#: admin/partials/_layout_setup.php:183
+msgid "Password Protection"
+msgstr ""
+
+#: admin/partials/_layout_setup.php:192
+msgid "Password: "
+msgstr ""
+
+#: admin/partials/_backup_restore_setup.php:82
+msgid "Please Choose a File."
+msgstr ""
+
+#: admin/class-bread-admin.php:363
+msgid "Please upload a file to import"
+msgstr ""
+
+#: admin/class-bread-admin.php:359
+msgid "Please upload a valid .json file"
+msgstr ""
+
+#: admin/partials/_layout_setup.php:63
+msgid "Portrait"
+msgstr ""
+
+#: admin/partials/_layout_setup.php:45
+msgid "Portrait, Landscape"
+msgstr ""
+
+#: admin/partials/bread-admin-display.php:154
+msgid "Preview"
+msgstr ""
+
+#: admin/partials/_layout_setup.php:30 admin/partials/_layout_setup.php:61
+msgid "Quad-Fold"
+msgstr ""
+
+#: admin/partials/_bmlt_server_setup.php:64
+msgid "Recurse Service Bodies"
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:259
+msgid "Remove White Space"
+msgstr ""
+
+#: admin/partials/_layout_setup.php:160
+msgid "RGB"
+msgstr ""
+
+#: admin/partials/_layout_setup.php:87
+msgid "Right: "
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:331
+#: admin/partials/_meetings_setup.php:339
+#: admin/partials/_meetings_setup.php:341
+msgid "Same as main list"
+msgstr ""
+
+#: admin/partials/bread-admin-display.php:153
+msgid "Save Changes"
+msgstr ""
+
+#: admin/partials/bread-admin-display.php:156
+msgid "Save Changes before Generating Meeting List."
+msgstr ""
+
+#: admin/partials/_backup_restore_setup.php:21
+msgid "Save Configuration Name"
+msgstr ""
+
+#: admin/partials/_backup_restore_setup.php:27
+msgid "Select Configuration: "
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:335
+msgid "Select language for the additional list"
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:327
+msgid "Select sort order for the additional list"
+msgstr ""
+
+#: admin/partials/_layout_setup.php:134
+msgid "Separator: "
+msgstr ""
+
+#: admin/partials/bread-admin-display.php:46
+#, php-format
+msgid "Service Body %s"
+msgstr ""
+
+#: admin/partials/_layout_setup.php:58
+msgid "Single Page"
+msgstr ""
+
+#: admin/partials/_layout_setup.php:22
+msgid "Smaller Areas"
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:236
+msgid "Start Time Format"
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:107
+#: admin/partials/_meetings_setup.php:128
+msgid "State"
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:55
+msgid "State+City"
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:119
+msgid "Sub-Grouping: "
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:18
+msgid "Suppress Heading: "
+msgstr ""
+
+#: admin/partials/_layout_setup.php:112 admin/partials/_meetings_setup.php:24
+msgid "Text Color:"
+msgstr ""
+
+#: admin/partials/_bmlt_server_setup.php:88
+msgid "The Meetings you select will be merged into your meeting list."
+msgstr ""
+
+#: admin/partials/_layout_setup.php:109
+msgid ""
+"The page header is a title that goes across the entire page above the "
+"meetings."
+msgstr ""
+
+#: admin/partials/_backup_restore_setup.php:55
+msgid ""
+"This allows you to easily import meeting list settings into another site."
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:304
+msgid ""
+"This section allows the definition of an additional meeting list, containing "
+"meetings that should not be included in the main\n"
+"                        list. This is typically virtual meetings, but it can "
+"be any group of meetings identified by a format."
+msgstr ""
+
+#: admin/partials/_layout_setup.php:100
+msgid ""
+"This section describes things on the page other than the contents. Headers, "
+"footers, page numbers."
+msgstr ""
+
+#: admin/partials/_bmlt_server_setup.php:161
+msgid "This site is using an external object cache."
+msgstr ""
+
+#: admin/partials/_bmlt_server_setup.php:72
+msgid ""
+"This will be executed as part of the meeting search query. This will "
+"override any setting in the Service Body dropdowns."
+msgstr ""
+
+#: admin/partials/_layout_setup.php:152
+msgid "Times"
+msgstr ""
+
+#: admin/partials/_layout_setup.php:23 admin/partials/_layout_setup.php:60
+msgid "Tri-Fold"
+msgstr ""
+
+#: admin/partials/_bmlt_server_setup.php:47
+msgid "Try a different user agent or \"None\" for Wordpress default: "
+msgstr ""
+
+#: admin/partials/_layout_setup.php:158
+msgid "Unrestricted"
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:34
+msgid "Uppercase: "
+msgstr ""
+
+#: admin/partials/_bmlt_server_setup.php:59
+msgid "Use Aggregator &#127813;"
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:59
+msgid "User Defined"
+msgstr ""
+
+#: admin/partials/bread-admin-display.php:37
+msgid "Using Tomato Server"
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:312
+msgid "Virtual Meetings"
+msgstr ""
+
+#: admin/partials/_layout_setup.php:116
+msgid "Watermark: "
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:48 admin/partials/_meetings_setup.php:101
+#: admin/partials/_meetings_setup.php:122
+msgid "Weekday"
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:158
+msgid "Weekday Language: "
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:173
+msgid "Weekday Start: "
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:56
+msgid "Weekday+Area"
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:57
+msgid "Weekday+City"
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:58
+msgid "Weekday+County "
+msgstr ""
+
+#: admin/partials/_layout_setup.php:102
+msgid "What options you see will be dependant on the layout selected."
+msgstr ""
+
+#: admin/partials/_meetings_setup.php:212
+msgid "Wheelchair Icon Size: "
+msgstr ""
+
+#: admin/partials/_layout_setup.php:51
+msgid ""
+"When a layout is clicked defaults are reset for orientation, paper size and "
+"page height."
+msgstr ""
+
+#: admin/partials/_bmlt_server_setup.php:73
+#, php-format
+msgid ""
+"You can get help formulating a query using your sites <a href=\"%s\">"
+"semantic interface</a>."
+msgstr ""
+
+#: admin/partials/bread-admin-display.php:93
+msgid "You do not have permission to save this configuation!"
+msgstr ""
+
+#: admin/partials/bread-admin-display.php:39
+#, php-format
+msgid "Your BMLT Server is running %s"
+msgstr ""
+
+#: admin/partials/bread-admin-display.php:99
+msgid "Your changes were successfully saved!"
+msgstr ""
+
+#: admin/partials/_backup_restore_setup.php:78
+msgid "Your current meeting list settings will be replaced and lost forever."
+msgstr ""

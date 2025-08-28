@@ -228,48 +228,23 @@ jQuery(document).ready(
         $ml('.booklet-check').on('click', bookletControlsShowHide);
         $ml('input[name=page_fold]:checked').hasClass('booklet-check') && bookletControlsShowHide();
         $ml('input[name=page_fold]:checked').hasClass('single-page-check') && singlePageControlsShowHide();
-        $ml(".service_body_select").chosen(
+        $ml(".service_body_select").select2();
+        $ml('#extra_meetings').select2(
             {
-                inherit_select_classes: true,
-                width: "62%"
+                placeholder: "Select extra meetings",
             }
         );
-        $ml("#extra_meetings").chosen(
+        $ml("#author_chosen").select2(
             {
-                no_results_text: "Oops, nothing found!",
-                width: "100%",
-                placeholder_text_multiple: "Select Extra Meetings",
-                search_contains: true
+                placeholder: "Select authors",
             }
         );
-        $ml('#extra_meetings').on(
-            'chosen:showing_dropdown', function(evt, params) {
-                $ml(".ctrl_key").show();
-            }
-        );
-        $ml('#extra_meetings').on(
-            'chosen:hiding_dropdown', function(evt, params) {
-                $ml(".ctrl_key").hide();
-            }
-        );
-        $ml("#author_chosen").chosen(
-            {
-                no_results_text: "Oops, nothing found!",
-                width: "100%",
-                placeholder_text_multiple: "Select authors",
-                search_contains: true
-            }
-        );
-        $ml('#author_chosen').on(
-            'chosen:showing_dropdown', function(evt, params) {
-                $ml(".ctrl_key").show();
-            }
-        );
-        $ml('#author_chosen').on(
-            'chosen:hiding_dropdown', function(evt, params) {
-                $ml(".ctrl_key").hide();
-            }
-        );
+        $ml('.chosen-select').on("change", function (e) {
+            const self = $ml(this);
+            const field = self.parent().find('.select2-search--inline');
+            field.css('display', (self.val().length == 0 ? 'contents' : 'block'));
+            field.find('input').css('width', (self.val().length == 0 ? '100%' : 'auto'));
+        });
         $ml("#meeting-list-tabs").tabs(
             {
                 active: 0
