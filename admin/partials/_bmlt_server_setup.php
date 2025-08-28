@@ -96,10 +96,10 @@ foreach ($all_users as $user) {
                         <?php
                             $extra_meetings_array = $this->bread->bmlt()->get_all_meetings();
                             echo "<option value=''>Select Extra Meetings</option>";
-                            foreach ($extra_meetings_array as $id => $descr) {
-                                $selected = $this->bread->getOption('extra_meetings') != '' && in_array($id, $this->bread->getOption('extra_meetings')) ? 'selected' : '';
-                                echo "<option " . esc_attr($selected) . " value='" . esc_attr($id) . "'>" . esc_html($descr) . "</option>";
-                            }
+                        foreach ($extra_meetings_array as $id => $descr) {
+                            $selected = $this->bread->getOption('extra_meetings') != '' && in_array($id, $this->bread->getOption('extra_meetings')) ? 'selected' : '';
+                            echo "<option " . esc_attr($selected) . " value='" . esc_attr($id) . "'>" . esc_html($descr) . "</option>";
+                        }
                         ?>
                         </select>
                         <p><?php _e('Hint: Type a group name, weekday or area to narrow down your choices.', 'bread-domain') ?></p>

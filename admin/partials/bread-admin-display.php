@@ -99,7 +99,7 @@ class Bread_AdminDisplay
             echo '<p style="color: #F00;">'.__('Your changes were successfully saved!', 'bread-domain').'</p>';
             $num = delete_transient($this->bread->get_TransientKey($this->bread->getRequestedSetting()));
             if ($num > 0) {
-                echo "<p>" . sprintf( __('%s Cache entries deleted', 'bread-domain'), esc_attr($num))."</p>";
+                echo "<p>" . sprintf(__('%s Cache entries deleted', 'bread-domain'), esc_attr($num))."</p>";
             }
         }
         echo '</div>';

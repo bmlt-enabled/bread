@@ -57,6 +57,7 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 
 = 2.9.6 =
 * Farsi Translation
+* Replaced deprecated "chosen" with "select2"
 
 = 2.9.5 =
 * Bug fix TinyMCE dropdowns
