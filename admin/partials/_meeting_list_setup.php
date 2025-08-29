@@ -12,7 +12,7 @@ global $wp_version;
 <div id="poststuff">
     <div id="postbox-container" class="postbox-container">
         <div id="accordion" class="bmlt-accordion">
-            <h3 class="help-accordion"><strong>Start Here: Meeting List Setup Wizard</strong></h3>
+            <h3 class="help-accordion"><strong><?php esc_html_e('Start Here: Meeting List Setup Wizard', 'bread') ?></strong></h3>
             <?php include '_bread_wizard.php'; ?>
             <h3 class="help-accordion">Multiple Meeting Lists</h3>
             <div>

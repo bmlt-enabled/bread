@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Bread\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-28 12:15+0000\n"
+"POT-Creation-Date: 2025-08-29 10:51+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -44,12 +44,13 @@ msgid ""
 "for specific text.</p>"
 msgstr ""
 
-#: admin/partials/bread-admin-display.php:102
+#. string is number of cache entries deleted
+#: admin/partials/bread-admin-display.php:106
 #, php-format
 msgid "%s Cache entries deleted"
 msgstr ""
 
-#: admin/partials/_bmlt_server_setup.php:166
+#: admin/partials/_bmlt_server_setup.php:169
 msgid "0 - 999 Hours (0 = disable cache)"
 msgstr ""
 
@@ -94,7 +95,20 @@ msgstr ""
 msgid "Additional List"
 msgstr ""
 
-#: admin/partials/_bmlt_server_setup.php:87
+#: admin/partials/_bread_wizard.php:138
+msgid ""
+"After creating the configuration, you will be able to view the resulting "
+"meeting list.  Note that this is not usually\n"
+"              ready to be printed.  Users almost always want to add content, "
+"such as service meetings, help lines, place for people to\n"
+"              collect phone numbers etc.  To do this, click on the "
+"'Customize' tab to the left, and then go to either the 'Front Page' or\n"
+"              'Custom Section' tabs.  The editors there contain a 'Meeting "
+"List Shortcodes' dropdown menu.  Using these, new structures can\n"
+"              be added with only a few mouse clicks."
+msgstr ""
+
+#: admin/partials/_bmlt_server_setup.php:90
 msgid "All Meetings from your BMLT Server are shown in the list."
 msgstr ""
 
@@ -122,7 +136,7 @@ msgstr ""
 msgid "Background Color:"
 msgstr ""
 
-#: admin/partials/bread-admin-display.php:118
+#: admin/partials/bread-admin-display.php:122
 msgid "Backup/ Restore"
 msgstr ""
 
@@ -134,12 +148,21 @@ msgstr ""
 msgid "Base Fonts and Colors"
 msgstr ""
 
-#: admin/partials/_bmlt_server_setup.php:18
-#: admin/partials/bread-admin-display.php:125
+#: admin/partials/_bread_wizard.php:135
+msgid ""
+"Before creating the meeting list configuration, you are given the "
+"opportunity to give the configuration\n"
+"              a mnemonic name.  If you are managing multiple meeting lists "
+"on this same, this name can help you keep track of which\n"
+"              configuration is which."
+msgstr ""
+
+#: admin/partials/_bread_wizard.php:6 admin/partials/_bmlt_server_setup.php:18
+#: admin/partials/bread-admin-display.php:129
 msgid "BMLT Server"
 msgstr ""
 
-#: admin/partials/_bmlt_server_setup.php:21
+#: admin/partials/_bread_wizard.php:50 admin/partials/_bmlt_server_setup.php:21
 msgid "BMLT Server URL: "
 msgstr ""
 
@@ -191,6 +214,15 @@ msgid ""
 "meeting-list=2 generates the meeting list with ID 2)."
 msgstr ""
 
+#: admin/partials/_bread_wizard.php:44
+msgid ""
+"Bread is highly customizable, as areas often try to maintain the appearance "
+"of their old meeting lists.  This wizard only attempts to give you a "
+"reasonable\n"
+"          starting point, not an end product.  At the end of the wizard we "
+"make a few suggestions for possible next steps."
+msgstr ""
+
 #: admin/partials/_meetings_setup.php:330
 msgid "By Day and Time"
 msgstr ""
@@ -199,15 +231,30 @@ msgstr ""
 msgid "By Name"
 msgstr ""
 
-#: admin/partials/_bmlt_server_setup.php:169
+#: admin/partials/_bmlt_server_setup.php:172
 msgid "CACHE is DELETED when you Save Changes."
 msgstr ""
 
-#: admin/partials/_bmlt_server_setup.php:165
+#: admin/partials/_bmlt_server_setup.php:168
 msgid "Cache Time: "
 msgstr ""
 
-#: admin/partials/_meetings_setup.php:49 admin/partials/_meetings_setup.php:102
+#: admin/partials/_bread_wizard.php:111
+msgid ""
+"Choose a language (only applies to names of days and format code "
+"descriptions): "
+msgstr ""
+
+#: admin/partials/_bread_wizard.php:18
+msgid "Choose Layout"
+msgstr ""
+
+#: admin/partials/_bread_wizard.php:75
+msgid "Choose up to 5 service bodies"
+msgstr ""
+
+#: admin/partials/_bread_wizard.php:127 admin/partials/_meetings_setup.php:49
+#: admin/partials/_meetings_setup.php:102
 #: admin/partials/_meetings_setup.php:123
 msgid "City"
 msgstr ""
@@ -248,8 +295,20 @@ msgstr ""
 msgid "Configuration Selection"
 msgstr ""
 
+#: admin/partials/_bread_wizard.php:152
+msgid "Congratulations! The meeting list configuration has been created!"
+msgstr ""
+
+#: admin/partials/_bread_wizard.php:58
+msgid "Connected! - BMLT Server version "
+msgstr ""
+
 #: admin/partials/_backup_restore_setup.php:79
 msgid "Consider backing up your settings by using the Export function."
+msgstr ""
+
+#: admin/partials/_bread_wizard.php:61
+msgid "Could not connect: Check spelling and internet connection."
 msgstr ""
 
 #: admin/partials/_meetings_setup.php:51 admin/partials/_meetings_setup.php:105
@@ -265,15 +324,19 @@ msgstr ""
 msgid "Courier"
 msgstr ""
 
+#: admin/partials/_bread_wizard.php:30 admin/partials/_bread_wizard.php:149
+msgid "Create Meeting List"
+msgstr ""
+
 #: admin/partials/_backup_restore_setup.php:14
 msgid "Current Meeting List"
 msgstr ""
 
-#: admin/partials/_bmlt_server_setup.php:114
+#: admin/partials/_bmlt_server_setup.php:117
 msgid "Current Meeting List Link"
 msgstr ""
 
-#: admin/partials/bread-admin-display.php:129
+#: admin/partials/bread-admin-display.php:133
 msgid "Custom Content"
 msgstr ""
 
@@ -281,11 +344,11 @@ msgstr ""
 msgid "Custom Footer: "
 msgstr ""
 
-#: admin/partials/_bmlt_server_setup.php:77
+#: admin/partials/_bmlt_server_setup.php:80
 msgid "Custom Query"
 msgstr ""
 
-#: admin/partials/_bmlt_server_setup.php:79
+#: admin/partials/_bmlt_server_setup.php:82
 #: admin/partials/_meetings_setup.php:362
 msgid "Custom Query: "
 msgstr ""
@@ -299,8 +362,12 @@ msgid ""
 "Customize how meetings are grouped and the headline that each group has."
 msgstr ""
 
-#: admin/partials/bread-admin-display.php:117
+#: admin/partials/bread-admin-display.php:121
 msgid "Customizer"
+msgstr ""
+
+#: admin/partials/_bread_wizard.php:126
+msgid "Day"
 msgstr ""
 
 #: admin/partials/_custom_section_setup.php:20
@@ -335,7 +402,11 @@ msgstr ""
 msgid "Display Subgrouping: "
 msgstr ""
 
-#: admin/partials/_bmlt_server_setup.php:144
+#: admin/partials/_bread_wizard.php:122
+msgid "Don't include virtual meetings at all."
+msgstr ""
+
+#: admin/partials/_bmlt_server_setup.php:147
 msgid "Download Log Files"
 msgstr ""
 
@@ -343,7 +414,7 @@ msgstr ""
 msgid "Duplicate Current Configuration"
 msgstr ""
 
-#: admin/partials/_bmlt_server_setup.php:134
+#: admin/partials/_bmlt_server_setup.php:137
 msgid "Enable Logging"
 msgstr ""
 
@@ -355,7 +426,7 @@ msgstr ""
 msgid "Enable Protection"
 msgstr ""
 
-#: admin/partials/_bmlt_server_setup.php:137
+#: admin/partials/_bmlt_server_setup.php:140
 msgid "Enable SimpleTables"
 msgstr ""
 
@@ -365,6 +436,10 @@ msgstr ""
 
 #: admin/partials/_layout_setup.php:174
 msgid "Encrypts and sets the PDF document permissions for the PDF file."
+msgstr ""
+
+#: admin/partials/_bread_wizard.php:147
+msgid "Enter a custom name for this configuration: "
 msgstr ""
 
 #: admin/partials/_bmlt_server_setup.php:34
@@ -387,7 +462,7 @@ msgstr ""
 msgid "Export or backup meeting list settings."
 msgstr ""
 
-#: admin/partials/_bmlt_server_setup.php:108
+#: admin/partials/_bmlt_server_setup.php:111
 msgid "Extra Meetings Enabled"
 msgstr ""
 
@@ -395,7 +470,7 @@ msgstr ""
 msgid "Face-to-Face Meetings"
 msgstr ""
 
-#: admin/partials/bread-admin-display.php:95
+#: admin/partials/bread-admin-display.php:98
 msgid "File loaded"
 msgstr ""
 
@@ -415,7 +490,7 @@ msgstr ""
 msgid "Format of meetings in the additional list: "
 msgstr ""
 
-#: admin/partials/bread-admin-display.php:127
+#: admin/partials/bread-admin-display.php:131
 msgid "Front Page"
 msgstr ""
 
@@ -427,19 +502,26 @@ msgstr ""
 msgid "Full Page"
 msgstr ""
 
+#: admin/partials/_bread_wizard.php:154
+#: admin/partials/bread-admin-display.php:159
 #: admin/partials/_backup_restore_setup.php:90
 msgid "Generate Meeting List"
 msgstr ""
 
-#: admin/partials/bread-admin-display.php:116
+#: admin/partials/bread-admin-display.php:120
 msgid "Getting Started"
+msgstr ""
+
+#: admin/partials/_bread_wizard.php:158
+msgid "Go Back"
 msgstr ""
 
 #: admin/partials/_layout_setup.php:159
 msgid "Greyscale"
 msgstr ""
 
-#: admin/partials/_meetings_setup.php:50 admin/partials/_meetings_setup.php:104
+#: admin/partials/_bread_wizard.php:128 admin/partials/_meetings_setup.php:50
+#: admin/partials/_meetings_setup.php:104
 #: admin/partials/_meetings_setup.php:125
 msgid "Group"
 msgstr ""
@@ -460,7 +542,7 @@ msgstr ""
 msgid "Header Text: "
 msgstr ""
 
-#: admin/partials/_bmlt_server_setup.php:105
+#: admin/partials/_bmlt_server_setup.php:108
 msgid "Hint: Type a group name, weekday or area to narrow down your choices."
 msgstr ""
 
@@ -470,6 +552,16 @@ msgstr ""
 
 #. Author URI of the plugin
 msgid "https://bmlt.app/"
+msgstr ""
+
+#: admin/partials/_bread_wizard.php:88
+msgid ""
+"If you want to limit the meeting list to a particular format, for instance, "
+"to create a language-specific meeting list, you can enter it here."
+msgstr ""
+
+#: admin/partials/_bread_wizard.php:158
+msgid "If you want to try a different layout: "
 msgstr ""
 
 #: admin/partials/_meetings_setup.php:367
@@ -490,11 +582,30 @@ msgstr ""
 msgid "Import meeting list settings from a previously exported meeting list."
 msgstr ""
 
-#: admin/partials/_bmlt_server_setup.php:92
+#: admin/partials/_bread_wizard.php:99
+msgid ""
+"In this step we suggest suitible formats based on your meeting count.  "
+"Having the meetings fit on a single side has the advantage\n"
+"            that the list can be posted on a bulleitin board, and this will "
+"be used when suggesting a page layout.  However, you may\n"
+"            also wish to have the meetings 'overflow' on to the back side of "
+"the paper.  If so, select a layout <em>above</em> layout\n"
+"            that the wizard pre-selects for you."
+msgstr ""
+
+#: admin/partials/_bread_wizard.php:133
+msgid ""
+"In this step, we create the meeting list settings.  If you already have a "
+"meeting list defined\n"
+"              on this site, the old settings will not be overwriten, rather, "
+"a new setting will be created."
+msgstr ""
+
+#: admin/partials/_bmlt_server_setup.php:95
 msgid "Include Extra Meetings"
 msgstr ""
 
-#: admin/partials/_bmlt_server_setup.php:86
+#: admin/partials/_bmlt_server_setup.php:89
 msgid "Include Extra Meetings from Another Service Body."
 msgstr ""
 
@@ -504,6 +615,10 @@ msgstr ""
 
 #: admin/partials/_meetings_setup.php:277
 msgid "Include Only This Meeting Format"
+msgstr ""
+
+#: admin/partials/_bread_wizard.php:120
+msgid "Include virtual meetings in main meeting list."
 msgstr ""
 
 #: admin/partials/_layout_setup.php:24 admin/partials/_layout_setup.php:31
@@ -567,16 +682,20 @@ msgstr ""
 msgid "Meeting Group [Column] Header"
 msgstr ""
 
-#: admin/partials/_bmlt_server_setup.php:121
+#: admin/partials/_bmlt_server_setup.php:124
 msgid "Meeting List Author(s)"
 msgstr ""
 
-#: admin/partials/_bmlt_server_setup.php:157
+#: admin/partials/_bmlt_server_setup.php:160
 msgid "Meeting List Cache"
 msgstr ""
 
 #: admin/partials/_backup_restore_setup.php:16
 msgid "Meeting List ID: "
+msgstr ""
+
+#: admin/partials/_bread_wizard.php:24
+msgid "Meeting List Options"
 msgstr ""
 
 #: admin/partials/_layout_setup.php:15
@@ -587,8 +706,18 @@ msgstr ""
 msgid "Meeting Template"
 msgstr ""
 
-#: admin/partials/bread-admin-display.php:128
+#: admin/partials/bread-admin-display.php:132
 msgid "Meetings"
+msgstr ""
+
+#: admin/partials/_bread_wizard.php:96
+msgid ""
+"Most areas try to fit their meetings onto a single sheet of paper.  And it "
+"is particularly adventageous to\n"
+"            use a tri-fold format, so that the list can be printed at home "
+"and placed along side the pamphlets. The priority should always be that the\n"
+"            meeting list is readable.  For many areas, a booklet format is "
+"better, even if the reqire more effort or expense to print."
 msgstr ""
 
 #: admin/partials/_meetings_setup.php:103
@@ -604,6 +733,13 @@ msgstr ""
 msgid "Neighborhood+City"
 msgstr ""
 
+#: admin/partials/_bread_wizard.php:72
+msgid ""
+"Next, we need to know which meetings are going to be on the meeting list.  "
+"This will help the wizard when it\n"
+"              tries to choose an a appropriate layout for you."
+msgstr ""
+
 #: admin/partials/_meetings_setup.php:146
 msgid "No header for subgroups"
 msgstr ""
@@ -616,7 +752,7 @@ msgstr ""
 msgid "Not Used"
 msgstr ""
 
-#: admin/partials/_bmlt_server_setup.php:89
+#: admin/partials/_bmlt_server_setup.php:92
 msgid "Note: Be sure to select all meetings for each group."
 msgstr ""
 
@@ -624,7 +760,15 @@ msgstr ""
 msgid "Note: Encrypted PDFs cannot be opened in MS Word at all."
 msgstr ""
 
-#: admin/partials/_bmlt_server_setup.php:131
+#: admin/partials/_bread_wizard.php:104
+msgid "Number of meetings on list: "
+msgstr ""
+
+#: admin/partials/_bread_wizard.php:161
+msgid "Open customizer"
+msgstr ""
+
+#: admin/partials/_bmlt_server_setup.php:134
 msgid "Optimize/Debug mPDF"
 msgstr ""
 
@@ -632,11 +776,15 @@ msgstr ""
 msgid "Optional Password to allow editing in a PDF editor."
 msgstr ""
 
+#: admin/partials/_bread_wizard.php:124
+msgid "Organize the meetings by:"
+msgstr ""
+
 #: admin/partials/_layout_setup.php:17
 msgid "Orientation"
 msgstr ""
 
-#: admin/partials/_bmlt_server_setup.php:140
+#: admin/partials/_bmlt_server_setup.php:143
 msgid "Pack Table Data"
 msgstr ""
 
@@ -649,7 +797,7 @@ msgid "Page Height"
 msgstr ""
 
 #: admin/partials/_layout_setup.php:16 admin/partials/_layout_setup.php:54
-#: admin/partials/bread-admin-display.php:126
+#: admin/partials/bread-admin-display.php:130
 msgid "Page Layout"
 msgstr ""
 
@@ -681,6 +829,10 @@ msgstr ""
 msgid "Password: "
 msgstr ""
 
+#: admin/partials/_bread_wizard.php:118
+msgid "Place virtual meetings in a separate list, with specialized format."
+msgstr ""
+
 #: admin/partials/_backup_restore_setup.php:82
 msgid "Please Choose a File."
 msgstr ""
@@ -701,7 +853,7 @@ msgstr ""
 msgid "Portrait, Landscape"
 msgstr ""
 
-#: admin/partials/bread-admin-display.php:154
+#: admin/partials/bread-admin-display.php:158
 msgid "Preview"
 msgstr ""
 
@@ -731,11 +883,11 @@ msgstr ""
 msgid "Same as main list"
 msgstr ""
 
-#: admin/partials/bread-admin-display.php:153
+#: admin/partials/bread-admin-display.php:157
 msgid "Save Changes"
 msgstr ""
 
-#: admin/partials/bread-admin-display.php:156
+#: admin/partials/bread-admin-display.php:160
 msgid "Save Changes before Generating Meeting List."
 msgstr ""
 
@@ -751,6 +903,14 @@ msgstr ""
 msgid "Select language for the additional list"
 msgstr ""
 
+#: admin/partials/_bread_wizard.php:105
+msgid "Select one of the layouts appropriate to the number of meetings"
+msgstr ""
+
+#: admin/partials/_bread_wizard.php:12
+msgid "Select Service Bodies"
+msgstr ""
+
 #: admin/partials/_meetings_setup.php:327
 msgid "Select sort order for the additional list"
 msgstr ""
@@ -759,7 +919,8 @@ msgstr ""
 msgid "Separator: "
 msgstr ""
 
-#: admin/partials/bread-admin-display.php:46
+#. Bread can query up to five servers, the string is the number 1-5
+#: admin/partials/bread-admin-display.php:49
 #, php-format
 msgid "Service Body %s"
 msgstr ""
@@ -770,6 +931,10 @@ msgstr ""
 
 #: admin/partials/_layout_setup.php:22
 msgid "Smaller Areas"
+msgstr ""
+
+#: admin/partials/_meeting_list_setup.php:15
+msgid "Start Here: Meeting List Setup Wizard"
 msgstr ""
 
 #: admin/partials/_meetings_setup.php:236
@@ -785,6 +950,22 @@ msgstr ""
 msgid "State+City"
 msgstr ""
 
+#: admin/partials/_bread_wizard.php:40
+msgid "Step 1: Enter your BMLT root server"
+msgstr ""
+
+#: admin/partials/_bread_wizard.php:70
+msgid "Step 2: Select a service body"
+msgstr ""
+
+#: admin/partials/_bread_wizard.php:94
+msgid "Step 3: Page Layout"
+msgstr ""
+
+#: admin/partials/_bread_wizard.php:110
+msgid "Step 4: Select Option"
+msgstr ""
+
 #: admin/partials/_meetings_setup.php:119
 msgid "Sub-Grouping: "
 msgstr ""
@@ -793,11 +974,31 @@ msgstr ""
 msgid "Suppress Heading: "
 msgstr ""
 
+#: admin/partials/_bread_wizard.php:53
+msgid "Test Server Connection"
+msgstr ""
+
+#: admin/partials/_bread_wizard.php:55
+msgid "Test that this is valid root server URL before continuing"
+msgstr ""
+
 #: admin/partials/_layout_setup.php:112 admin/partials/_meetings_setup.php:24
 msgid "Text Color:"
 msgstr ""
 
-#: admin/partials/_bmlt_server_setup.php:88
+#: admin/partials/_bread_wizard.php:46
+msgid ""
+"The first thing we need is the location of your BMLT root server.  Once you "
+"have entered it, you need check that the URL is correct\n"
+"          by clicking the 'Test Connection' button."
+msgstr ""
+
+#: admin/partials/_bread_wizard.php:153
+msgid ""
+"The first thing you probably want to do is have a look at the meeting list:"
+msgstr ""
+
+#: admin/partials/_bmlt_server_setup.php:91
 msgid "The Meetings you select will be merged into your meeting list."
 msgstr ""
 
@@ -826,7 +1027,7 @@ msgid ""
 "footers, page numbers."
 msgstr ""
 
-#: admin/partials/_bmlt_server_setup.php:161
+#: admin/partials/_bmlt_server_setup.php:164
 msgid "This site is using an external object cache."
 msgstr ""
 
@@ -836,8 +1037,21 @@ msgid ""
 "override any setting in the Service Body dropdowns."
 msgstr ""
 
+#: admin/partials/_bread_wizard.php:42
+msgid ""
+"This wizard guides you through the initial configuation of a meeting list.  "
+"If you have already created one or more meeting lists,\n"
+"          don't worry, this process alway creates a new configuration, and "
+"never overwrites old ones."
+msgstr ""
+
 #: admin/partials/_layout_setup.php:152
 msgid "Times"
+msgstr ""
+
+#: admin/partials/_bread_wizard.php:156
+msgid ""
+"To add a link to the meeting list on your website, use the following link."
 msgstr ""
 
 #: admin/partials/_layout_setup.php:23 admin/partials/_layout_setup.php:60
@@ -868,8 +1082,18 @@ msgstr ""
 msgid "Using Tomato Server"
 msgstr ""
 
+#: admin/partials/_bread_wizard.php:65
+msgid "Verify that this is valid root server URL before continuing"
+msgstr ""
+
 #: admin/partials/_meetings_setup.php:312
 msgid "Virtual Meetings"
+msgstr ""
+
+#: admin/partials/_bread_wizard.php:49
+msgid ""
+"Visit <a target=\"_blank\" href=\"https://doihavethebmlt.org/\">Do I have "
+"the BMLT?</a> to find your BMLT server"
 msgstr ""
 
 #: admin/partials/_layout_setup.php:116
@@ -915,23 +1139,42 @@ msgid ""
 "page height."
 msgstr ""
 
-#: admin/partials/_bmlt_server_setup.php:73
+#: admin/partials/_bread_wizard.php:115
+msgid "Where should virtual meetings be included:"
+msgstr ""
+
+#. the string is a link to the semantic interface of the BMLT server
+#: admin/partials/_bmlt_server_setup.php:76
 #, php-format
 msgid ""
 "You can get help formulating a query using your sites <a href=\"%s\">"
 "semantic interface</a>."
 msgstr ""
 
-#: admin/partials/bread-admin-display.php:93
+#: admin/partials/bread-admin-display.php:96
 msgid "You do not have permission to save this configuation!"
 msgstr ""
 
-#: admin/partials/bread-admin-display.php:39
+#: admin/partials/_bread_wizard.php:143
+msgid ""
+"You may also want to adjust the font sizes on your meeting list so that it "
+"fits on a single sheet or is more readable.  This is only\n"
+"              of the many options available in the 'Customizer'."
+msgstr ""
+
+#: admin/partials/_bread_wizard.php:160
+msgid ""
+"You probably want to add some content to the first page or the custom "
+"content:"
+msgstr ""
+
+#. string is the version number of the BMLT Server
+#: admin/partials/bread-admin-display.php:40
 #, php-format
 msgid "Your BMLT Server is running %s"
 msgstr ""
 
-#: admin/partials/bread-admin-display.php:99
+#: admin/partials/bread-admin-display.php:102
 msgid "Your changes were successfully saved!"
 msgstr ""
 

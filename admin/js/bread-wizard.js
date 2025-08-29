@@ -63,11 +63,11 @@ jQuery(document).ready(function($){
             ask_bmlt("switcher=GetServerInfo",
             (info) => {
                 $('#wizard_root_server_result').removeClass('invalid-feedback dashicons-dismiss')
-                    .addClass('valid-feedback dashicons-before dashicons-yes-alt').html('Connected! - BMLT Server version '+info[0]['version']);
+                    .addClass('valid-feedback dashicons-before dashicons-yes-alt').html($('#wizard_connected_message').html()+info[0].version);
             },
             (error) => {
                 $('#wizard_root_server_result').removeClass('valid-feedback dashicons-yes-alt')
-                    .addClass('invalid-feedback dashicons-before dashicons-dismiss').html('Could not connect: Check spelling and internet connection.');
+                    .addClass('invalid-feedback dashicons-before dashicons-dismiss').html($('#wizard_disconnected_message').html());
             });
         }
         BreadWizard.prototype.root_server_keypress = function(event) {
@@ -75,7 +75,7 @@ jQuery(document).ready(function($){
         }
         BreadWizard.prototype.root_server_changed = function() {
             $('#wizard_root_server_result').removeClass('valid-feedback').addClass('invalid-feedback dashicons-before dashicons-dismiss')
-                .html('Test that this is valid root server URL before continuing');
+                .html($('#wizard_testnow_message').html());
         }
         BreadWizard.prototype.finish = function() {
             $('#bread-wizard').smartWizard("reset");

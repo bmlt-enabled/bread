@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Bread\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-28 12:15+0000\n"
-"PO-Revision-Date: 2025-08-28 13:07+0000\n"
+"POT-Creation-Date: 2025-08-29 09:53+0000\n"
+"PO-Revision-Date: 2025-08-29 10:52+0000\n"
 "Last-Translator: \n"
 "Language-Team: Persian\n"
 "Language: fa_IR\n"
@@ -15,6 +15,7 @@ msgstr ""
 "X-Generator: Loco https://localise.biz/\n"
 "X-Loco-Version: 2.8.0; wp-6.8.2; php-8.2.0"
 
+#: admin/partials/_custom_section_setup.php:10
 msgid ""
 "\n"
 "                        <p>The Custom Content can be customized with text, "
@@ -29,16 +30,20 @@ msgid ""
 "after the meetings in the meeting list.</i></p>"
 msgstr ""
 "<p> محتوای سفارشی را می توان با متن ، گرافیک ، جداول ، کد کوتاه و غیره "
-"سفارشی کرد .___ html_1___\n"
-"                        <p><strong>default font size</strong> برای متن خاص "
-"در ویرایشگر قابل تغییر است .___ html_1___\n"
-"                        <p><strong>add media</strong> دکمه - بارگذاری و "
-"اضافه کردن گرافیک .___ html_1___\n"
-"                        <p><strong>Meeting لیست کوتاه کد های </strong> کشویی "
-"- داده های متغیر را وارد کنید .___ html_1___\n"
-"                        <p><i> محتوای سفارشی بلافاصله پس از جلسات در لیست "
-"جلسه چاپ می شود .___ html_16___</p>"
+"سفارشی کرد ."
 
+#: admin/partials/_front_page_setup.php:10
+#, fuzzy
+#| msgid ""
+#| "\n"
+#| "                        <p>The Front Page can be customized with text, "
+#| "graphics, tables, shortcodes, etc.</p>\n"
+#| "                        <p><strong>Add Media</strong> button - upload and "
+#| "add graphics.</p>\n"
+#| "                        <p><strong>Meeting List Shortcodes</strong> "
+#| "dropdown - insert custom data.</p>\n"
+#| "                        <p><strong>Default Font Size</strong> can be "
+#| "changed for specific text.</p>"
 msgid ""
 "\n"
 "                        <p>The Front Page can be customized with text, "
@@ -50,54 +55,86 @@ msgid ""
 "                        <p><strong>Default Font Size</strong> can be changed "
 "for specific text.</p>"
 msgstr ""
-"<p> صفحه اول را می توان با متن ، گرافیک ، جداول ، کد کوتاه ، ect .___ "
-"html_1___ سفارشی سازی کرد.\n"
-"                        <p><strong>add media</strong> دکمه - بارگذاری و "
-"اضافه کردن گرافیک .___ html_1___\n"
-"                        <p><strong>meeting لیست کوتاه کد های </strong> کشویی "
-"- داده های سفارشی را وارد کنید .___ html_1___\n"
-"                        <p><strong>default font size</strong> برای متن خاص "
-"قابل تغییر است .___ html_1___"
+" صفحه اول را می توان با متن ، گرافیک ، جداول ، کد کوتاه و غیره سفارشی کرد ."
 
+#. string is number of cache entries deleted
+#: admin/partials/bread-admin-display.php:106
+#, php-format
 msgid "%s Cache entries deleted"
 msgstr "%s ورودی های حافظه نهان حذف شده"
 
+#: admin/partials/_bmlt_server_setup.php:169
 msgid "0 - 999 Hours (0 = disable cache)"
 msgstr "0 - 999 ساعت (0 = غیرفعال کردن حافظه پنهان)"
 
+#: admin/partials/_meetings_setup.php:241
 msgid "12 Hour"
 msgstr "12 ساعته"
 
+#: admin/partials/_meetings_setup.php:253
 msgid "24 Hour"
 msgstr "24 ساعته"
 
+#: admin/partials/_meetings_setup.php:265
 msgid "24 Hour French"
 msgstr "24 ساعته فرانسوی"
 
+#: admin/partials/_layout_setup.php:76
 msgid "5 inch"
 msgstr "5 اینچ"
 
+#: admin/partials/_layout_setup.php:25 admin/partials/_layout_setup.php:32
+#: admin/partials/_layout_setup.php:46 admin/partials/_layout_setup.php:80
 msgid "A4"
 msgstr "A4"
 
+#: admin/partials/_layout_setup.php:39 admin/partials/_layout_setup.php:81
 msgid "A5"
 msgstr "A5"
 
+#: admin/partials/_layout_setup.php:82
 msgid "A6"
 msgstr "A6"
 
+#: admin/partials/_layout_setup.php:70
 msgid "Add extra pages for booklet"
 msgstr "صفحات اضافی را برای جزوه اضافه کنید"
 
+#: admin/partials/_meetings_setup.php:248
 msgid "Add White Space"
 msgstr "فضای سفید را اضافه کنید"
 
+#: admin/partials/_meetings_setup.php:301
 msgid "Additional List"
 msgstr "لیست اضافی"
 
+#: admin/partials/_bread_wizard.php:138
+msgid ""
+"After creating the configuration, you will be able to view the resulting "
+"meeting list.  Note that this is not usually\n"
+"              ready to be printed.  Users almost always want to add content, "
+"such as service meetings, help lines, place for people to\n"
+"              collect phone numbers etc.  To do this, click on the "
+"'Customize' tab to the left, and then go to either the 'Front Page' or\n"
+"              'Custom Section' tabs.  The editors there contain a 'Meeting "
+"List Shortcodes' dropdown menu.  Using these, new structures can\n"
+"              be added with only a few mouse clicks."
+msgstr ""
+"پس از ایجاد پیکربندی ، می توانید لیست جلسه حاصل را مشاهده کنید.  توجه داشته "
+"باشید که این معمولاً نیست\n"
+"              آماده چاپ  کاربران تقریباً همیشه می خواهند محتوا را اضافه کنند "
+"، مانند جلسات خدمات ، خطوط کمک ، مکان برای افراد\n"
+"              برای انجام این کار ، شماره تلفن و غیره را جمع آوری کنید ، روی "
+"برگه \"سفارشی سازی\" در سمت چپ کلیک کنید ، و سپس به \"صفحه اول\" بروید\n"
+"              برگه های بخش سفارشی.  ویراستاران موجود در منوی کشویی \"لیست "
+"جلسات\" هستند.  با استفاده از این ، ساختارهای جدید می توانند\n"
+"              فقط با چند کلیک ماوس اضافه می شود."
+
+#: admin/partials/_bmlt_server_setup.php:90
 msgid "All Meetings from your BMLT Server are shown in the list."
 msgstr "تمام جلسات از سرور BMLT شما در لیست نشان داده شده است."
 
+#: admin/partials/_backup_restore_setup.php:56
 msgid ""
 "Also useful for backing up before making significant changes to the meeting "
 "list settings."
@@ -105,12 +142,15 @@ msgstr ""
 "همچنین برای تهیه نسخه پشتیبان از قبل از ایجاد تغییرات مهم در تنظیمات لیست "
 "جلسه مفید است."
 
+#: admin/partials/_layout_setup.php:43
 msgid "Anything"
 msgstr "هر چیزی"
 
+#: admin/partials/_layout_setup.php:153
 msgid "Arial"
 msgstr "عیاشی"
 
+#: admin/partials/_meetings_setup.php:213
 msgid ""
 "Avoid using tables which will greatly slow down the generation time. Use CSS "
 "instead to get table-like effects if need be."
@@ -118,21 +158,42 @@ msgstr ""
 "از استفاده از جداول خودداری کنید که زمان تولید را به شدت کاهش می دهد. به جای "
 "آن از CSS استفاده کنید تا در صورت لزوم جلوه های جدول مانند را بدست آورید."
 
+#: admin/partials/_layout_setup.php:113 admin/partials/_meetings_setup.php:29
 msgid "Background Color:"
 msgstr "رنگ پس زمینه:"
 
+#: admin/partials/bread-admin-display.php:122
 msgid "Backup/ Restore"
 msgstr "پشتیبان گیری/ بازیابی"
 
+#: admin/partials/_layout_setup.php:148
 msgid "Base Font: "
 msgstr "قلم پایه:"
 
+#: admin/partials/_layout_setup.php:144
 msgid "Base Fonts and Colors"
 msgstr "قلم ها و رنگ های پایه"
 
+#: admin/partials/_bread_wizard.php:135
+msgid ""
+"Before creating the meeting list configuration, you are given the "
+"opportunity to give the configuration\n"
+"              a mnemonic name.  If you are managing multiple meeting lists "
+"on this same, this name can help you keep track of which\n"
+"              configuration is which."
+msgstr ""
+"قبل از ایجاد پیکربندی لیست جلسه ، به شما فرصتی داده می شود که پیکربندی را "
+"ارائه دهید\n"
+"              یک نام Mnemonic.  اگر در حال مدیریت لیست های مختلف جلسه در "
+"همین مورد هستید ، این نام می تواند به شما در پیگیری کدام یک کمک کند\n"
+"              پیکربندی کدام است."
+
+#: admin/partials/_bread_wizard.php:6 admin/partials/_bmlt_server_setup.php:18
+#: admin/partials/bread-admin-display.php:129
 msgid "BMLT Server"
 msgstr "سرور BMLT"
 
+#: admin/partials/_bread_wizard.php:50 admin/partials/_bmlt_server_setup.php:21
 msgid "BMLT Server URL: "
 msgstr "URL سرور BMLT:"
 
@@ -140,24 +201,32 @@ msgstr "URL سرور BMLT:"
 msgid "bmlt-enabled"
 msgstr "BMLT فعال"
 
+#: admin/partials/_meetings_setup.php:37
 msgid "Bold: "
 msgstr "پررنگ:"
 
+#: admin/partials/_layout_setup.php:39
 msgid "Booklet"
 msgstr "کتاب"
 
+#: admin/partials/_layout_setup.php:66
 msgid "Booklets"
 msgstr "کتابفروشی"
 
+#: admin/partials/_meetings_setup.php:52 admin/partials/_meetings_setup.php:106
+#: admin/partials/_meetings_setup.php:127
 msgid "Borough"
 msgstr "ولگرد"
 
+#: admin/partials/_meetings_setup.php:65
 msgid "Borough Suffix: "
 msgstr "پسوند بورو:"
 
+#: admin/partials/_meetings_setup.php:53
 msgid "Borough+County"
 msgstr "ولسوالی+شهرستان"
 
+#: admin/partials/_layout_setup.php:85
 msgid "Bottom: "
 msgstr "پایین:"
 
@@ -165,6 +234,7 @@ msgstr "پایین:"
 msgid "Bread"
 msgstr "نان"
 
+#: admin/partials/_backup_restore_setup.php:11
 msgid ""
 "Bread can support multiple meeting lists.  Each meeting list has an integer "
 "ID and a text description that help the user to identify\n"
@@ -181,202 +251,341 @@ msgstr ""
 "                        این لیست جلسه را ایجاد می کند (به عنوان مثال ، لیست "
 "شماره فعلی = 2 لیست جلسه را با شناسه 2 تولید می کند)."
 
+#: admin/partials/_bread_wizard.php:44
+msgid ""
+"Bread is highly customizable, as areas often try to maintain the appearance "
+"of their old meeting lists.  This wizard only attempts to give you a "
+"reasonable\n"
+"          starting point, not an end product.  At the end of the wizard we "
+"make a few suggestions for possible next steps."
+msgstr ""
+"نان بسیار قابل تنظیم است ، زیرا مناطقی که اغلب سعی می کنند ظاهر لیست های "
+"قدیمی خود را حفظ کنند.  این جادوگر فقط سعی می کند به شما معقول بدهد\n"
+"          نقطه شروع ، یک محصول نهایی نیست.  در پایان جادوگر ما چند پیشنهاد "
+"برای مراحل بعدی احتمالی ارائه می دهیم."
+
+#: admin/partials/_meetings_setup.php:330
 msgid "By Day and Time"
 msgstr "روز و زمان"
 
+#: admin/partials/_meetings_setup.php:329
 msgid "By Name"
 msgstr "با نام"
 
+#: admin/partials/_bmlt_server_setup.php:172
 msgid "CACHE is DELETED when you Save Changes."
 msgstr "حافظه پنهان هنگام ذخیره تغییرات حذف می شود."
 
+#: admin/partials/_bmlt_server_setup.php:168
 msgid "Cache Time: "
 msgstr "زمان حافظه نهان:"
 
+#: admin/partials/_bread_wizard.php:111
+msgid ""
+"Choose a language (only applies to names of days and format code "
+"descriptions): "
+msgstr ""
+"یک زبان را انتخاب کنید (فقط در مورد نام روزها و توضیحات کد فرمت اعمال می شود)"
+":"
+
+#: admin/partials/_bread_wizard.php:18
+msgid "Choose Layout"
+msgstr "طرح را انتخاب کنید"
+
+#: admin/partials/_bread_wizard.php:75
+msgid "Choose up to 5 service bodies"
+msgstr "حداکثر 5 نهاد خدماتی را انتخاب کنید"
+
+#: admin/partials/_bread_wizard.php:127 admin/partials/_meetings_setup.php:49
+#: admin/partials/_meetings_setup.php:102
+#: admin/partials/_meetings_setup.php:123
 msgid "City"
 msgstr "شهر"
 
+#: admin/partials/_meetings_setup.php:92
 msgid "City Suffix: "
 msgstr "پسوند شهر:"
 
+#: admin/partials/_layout_setup.php:161
 msgid "CMYK"
 msgstr "cmyk"
 
+#: admin/partials/_layout_setup.php:156
 msgid "Color space: "
 msgstr "فضای رنگ:"
 
+#: admin/partials/_layout_setup.php:135
 msgid "Color:"
 msgstr "رنگ:"
 
+#: admin/partials/_layout_setup.php:130
 msgid "Column Gap Width: "
 msgstr "عرض شکاف ستون:"
 
+#: admin/partials/_meetings_setup.php:152
 msgid "Combine main and subgroup into a single header"
 msgstr "اصلی و زیر گروه را در یک هدر واحد ترکیب کنید"
 
+#: admin/partials/_backup_restore_setup.php:9
 msgid "Configuration Manager"
 msgstr "مدیر پیکربندی"
 
+#: admin/partials/_backup_restore_setup.php:20
 msgid "Configuration Name: "
 msgstr "نام پیکربندی:"
 
+#: admin/partials/_backup_restore_setup.php:25
 msgid "Configuration Selection"
 msgstr "انتخاب پیکربندی"
 
+#: admin/partials/_bread_wizard.php:152
+msgid "Congratulations! The meeting list configuration has been created!"
+msgstr "تبریک می گویم! پیکربندی لیست جلسه ایجاد شده است!"
+
+#: admin/partials/_bread_wizard.php:58
+msgid "Connected! - BMLT Server version "
+msgstr "متصل! - نسخه سرور BMLT"
+
+#: admin/partials/_backup_restore_setup.php:79
 msgid "Consider backing up your settings by using the Export function."
 msgstr "با استفاده از عملکرد صادرات ، از تنظیمات خود نسخه پشتیبان تهیه کنید."
 
+#: admin/partials/_bread_wizard.php:61
+msgid "Could not connect: Check spelling and internet connection."
+msgstr "اتصال نمی تواند: اتصال املا و اتصال به اینترنت را بررسی کنید."
+
+#: admin/partials/_meetings_setup.php:51 admin/partials/_meetings_setup.php:105
+#: admin/partials/_meetings_setup.php:126
 msgid "County"
 msgstr "شهرستان"
 
+#: admin/partials/_meetings_setup.php:74
 msgid "County Suffix: "
 msgstr "پسوند شهرستان:"
 
+#: admin/partials/_layout_setup.php:151
 msgid "Courier"
 msgstr "پیک"
 
+#: admin/partials/_bread_wizard.php:30 admin/partials/_bread_wizard.php:149
+msgid "Create Meeting List"
+msgstr "لیست جلسه ایجاد کنید"
+
+#: admin/partials/_backup_restore_setup.php:14
 msgid "Current Meeting List"
 msgstr "لیست جلسه فعلی"
 
+#: admin/partials/_bmlt_server_setup.php:117
 msgid "Current Meeting List Link"
 msgstr "پیوند لیست جلسه فعلی"
 
+#: admin/partials/bread-admin-display.php:133
 msgid "Custom Content"
 msgstr "محتوای سفارشی"
 
+#: admin/partials/_layout_setup.php:119 admin/partials/_meetings_setup.php:187
 msgid "Custom Footer: "
 msgstr "پاورقی سفارشی:"
 
+#: admin/partials/_bmlt_server_setup.php:80
 msgid "Custom Query"
 msgstr "پرس و جو سفارشی"
 
+#: admin/partials/_bmlt_server_setup.php:82
+#: admin/partials/_meetings_setup.php:362
 msgid "Custom Query: "
 msgstr "پرس و جو سفارشی:"
 
+#: admin/partials/_custom_section_setup.php:18
 msgid "Custom Section Content"
 msgstr "محتوای بخش سفارشی"
 
+#: admin/partials/_meetings_setup.php:11
 msgid ""
 "Customize how meetings are grouped and the headline that each group has."
 msgstr "نحوه گروه بندی جلسات و تیتر هر گروه را سفارشی کنید."
 
+#: admin/partials/bread-admin-display.php:121
 msgid "Customizer"
 msgstr "سفارشی ساز"
 
+#: admin/partials/_bread_wizard.php:126
+msgid "Day"
+msgstr "روز"
+
+#: admin/partials/_custom_section_setup.php:20
+#: admin/partials/_front_page_setup.php:19
+#: admin/partials/_meetings_setup.php:210
 msgid "Default Font Size: "
 msgstr "اندازه فونت پیش فرض:"
 
+#: admin/partials/_layout_setup.php:150
 msgid "DejaVu Sans Condensed"
 msgstr "dejavu sans متراکم"
 
+#: admin/partials/_backup_restore_setup.php:44
 msgid "Delete Current Configuration"
 msgstr "پیکربندی فعلی را حذف کنید"
 
+#: admin/partials/_bmlt_server_setup.php:31
+#: admin/partials/_bmlt_server_setup.php:39
+#: admin/partials/_bmlt_server_setup.php:52
 msgid "Disable SSL verification of server"
 msgstr "تأیید SSL سرور را غیرفعال کنید"
 
+#: admin/partials/_meetings_setup.php:40
 msgid "Display (Cont) Header: "
 msgstr "هدر نمایش (ادامه):"
 
+#: admin/partials/_meetings_setup.php:149
 msgid "Display each subgroup with its own header"
 msgstr "هر زیر گروه را با عنوان خود نمایش دهید"
 
+#: admin/partials/_meetings_setup.php:143
 msgid "Display Subgrouping: "
 msgstr "نمایش زیر گروه:"
 
+#: admin/partials/_bread_wizard.php:122
+msgid "Don't include virtual meetings at all."
+msgstr "اصلاً جلسات مجازی را شامل نمی شود."
+
+#: admin/partials/_bmlt_server_setup.php:147
 msgid "Download Log Files"
 msgstr "بارگیری پرونده های log"
 
+#: admin/partials/_backup_restore_setup.php:42
 msgid "Duplicate Current Configuration"
 msgstr "پیکربندی فعلی کپی"
 
+#: admin/partials/_bmlt_server_setup.php:137
 msgid "Enable Logging"
 msgstr "ورود به سیستم را فعال کنید"
 
+#: admin/partials/_layout_setup.php:173
 msgid "Enable PDF Protection."
 msgstr "محافظت از PDF را فعال کنید."
 
+#: admin/partials/_layout_setup.php:187
 msgid "Enable Protection"
 msgstr "محافظت"
 
+#: admin/partials/_bmlt_server_setup.php:140
 msgid "Enable SimpleTables"
 msgstr "Simpleables را فعال کنید"
 
+#: admin/partials/_layout_setup.php:176
 msgid "Encrypted PDFs can be opened and printed."
 msgstr "PDF های رمزگذاری شده را می توان باز و چاپ کرد."
 
+#: admin/partials/_layout_setup.php:174
 msgid "Encrypts and sets the PDF document permissions for the PDF file."
 msgstr "مجوزهای سند PDF را برای پرونده PDF رمزگذاری و تنظیم می کند."
 
+#: admin/partials/_bread_wizard.php:147
+msgid "Enter a custom name for this configuration: "
+msgstr "برای این پیکربندی یک نام سفارشی وارد کنید:"
+
+#: admin/partials/_bmlt_server_setup.php:34
 msgid "ERROR: Please enter a BMLT Server"
 msgstr "خطا: لطفاً یک سرور BMLT وارد کنید"
 
+#: admin/partials/_bmlt_server_setup.php:44
 msgid "ERROR: Problem Connecting to BMLT Server"
 msgstr "خطا: اتصال به سرور BMLT"
 
+#: admin/partials/_backup_restore_setup.php:61
 msgid "Export"
 msgstr "صادر کردن"
 
+#: admin/partials/_backup_restore_setup.php:52
 msgid "Export Configuration"
 msgstr "پیکربندی صادرات"
 
+#: admin/partials/_backup_restore_setup.php:54
 msgid "Export or backup meeting list settings."
 msgstr "تنظیمات لیست جلسات صادرات یا پشتیبان گیری."
 
+#: admin/partials/_bmlt_server_setup.php:111
 msgid "Extra Meetings Enabled"
 msgstr "جلسات اضافی فعال شده است"
 
+#: admin/partials/_meetings_setup.php:313
 msgid "Face-to-Face Meetings"
 msgstr "جلسات چهره به چهره"
 
+#: admin/partials/bread-admin-display.php:98
 msgid "File loaded"
 msgstr "پرونده بارگیری شده است"
 
+#: admin/class-bread-admin.php:367
 msgid "File size greater than 500k"
 msgstr "اندازه پرونده بیشتر از 500k"
 
+#: admin/partials/_layout_setup.php:59
 msgid "Flyer"
 msgstr "پروانه دار"
 
+#: admin/partials/_layout_setup.php:111 admin/partials/_meetings_setup.php:21
 msgid "Font Size: "
 msgstr "اندازه قلم:"
 
+#: admin/partials/_meetings_setup.php:308
 msgid "Format of meetings in the additional list: "
 msgstr "قالب جلسات در لیست اضافی:"
 
+#: admin/partials/bread-admin-display.php:131
 msgid "Front Page"
 msgstr "صفحه اول"
 
+#: admin/partials/_front_page_setup.php:17
 msgid "Front Page Content"
 msgstr "محتوای صفحه اول"
 
+#: admin/partials/_layout_setup.php:44 admin/partials/_layout_setup.php:68
 msgid "Full Page"
 msgstr "صفحه کامل"
 
+#: admin/partials/_bread_wizard.php:154
+#: admin/partials/bread-admin-display.php:159
+#: admin/partials/_backup_restore_setup.php:90
 msgid "Generate Meeting List"
 msgstr "لیست جلسات را تولید کنید"
 
+#: admin/partials/bread-admin-display.php:120
 msgid "Getting Started"
 msgstr "شروع"
 
+#: admin/partials/_bread_wizard.php:158
+msgid "Go Back"
+msgstr "بازگشت"
+
+#: admin/partials/_layout_setup.php:159
 msgid "Greyscale"
 msgstr "گودال"
 
+#: admin/partials/_bread_wizard.php:128 admin/partials/_meetings_setup.php:50
+#: admin/partials/_meetings_setup.php:104
+#: admin/partials/_meetings_setup.php:125
 msgid "Group"
 msgstr "گروه"
 
+#: admin/partials/_meetings_setup.php:46
 msgid "Group Meetings By: "
 msgstr "جلسات گروهی توسط:"
 
+#: admin/partials/_layout_setup.php:37 admin/partials/_layout_setup.php:67
 msgid "Half-Fold"
 msgstr "نیمی"
 
+#: admin/partials/_layout_setup.php:114
 msgid "Header Margin Top: "
 msgstr "بالای حاشیه هدر:"
 
+#: admin/partials/_layout_setup.php:115
 msgid "Header Text: "
 msgstr "متن هدر:"
 
+#: admin/partials/_bmlt_server_setup.php:108
 msgid "Hint: Type a group name, weekday or area to narrow down your choices."
 msgstr ""
 "نکته: برای محدود کردن انتخاب های خود ، نام گروهی ، روز هفته یا منطقه را تایپ "
@@ -390,6 +599,19 @@ msgstr "https://bmlt.app"
 msgid "https://bmlt.app/"
 msgstr "https://bmlt.app/"
 
+#: admin/partials/_bread_wizard.php:88
+msgid ""
+"If you want to limit the meeting list to a particular format, for instance, "
+"to create a language-specific meeting list, you can enter it here."
+msgstr ""
+"اگر می خواهید لیست جلسه را به یک قالب خاص محدود کنید ، به عنوان مثال ، برای "
+"ایجاد یک لیست جلسه خاص زبان ، می توانید آن را در اینجا وارد کنید."
+
+#: admin/partials/_bread_wizard.php:158
+msgid "If you want to try a different layout: "
+msgstr "اگر می خواهید یک طرح متفاوت را امتحان کنید:"
+
+#: admin/partials/_meetings_setup.php:367
 msgid ""
 "If you wish to define different contents for the additional list, use this "
 "template."
@@ -397,51 +619,106 @@ msgstr ""
 "اگر می خواهید مطالب مختلف را برای لیست اضافی تعریف کنید ، از این الگوی "
 "استفاده کنید."
 
+#: admin/partials/_backup_restore_setup.php:75
 msgid "Import"
 msgstr "وارد کردن"
 
+#: admin/partials/_backup_restore_setup.php:67
 msgid "Import Configuration"
 msgstr "پیکربندی واردات"
 
+#: admin/partials/_backup_restore_setup.php:69
 msgid "Import meeting list settings from a previously exported meeting list."
 msgstr "تنظیمات لیست جلسه واردات از لیست جلسه قبلی صادر شده."
 
+#: admin/partials/_bread_wizard.php:99
+msgid ""
+"In this step we suggest suitible formats based on your meeting count.  "
+"Having the meetings fit on a single side has the advantage\n"
+"            that the list can be posted on a bulleitin board, and this will "
+"be used when suggesting a page layout.  However, you may\n"
+"            also wish to have the meetings 'overflow' on to the back side of "
+"the paper.  If so, select a layout <em>above</em> layout\n"
+"            that the wizard pre-selects for you."
+msgstr ""
+"در این مرحله قالب های مناسب را بر اساس تعداد جلسه شما پیشنهاد می کنیم.  "
+"مناسب بودن جلسات در یک طرف این مزیت را دارد\n"
+"            که این لیست را می توان در یک صفحه بوللیتین ارسال کرد و این هنگام "
+"پیشنهاد طرح صفحه مورد استفاده قرار می گیرد.  با این حال ، شما ممکن است\n"
+"            همچنین آرزو می کنم جلسات \"سرریز\" در قسمت پشتی کاغذ باشد.  اگر "
+"چنین است ، یک طرح <em>above</em> طرح را انتخاب کنید\n"
+"            که جادوگر از قبل انتخاب می کند."
+
+#: admin/partials/_bread_wizard.php:133
+msgid ""
+"In this step, we create the meeting list settings.  If you already have a "
+"meeting list defined\n"
+"              on this site, the old settings will not be overwriten, rather, "
+"a new setting will be created."
+msgstr ""
+"در این مرحله تنظیمات لیست جلسه را ایجاد می کنیم.  اگر قبلاً لیست جلسه را "
+"تعریف کرده اید\n"
+"              در این سایت ، تنظیمات قدیمی رونویسی نخواهد شد ، بلکه یک تنظیم "
+"جدید ایجاد می شود."
+
+#: admin/partials/_bmlt_server_setup.php:95
 msgid "Include Extra Meetings"
 msgstr "شامل جلسات اضافی"
 
+#: admin/partials/_bmlt_server_setup.php:89
 msgid "Include Extra Meetings from Another Service Body."
 msgstr "شامل جلسات اضافی از بدنه سرویس دیگر."
 
+#: admin/partials/_meetings_setup.php:366
 msgid "Include meetings with this format in the main list"
 msgstr "جلسات با این قالب را در لیست اصلی قرار دهید"
 
+#: admin/partials/_meetings_setup.php:277
 msgid "Include Only This Meeting Format"
 msgstr "فقط این قالب جلسه را درج کنید"
 
+#: admin/partials/_bread_wizard.php:120
+msgid "Include virtual meetings in main meeting list."
+msgstr "جلسات مجازی را در لیست جلسه اصلی قرار دهید."
+
+#: admin/partials/_layout_setup.php:24 admin/partials/_layout_setup.php:31
+#: admin/partials/_layout_setup.php:38 admin/partials/_layout_setup.php:64
 msgid "Landscape"
 msgstr "چشم انداز"
 
+#: admin/partials/_layout_setup.php:36
 msgid "Large Area, Region, Metro"
 msgstr "منطقه بزرگ ، منطقه ، مترو"
 
+#: admin/partials/_layout_setup.php:79
 msgid "Ledger"
 msgstr "پیشخدمت"
 
+#: admin/partials/_layout_setup.php:86
 msgid "Left: "
 msgstr "سمت چپ:"
 
+#: admin/partials/_layout_setup.php:32 admin/partials/_layout_setup.php:46
+#: admin/partials/_layout_setup.php:78
 msgid "Legal"
 msgstr "حقوقی"
 
+#: admin/partials/_layout_setup.php:25 admin/partials/_layout_setup.php:46
+#: admin/partials/_layout_setup.php:77
 msgid "Letter"
 msgstr "نامه"
 
+#: admin/partials/_custom_section_setup.php:21
+#: admin/partials/_front_page_setup.php:20
+#: admin/partials/_meetings_setup.php:211
 msgid "Line Height: "
 msgstr "ارتفاع خط:"
 
+#: admin/partials/_backup_restore_setup.php:34
 msgid "Load Configuration"
 msgstr "پیکربندی بار"
 
+#: admin/partials/_meetings_setup.php:99
 msgid "Main Grouping: "
 msgstr "گروه بندی اصلی:"
 
@@ -449,200 +726,370 @@ msgstr "گروه بندی اصلی:"
 msgid "Maintains and generates PDF Meeting Lists from BMLT."
 msgstr "لیست های جلسات PDF را از BMLT حفظ و تولید می کند."
 
+#: admin/partials/_layout_setup.php:122
 msgid "Margin Footer: "
 msgstr "پاورقی حاشیه:"
 
+#: admin/partials/_layout_setup.php:29
 msgid "Medium Area"
 msgstr "منطقه متوسط"
 
+#: admin/partials/_meetings_setup.php:279
 msgid "Meeting Format: "
 msgstr "قالب جلسه:"
 
+#: admin/partials/_meetings_setup.php:14
 msgid "Meeting Group [Column] Header"
 msgstr "گروه جلسات [ستون]"
 
+#: admin/partials/_bmlt_server_setup.php:124
 msgid "Meeting List Author(s)"
 msgstr "لیست جلسه نویسنده (ها)"
 
+#: admin/partials/_bmlt_server_setup.php:160
 msgid "Meeting List Cache"
 msgstr "حافظه پنهان لیست جلسه"
 
+#: admin/partials/_backup_restore_setup.php:16
 msgid "Meeting List ID: "
 msgstr "شناسه لیست جلسه:"
 
+#: admin/partials/_bread_wizard.php:24
+msgid "Meeting List Options"
+msgstr "گزینه های لیست جلسه"
+
+#: admin/partials/_layout_setup.php:15
 msgid "Meeting List Size"
 msgstr "اندازه لیست جلسه"
 
+#: admin/partials/_meetings_setup.php:207
 msgid "Meeting Template"
 msgstr "الگوی جلسه"
 
+#: admin/partials/bread-admin-display.php:132
 msgid "Meetings"
 msgstr "جلسات"
 
+#: admin/partials/_bread_wizard.php:96
+msgid ""
+"Most areas try to fit their meetings onto a single sheet of paper.  And it "
+"is particularly adventageous to\n"
+"            use a tri-fold format, so that the list can be printed at home "
+"and placed along side the pamphlets. The priority should always be that the\n"
+"            meeting list is readable.  For many areas, a booklet format is "
+"better, even if the reqire more effort or expense to print."
+msgstr ""
+"بیشتر مناطق سعی می کنند جلسات خود را روی یک برگه واحد قرار دهند.  و به ویژه "
+"ماجراجویانه است\n"
+"            از یک قالب سه برابر استفاده کنید تا لیست در خانه چاپ شود و در "
+"کنار جزوه ها قرار گیرد. اولویت همیشه باید این باشد که\n"
+"            لیست جلسه قابل خواندن است.  برای بسیاری از زمینه ها ، یک قالب "
+"جزوه بهتر است ، حتی اگر تلاش یا هزینه بیشتری برای چاپ مجدد داشته باشید."
+
+#: admin/partials/_meetings_setup.php:103
+#: admin/partials/_meetings_setup.php:124
 msgid "Neighborhood"
 msgstr "محاصره"
 
+#: admin/partials/_meetings_setup.php:83
 msgid "Neighborhood Suffix: "
 msgstr "پسوند محله:"
 
+#: admin/partials/_meetings_setup.php:54
 msgid "Neighborhood+City"
 msgstr "محله+شهر"
 
+#: admin/partials/_bread_wizard.php:72
+msgid ""
+"Next, we need to know which meetings are going to be on the meeting list.  "
+"This will help the wizard when it\n"
+"              tries to choose an a appropriate layout for you."
+msgstr ""
+"در مرحله بعد ، ما باید بدانیم که کدام جلسات در لیست جلسه برگزار می شود.  این "
+"به جادوگر در هنگام آن کمک می کند\n"
+"              سعی می کند یک طرح مناسب برای شما انتخاب کند."
+
+#: admin/partials/_meetings_setup.php:146
 msgid "No header for subgroups"
 msgstr "بدون هدر برای زیر گروه ها"
 
+#: admin/partials/_layout_setup.php:47 admin/partials/_meetings_setup.php:121
 msgid "None"
 msgstr "هیچ کدام"
 
+#: admin/partials/_meetings_setup.php:310
 msgid "Not Used"
 msgstr "استفاده نشده"
 
+#: admin/partials/_bmlt_server_setup.php:92
 msgid "Note: Be sure to select all meetings for each group."
 msgstr "توجه: حتماً تمام جلسات را برای هر گروه انتخاب کنید."
 
+#: admin/partials/_layout_setup.php:180
 msgid "Note: Encrypted PDFs cannot be opened in MS Word at all."
 msgstr "توجه: PDF های رمزگذاری شده به هیچ وجه نمی توانند در MS Word باز شوند."
 
+#: admin/partials/_bread_wizard.php:104
+msgid "Number of meetings on list: "
+msgstr "تعداد جلسات در لیست:"
+
+#: admin/partials/_bread_wizard.php:161
+msgid "Open customizer"
+msgstr "سفارشی ساز باز"
+
+#: admin/partials/_bmlt_server_setup.php:134
 msgid "Optimize/Debug mPDF"
 msgstr "MPDF بهینه سازی/اشکال زدایی"
 
+#: admin/partials/_layout_setup.php:178
 msgid "Optional Password to allow editing in a PDF editor."
 msgstr "رمزعبور اختیاری برای ویرایش در ویرایشگر PDF."
 
+#: admin/partials/_bread_wizard.php:124
+msgid "Organize the meetings by:"
+msgstr "جلسات را توسط:"
+
+#: admin/partials/_layout_setup.php:17
 msgid "Orientation"
 msgstr "جهت گیری"
 
+#: admin/partials/_bmlt_server_setup.php:143
 msgid "Pack Table Data"
 msgstr "داده های جدول بسته بندی"
 
+#: admin/partials/_layout_setup.php:106
 msgid "Page Decorations"
 msgstr "دکوراسیون صفحه"
 
+#: admin/partials/_layout_setup.php:19
 msgid "Page Height"
 msgstr "ارتفاع صفحه"
 
+#: admin/partials/_layout_setup.php:16 admin/partials/_layout_setup.php:54
+#: admin/partials/bread-admin-display.php:130
 msgid "Page Layout"
 msgstr "چیدمان صفحه"
 
+#: admin/partials/_layout_setup.php:11
 msgid "Page Layout Defaults"
 msgstr "پیش فرض طرح بندی صفحه"
 
+#: admin/partials/_layout_setup.php:84
 msgid "Page Margin Top: "
 msgstr "بالای صفحه بالای صفحه:"
 
+#: admin/partials/_layout_setup.php:127
 msgid "Page Numbers Font Size: "
 msgstr "شماره صفحه اندازه فونت:"
 
+#: admin/partials/_layout_setup.php:75
 msgid "Page Size:"
 msgstr "اندازه صفحه:"
 
+#: admin/partials/_layout_setup.php:18
 msgid "Paper Size"
 msgstr "اندازه کاغذ"
 
+#: admin/partials/_layout_setup.php:183
 msgid "Password Protection"
 msgstr "محافظت از رمز عبور"
 
+#: admin/partials/_layout_setup.php:192
 msgid "Password: "
 msgstr "رمز عبور:"
 
+#: admin/partials/_bread_wizard.php:118
+msgid "Place virtual meetings in a separate list, with specialized format."
+msgstr "جلسات مجازی را در یک لیست جداگانه و با فرمت تخصصی قرار دهید."
+
+#: admin/partials/_backup_restore_setup.php:82
 msgid "Please Choose a File."
 msgstr "لطفا یک پرونده را انتخاب کنید."
 
+#: admin/class-bread-admin.php:363
 msgid "Please upload a file to import"
 msgstr "لطفا یک پرونده را برای واردات بارگذاری کنید"
 
+#: admin/class-bread-admin.php:359
 msgid "Please upload a valid .json file"
 msgstr "لطفاً یک پرونده معتبر .json بارگذاری کنید"
 
+#: admin/partials/_layout_setup.php:63
 msgid "Portrait"
 msgstr "تصویر"
 
+#: admin/partials/_layout_setup.php:45
 msgid "Portrait, Landscape"
 msgstr "پرتره ، منظره"
 
+#: admin/partials/bread-admin-display.php:158
 msgid "Preview"
 msgstr "پیش نمایش"
 
+#: admin/partials/_layout_setup.php:30 admin/partials/_layout_setup.php:61
 msgid "Quad-Fold"
 msgstr "چهار برابر"
 
+#: admin/partials/_bmlt_server_setup.php:64
 msgid "Recurse Service Bodies"
 msgstr "مجدداً اجسام خدمات"
 
+#: admin/partials/_meetings_setup.php:259
 msgid "Remove White Space"
 msgstr "فضای سفید را بردارید"
 
+#: admin/partials/_layout_setup.php:160
 msgid "RGB"
 msgstr "RGB"
 
+#: admin/partials/_layout_setup.php:87
 msgid "Right: "
 msgstr "سمت راست:"
 
+#: admin/partials/_meetings_setup.php:331
+#: admin/partials/_meetings_setup.php:339
+#: admin/partials/_meetings_setup.php:341
 msgid "Same as main list"
 msgstr "همان لیست اصلی"
 
+#: admin/partials/bread-admin-display.php:157
 msgid "Save Changes"
 msgstr "تغییرات را ذخیره کنید"
 
+#: admin/partials/bread-admin-display.php:160
 msgid "Save Changes before Generating Meeting List."
 msgstr "قبل از تولید لیست جلسات ، تغییرات را ذخیره کنید."
 
+#: admin/partials/_backup_restore_setup.php:21
 msgid "Save Configuration Name"
 msgstr "نام پیکربندی را ذخیره کنید"
 
+#: admin/partials/_backup_restore_setup.php:27
 msgid "Select Configuration: "
 msgstr "پیکربندی را انتخاب کنید:"
 
+#: admin/partials/_meetings_setup.php:335
 msgid "Select language for the additional list"
 msgstr "برای لیست اضافی زبان را انتخاب کنید"
 
+#: admin/partials/_bread_wizard.php:105
+msgid "Select one of the layouts appropriate to the number of meetings"
+msgstr "یکی از طرح بندی های متناسب با تعداد جلسات را انتخاب کنید"
+
+#: admin/partials/_bread_wizard.php:12
+msgid "Select Service Bodies"
+msgstr "نهادهای سرویس را انتخاب کنید"
+
+#: admin/partials/_meetings_setup.php:327
 msgid "Select sort order for the additional list"
 msgstr "برای لیست اضافی ترتیب مرتب سازی را انتخاب کنید"
 
+#: admin/partials/_layout_setup.php:134
 msgid "Separator: "
 msgstr "جداکننده:"
 
+#. Bread can query up to five servers, the string is the number 1-5
+#: admin/partials/bread-admin-display.php:49
+#, php-format
 msgid "Service Body %s"
 msgstr "بدنه سرویس %s"
 
+#: admin/partials/_layout_setup.php:58
 msgid "Single Page"
 msgstr "یک صفحه"
 
+#: admin/partials/_layout_setup.php:22
 msgid "Smaller Areas"
 msgstr "مناطق کوچکتر"
 
+#: admin/partials/_meeting_list_setup.php:15
+msgid "Start Here: Meeting List Setup Wizard"
+msgstr "از اینجا شروع کنید: جادوگر تنظیم لیست جلسه"
+
+#: admin/partials/_meetings_setup.php:236
 msgid "Start Time Format"
 msgstr "قالب زمان شروع"
 
+#: admin/partials/_meetings_setup.php:107
+#: admin/partials/_meetings_setup.php:128
 msgid "State"
 msgstr "حالت"
 
+#: admin/partials/_meetings_setup.php:55
 msgid "State+City"
 msgstr "ایالت+شهر"
 
+#: admin/partials/_bread_wizard.php:40
+msgid "Step 1: Enter your BMLT root server"
+msgstr "مرحله 1: سرور ریشه BMLT خود را وارد کنید"
+
+#: admin/partials/_bread_wizard.php:70
+msgid "Step 2: Select a service body"
+msgstr "مرحله 2: یک بدنه سرویس را انتخاب کنید"
+
+#: admin/partials/_bread_wizard.php:94
+msgid "Step 3: Page Layout"
+msgstr "مرحله 3: چیدمان صفحه"
+
+#: admin/partials/_bread_wizard.php:110
+msgid "Step 4: Select Option"
+msgstr "مرحله 4: گزینه را انتخاب کنید"
+
+#: admin/partials/_meetings_setup.php:119
 msgid "Sub-Grouping: "
 msgstr "زیر گروهی:"
 
+#: admin/partials/_meetings_setup.php:18
 msgid "Suppress Heading: "
 msgstr "سرکوب عنوان:"
 
+#: admin/partials/_bread_wizard.php:53
+msgid "Test Server Connection"
+msgstr "اتصال سرور تست"
+
+#: admin/partials/_bread_wizard.php:55
+msgid "Test that this is valid root server URL before continuing"
+msgstr "آزمایش کنید که این URL سرور ریشه معتبر قبل از ادامه است"
+
+#: admin/partials/_layout_setup.php:112 admin/partials/_meetings_setup.php:24
 msgid "Text Color:"
 msgstr "رنگ متن:"
 
+#: admin/partials/_bread_wizard.php:46
+msgid ""
+"The first thing we need is the location of your BMLT root server.  Once you "
+"have entered it, you need check that the URL is correct\n"
+"          by clicking the 'Test Connection' button."
+msgstr ""
+"اولین چیزی که ما نیاز داریم مکان سرور Root BMLT شما است.  پس از ورود به آن ، "
+"باید بررسی کنید که URL صحیح است\n"
+"          با کلیک بر روی دکمه \"تست اتصال\"."
+
+#: admin/partials/_bread_wizard.php:153
+msgid ""
+"The first thing you probably want to do is have a look at the meeting list:"
+msgstr ""
+"اولین کاری که احتمالاً می خواهید انجام دهید این است که به لیست جلسه نگاهی "
+"بیندازید:"
+
+#: admin/partials/_bmlt_server_setup.php:91
 msgid "The Meetings you select will be merged into your meeting list."
 msgstr "جلساتی که انتخاب می کنید در لیست جلسات شما ادغام می شوند."
 
+#: admin/partials/_layout_setup.php:109
 msgid ""
 "The page header is a title that goes across the entire page above the "
 "meetings."
 msgstr "عنوان صفحه عنوانی است که در کل صفحه بالاتر از جلسات قرار می گیرد."
 
+#: admin/partials/_backup_restore_setup.php:55
 msgid ""
 "This allows you to easily import meeting list settings into another site."
 msgstr ""
 "این به شما امکان می دهد تنظیمات لیست جلسه را به راحتی در سایت دیگری وارد "
 "کنید."
 
+#: admin/partials/_meetings_setup.php:304
 msgid ""
 "This section allows the definition of an additional meeting list, containing "
 "meetings that should not be included in the main\n"
@@ -654,6 +1101,7 @@ msgstr ""
 "                        لیست این معمولاً جلسات مجازی است ، اما می تواند هر "
 "گروهی از جلسات باشد که با یک فرمت مشخص می شود."
 
+#: admin/partials/_layout_setup.php:100
 msgid ""
 "This section describes things on the page other than the contents. Headers, "
 "footers, page numbers."
@@ -661,9 +1109,11 @@ msgstr ""
 "در این بخش مواردی در صفحه غیر از محتویات شرح داده شده است. هدرها ، پاورقی ها "
 "، شماره صفحه."
 
+#: admin/partials/_bmlt_server_setup.php:164
 msgid "This site is using an external object cache."
 msgstr "این سایت از حافظه نهان خارجی استفاده می کند."
 
+#: admin/partials/_bmlt_server_setup.php:72
 msgid ""
 "This will be executed as part of the meeting search query. This will "
 "override any setting in the Service Body dropdowns."
@@ -671,60 +1121,110 @@ msgstr ""
 "این به عنوان بخشی از پرس و جو جستجوی جلسه اجرا می شود. این امر باعث غلبه بر "
 "هر تنظیم در کشویی بدنه سرویس می شود."
 
+#: admin/partials/_bread_wizard.php:42
+msgid ""
+"This wizard guides you through the initial configuation of a meeting list.  "
+"If you have already created one or more meeting lists,\n"
+"          don't worry, this process alway creates a new configuration, and "
+"never overwrites old ones."
+msgstr ""
+"این جادوگر شما را از طریق پیکربندی اولیه لیست جلسه راهنمایی می کند.  اگر "
+"قبلاً یک یا چند لیست جلسه ایجاد کرده اید ،\n"
+"          نگران نباشید ، این فرآیند همیشه پیکربندی جدیدی را ایجاد می کند و "
+"هرگز موارد قدیمی را بازنویسی نمی کند."
+
+#: admin/partials/_layout_setup.php:152
 msgid "Times"
 msgstr "بار"
 
+#: admin/partials/_bread_wizard.php:156
+msgid ""
+"To add a link to the meeting list on your website, use the following link."
+msgstr ""
+"برای افزودن پیوندی به لیست جلسه در وب سایت خود ، از لینک زیر استفاده کنید."
+
+#: admin/partials/_layout_setup.php:23 admin/partials/_layout_setup.php:60
 msgid "Tri-Fold"
 msgstr "سه برابر"
 
+#: admin/partials/_bmlt_server_setup.php:47
 msgid "Try a different user agent or \"None\" for Wordpress default: "
 msgstr "یک عامل کاربر متفاوت یا \"هیچ\" را برای پیش فرض وردپرس امتحان کنید:"
 
+#: admin/partials/_layout_setup.php:158
 msgid "Unrestricted"
 msgstr "بدون محدودیت"
 
+#: admin/partials/_meetings_setup.php:34
 msgid "Uppercase: "
 msgstr "حروف بزرگ:"
 
+#: admin/partials/_bmlt_server_setup.php:59
 msgid "Use Aggregator &#127813;"
 msgstr "از Aggregator &#127813 ؛"
 
+#: admin/partials/_meetings_setup.php:59
 msgid "User Defined"
 msgstr "کاربر تعریف شده"
 
+#: admin/partials/bread-admin-display.php:37
 msgid "Using Tomato Server"
 msgstr "با استفاده از سرور گوجه فرنگی"
 
+#: admin/partials/_bread_wizard.php:65
+msgid "Verify that this is valid root server URL before continuing"
+msgstr "تأیید کنید که این URL سرور ریشه معتبر قبل از ادامه است"
+
+#: admin/partials/_meetings_setup.php:312
 msgid "Virtual Meetings"
 msgstr "جلسات مجازی"
 
+#: admin/partials/_bread_wizard.php:49
+msgid ""
+"Visit <a target=\"_blank\" href=\"https://doihavethebmlt.org/\">Do I have "
+"the BMLT?</a> to find your BMLT server"
+msgstr ""
+"برای یافتن سرور BMLT خود به <a target=\"_blank\" href=\"https:"
+"//doihavethebmlt.org/\">do من BMLT؟ </a> مراجعه کنید"
+
+#: admin/partials/_layout_setup.php:116
 msgid "Watermark: "
 msgstr "علامت علامت:"
 
+#: admin/partials/_meetings_setup.php:48 admin/partials/_meetings_setup.php:101
+#: admin/partials/_meetings_setup.php:122
 msgid "Weekday"
 msgstr "روز هفته"
 
+#: admin/partials/_meetings_setup.php:158
 msgid "Weekday Language: "
 msgstr "زبان روز هفته:"
 
+#: admin/partials/_meetings_setup.php:173
 msgid "Weekday Start: "
 msgstr "شروع روز هفته:"
 
+#: admin/partials/_meetings_setup.php:56
 msgid "Weekday+Area"
 msgstr "روز هفته+منطقه"
 
+#: admin/partials/_meetings_setup.php:57
 msgid "Weekday+City"
 msgstr "روز هفته+شهر"
 
+#: admin/partials/_meetings_setup.php:58
 msgid "Weekday+County "
 msgstr "روز هفته+شهرستان"
 
+#: admin/partials/_layout_setup.php:102
 msgid "What options you see will be dependant on the layout selected."
 msgstr "چه گزینه هایی را می بینید که به طرح انتخاب شده بستگی دارد."
 
+#: admin/partials/_meetings_setup.php:212
 msgid "Wheelchair Icon Size: "
 msgstr "اندازه نماد ویلچر:"
 
+#: admin/partials/_layout_setup.php:51
 msgid ""
 "When a layout is clicked defaults are reset for orientation, paper size and "
 "page height."
@@ -732,6 +1232,13 @@ msgstr ""
 "هنگامی که یک طرح کلیک می شود پیش فرض برای جهت گیری ، اندازه کاغذ و ارتفاع "
 "صفحه تنظیم مجدد می شود."
 
+#: admin/partials/_bread_wizard.php:115
+msgid "Where should virtual meetings be included:"
+msgstr "جلسات مجازی از کجا باید گنجانده شود:"
+
+#. the string is a link to the semantic interface of the BMLT server
+#: admin/partials/_bmlt_server_setup.php:76
+#, php-format
 msgid ""
 "You can get help formulating a query using your sites <a href=\"%s\">"
 "semantic interface</a>."
@@ -739,14 +1246,37 @@ msgstr ""
 "شما می توانید با استفاده از سایت های خود <a href=\"%s\">semantic "
 "Interface</a> کمک کنید."
 
+#: admin/partials/bread-admin-display.php:96
 msgid "You do not have permission to save this configuation!"
 msgstr "شما اجازه ذخیره این پیکربندی را ندارید!"
 
+#: admin/partials/_bread_wizard.php:143
+msgid ""
+"You may also want to adjust the font sizes on your meeting list so that it "
+"fits on a single sheet or is more readable.  This is only\n"
+"              of the many options available in the 'Customizer'."
+msgstr ""
+"همچنین ممکن است بخواهید اندازه قلم را در لیست جلسات خود تنظیم کنید تا روی یک "
+"برگه قرار بگیرد یا قابل خواندن تر باشد.  این فقط است\n"
+"              از بسیاری از گزینه های موجود در \"سفارشی\"."
+
+#: admin/partials/_bread_wizard.php:160
+msgid ""
+"You probably want to add some content to the first page or the custom "
+"content:"
+msgstr ""
+"احتمالاً می خواهید برخی از مطالب را به صفحه اول یا محتوای سفارشی اضافه کنید:"
+
+#. string is the version number of the BMLT Server
+#: admin/partials/bread-admin-display.php:40
+#, php-format
 msgid "Your BMLT Server is running %s"
 msgstr "سرور BMLT شما در حال اجرا %s است"
 
+#: admin/partials/bread-admin-display.php:102
 msgid "Your changes were successfully saved!"
 msgstr "تغییرات شما با موفقیت ذخیره شد!"
 
+#: admin/partials/_backup_restore_setup.php:78
 msgid "Your current meeting list settings will be replaced and lost forever."
 msgstr "تنظیمات لیست فعلی جلسه شما برای همیشه جایگزین و از بین می رود."
