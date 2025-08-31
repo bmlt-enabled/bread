@@ -70,7 +70,6 @@ foreach ($all_users as $user) {
                     <div id="customquery-tooltip-content">
                         <p>
                             <?php esc_html_e('This will be executed as part of the meeting search query. This will override any setting in the Service Body dropdowns.', 'bread') ?>
-                            /* translators: draft saved date format, see http://php.net/date */
                             <br /><?php
                                 /* translators: the string is a link to the semantic interface of the BMLT server */
                                 echo esc_html(sprintf(__('You can get help formulating a query using your sites <a href="%s">semantic interface</a>.', 'bread'), esc_url($this->bread->getOption('root_server'))).'/semantic') ?>

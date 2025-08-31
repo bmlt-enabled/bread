@@ -44,9 +44,9 @@ class Bread_AdminDisplay
     private function select_service_bodies()
     {
         for ($i = 1; $i <= 5; $i++) { ?>
-            <li><label for="service_body_<?php
+            <li><label for="service_body_<?php echo esc_html($i); ?>"><?php
                 /* translators: Bread can query up to five servers, the string is the number 1-5 */
-                echo esc_html($i); ?>"><?php echo esc_html(sprintf(__('Service Body %s', 'bread'), $i)) ?>: </label>
+                esc_html_e(sprintf(__('Service Body %s', 'bread'), $i)) ?>: </label>
                 <select class="service_body_select" id="service_body_<?php echo esc_html($i); ?>" name="service_body_<?php echo esc_html($i); ?>"><?php
                 if ($this->connected) {
                     $this->select_service_body_options($i);
@@ -110,6 +110,7 @@ class Bread_AdminDisplay
 
         $this->bread->fillUnsetOptions();
         $dir = str_starts_with(get_locale(), 'fa') ? 'rtl' : 'ltr';
+        $plugin_data = get_plugin_data(WP_PLUGIN_DIR . '/bread/bmlt-meeting-list.php');
         ?>
         <div class="hide wrap bmlt-<?php echo esc_attr($dir) ?>" id="meeting-list-tabs-wrapper" dir="<?php echo esc_attr($dir); ?>">
             <div id="tallyBannerContainer">
