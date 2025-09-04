@@ -46,7 +46,7 @@ class Bread_AdminDisplay
         for ($i = 1; $i <= 5; $i++) { ?>
             <li><label for="service_body_<?php echo esc_html($i); ?>"><?php
                 /* translators: Bread can query up to five servers, the string is the number 1-5 */
-                esc_html(sprintf(__('Service Body %d', 'bread'), $i)) ?>: </label>
+                echo esc_html(sprintf(__('Service Body %d', 'bread'), $i)) ?>: </label>
                 <select class="service_body_select" id="service_body_<?php echo esc_html($i); ?>" name="service_body_<?php echo esc_html($i); ?>"><?php
                 if ($this->connected) {
                     $this->select_service_body_options($i);
