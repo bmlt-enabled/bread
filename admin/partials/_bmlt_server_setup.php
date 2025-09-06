@@ -94,7 +94,7 @@ foreach ($all_users as $user) {
                 <h3 class="hndle"><?php esc_html_e('Include Extra Meetings', 'bread') ?><span class="my-tooltip" data-tooltip-content="#extrameetings-tooltip-content"><span class="tooltipster-icon">(?)</span></span></h3>
                 <div class="inside">
                     <?php if ($this->connected && $this->bread->getOption('extra_meetings_enabled') == 1) {?>
-                        <select id="extra_meetings" class="chosen-select" id="extra_meetings" name="extra_meetings[]" multiple="multiple">
+                        <select id="extra_meetings" class="bread-select" id="extra_meetings" name="extra_meetings[]" multiple="multiple">
                         <?php
                             $extra_meetings_array = $this->bread->bmlt()->get_all_meetings();
                             echo "<option value=''>Select Extra Meetings</option>";
@@ -122,7 +122,7 @@ foreach ($all_users as $user) {
             <div id="currentmeetinglistauthordiv" class="postbox">
                 <h3 class="hndle"><?php esc_html_e('Meeting List Author(s)', 'bread') ?></h3>
                 <div class="inside">
-                    <select id="author_chosen" name="authors_select[]" class="chosen-select" multiple>
+                    <select id="author_chosen" name="authors_select[]" class="bread-select" multiple>
                         <?php foreach ($specific_users as $user) { ?>
                             <option value="<?php echo esc_attr($user->ID); ?>" <?php echo in_array($user->ID, $this->bread->getOption('authors')) ? 'selected' : '' ?>><?php echo esc_html($user->user_firstname . ' ' . $user->user_lastname . ' (' . $user->user_login . ')'); ?> </option>
                         <?php } ?>

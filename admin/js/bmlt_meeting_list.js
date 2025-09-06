@@ -239,7 +239,7 @@ jQuery(document).ready(
                 placeholder: "Select authors",
             }
         );
-        $ml('.chosen-select').on("change", function (e) {
+        $ml('.bread-select').on("change", function (e) {
             const self = $ml(this);
             const field = self.parent().find('.select2-search--inline');
             field.css('display', (self.val().length == 0 ? 'contents' : 'block'));

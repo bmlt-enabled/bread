@@ -72,7 +72,7 @@
             <p><?php esc_html_e('Next, we need to know which meetings are going to be on the meeting list.  This will help the wizard when it
               tries to choose an a appropriate layout for you.', 'bread') ?></p>
             </div>
-            <select class="chosen-select" style="width: 400px;" data-placeholder="<?php esc_html_e('Choose up to 5 service bodies', 'bread') ?>" id="wizard_service_bodies" name="wizard_service_bodies[]" multiple="multiple">
+            <select class="bread-select" style="width: 400px;" data-placeholder="<?php esc_html_e('Choose up to 5 service bodies', 'bread') ?>" id="wizard_service_bodies" name="wizard_service_bodies[]" multiple="multiple">
                 <option value=1>The is placeholder 1 Hello</option>
                 <option value=2>The is placeholder 1 Hello</option>
                 <option value=3>The is placeholder 1 Hello</option>
