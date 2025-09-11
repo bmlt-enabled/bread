@@ -118,7 +118,6 @@ jQuery(document).ready(function($){
                 options = write_service_body_with_childern(options, sb, parents, 'ROOT', 0);
             });
             $('#wizard_service_bodies').html(options.join(''));
-            $('#wizard_service_bodies').trigger("chosen:updated");
         }
         fill_formats = function(formats) {
             const options = formats.reduce((carry,item) => {

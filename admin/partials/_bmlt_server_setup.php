@@ -122,7 +122,7 @@ foreach ($all_users as $user) {
             <div id="currentmeetinglistauthordiv" class="postbox">
                 <h3 class="hndle"><?php esc_html_e('Meeting List Author(s)', 'bread') ?></h3>
                 <div class="inside">
-                    <select id="author_chosen" name="authors_select[]" class="bread-select" multiple>
+                    <select id="bread_author_select" name="authors_select[]" class="bread-select" multiple>
                         <?php foreach ($specific_users as $user) { ?>
                             <option value="<?php echo esc_attr($user->ID); ?>" <?php echo in_array($user->ID, $this->bread->getOption('authors')) ? 'selected' : '' ?>><?php echo esc_html($user->user_firstname . ' ' . $user->user_lastname . ' (' . $user->user_login . ')'); ?> </option>
                         <?php } ?>

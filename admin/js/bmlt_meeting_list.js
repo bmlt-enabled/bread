@@ -234,7 +234,7 @@ jQuery(document).ready(
                 placeholder: "Select extra meetings",
             }
         );
-        $ml("#author_chosen").select2(
+        $ml("#bread_author_select").select2(
             {
                 placeholder: "Select authors",
             }
