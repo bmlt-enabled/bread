@@ -92,18 +92,20 @@ class Bread_AdminDisplay
         <?php
         set_transient('admin_notice', 'Please put down your weapon. You have 20 seconds to comply.');
         echo '<div class="updated">';
-        if (!$this->admin->current_user_can_modify()) {
-            echo '<p style="color: #F00;">'.esc_html(__('You do not have permission to save this configuation!', 'bread')).'</p>';
-        } elseif (isset($_COOKIE['bread_import_file'])) {
+        if (isset($_COOKIE['bread_import_file'])) {
             echo '<p style="color: #F00;">'.esc_html(__('File loaded', 'bread')).'</p>';
             delete_transient($this->bread->get_TransientKey($this->bread->getRequestedSetting()));
         } elseif (isset($_POST['bmltmeetinglistsave']) && $_POST['bmltmeetinglistsave']) {
-            $this->admin->save_admin_options();
-            echo '<p style="color: #F00;">'.esc_html(__('Your changes were successfully saved!', 'bread')).'</p>';
-            $num = delete_transient($this->bread->get_TransientKey($this->bread->getRequestedSetting()));
-            if ($num > 0) {
-                /* translators: string is number of cache entries deleted */
-                echo "<p>" . esc_html(sprintf(__('%s Cache entries deleted', 'bread')), esc_attr($num))."</p>";
+            if (!$this->admin->current_user_can_modify()) {
+                echo '<p style="color: #F00;">'.esc_html(__('You do not have permission to save this configuation!', 'bread')).'</p>';
+            } else {
+                $this->admin->save_admin_options();
+                echo '<p style="color: #F00;">'.esc_html(__('Your changes were successfully saved!', 'bread')).'</p>';
+                $num = delete_transient($this->bread->get_TransientKey($this->bread->getRequestedSetting()));
+                if ($num > 0) {
+                    /* translators: string is number of cache entries deleted */
+                    echo "<p>" . esc_html(sprintf(__('%s Cache entries deleted', 'bread')), esc_attr($num))."</p>";
+                }
             }
         }
         echo '</div>';
