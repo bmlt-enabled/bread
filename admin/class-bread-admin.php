@@ -89,13 +89,13 @@ class Bread_Admin
         wp_enqueue_script('jquery-ui-tabs');
         wp_enqueue_script('jquery-ui-accordion');
         wp_enqueue_script('jquery-ui-dialog');
-        wp_enqueue_script("bmlt_meeting_list", plugin_dir_url(__FILE__) . "js/bmlt_meeting_list.js", array('jquery'), "2.8.0", true);
+        wp_enqueue_script("bmlt_meeting_list", plugin_dir_url(__FILE__) . "js/bmlt_meeting_list.js", array('jquery'), BREAD_VERSION, true);
         wp_enqueue_script("tooltipster", plugin_dir_url(__FILE__) . "js/tooltipster.bundle.min.js", array('jquery'), "1.2", true);
         wp_enqueue_script("spectrum", plugin_dir_url(__FILE__) . "js/spectrum.min.js", array('jquery'), "1.2", true);
         wp_enqueue_script("select2", plugin_dir_url(__FILE__) . "js/select2.min.js", array('jquery'), "1.2", true);
         wp_enqueue_script("fetch-jsonp", plugin_dir_url(__FILE__) . "js/fetch-jsonp.js", array('jquery'), "1.30", true);
         wp_enqueue_script("smartWizard", plugin_dir_url(__FILE__) . "js/jquery.smartWizard.js", array('jquery'), "6.0.6", true);
-        wp_enqueue_script("breadWizard", plugin_dir_url(__FILE__) . "js/bread-wizard.js", array('smartWizard'), "2.8.0", true);
+        wp_enqueue_script("breadWizard", plugin_dir_url(__FILE__) . "js/bread-wizard.js", array('smartWizard'), BREAD_VERSION, true);
         /**
          * Make some JSON from PHP available in JS.
          */
