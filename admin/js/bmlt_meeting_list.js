@@ -228,7 +228,7 @@ jQuery(document).ready(
         $ml('.booklet-check').on('click', bookletControlsShowHide);
         $ml('input[name=page_fold]:checked').hasClass('booklet-check') && bookletControlsShowHide();
         $ml('input[name=page_fold]:checked').hasClass('single-page-check') && singlePageControlsShowHide();
-        $ml(".service_body_select").select2();
+        $ml(".bread_service_body_select").select2();
         $ml('#extra_meetings').select2(
             {
                 placeholder: "Select extra meetings",

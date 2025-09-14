@@ -473,7 +473,7 @@ h3.help-accordion { background-color: #F5F5F5 !important; color: #000 !important
 	z-index: 9999;
 	background: url('images/saving.gif') 50% 50% no-repeat;
 }
-select.service_body_select {
+select.bread_service_body_select {
     width: 62%;
     max-width: 62%;
 }
