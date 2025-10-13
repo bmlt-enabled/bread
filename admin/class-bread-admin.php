@@ -248,9 +248,6 @@ class Bread_Admin
         if (!isset($_POST['pwsix_export_nonce']) || ! wp_verify_nonce($_POST['pwsix_export_nonce'], 'pwsix_export_nonce')) {
             return;
         }
-        if (! current_user_can('manage_bread')) {  // TODO: Is this necessary? Why not let the user make a copy
-            return;
-        }
         $this->download_settings_inner();
     }
     function download_settings()
@@ -317,12 +314,12 @@ class Bread_Admin
     }
     function current_user_can_modify()
     {
-        if (! current_user_can('manage_bread')) {
-            return false;
-        }
         $user = wp_get_current_user();
         if (in_array('administrator', $user->roles)) {
             return true;
+        }
+        if (! current_user_can('manage_bread')) {
+            return false;
         }
         $authors_safe = $this->bread->getOption('authors');
         if (!is_array($authors_safe) || empty($authors_safe)) {
@@ -335,10 +332,17 @@ class Bread_Admin
     }
     function current_user_can_create()
     {
-        if (! current_user_can('manage_bread')) {
-            return false;
+        $user = wp_get_current_user();
+        if (in_array('administrator', $user->roles)) {
+            return true;
         }
-        return true;
+        if (current_user_can('manage_options')) {
+            return true;
+        }
+        if (current_user_can('manage_bread')) {
+            return true;
+        }
+        return false;
     }
     /**
      * Process a settings import from a json file
@@ -348,7 +352,7 @@ class Bread_Admin
         if (empty($_REQUEST['pwsix_import_nonce']) || !wp_verify_nonce($_REQUEST['pwsix_import_nonce'], 'pwsix_import_nonce')) {
             return;
         }
-        if (! current_user_can('manage_bread')) {
+        if (! $this->current_user_can_modify()) {
             return;
         }
         $this->bread->getConfigurationForSettingId($this->bread->getRequestedSetting());
@@ -376,7 +380,7 @@ class Bread_Admin
         update_option($this->bread->getOptionsName(), $this->bread->getOptions());
         setcookie('current-meeting-list', $this->bread->getRequestedSetting(), time() + 10);
         setcookie('bread_import_file', $import_file, time() + 10);
-        wp_safe_redirect(admin_url('?page=class-bread-admin.php'));
+        wp_safe_redirect(admin_url('?page=bmlt-enabled-bread'));
     }
     function my_theme_add_editor_styles()
     {
@@ -433,11 +437,15 @@ class Bread_Admin
         activate_bread();
         $this->bmltEnabled_admin->createMenu();
 
+        $cap = 'manage_options';
+        if (!current_user_can($cap)) {
+            $cap = 'manage_bread';
+        }
         $this->hook = add_submenu_page(
             $parent_slug,
             'Printable Meeting Lists',
             'Printable Meeting Lists',
-            'manage_bread',
+            $cap,
             'bmlt-enabled-bread',
             array(&$this, 'admin_options_page'),
             2
