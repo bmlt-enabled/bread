@@ -416,6 +416,9 @@ class Bread_Meetingslist_Structure
     }
     private function isHybrid(array $value): bool
     {
+        if ($value['venue_type'] == 3) {
+            return true;
+        }
         if (empty($value['formats'])) {
             return false;
         }
@@ -424,6 +427,9 @@ class Bread_Meetingslist_Structure
     }
     private function isVirtual(array $value): bool
     {
+        if ($value['venue_type'] == 2) {
+            return true;
+        }
         if (empty($value['formats'])) {
             return false;
         }
