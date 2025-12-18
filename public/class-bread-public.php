@@ -307,6 +307,8 @@ class Bread_Public
             $page_type_settings = ['format' => $ps . "-" . $this->options['page_orientation'], 'margin_footer' => $this->options['margin_footer']];
         } elseif ($this->options['page_size'] == '5inch') {
             $page_type_settings = ['format' => array(197.2, 279.4), 'margin_footer' => $this->options['margin_footer']];
+        } elseif ($this->options['page_size'] == 'pocket') {
+            $page_type_settings = ['format' => array(279.4, 107.95), 'margin_footer' => 0];
         } else {
             $ps = $this->options['page_size'];
             if ($ps == 'ledger') {

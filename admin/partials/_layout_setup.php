@@ -74,6 +74,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     <div>
                         Page Size:<br />
                         <input class="mlg booklet" id="5inch" type="radio" name="page_size" value="5inch" <?php echo ($this->bread->getOption('page_size') == '5inch' ? 'checked' : '') ?>><label for="5inch" class="booklet">5 inch&nbsp;&nbsp;&nbsp;</label>
+                        <input class="mlg single-page" id="pocket" type="radio" name="page_size" value="pocket" <?php echo ($this->bread->getOption('page_size') == 'pocket' ? 'checked' : '') ?>><label for="pocket" class="single-page">Pocket&nbsp;&nbsp;&nbsp;</label>
                         <input class="mlg" id="letter" type="radio" name="page_size" value="letter" <?php echo ($this->bread->getOption('page_size') == 'letter' ? 'checked' : '') ?>><label for="letter">Letter&nbsp;&nbsp;&nbsp;</label>
                         <input class="mlg" id="legal" type="radio" name="page_size" value="legal" <?php echo ($this->bread->getOption('page_size') == 'legal' ? 'checked' : '') ?>><label for="legal">Legal&nbsp;&nbsp;&nbsp;</label>
                         <input class="mlg" id="ledger" type="radio" name="page_size" value="ledger" <?php echo ($this->bread->getOption('page_size') == 'ledger' ? 'checked' : '') ?>><label for="ledger">Ledger&nbsp;&nbsp;&nbsp;</label>
