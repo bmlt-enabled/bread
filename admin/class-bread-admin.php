@@ -14,6 +14,7 @@
  * @subpackage Bread/admin
  * @author     bmlt-enabled <help@bmlt.app>
  */
+include_once plugin_dir_path(__FILE__) . 'partials/_meeting_list_setup.php';
 class Bread_Admin
 {
 
@@ -430,7 +431,7 @@ class Bread_Admin
      */
     function admin_submenu_link($parent_slug)
     {
-        activate_bread();
+        Bread_activate();
         $this->bmltEnabled_admin->createMenu();
 
         $this->hook = add_submenu_page(

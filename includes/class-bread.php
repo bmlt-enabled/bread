@@ -390,7 +390,7 @@ class Bread
             }
             include dirname(__FILE__) . "/lang/" . $file;
             $key = substr($file, 10, -4);
-            $this->translate[$key] = $translate;
+            $this->translate[$key] = $bread_translate;
         }
     }
     public function getTranslateTable()

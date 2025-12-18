@@ -36,7 +36,7 @@ define('BREAD_VERSION', '2.8.7');
  * The code that runs during plugin activation.
  * This action is documented in includes/class-bread-activator.php
  */
-function activate_bread()
+function Bread_activate()
 {
     include_once plugin_dir_path(__FILE__) . 'includes/class-bread-activator.php';
     Bread_Activator::activate();
@@ -46,14 +46,14 @@ function activate_bread()
  * The code that runs during plugin deactivation.
  * This action is documented in includes/class-bread-deactivator.php
  */
-function deactivate_bread()
+function Bread_deactivate()
 {
     include_once plugin_dir_path(__FILE__) . 'includes/class-bread-deactivator.php';
     Bread_Deactivator::deactivate();
 }
 
-register_activation_hook(__FILE__, 'activate_bread');
-register_deactivation_hook(__FILE__, 'deactivate_bread');
+register_activation_hook(__FILE__, 'Bread_activate');
+register_deactivation_hook(__FILE__, 'Bread_deactivate');
 
 /**
  * The core plugin class that is used to define internationalization,
@@ -70,10 +70,10 @@ require plugin_dir_path(__FILE__) . 'includes/class-bread-bmlt.php';
  *
  * @since 2.8.0
  */
-function run_bread()
+function Bread_run()
 {
 
     $plugin = new Bread();
     $plugin->run();
 }
-run_bread();
+Bread_run();

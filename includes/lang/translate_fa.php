@@ -1,5 +1,5 @@
 <?php
-$translate = array (
+$bread_translate = array (
     "LANG_NAME"             => "Farsi",
     "LOCALE"                => "fa_IR",
     "WEEKDAYS"                      =>  array( 'ERROR',

@@ -39,6 +39,9 @@ class BmltEnabled_Admin
         if (!current_user_can($cap)) {
             $cap = 'manage_bread';
         }
+        // The prefix "BmltEnabled" is correct: it is unique enough to avoid conflicts and the filter is shared
+        // with other plugins from this author
+		// phpcs:ignore
         $icon = apply_filters("BmltEnabled_IconSVG", 'dashicons-location-alt');
         add_menu_page(
             'Meeting Lists',
@@ -49,6 +52,9 @@ class BmltEnabled_Admin
             $icon,
             null
         );
+        // The prefix "BmltEnabled" is correct: it is unique enough to avoid conflicts and the filter is shared
+        // with other plugins from this author
+		// phpcs:ignore
         do_action('BmltEnabled_Submenu', $this->slug);
     }
 }

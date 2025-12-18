@@ -11,9 +11,15 @@
  * @package    Bread
  * @subpackage Bread/admin/partials
  */
+include_once '_bmlt_server_setup.php';
+include_once '_layout_setup.php';
+include_once '_front_page_setup.php';
+include_once '_meetings_setup.php';
+include_once '_custom_section_setup.php';
+include_once '_backup_restore_setup.php';
 class Bread_AdminDisplay
 {
-    private $lang;
+
     private Bread_Admin $admin;
     private $connected;
     private $server_version;
@@ -40,7 +46,19 @@ class Bread_AdminDisplay
             }
         }
     }
-    private function select_service_bodies()
+    public function isConnected()
+    {
+        return $this->connected;
+    }
+    public function getBreadInstance()
+    {
+        return $this->bread;
+    }
+    public function getServerVersion()
+    {
+        return $this->server_version;
+    }
+    public function select_service_bodies()
     {
         for ($i = 1; $i <= 5; $i++) { ?>
             <li><label for="service_body_<?php echo esc_html($i); ?>">Service Body <?php echo esc_html($i); ?>: </label>
@@ -82,7 +100,6 @@ class Bread_AdminDisplay
                                                                                                                              */
     function admin_options_page()
     {
-        $this->lang = $this->bread->bmlt()->get_bmlt_server_lang();
         ?>
         <div class="connecting"></div>
         <div class="saving"></div>
@@ -117,7 +134,7 @@ class Bread_AdminDisplay
                     <li><a href="#import-export"><?php esc_html_e('Backup/ Restore', 'bread'); ?></a></li>
                 </ul>
                 <div id="instructions">
-        <?php include '_meeting_list_setup.php'; ?>
+                <?php Bread_meeting_list_setup_page_render($this); ?>
                 </div>
                 <div id="editor">
                     <nav class="nav-tab-wrapper">
@@ -134,19 +151,19 @@ class Bread_AdminDisplay
         <?php wp_nonce_field('bmltmeetinglistupdate-options'); ?>
         <?php $this->refresh_status(); ?>
                         <div id="tabs-first" class="tab-content">
-        <?php include '_bmlt_server_setup.php'; ?>
+        <?php Bread_bmlt_server_setup_page_render($this); ?>
                         </div>
                         <div id="layout" class="tab-content">
-        <?php include '_layout_setup.php'; ?>
+        <?php Bread_layout_setup_page_render($this); ?>
                         </div>
                         <div id="front-page" class="tab-content">
-        <?php include '_front_page_setup.php'; ?>
+        <?php Bread_front_page_setup_page_render($this); ?>
                         </div>
                         <div id="meetings" class="tab-content">
-        <?php include '_meetings_setup.php'; ?>
+        <?php Bread_meetings_setup_page_render($this); ?>
                         </div>
                         <div id="custom-section" class="tab-content">
-        <?php include '_custom_section_setup.php'; ?>
+        <?php Bread_custom_section_setup_page_render($this) ?>
                         </div>
         <?php if ($this->admin->current_user_can_modify()) { ?>
                             <input type="submit" value="Save Changes" id="bmltmeetinglistsave" name="bmltmeetinglistsave" class="button-primary gears-working" />
@@ -158,7 +175,7 @@ class Bread_AdminDisplay
                     </form>
                 </div>
                 <div id="import-export">
-        <?php include '_backup_restore_setup.php'; ?>
+        <?php Bread_backup_restore_setup_page_render($this); ?>
                 </div>
             </div>
         </div>

@@ -2,13 +2,16 @@
 if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
     die('Sorry, but you cannot access this page directly.');
 }
-$plugin_data = get_plugin_data(WP_PLUGIN_DIR . '/bread/bmlt-meeting-list.php');
-$plugin_version = "could not access version";
-if ($plugin_data) {
-    $plugin_version = $plugin_data['Version'];
-}
-global $wp_version;
-?>
+function Bread_meeting_list_setup_page_render(Bread_AdminDisplay $breadAdmin)
+{
+    $bread = $breadAdmin->getBreadInstance();
+    $plugin_data = get_plugin_data(WP_PLUGIN_DIR . '/bread/bmlt-meeting-list.php');
+    $plugin_version = "could not access version";
+    if ($plugin_data) {
+        $plugin_version = $plugin_data['Version'];
+    }
+    global $wp_version;
+    ?>
 <div id="poststuff">
     <div id="postbox-container" class="postbox-container">
         <div id="accordion" class="bmlt-accordion">
@@ -60,7 +63,7 @@ global $wp_version;
                 <ul>
                     <li><b>Bread Version:</b> <?php echo esc_html($plugin_version); ?></li>
                     <li><b>Wordpress Version:</b> <?php echo esc_html($wp_version); ?></li>
-                    <li><b>Protocol:</b> <?php echo esc_html($this->bread->getProtocol()); ?></li>
+                    <li><b>Protocol:</b> <?php echo esc_html($bread->getProtocol()); ?></li>
                     <li><b>PHP Version:</b> <?php echo esc_html(phpversion()); ?></li>
                     <li><b>Server Version:</b> <?php echo esc_html($_SERVER["SERVER_SOFTWARE"]); ?></li>
                     <li><b>Temporary Directory:</b> <?php echo esc_html(get_temp_dir()); ?></li>
@@ -70,3 +73,5 @@ global $wp_version;
     </div>
     <br class="clear">
 </div>
+    <?php
+}

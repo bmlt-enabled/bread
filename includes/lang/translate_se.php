@@ -1,5 +1,5 @@
 <?php
-$translate = array (
+$bread_translate = array (
     "LANG_NAME"             =>  "Swedish",
     "LOCALE"                => "sv_SE",
     "WEEKDAYS"                        =>  array( 'ERROR', "S&#246;ndag", "M&#229;ndag", "Tisdag", "Onsdag", "Torsdag", "Fredag", "L&#246;rdag" ),
