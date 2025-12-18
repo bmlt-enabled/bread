@@ -35,42 +35,41 @@ class Bread_Meeting_Enhancer
             } else {
                 $time_format = "H:i";
             }
+            $time_parts = [];
             if ($this->options['time_option'] == 1 || $this->options['time_option'] == '') {
-                $meeting_value['start_time'] = gmdate($time_format, strtotime($meeting_value['start_time']));
-                if ($meeting_value['start_time'] == '12:00PM' || $meeting_value['start_time'] == '12:00 PM') {
-                    $meeting_value['start_time'] = 'NOON';
-                }
+                array_push($time_parts, $this->noon(gmdate($time_format, strtotime($meeting_value['start_time']))));
             } elseif ($this->options['time_option'] == '2') {
                 $addtime = '+ ' . $minutes . ' minutes';
-                $end_time = gmdate($time_format, strtotime($meeting_value['start_time'] . ' ' . $addtime));
-                $meeting_value['start_time'] = gmdate($time_format, strtotime($meeting_value['start_time']));
-                if ($lang == 'fa') {
-                    $meeting_value['start_time'] = $this->toPersianNum($end_time) . $space . '-' . $space . $this->toPersianNum($meeting_value['start_time']);
-                } else {
-                    $meeting_value['start_time'] = $meeting_value['start_time'] . $space . '-' . $space . $end_time;
-                }
+                array_push($time_parts, $this->noon(gmdate($time_format, strtotime($meeting_value['start_time']))));
+                array_push($time_parts, $this->noon(gmdate($time_format, strtotime($meeting_value['start_time'] . ' ' . $addtime))));
             } elseif ($this->options['time_option'] == '3') {
                 $time_array = array("1:00", "2:00", "3:00", "4:00", "5:00", "6:00", "7:00", "8:00", "9:00", "10:00", "11:00", "12:00");
                 $temp_start_time = gmdate("g:i", strtotime($meeting_value['start_time']));
                 $temp_start_time_2 = gmdate("g:iA", strtotime($meeting_value['start_time']));
                 if ($temp_start_time_2 == '12:00PM') {
-                    $start_time = 'NOON';
+                    array_push($time_parts, 'NOON');
                 } elseif (in_array($temp_start_time, $time_array)) {
-                    $start_time = gmdate("g", strtotime($meeting_value['start_time']));
+                    array_push($time_parts, gmdate("g", strtotime($meeting_value['start_time'])));
                 } else {
-                    $start_time = gmdate("g:i", strtotime($meeting_value['start_time']));
+                    array_push($time_parts, gmdate("g:i", strtotime($meeting_value['start_time'])));
                 }
                 $addtime = '+ ' . $minutes . ' minutes';
-                $temp_end_time = gmdate("g:iA", strtotime($meeting_value['start_time'] . ' ' . $addtime));
+                $temp_end_time = strtotime($meeting_value['start_time'] . ' ' . $addtime);
                 $temp_end_time_2 = gmdate("g:i", strtotime($meeting_value['start_time'] . ' ' . $addtime));
                 if ($temp_end_time == '12:00PM') {
-                    $end_time = 'NOON';
+                    array_push($time_parts, 'NOON');
                 } elseif (in_array($temp_end_time_2, $time_array)) {
-                    $end_time = gmdate("g" . $space . "A", strtotime($temp_end_time));
+                    array_push($time_parts, gmdate("g" . $space . "A", $temp_end_time));
                 } else {
-                    $end_time = gmdate("g:i" . $space . "A", strtotime($temp_end_time));
+                    array_push($time_parts, gmdate("g:i" . $space . "A", $temp_end_time));
                 }
-                $meeting_value['start_time'] = $start_time . $space . '-' . $space . $end_time;
+            }
+            if (count($time_parts) == 1) {
+                $meeting_value['start_time'] = ($lang == 'fa') ? $this->toPersianNum($time_parts[0]) : $time_parts[0];
+            } elseif (count($time_parts) == 2) {
+                $meeting_value['start_time'] = ($lang == 'fa')
+                    ? $meeting_value['start_time'] = $this->toPersianNum($time_parts[1]) . $space . '-' . $space . $this->toPersianNum($time_parts[0])
+                    : $meeting_value['start_time'] = $time_parts[0] . $space . '-' . $space . $time_parts[1];
             }
         }
         $meeting_value['day_abbr'] = $this->bread->getday($meeting_value['weekday_tinyint'], true, $lang);
@@ -89,6 +88,13 @@ class Bread_Meeting_Enhancer
         }
         // Extensions.
         return apply_filters("Bread_Enrich_Meeting_Data", $meeting_value, $formatsManager->getHashedFormats($lang));
+    }
+    private function noon($time)
+    {
+        if ($time == '12:00PM' || $time == '12:00 PM') {
+            return 'NOON';
+        }
+        return $time;
     }
     private function get_area_name(array $meeting_value): string
     {
@@ -114,6 +120,11 @@ class Bread_Meeting_Enhancer
         $number = str_replace("8", "۸", $number);
         $number = str_replace("9", "۹", $number);
         $number = str_replace("0", "۰", $number);
+        $number = str_replace("NOON", "ظهر", $number);
+        $number = str_replace("AM", "صبح", $number);
+        $number = str_replace("am", 'صبح', $number);
+        $number = str_replace("PM", "بعدازظهر", $number);
+        $number = str_replace("pm", "بعدازظهر", $number);
         return $number;
     }
 }

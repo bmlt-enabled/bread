@@ -1,6 +1,6 @@
 <?php
 $bread_translate = array (
-    "LANG_NAME"             => "Farsi",
+    "LANG_NAME"             => "فارسی",
     "LOCALE"                => "fa_IR",
     "WEEKDAYS"                      =>  array( 'ERROR',
         'یَکشَنبه',
@@ -11,6 +11,6 @@ $bread_translate = array (
         'جُمعه',
         'شَنبه'),
     "WKDYS"                           =>  array( 'ERR', 'So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa' ),
-    "PAGE"              =>  "Seite",
-    "CONT"              =>  "Weiter"
+    "PAGE"              =>  "صفحه",
+    "CONT"              =>  "ادامه"
 );

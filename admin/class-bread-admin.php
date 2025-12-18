@@ -72,7 +72,7 @@ class Bread_Admin
         wp_enqueue_style("tooltipster", plugin_dir_url(__FILE__) . "css/tooltipster.bundle.min.css", false, "1.2", 'all');
         wp_enqueue_style("tooltipster-noir", plugin_dir_url(__FILE__) . "css/tooltipster-sideTip-noir.min.css", false, "1.2", 'all');
         wp_enqueue_style("admin", plugin_dir_url(__FILE__) . "css/admin.css", false, "1.2", 'all');
-        wp_enqueue_style("chosen", plugin_dir_url(__FILE__) . "css/chosen.min.css", false, "1.2", 'all');
+        wp_enqueue_style("select2", plugin_dir_url(__FILE__) . "css/select2.min.css", false, "1.2", 'all');
         wp_enqueue_style("smartWizard-dots", plugin_dir_url(__FILE__) . "css/smart_wizard_dots.css", false, "6.0.6", 'all');
     }
 
@@ -90,13 +90,13 @@ class Bread_Admin
         wp_enqueue_script('jquery-ui-tabs');
         wp_enqueue_script('jquery-ui-accordion');
         wp_enqueue_script('jquery-ui-dialog');
-        wp_enqueue_script("bmlt_meeting_list", plugin_dir_url(__FILE__) . "js/bmlt_meeting_list.js", array('jquery'), "2.8.0", true);
+        wp_enqueue_script("bmlt_meeting_list", plugin_dir_url(__FILE__) . "js/bmlt_meeting_list.js", array('jquery'), BREAD_VERSION, true);
         wp_enqueue_script("tooltipster", plugin_dir_url(__FILE__) . "js/tooltipster.bundle.min.js", array('jquery'), "1.2", true);
         wp_enqueue_script("spectrum", plugin_dir_url(__FILE__) . "js/spectrum.min.js", array('jquery'), "1.2", true);
-        wp_enqueue_script("chosen", plugin_dir_url(__FILE__) . "js/chosen.jquery.min.js", array('jquery'), "1.2", true);
+        wp_enqueue_script("select2", plugin_dir_url(__FILE__) . "js/select2.min.js", array('jquery'), "1.2", true);
         wp_enqueue_script("fetch-jsonp", plugin_dir_url(__FILE__) . "js/fetch-jsonp.js", array('jquery'), "1.30", true);
         wp_enqueue_script("smartWizard", plugin_dir_url(__FILE__) . "js/jquery.smartWizard.js", array('jquery'), "6.0.6", true);
-        wp_enqueue_script("breadWizard", plugin_dir_url(__FILE__) . "js/bread-wizard.js", array('smartWizard'), "2.8.0", true);
+        wp_enqueue_script("breadWizard", plugin_dir_url(__FILE__) . "js/bread-wizard.js", array('smartWizard'), BREAD_VERSION, true);
         /**
          * Make some JSON from PHP available in JS.
          */
@@ -249,9 +249,6 @@ class Bread_Admin
         if (!isset($_POST['pwsix_export_nonce']) || ! wp_verify_nonce($_POST['pwsix_export_nonce'], 'pwsix_export_nonce')) {
             return;
         }
-        if (! current_user_can('manage_bread')) {  // TODO: Is this necessary? Why not let the user make a copy
-            return;
-        }
         $this->download_settings_inner();
     }
     function download_settings()
@@ -318,12 +315,12 @@ class Bread_Admin
     }
     function current_user_can_modify()
     {
-        if (! current_user_can('manage_bread')) {
-            return false;
-        }
         $user = wp_get_current_user();
         if (in_array('administrator', $user->roles)) {
             return true;
+        }
+        if (! current_user_can('manage_bread')) {
+            return false;
         }
         $authors_safe = $this->bread->getOption('authors');
         if (!is_array($authors_safe) || empty($authors_safe)) {
@@ -336,10 +333,17 @@ class Bread_Admin
     }
     function current_user_can_create()
     {
-        if (! current_user_can('manage_bread')) {
-            return false;
+        $user = wp_get_current_user();
+        if (in_array('administrator', $user->roles)) {
+            return true;
         }
-        return true;
+        if (current_user_can('manage_options')) {
+            return true;
+        }
+        if (current_user_can('manage_bread')) {
+            return true;
+        }
+        return false;
     }
     /**
      * Process a settings import from a json file
@@ -349,7 +353,7 @@ class Bread_Admin
         if (empty($_REQUEST['pwsix_import_nonce']) || !wp_verify_nonce($_REQUEST['pwsix_import_nonce'], 'pwsix_import_nonce')) {
             return;
         }
-        if (! current_user_can('manage_bread')) {
+        if (! $this->current_user_can_modify()) {
             return;
         }
         $this->bread->getConfigurationForSettingId($this->bread->getRequestedSetting());
@@ -377,7 +381,7 @@ class Bread_Admin
         update_option($this->bread->getOptionsName(), $this->bread->getOptions());
         setcookie('current-meeting-list', $this->bread->getRequestedSetting(), time() + 10);
         setcookie('bread_import_file', $import_file, time() + 10);
-        wp_safe_redirect(admin_url('?page=class-bread-admin.php'));
+        wp_safe_redirect(admin_url('?page=bmlt-enabled-bread'));
     }
     function my_theme_add_editor_styles()
     {
@@ -434,11 +438,15 @@ class Bread_Admin
         Bread_activate();
         $this->bmltEnabled_admin->createMenu();
 
+        $cap = 'manage_options';
+        if (!current_user_can($cap)) {
+            $cap = 'manage_bread';
+        }
         $this->hook = add_submenu_page(
             $parent_slug,
             'Printable Meeting Lists',
             'Printable Meeting Lists',
-            'manage_bread',
+            $cap,
             'bmlt-enabled-bread',
             array(&$this, 'admin_options_page'),
             2
