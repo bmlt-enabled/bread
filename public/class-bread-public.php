@@ -236,6 +236,8 @@ class Bread_Public
             $num_columns = 3;
         } elseif ($this->options['page_fold'] === 'quad') {
             $num_columns = 4;
+        } elseif ($this->options['page_fold'] === 'pocket') {
+            $num_columns = 4;
         } elseif ($this->options['page_fold'] === '') {
             $this->options['page_fold'] = 'quad';
             $num_columns = 4;
@@ -296,6 +298,16 @@ class Bread_Public
             } elseif ($this->options['page_size'] == 'A4') {
                 $page_type_settings = ['format' => array(99.0, 210.0), 'margin_footer' => $this->options['margin_footer']];
             }
+        } elseif ($this->options['page_fold'] == 'pocket') {
+            if ($this->options['page_size'] == 'letter') {
+                $page_type_settings = ['format' => array(279.4, 107.95), 'margin_footer' => $this->options['margin_footer']];
+            } elseif ($this->options['page_size'] == 'legal') {
+                $page_type_settings = ['format' => array(355.6, 107.95), 'margin_footer' => $this->options['margin_footer']];
+            } elseif ($this->options['page_size'] == 'ledger') {
+                $page_type_settings = ['format' => array(431.8, 139.7), 'margin_footer' => $this->options['margin_footer']];
+            } elseif ($this->options['page_size'] == 'A4') {
+                $page_type_settings = ['format' => array(297.0, 105.0), 'margin_footer' => $this->options['margin_footer']];
+            }
         } elseif ($this->options['page_size'] == '5inch') {
             $this->options['page_fold'] = 'full';
             $page_type_settings = ['format' => array(197.2, 279.4), 'margin_footer' => $this->options['margin_footer']];
@@ -307,8 +319,6 @@ class Bread_Public
             $page_type_settings = ['format' => $ps . "-" . $this->options['page_orientation'], 'margin_footer' => $this->options['margin_footer']];
         } elseif ($this->options['page_size'] == '5inch') {
             $page_type_settings = ['format' => array(197.2, 279.4), 'margin_footer' => $this->options['margin_footer']];
-        } elseif ($this->options['page_size'] == 'pocket') {
-            $page_type_settings = ['format' => array(279.4, 107.95), 'margin_footer' => 0];
         } else {
             $ps = $this->options['page_size'];
             if ($ps == 'ledger') {
@@ -503,6 +513,39 @@ class Bread_Public
             $mpdftmp->AddPage();
             $tplIdx = $mpdftmp->ImportPage($np);
             $mpdftmp->UseTemplate($tplIdx);
+            $this->mpdf = $mpdftmp;
+        } else if ($this->options['page_fold'] == 'pocket') {
+            $FilePath = $this->bread->temp_dir() . DIRECTORY_SEPARATOR . $this->get_FilePath('_pocket');
+            $this->mpdf->Output($FilePath, 'F');
+            $mpdfOptions = [
+                'mode' => $mode,
+                'tempDir' => $this->bread->temp_dir(),
+                'default_font_size' => '',
+                'margin_left' => 0,
+                'margin_right' => 0,
+                'margin_top' => 0,
+                'margin_bottom' => 0,
+                'margin_footer' => 6,
+                'format' => $this->options['page_size'] . '-L',
+                'orientation' => 'L',
+                'restrictColorSpace' => $this->options['colorspace'],
+            ];
+            $orientation = $this->options['page_size'] == 'ledger' ? 'P' : 'L';
+            $mpdftmp = new mPDF($mpdfOptions);
+            $this->mpdf->shrink_tables_to_fit = 1;
+            $np = $mpdftmp->SetSourceFile($FilePath);
+            $ow = $this->options['page_size'] == 'ledger' ? $mpdftmp->h : $mpdftmp->w;
+            $oh = $this->options['page_size'] == 'ledger' ? $mpdftmp->w : $mpdftmp->h;
+            $fh = $oh / 2;
+            $mpdftmp->AddPage($orientation);
+            $tplIdx = $mpdftmp->importPage(1);
+            $mpdftmp->UseTemplate($tplIdx, 0, 0);
+            $mpdftmp->UseTemplate($tplIdx, 0, $fh);
+            $sep = $this->columnSeparators($oh);
+            $mpdftmp->AddPage($orientation);
+            $tplIdx = $mpdftmp->ImportPage(2);
+            $mpdftmp->UseTemplate($tplIdx, 0, 0);
+            $mpdftmp->UseTemplate($tplIdx, 0, $fh);
             $this->mpdf = $mpdftmp;
         } else if ($this->options['page_fold'] == 'flyer') {
             $FilePath = $this->bread->temp_dir() . DIRECTORY_SEPARATOR . $this->get_FilePath('_flyer');
