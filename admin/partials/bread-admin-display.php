@@ -69,7 +69,7 @@ class Bread_AdminDisplay
                 if ($this->connected) {
                     $this->select_service_body_options($i);
                 } else { ?>
-                        <option selected value="<?php esc_html_e($this->bread->getOption("service_body_$i")); ?>"><?php echo 'Not Connected - Can not get Service Bodies'; ?></option><?php
+                        <option selected value=""><?php echo 'Not Connected - Cannot get Service Bodies'; ?></option><?php
                 } ?>
                 </select>
             </li><?php
