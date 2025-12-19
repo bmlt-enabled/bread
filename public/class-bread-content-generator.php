@@ -319,7 +319,8 @@ class Bread_ContentGenerator
     private function writeMeetings(string $template, Bread_Meetingslist_Structure $meetingslistStructure): void
     {
         $template = wpautop(stripslashes($template));
-        $template = preg_replace('/[[:^print:]]/', ' ', $template);
+        // TODO: figure out why this is necessary
+        //$template = preg_replace('/[[:^print:]]/', ' ', $template);
 
         $template = str_replace("&nbsp;", " ", $template);
         $analysedTemplate = $this->analyseTemplate($template);

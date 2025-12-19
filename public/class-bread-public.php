@@ -360,6 +360,7 @@ class Bread_Public
                     ]
                 ],
                 'default_font' => $default_font,
+                'useSubstitutions' => true,
                 'margin_left' => $this->options['margin_left'],
                 'margin_right' => $this->options['margin_right'],
                 'margin_top' => $this->options['margin_top'],
