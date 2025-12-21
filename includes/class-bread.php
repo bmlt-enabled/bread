@@ -712,6 +712,7 @@ class Bread
     */
     private function upgrade_settings(): void
     {
+        $this->options['base_font'] = $this->options['base_font'] == "freesans" ? "dejavusanscondensed" : $this->options['base_font'];
         if (!isset($this->options['bread_version'])) {
             if (!($this->options['meeting_sort'] === 'weekday_area'
                 || $this->options['meeting_sort'] === 'weekday_city'

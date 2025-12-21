@@ -332,35 +332,12 @@ class Bread_Public
     {
         if ($default_font == 'arial' || $default_font == 'times' || $default_font == 'courier') {
             $mpdf_init_options = [
-                'fontDir' => array(
-                    __DIR__ . '/../vendor/mpdf/mpdf/ttfonts',
-                    __DIR__ . '/../fonts',
-                ),
+
                 'tempDir' => $this->bread->temp_dir(),
                 'mode' => $mode,
                 'default_font_size' => 7,
-                'fontdata' => [
-                    "arial" => [
-                        'R' => "Arial.ttf",
-                        'B' => "ArialBold.ttf",
-                        'I' => "ArialItalic.ttf",
-                        'BI' => "ArialBoldItalic.ttf",
-                    ],
-                    "times" => [
-                        'R' => "Times.ttf",
-                        'B' => "TimesBold.ttf",
-                        'I' => "TimesItalic.ttf",
-                        'BI' => "TimesBoldItalic.ttf",
-                    ],
-                    "courier" => [
-                        'R' => "CourierNew.ttf",
-                        'B' => "CourierNewBold.ttf",
-                        'I' => "CourierNewItalic.ttf",
-                        'BI' => "CourierNewBoldItalic.ttf",
-                    ]
-                ],
                 'default_font' => $default_font,
-                'useSubstitutions' => true,
+                'useSubstitutions' => false,
                 'margin_left' => $this->options['margin_left'],
                 'margin_right' => $this->options['margin_right'],
                 'margin_top' => $this->options['margin_top'],
