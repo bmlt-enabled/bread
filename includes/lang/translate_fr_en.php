@@ -1,4 +1,7 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 $bread_translate = array (
     "LANG_NAME"             =>  "French/English",
     "WEEKDAYS"                        =>  array( 'ERROR', "Dimanche / Sunday", "Lundi / Monday", "Mardi / Tuesday", "Mercredi / Wednesday", "Jeudi / Thursday", "Vendredi / Friday", "Samedi / Saturday" ),

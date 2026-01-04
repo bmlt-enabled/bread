@@ -1,3 +1,7 @@
+<?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}?>
 <div id="bread-wizard">
     <ul class="nav">
         <li class="nav-item">

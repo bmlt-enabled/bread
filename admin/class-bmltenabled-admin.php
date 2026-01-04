@@ -1,5 +1,7 @@
 <?php
-
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 /**
  * Creates the main item in the admin menu, where both bread and crouton admins can live.
  *

@@ -1,6 +1,6 @@
 <?php
-if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
-    die('Sorry, but you cannot access this page directly.');
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
 function Bread_backup_restore_setup_page_render(Bread_AdminDisplay $breadAdmin)
 {

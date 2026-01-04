@@ -1,4 +1,7 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 class Bread_Meeting_Enhancer
 {
     private Bread $bread;

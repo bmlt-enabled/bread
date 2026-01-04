@@ -1,4 +1,7 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 return ['project-id-version'=>'Bread','report-msgid-bugs-to'=>'','pot-creation-date'=>'2025-08-29 09:53+0000','po-revision-date'=>'2025-08-29 10:52+0000','last-translator'=>'','language-team'=>'Persian','language'=>'fa_IR','mime-version'=>'1.0','content-type'=>'text/plain; charset=UTF-8','content-transfer-encoding'=>'8bit','plural-forms'=>'nplurals=2; plural=n != 1;','x-domain'=>'bread','x-generator'=>'Loco https://localise.biz/','x-loco-version'=>'2.8.0; wp-6.8.2; php-8.2.0','messages'=>['
                         <p>The Custom Content can be customized with text, graphics, tables, shortcodes, etc.</p>
                         <p><strong>Default Font Size</strong> can be changed for specific text in the editor.</p>

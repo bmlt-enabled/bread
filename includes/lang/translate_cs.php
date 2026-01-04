@@ -1,4 +1,7 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 $bread_translate = array (
     "LANG_NAME"             => "Czech",
     "LOCALE"                => "cs_CZ",

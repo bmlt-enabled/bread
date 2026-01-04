@@ -1,5 +1,7 @@
 <?php
-
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 use Mpdf\Mpdf;
 use function DeepCopy\deep_copy;
 
