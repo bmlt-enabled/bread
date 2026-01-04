@@ -1,6 +1,6 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
+if (! defined('ABSPATH')) {
+    exit;
 }
 /**
  * Central storage and management of the meeting formats. Also generates the HTML table of formats for inclusion in the PDF.

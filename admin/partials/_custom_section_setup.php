@@ -1,6 +1,6 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
+if (! defined('ABSPATH')) {
+    exit;
 }
 function Bread_custom_section_setup_page_render(Bread_AdminDisplay $breadAdmin)
 {
