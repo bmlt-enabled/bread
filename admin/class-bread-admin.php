@@ -72,7 +72,7 @@ class Bread_Admin
         wp_enqueue_style("tooltipster", plugin_dir_url(__FILE__) . "css/tooltipster.bundle.min.css", false, BREAD_VERSION, 'all');
         wp_enqueue_style("tooltipster-noir", plugin_dir_url(__FILE__) . "css/tooltipster-sideTip-noir.min.css", false, BREAD_VERSION, 'all');
         wp_enqueue_style("admin", plugin_dir_url(__FILE__) . "css/admin.css", false, BREAD_VERSION, 'all');
-        wp_enqueue_style("bread-fonts", plugin_dir_url(__FILE__) . "css/fonts.css", false, BREAD_VERSION, 'all');
+        wp_enqueue_style("bread-fonts", plugin_dir_url(__FILE__) . "css/admin-fonts.css", false, BREAD_VERSION, 'all');
         wp_enqueue_style("select2", plugin_dir_url(__FILE__) . "css/select2.min.css", false, BREAD_VERSION, 'all');
         wp_enqueue_style("smartWizard-dots", plugin_dir_url(__FILE__) . "css/smart_wizard_dots.css", false, BREAD_VERSION, 'all');
     }
