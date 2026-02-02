@@ -1,5 +1,7 @@
 <?php
-
+if (! defined('ABSPATH')) {
+    exit;
+}
 /**
  * Central storage and management of the meeting formats. Also generates the HTML table of formats for inclusion in the PDF.
  * We attempt to do as much lazy loading as possible, to minimize (remote) calls to the root server.

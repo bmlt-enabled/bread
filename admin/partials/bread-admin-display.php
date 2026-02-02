@@ -1,5 +1,7 @@
 <?php
-
+if (! defined('ABSPATH')) {
+    exit;
+}
 /**
  * Provide a admin area view for the plugin
  *
@@ -11,9 +13,15 @@
  * @package    Bread
  * @subpackage Bread/admin/partials
  */
+include_once '_bmlt_server_setup.php';
+include_once '_layout_setup.php';
+include_once '_front_page_setup.php';
+include_once '_meetings_setup.php';
+include_once '_custom_section_setup.php';
+include_once '_backup_restore_setup.php';
 class Bread_AdminDisplay
 {
-    private $lang;
+
     private Bread_Admin $admin;
     private $connected;
     private $server_version;
@@ -34,21 +42,36 @@ class Bread_AdminDisplay
             $this->unique_areas = $this->bread->bmlt()->get_areas();
             asort($this->unique_areas);
             if ($serverInfo[0]["aggregator_mode_enabled"] ?? false) {
-                $this->server_version = "<span style='color: #00AD00;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-admin-site'></div>Using Tomato Server</span>";
+                $this->server_version = "<span style='color: #00AD00;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-admin-site'></div>".__('Using Tomato Server', 'bread')."</span>";
             } elseif ($this->connected) {
-                $this->server_version = "<span style='color: #0A8ADD;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-smiley'></div>Your BMLT Server is running " . $this->connected . "</span>";
+                /* translators: string is the version number of the BMLT Server */
+                $this->server_version = "<span style='color: #0A8ADD;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-smiley'></div>".sprintf(__('Your BMLT Server is running %s', 'bread'), esc_html($this->connected)). "</span>";
             }
         }
     }
-    private function select_service_bodies()
+    public function isConnected()
+    {
+        return $this->connected;
+    }
+    public function getBreadInstance()
+    {
+        return $this->bread;
+    }
+    public function getServerVersion()
+    {
+        return $this->server_version;
+    }
+    public function select_service_bodies()
     {
         for ($i = 1; $i <= 5; $i++) { ?>
-            <li><label for="service_body_<?php echo esc_html($i); ?>">Service Body <?php echo esc_html($i); ?>: </label>
-                <select class="service_body_select" id="service_body_<?php echo esc_html($i); ?>" name="service_body_<?php echo esc_html($i); ?>"><?php
+            <li><label for="service_body_<?php echo esc_html($i); ?>"><?php
+                /* translators: Bread can query up to five servers, the string is the number 1-5 */
+                echo esc_html(sprintf(__('Service Body %d', 'bread'), $i)) ?>: </label>
+                <select class="bread_service_body_select" id="service_body_<?php echo esc_html($i); ?>" name="service_body_<?php echo esc_html($i); ?>"><?php
                 if ($this->connected) {
                     $this->select_service_body_options($i);
                 } else { ?>
-                        <option selected value="<?php esc_html($this->bread->getOption("service_body_$i")); ?>"><?php echo 'Not Connected - Can not get Service Bodies'; ?></option><?php
+                        <option selected value=""><?php echo 'Not Connected - Cannot get Service Bodies'; ?></option><?php
                 } ?>
                 </select>
             </li><?php
@@ -82,31 +105,35 @@ class Bread_AdminDisplay
                                                                                                                              */
     function admin_options_page()
     {
-        $this->lang = $this->bread->bmlt()->get_bmlt_server_lang();
         ?>
         <div class="connecting"></div>
         <div class="saving"></div>
         <?php
         set_transient('admin_notice', 'Please put down your weapon. You have 20 seconds to comply.');
         echo '<div class="updated">';
-        if (!$this->admin->current_user_can_modify()) {
-            echo '<p style="color: #F00;">You do not have permission to save this configuation!</p>';
-        } elseif (isset($_COOKIE['bread_import_file'])) {
-            echo '<p style="color: #F00;">File loaded.</p>';
+        if (isset($_COOKIE['bread_import_file'])) {
+            echo '<p style="color: #F00;">'.esc_html(__('File loaded', 'bread')).'</p>';
             delete_transient($this->bread->get_TransientKey($this->bread->getRequestedSetting()));
         } elseif (isset($_POST['bmltmeetinglistsave']) && $_POST['bmltmeetinglistsave']) {
-            $this->admin->save_admin_options();
-            echo '<p style="color: #F00;">Your changes were successfully saved!</p>';
-            $num = delete_transient($this->bread->get_TransientKey($this->bread->getRequestedSetting()));
-            if ($num > 0) {
-                echo "<p>" . esc_attr($num) . " Cache entries deleted</p>";
+            if (!$this->admin->current_user_can_modify()) {
+                echo '<p style="color: #F00;">'.esc_html(__('You do not have permission to save this configuation!', 'bread')).'</p>';
+            } else {
+                $this->admin->save_admin_options();
+                echo '<p style="color: #F00;">'.esc_html(__('Your changes were successfully saved!', 'bread')).'</p>';
+                $num = delete_transient($this->bread->get_TransientKey($this->bread->getRequestedSetting()));
+                if ($num > 0) {
+                    /* translators: string is number of cache entries deleted */
+                    echo "<p>" . esc_html(sprintf(__('%s Cache entries deleted', 'bread')), esc_attr($num))."</p>";
+                }
             }
         }
         echo '</div>';
 
         $this->bread->fillUnsetOptions();
+        $dir = str_starts_with(get_locale(), 'fa') ? 'rtl' : 'ltr';
+        $plugin_data = get_plugin_data(WP_PLUGIN_DIR . '/bread/bmlt-meeting-list.php');
         ?>
-        <div class="hide wrap" id="meeting-list-tabs-wrapper">
+        <div class="hide wrap bmlt-<?php echo esc_attr($dir) ?>" id="meeting-list-tabs-wrapper" dir="<?php echo esc_attr($dir); ?>">
             <div id="tallyBannerContainer">
                 <img id="tallyBannerImage" src="<?php echo esc_url(plugin_dir_url(__FILE__) . "../css/images/banner.png") ?>">
             </div>
@@ -117,7 +144,7 @@ class Bread_AdminDisplay
                     <li><a href="#import-export"><?php esc_html_e('Backup/ Restore', 'bread'); ?></a></li>
                 </ul>
                 <div id="instructions">
-        <?php include '_meeting_list_setup.php'; ?>
+                <?php Bread_meeting_list_setup_page_render($this); ?>
                 </div>
                 <div id="editor">
                     <nav class="nav-tab-wrapper">
@@ -134,36 +161,33 @@ class Bread_AdminDisplay
         <?php wp_nonce_field('bmltmeetinglistupdate-options'); ?>
         <?php $this->refresh_status(); ?>
                         <div id="tabs-first" class="tab-content">
-        <?php include '_bmlt_server_setup.php'; ?>
+        <?php Bread_bmlt_server_setup_page_render($this); ?>
                         </div>
                         <div id="layout" class="tab-content">
-        <?php include '_layout_setup.php'; ?>
+        <?php Bread_layout_setup_page_render($this); ?>
                         </div>
                         <div id="front-page" class="tab-content">
-        <?php include '_front_page_setup.php'; ?>
+        <?php Bread_front_page_setup_page_render($this); ?>
                         </div>
                         <div id="meetings" class="tab-content">
-        <?php include '_meetings_setup.php'; ?>
+        <?php Bread_meetings_setup_page_render($this); ?>
                         </div>
                         <div id="custom-section" class="tab-content">
-        <?php include '_custom_section_setup.php'; ?>
+        <?php Bread_custom_section_setup_page_render($this) ?>
                         </div>
         <?php if ($this->admin->current_user_can_modify()) { ?>
-                            <input type="submit" value="Save Changes" id="bmltmeetinglistsave" name="bmltmeetinglistsave" class="button-primary gears-working" />
-                            <input type="submit" value="Preview" id="bmltmeetinglistpreview" name="bmltmeetinglistpreview" class="button-primary" formtarget="_blank" />
-                            <p style="display: inline; margin-top:.5em;margin-bottom:1.0em;margin-left:.2em;"><a target="_blank" class="button-primary" href="<?php echo esc_url(home_url() . "/?current-meeting-list=" . $this->bread->getRequestedSetting()); ?>">Generate Meeting List</a></p>
-                            <div style="display:inline;"><i>&nbsp;&nbsp;Save Changes before Generating Meeting List.</i></div>
+                            <input type="submit" value="<?php esc_html_e('Save Changes', 'bread') ?>" id="bmltmeetinglistsave" name="bmltmeetinglistsave" class="button-primary gears-working" />
+                            <input type="submit" value="<?php esc_html_e('Preview', 'bread') ?>" id="bmltmeetinglistpreview" name="bmltmeetinglistpreview" class="button-primary" formtarget="_blank" />
+                            <p style="display: inline; margin-top:.5em;margin-bottom:1.0em;margin-left:.2em;"><a target="_blank" class="button-primary" href="<?php echo esc_url(home_url() . "/?current-meeting-list=" . $this->bread->getRequestedSetting()); ?>"><?php esc_html_e('Generate Meeting List', 'bread')?></a></p>
+                            <div style="display:inline;"><i>&nbsp;&nbsp;<?php esc_html_e('Save Changes before Generating Meeting List.', 'bread') ?></i></div>
                             <br class="clear">
         <?php } ?>
                     </form>
                 </div>
                 <div id="import-export">
-        <?php include '_backup_restore_setup.php'; ?>
+        <?php Bread_backup_restore_setup_page_render($this); ?>
                 </div>
             </div>
-        </div>
-        <div id="dialog" title="TinyMCE dialog" style="display: none">
-            <textarea>test</textarea>
         </div>
         <?php
     }

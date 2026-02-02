@@ -1,4 +1,7 @@
 <?php
+if (! defined('ABSPATH')) {
+    exit;
+}
 class Bread_Bmlt
 {
     public $connection_error;
@@ -33,6 +36,9 @@ class Bread_Bmlt
     {
         $args = array(
             'timeout' => '120',
+            'headers' => array(
+                'content-type' => 'application/json'
+            ),
         );
         if ($this->bread->getOption('user_agent') != 'None') {
             $args['headers'] = array(
@@ -170,7 +176,7 @@ class Bread_Bmlt
         if ($override_root_server == null) {
             $results = $this->bread->bmlt()->get_configured_root_server_request("client_interface/json/?switcher=GetServerInfo", true);
         } else {
-            $results = $this->bread->bmlt()->get($override_root_server . "/client_interface/json/?switcher=GetServerInfo");
+            $results = $this->bread->bmlt()->get($override_root_server . "/client_interface/json/?switcher=GetServerInfo", true);
         }
         if ($results instanceof WP_Error) {
             $this->connection_error = $results->get_error_message();

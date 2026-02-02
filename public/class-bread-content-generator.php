@@ -1,5 +1,7 @@
 <?php
-
+if (! defined('ABSPATH')) {
+    exit;
+}
 use Mpdf\Mpdf;
 use function DeepCopy\deep_copy;
 
@@ -162,11 +164,14 @@ class Bread_ContentGenerator
         $this->mpdf->WriteHTML('td{font-size: ' . $this->options['content_font_size'] . "pt;line-height:" . $this->options['content_line_height'] . ';background-color:#ffffff00;}', 1);
         $this->mpdf->SetDefaultBodyCSS('font-size', $this->options['content_font_size'] . 'pt');
         $this->mpdf->SetDefaultBodyCSS('line-height', $this->options['content_line_height']);
+        $lang = $this->options['weekday_language'];
+        if ($lang == 'fa') {
+            $this->mpdf->SetDefaultBodyCSS('direction', 'rtl');
+        }
         $this->mpdf->SetDefaultBodyCSS('background-color', '#ffffff00');
         if ($this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full') {
             $this->WriteHTML('<sethtmlpagefooter name="Meeting1Footer" page="ALL" />');
         }
-        $lang = $this->options['weekday_language'];
         $this->meetingEnhancer = new Bread_Meeting_Enhancer($this->bread, $this->bread->bmlt()->get_areas());
         foreach ($this->result_meetings as &$value) {
             $value = $this->meetingEnhancer->enhance_meeting($value, $lang, $this->formatsManager);
@@ -242,7 +247,7 @@ class Bread_ContentGenerator
                 IntlDateFormatter::FULL
             );
             $fmt->setPattern('LLLL');
-            $month = ucfirst(mb_convert_encoding($fmt->format(time()), 'UTF-8', 'ISO-8859-1'));
+            $month = $fmt->format(time());
             if ($case == 'upper') {
                 $month = mb_strtoupper($month, 'UTF-8');
             }
@@ -316,7 +321,8 @@ class Bread_ContentGenerator
     private function writeMeetings(string $template, Bread_Meetingslist_Structure $meetingslistStructure): void
     {
         $template = wpautop(stripslashes($template));
-        $template = preg_replace('/[[:^print:]]/', ' ', $template);
+        // TODO: figure out why this is necessary
+        //$template = preg_replace('/[[:^print:]]/', ' ', $template);
 
         $template = str_replace("&nbsp;", " ", $template);
         $analysedTemplate = $this->analyseTemplate($template);

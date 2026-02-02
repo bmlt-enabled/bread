@@ -11,3 +11,5 @@ Makefile export-ignore
 /.github export-ignore
 .phpcs.xml export-ignore
 simplify-mpdf.sh export-ignore
+/tests export-ignore
+/tests/** export-ignore

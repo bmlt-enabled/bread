@@ -1,5 +1,7 @@
 <?php
-
+if (! defined('ABSPATH')) {
+    exit;
+}
 /**
  * The core plugin class.
  *
@@ -390,7 +392,7 @@ class Bread
             }
             include dirname(__FILE__) . "/lang/" . $file;
             $key = substr($file, 10, -4);
-            $this->translate[$key] = $translate;
+            $this->translate[$key] = $bread_translate;
         }
     }
     public function getTranslateTable()
@@ -712,6 +714,7 @@ class Bread
     */
     private function upgrade_settings(): void
     {
+        $this->options['base_font'] = $this->options['base_font'] == "freesans" ? "dejavusanscondensed" : $this->options['base_font'];
         if (!isset($this->options['bread_version'])) {
             if (!($this->options['meeting_sort'] === 'weekday_area'
                 || $this->options['meeting_sort'] === 'weekday_city'

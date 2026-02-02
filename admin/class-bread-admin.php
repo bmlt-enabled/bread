@@ -1,5 +1,7 @@
 <?php
-
+if (! defined('ABSPATH')) {
+    exit;
+}
 /**
  * The admin-specific functionality of the plugin.
  *
@@ -14,6 +16,7 @@
  * @subpackage Bread/admin
  * @author     bmlt-enabled <help@bmlt.app>
  */
+include_once plugin_dir_path(__FILE__) . 'partials/_meeting_list_setup.php';
 class Bread_Admin
 {
 
@@ -66,13 +69,14 @@ class Bread_Admin
         if (!str_ends_with($hook, $this->hook)) {
             return;
         }
-        wp_enqueue_style("jquery-ui", plugin_dir_url(__FILE__) . "css/jquery-ui.min.css", false, "1.2", 'all');
-        wp_enqueue_style("spectrum", plugin_dir_url(__FILE__) . "css/spectrum.min.css", false, "1.2", 'all');
-        wp_enqueue_style("tooltipster", plugin_dir_url(__FILE__) . "css/tooltipster.bundle.min.css", false, "1.2", 'all');
-        wp_enqueue_style("tooltipster-noir", plugin_dir_url(__FILE__) . "css/tooltipster-sideTip-noir.min.css", false, "1.2", 'all');
-        wp_enqueue_style("admin", plugin_dir_url(__FILE__) . "css/admin.css", false, "1.2", 'all');
-        wp_enqueue_style("chosen", plugin_dir_url(__FILE__) . "css/chosen.min.css", false, "1.2", 'all');
-        wp_enqueue_style("smartWizard-dots", plugin_dir_url(__FILE__) . "css/smart_wizard_dots.css", false, "6.0.6", 'all');
+        wp_enqueue_style("jquery-ui", plugin_dir_url(__FILE__) . "css/jquery-ui.min.css", false, BREAD_VERSION, 'all');
+        wp_enqueue_style("spectrum", plugin_dir_url(__FILE__) . "css/spectrum.min.css", false, BREAD_VERSION, 'all');
+        wp_enqueue_style("tooltipster", plugin_dir_url(__FILE__) . "css/tooltipster.bundle.min.css", false, BREAD_VERSION, 'all');
+        wp_enqueue_style("tooltipster-noir", plugin_dir_url(__FILE__) . "css/tooltipster-sideTip-noir.min.css", false, BREAD_VERSION, 'all');
+        wp_enqueue_style("admin", plugin_dir_url(__FILE__) . "css/admin.css", false, BREAD_VERSION, 'all');
+        wp_enqueue_style("bread-fonts", plugin_dir_url(__FILE__) . "css/admin-fonts.css", false, BREAD_VERSION, 'all');
+        wp_enqueue_style("select2", plugin_dir_url(__FILE__) . "css/select2.min.css", false, BREAD_VERSION, 'all');
+        wp_enqueue_style("smartWizard-dots", plugin_dir_url(__FILE__) . "css/smart_wizard_dots.css", false, BREAD_VERSION, 'all');
     }
 
     /**
@@ -89,13 +93,13 @@ class Bread_Admin
         wp_enqueue_script('jquery-ui-tabs');
         wp_enqueue_script('jquery-ui-accordion');
         wp_enqueue_script('jquery-ui-dialog');
-        wp_enqueue_script("bmlt_meeting_list", plugin_dir_url(__FILE__) . "js/bmlt_meeting_list.js", array('jquery'), "2.8.0", true);
+        wp_enqueue_script("bmlt_meeting_list", plugin_dir_url(__FILE__) . "js/bmlt_meeting_list.js", array('jquery'), BREAD_VERSION, true);
         wp_enqueue_script("tooltipster", plugin_dir_url(__FILE__) . "js/tooltipster.bundle.min.js", array('jquery'), "1.2", true);
         wp_enqueue_script("spectrum", plugin_dir_url(__FILE__) . "js/spectrum.min.js", array('jquery'), "1.2", true);
-        wp_enqueue_script("chosen", plugin_dir_url(__FILE__) . "js/chosen.jquery.min.js", array('jquery'), "1.2", true);
+        wp_enqueue_script("select2", plugin_dir_url(__FILE__) . "js/select2.min.js", array('jquery'), "1.2", true);
         wp_enqueue_script("fetch-jsonp", plugin_dir_url(__FILE__) . "js/fetch-jsonp.js", array('jquery'), "1.30", true);
         wp_enqueue_script("smartWizard", plugin_dir_url(__FILE__) . "js/jquery.smartWizard.js", array('jquery'), "6.0.6", true);
-        wp_enqueue_script("breadWizard", plugin_dir_url(__FILE__) . "js/bread-wizard.js", array('smartWizard'), "2.8.0", true);
+        wp_enqueue_script("breadWizard", plugin_dir_url(__FILE__) . "js/bread-wizard.js", array('smartWizard'), BREAD_VERSION, true);
         /**
          * Make some JSON from PHP available in JS.
          */
@@ -204,10 +208,22 @@ class Bread_Admin
                 $initArray['fontsize_formats'] = "5pt 6pt 7pt 8pt 9pt 10pt 11pt 12pt 13pt 14pt 15pt 16pt 17pt 18pt 19pt 20pt 22pt 24pt 26pt 28pt 30pt 32pt 34pt 36pt 38pt";
                 $initArray['theme_advanced_blockformats'] = 'h2,h3,h4,p';
                 $initArray['wordpress_adv_hidden'] = false;
-                $initArray['font_formats'] = 'Arial (Default)=arial;';
+                $initArray['font_formats'] = 'Arial (Sans-Serif)=arial;';
                 $initArray['font_formats'] .= 'Times (Sans-Serif)=times;';
                 $initArray['font_formats'] .= 'Courier (Monospace)=courier;';
-                $initArray['content_style'] = 'body { font-family: Arial; }';
+                $initArray['font_formats'] .= 'DejaVu (Sans-Serif)=DejaVuSansCondensed;';
+                $dir = plugin_dir_url(__FILE__);
+                $font = $this->bread->getOption('base_font');
+                if ($font == 'dejavusanscondensed') {
+                    $initArray['content_style'] = "@import url('$dir/css/fonts.css'); body { font-family: DejaVuSansCondensed; }";
+                } elseif ($font == 'times') {
+                    $initArray['content_style'] = "@import url('$dir/css/fonts.css'); body { font-family: Times; }";
+                } elseif ($font == 'courier') {
+                    $initArray['content_style'] = "@import url('$dir/css/fonts.css'); body { font-family: Courier; }";
+                } else {
+                    $initArray['content_style'] = "@import url('$dir/css/fonts.css'); body { font-family: Arial; }";
+                }
+                //$initArray['content_style'] = "body { font-family: Arial; }";
             }
         }
         return $initArray;
@@ -246,9 +262,6 @@ class Bread_Admin
     function pwsix_process_settings_export()
     {
         if (!isset($_POST['pwsix_export_nonce']) || ! wp_verify_nonce($_POST['pwsix_export_nonce'], 'pwsix_export_nonce')) {
-            return;
-        }
-        if (! current_user_can('manage_bread')) {  // TODO: Is this necessary? Why not let the user make a copy
             return;
         }
         $this->download_settings_inner();
@@ -317,12 +330,12 @@ class Bread_Admin
     }
     function current_user_can_modify()
     {
-        if (! current_user_can('manage_bread')) {
-            return false;
-        }
         $user = wp_get_current_user();
         if (in_array('administrator', $user->roles)) {
             return true;
+        }
+        if (! current_user_can('manage_bread')) {
+            return false;
         }
         $authors_safe = $this->bread->getOption('authors');
         if (!is_array($authors_safe) || empty($authors_safe)) {
@@ -335,10 +348,17 @@ class Bread_Admin
     }
     function current_user_can_create()
     {
-        if (! current_user_can('manage_bread')) {
-            return false;
+        $user = wp_get_current_user();
+        if (in_array('administrator', $user->roles)) {
+            return true;
         }
-        return true;
+        if (current_user_can('manage_options')) {
+            return true;
+        }
+        if (current_user_can('manage_bread')) {
+            return true;
+        }
+        return false;
     }
     /**
      * Process a settings import from a json file
@@ -348,7 +368,7 @@ class Bread_Admin
         if (empty($_REQUEST['pwsix_import_nonce']) || !wp_verify_nonce($_REQUEST['pwsix_import_nonce'], 'pwsix_import_nonce')) {
             return;
         }
-        if (! current_user_can('manage_bread')) {
+        if (! $this->current_user_can_modify()) {
             return;
         }
         $this->bread->getConfigurationForSettingId($this->bread->getRequestedSetting());
@@ -376,7 +396,7 @@ class Bread_Admin
         update_option($this->bread->getOptionsName(), $this->bread->getOptions());
         setcookie('current-meeting-list', $this->bread->getRequestedSetting(), time() + 10);
         setcookie('bread_import_file', $import_file, time() + 10);
-        wp_safe_redirect(admin_url('?page=class-bread-admin.php'));
+        wp_safe_redirect(admin_url('?page=bmlt-enabled-bread'));
     }
     function my_theme_add_editor_styles()
     {
@@ -430,14 +450,18 @@ class Bread_Admin
      */
     function admin_submenu_link($parent_slug)
     {
-        activate_bread();
+        Bread_activate();
         $this->bmltEnabled_admin->createMenu();
 
+        $cap = 'manage_options';
+        if (!current_user_can($cap)) {
+            $cap = 'manage_bread';
+        }
         $this->hook = add_submenu_page(
             $parent_slug,
             'Printable Meeting Lists',
             'Printable Meeting Lists',
-            'manage_bread',
+            $cap,
             'bmlt-enabled-bread',
             array(&$this, 'admin_options_page'),
             2

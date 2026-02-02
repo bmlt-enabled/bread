@@ -1,7 +1,6 @@
 <?php
 class Bread
 {
-    private $translate = array();
     private array $options;
     private Bread_Bmlt $bmlt1;
     function __construct($options)
@@ -32,7 +31,7 @@ class Bread
             }
             include 'includes/lang/' . $file;
             $key = substr($file, 10, -4);
-            $this->translate[$key] = $translate;
+            $this->translate[$key] = $bread_translate;
         }
     }
     public function getTranslateTable()

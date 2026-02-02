@@ -1,6 +1,9 @@
 <?php
-$translate = array (
-    "LANG_NAME"             => "Farsi",
+if (! defined('ABSPATH')) {
+    exit;
+}
+$bread_translate = array (
+    "LANG_NAME"             => "فارسی",
     "LOCALE"                => "fa_IR",
     "WEEKDAYS"                      =>  array( 'ERROR',
         'یَکشَنبه',
@@ -11,6 +14,6 @@ $translate = array (
         'جُمعه',
         'شَنبه'),
     "WKDYS"                           =>  array( 'ERR', 'So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa' ),
-    "PAGE"              =>  "Seite",
-    "CONT"              =>  "Weiter"
+    "PAGE"              =>  "صفحه",
+    "CONT"              =>  "ادامه"
 );

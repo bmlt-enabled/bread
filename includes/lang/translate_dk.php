@@ -1,5 +1,8 @@
 <?php
-$translate = array (
+if (! defined('ABSPATH')) {
+    exit;
+}
+$bread_translate = array (
     "LANG_NAME"             =>  "Danish",
     "LOCALE"                => "da_DK",
     "WEEKDAYS"                        =>  array( 'ERROR', "S&#248;ndag", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "L&#248;rdag" ),
