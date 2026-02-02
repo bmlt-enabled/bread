@@ -55,6 +55,9 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 
 == Changelog ==
 
+= 2.9.8 =
+* Do Merge
+
 = 2.9.7 =
 * Bug fixes to permission stuff.
 * Added Pocket size (11 x 4.25in).
