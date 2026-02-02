@@ -32,7 +32,7 @@ jobs:
           unzip "${BUILD_DIR}/${ZIP_FILENAME}" -d "./bread"
 
       - name: Run plugin check
-        uses: wordpress/plugin-check-action@v1.0.6
+        uses: wordpress/plugin-check-action@v1
         with:
           build-dir: "./bread"
           exclude-directories: 'vendor'
