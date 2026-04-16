@@ -445,6 +445,7 @@ class Bread_ContentGenerator
         $search_strings = array();
         $replacements = array();
         $clean_up = array(
+            chr(194) . chr(160) => ' ',
             '<em></em>'     => '',
             '<em> </em>'    => '',
             '<strong></strong>' => '',
@@ -465,10 +466,6 @@ class Bread_ContentGenerator
             ', <br />'      => '<br />',
             ',<br />'       => '<br />',
             '<p>,'          => '<p>',
-            ", , ,"         => ",",
-            ", *,"          => ",",
-            ", ,"           => ",",
-            " , "           => " ",
             ", ("           => " (",
             ',</'           => '</',
             ', </'          => '</',
@@ -478,6 +475,11 @@ class Bread_ContentGenerator
             $replacements[] = $value;
         }
         $data = str_replace($search_strings, $replacements, $data);
+
+        do {
+            $data = preg_replace('/,\s*,/i', ',', $data, -1, $count);
+        } while ($count > 0);
+
         return $data;
     }
     /**
