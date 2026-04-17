@@ -394,9 +394,10 @@ class Bread_Admin
         $settings['authors'] = array(wp_get_current_user()->ID);
         $this->bread->setOptions($settings);
         update_option($this->bread->getOptionsName(), $this->bread->getOptions());
-        setcookie('current-meeting-list', $this->bread->getRequestedSetting(), time() + 10);
-        setcookie('bread_import_file', $import_file, time() + 10);
-        wp_safe_redirect(admin_url('?page=bmlt-enabled-bread'));
+        $url = admin_url('?page=bmlt-enabled-bread&current-meeting-list=' . $this->bread->getRequestedSetting()
+                                    . '&bread_import_file=' . basename($import_file));
+        echo("<script>location.href = '" . esc_url($url) . "'</script>");
+        die();
     }
     function my_theme_add_editor_styles()
     {

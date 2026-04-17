@@ -110,8 +110,8 @@ class Bread_AdminDisplay
         <div class="saving"></div>
         <?php
         set_transient('admin_notice', 'Please put down your weapon. You have 20 seconds to comply.');
-        echo '<div class="updated">';
-        if (isset($_COOKIE['bread_import_file'])) {
+        echo '<div class="notice notice-success is-dismissible">';
+        if (isset($_GET['bread_import_file'])) {
             echo '<p style="color: #F00;">'.esc_html(__('File loaded', 'bread')).'</p>';
             delete_transient($this->bread->get_TransientKey($this->bread->getRequestedSetting()));
         } elseif (isset($_POST['bmltmeetinglistsave']) && $_POST['bmltmeetinglistsave']) {
