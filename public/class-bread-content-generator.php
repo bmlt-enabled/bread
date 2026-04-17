@@ -79,6 +79,24 @@ class Bread_ContentGenerator
         "area"          => 'area_name',
     );
     /**
+     * Simple clean up the output
+     *
+     * @var array
+     */
+    private array $clean_up;
+    /**
+     * Simple clean up the output
+     *
+     * @var array
+     */
+    private array $preg_clean_up = array(
+        '/<[a-z]+\s*>[\s,]*<\/.*>/i' => '',
+        '/\s\s+/i' => ' ',
+        '/\([\s,]*\)\s*/i' => '',
+        '/(<p .*>|<br \/>|<td .*>)\s*,/i' => '\1',
+        '/,\s*([,(]|<p|<br)/i' => '\1',
+    );
+    /**
      * The constuctor sets things up so that we are ready to generate.
      *
      * @param Mpdf $mpdf The object that converts HTML to PDF.
@@ -146,6 +164,16 @@ class Bread_ContentGenerator
             $this->mpdf->SetWatermarkImage($this->options['watermark'], 0.2, 'F');
             $this->mpdf->showWatermarkImage = true;
         }
+        $this->clean_up = array(
+            // TineMCE sometimes inserts non-breaking spaces.
+            chr(194) . chr(160) => ' ',
+            // This line_break stuff seems to be some legacy mechanism
+            '<br/>'         => 'line_break',
+            '<br />'        => 'line_break',
+            'line_break line_break' => '<br />',
+            'line_breakline_break'  => '<br />',
+            'line_break'    => '<br />',
+        );
     }
     /**
      * Generates the contents of the meeting list.
@@ -442,44 +470,13 @@ class Bread_ContentGenerator
                 '/>' .
                 substr($data, $qr_end + 1);
         }
-        $search_strings = array();
-        $replacements = array();
-        $clean_up = array(
-            chr(194) . chr(160) => ' ',
-            '<em></em>'     => '',
-            '<em> </em>'    => '',
-            '<strong></strong>' => '',
-            '<strong> </strong>' => '',
-            '<i></i>' => '',
-            '<i> </i>' => '',
-            '    '          => ' ',
-            '   '           => ' ',
-            '  '            => ' ',
-            '<p></p>'       => '',
-            '()'            => '',
-            '<br/>'         => 'line_break',
-            '<br />'        => 'line_break',
-            'line_break line_break' => '<br />',
-            'line_breakline_break'  => '<br />',
-            'line_break'    => '<br />',
-            '<br />,'       => '<br />',
-            ', <br />'      => '<br />',
-            ',<br />'       => '<br />',
-            '<p>,'          => '<p>',
-            ", ("           => " (",
-            ',</'           => '</',
-            ', </'          => '</',
-        );
-        foreach ($clean_up as $key => $value) {
-            $search_strings[] = $key;
-            $replacements[] = $value;
-        }
-        $data = str_replace($search_strings, $replacements, $data);
+        $data = str_replace(array_keys($this->clean_up), array_values($this->clean_up), $data);
+        $data = preg_replace(array_keys($this->preg_clean_up), array_values($this->preg_clean_up), $data);
 
         do {
-            $data = preg_replace('/,\s*,/i', ',', $data, -1, $count);
+            $data = preg_replace('/,\s*([,(]|<p|<br)/i', '\1', $data, -1, $count);
         } while ($count > 0);
-
+        $data = preg_replace('/\s+,/i',',',$data);
         return $data;
     }
     /**

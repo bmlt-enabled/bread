@@ -123,7 +123,7 @@ class Bread_AdminDisplay
                 $num = delete_transient($this->bread->get_TransientKey($this->bread->getRequestedSetting()));
                 if ($num > 0) {
                     /* translators: string is number of cache entries deleted */
-                    echo "<p>" . esc_html(sprintf(__('%s Cache entries deleted', 'bread')), esc_attr($num))."</p>";
+                    echo "<p>" . esc_html(sprintf(__('%s Cache entries deleted', 'bread'), esc_attr($num), 'bread'))."</p>";
                 }
             }
         }
