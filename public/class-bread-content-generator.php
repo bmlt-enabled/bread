@@ -85,7 +85,7 @@ class Bread_ContentGenerator
      */
     private array $clean_up;
     /**
-     * Simple clean up the output
+     * Regular expressions for clean up the output
      *
      * @var array
      */
