@@ -396,7 +396,7 @@ class Bread_Admin
         update_option($this->bread->getOptionsName(), $this->bread->getOptions());
         $url = admin_url('?page=bmlt-enabled-bread&current-meeting-list=' . $this->bread->getRequestedSetting()
                                     . '&bread_import_file=' . basename($import_file));
-        echo("<script>location.href = '" . esc_url($url) . "'</script>");
+        echo "<script>location.href = '" . esc_url_raw($url) . "'</script>";
         die();
     }
     function my_theme_add_editor_styles()
