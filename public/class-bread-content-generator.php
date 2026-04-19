@@ -476,7 +476,7 @@ class Bread_ContentGenerator
         do {
             $data = preg_replace('/,\s*([,(]|<p|<br)/i', '\1', $data, -1, $count);
         } while ($count > 0);
-        $data = preg_replace('/\s+,/i',',',$data);
+        $data = preg_replace('/\s+,/i', ',', $data);
         return $data;
     }
     /**
