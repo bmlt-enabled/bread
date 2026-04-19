@@ -93,8 +93,8 @@ class Bread_ContentGenerator
         '/<[a-z]+\s*>[\s,]*<\/.*>/i' => '',
         '/\s\s+/i' => ' ',
         '/\([\s,]*\)\s*/i' => '',
-        '/(<p [^>]*>>|<br \/>|<td [^>]*>)\s*,/i' => '\1',
-        '/,\s*([,(]|<p|<br)/i' => '\1',
+        '/(<\/?p>|<br \/>|<td [^>]*>|\))\s*,/i' => '\1',
+        '/,\s*(,| \(|<p|<br)/i' => '\1',
     );
     /**
      * The constuctor sets things up so that we are ready to generate.
@@ -474,7 +474,7 @@ class Bread_ContentGenerator
         $data = preg_replace(array_keys($this->preg_clean_up), array_values($this->preg_clean_up), $data);
 
         do {
-            $data = preg_replace('/,\s*([,(]|<p|<br)/i', '\1', $data, -1, $count);
+            $data = preg_replace('/,\s*(,| \(|<p|<br)/i', '\1', $data, -1, $count);
         } while ($count > 0);
         $data = preg_replace('/\s+,/i', ',', $data);
         return $data;
