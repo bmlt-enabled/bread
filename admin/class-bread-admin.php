@@ -394,10 +394,7 @@ class Bread_Admin
         $settings['authors'] = array(wp_get_current_user()->ID);
         $this->bread->setOptions($settings);
         update_option($this->bread->getOptionsName(), $this->bread->getOptions());
-        $url = admin_url('?page=bmlt-enabled-bread&current-meeting-list=' . $this->bread->getRequestedSetting()
-                                    . '&bread_import_file=' . basename($import_file));
-        echo "<script>location.href = '" . esc_url_raw($url) . "'</script>";
-        die();
+        return $file_name;
     }
     function my_theme_add_editor_styles()
     {
@@ -470,6 +467,7 @@ class Bread_Admin
     }
     function admin_options_page()
     {
+        $filename = '';
         if (!empty($_POST['pwsix_action']) && (!isset($_POST['bmltmeetinglistsave']) || $_POST['bmltmeetinglistsave'] != 'Save Changes')) {
             switch ($_POST['pwsix_action']) {
                 case 'settings_admin':
@@ -482,7 +480,7 @@ class Bread_Admin
                     $this->pwsix_process_settings_export();
                     break;
                 case 'import_settings':
-                    $this->pwsix_process_settings_import();
+                    $filename = $this->pwsix_process_settings_import();
                     break;
                 default:
                     break;
@@ -492,7 +490,7 @@ class Bread_Admin
             $this->bread->getConfigurationForSettingId($this->bread->getRequestedSetting());
         }
         include_once plugin_dir_path(__FILE__) . 'partials/bread-admin-display.php';
-        (new Bread_AdminDisplay($this))->admin_options_page();
+        (new Bread_AdminDisplay($this))->admin_options_page($filename);
     }
     function pwsix_process_wizard()
     {

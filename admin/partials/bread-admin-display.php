@@ -98,36 +98,36 @@ class Bread_AdminDisplay
             <option <?php echo esc_attr($selected); ?> value="<?php echo esc_html($area) ?>"><?php echo esc_html($descr) ?></option><?php
         }
     }
-                                                                                                                            /**
-                                                                                                                             * Main function for the admin page.
-                                                                                                                             *
-                                                                                                                             * @return void
-                                                                                                                             */
-    function admin_options_page()
+    function admin_options_page($filename = '')
     {
         ?>
         <div class="connecting"></div>
         <div class="saving"></div>
         <?php
-        set_transient('admin_notice', 'Please put down your weapon. You have 20 seconds to comply.');
-        echo '<div class="notice notice-success is-dismissible">';
-        if (isset($_GET['bread_import_file'])) {
-            echo '<p style="color: #F00;">'.esc_html(__('File loaded', 'bread')).'</p>';
+        if (!empty($filename)) {
+            echo '<div class="notice notice-success is-dismissible">';
+            echo '<p style="color: #000;">'.esc_html(__('File loaded: ', 'bread')).$filename.'</p>';
+            echo '</div>';
             delete_transient($this->bread->get_TransientKey($this->bread->getRequestedSetting()));
-        } elseif (isset($_POST['bmltmeetinglistsave']) && $_POST['bmltmeetinglistsave']) {
+        }
+
+        if (isset($_POST['bmltmeetinglistsave']) && $_POST['bmltmeetinglistsave']) {
             if (!$this->admin->current_user_can_modify()) {
+                echo '<div class="notice notice-error is-dismissible">';
                 echo '<p style="color: #F00;">'.esc_html(__('You do not have permission to save this configuation!', 'bread')).'</p>';
+                echo '</div>';
             } else {
                 $this->admin->save_admin_options();
-                echo '<p style="color: #F00;">'.esc_html(__('Your changes were successfully saved!', 'bread')).'</p>';
+                echo '<div class="notice notice-success is-dismissible">';
+                echo '<p style="color: #000;">'.esc_html(__('Your changes were successfully saved!', 'bread')).'</p>';
                 $num = delete_transient($this->bread->get_TransientKey($this->bread->getRequestedSetting()));
                 if ($num > 0) {
                     /* translators: string is number of cache entries deleted */
                     echo "<p>" . esc_html(sprintf(__('%s Cache entries deleted', 'bread'), esc_attr($num), 'bread'))."</p>";
                 }
+                echo '</div>';
             }
         }
-        echo '</div>';
 
         $this->bread->fillUnsetOptions();
         $dir = str_starts_with(get_locale(), 'fa') ? 'rtl' : 'ltr';
@@ -193,5 +193,3 @@ class Bread_AdminDisplay
     }
 }
 ?>
-
-<!-- This file should primarily consist of HTML with a little bit of PHP. -->
