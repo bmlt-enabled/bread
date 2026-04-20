@@ -24,7 +24,7 @@ class Bread_Meeting_Enhancer
     {
         if ($formatStartTime) {
             $duration = explode(':', $meeting_value['duration_time']);
-            $minutes = intval($duration[0]) * 60 + intval($duration[1]) + intval($duration[2]);
+            $minutes = intval($duration[0]) * 60 + intval($duration[1]);
             $meeting_value['duration_m'] = $minutes;
             $meeting_value['duration_h'] = rtrim(rtrim(number_format($minutes / 60, 2), 0), '.');
             $space = ' ';
