@@ -106,7 +106,7 @@ class Bread_AdminDisplay
         <?php
         if (!empty($filename)) {
             echo '<div class="notice notice-success is-dismissible">';
-            echo '<p style="color: #000;">'.esc_html(__('File loaded: ', 'bread')).$filename.'</p>';
+            echo '<p style="color: #000;">'.esc_html(__('File loaded: ', 'bread')).esc_html($filename).'</p>';
             echo '</div>';
             delete_transient($this->bread->get_TransientKey($this->bread->getRequestedSetting()));
         }
