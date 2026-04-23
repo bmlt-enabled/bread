@@ -90,11 +90,11 @@ class Bread_ContentGenerator
      * @var array
      */
     private array $preg_clean_up = array(
-        '/<[a-z]+\s*>[\s,]*<\/.*>/i' => '',
+        '/<[a-z]+\s*>[\s,]*<\/[^>]*>/i' => '',
         '/\s\s+/i' => ' ',
         '/\([\s,]*\)\s*/i' => '',
         '/(<\/?p>|<br \/>|<td [^>]*>|\))\s*,/i' => '\1',
-        '/,\s*(,| \(|<p|<br)/i' => '\1',
+        '/,\s*(,| \(|<\/?p|<br|<\/td>)/i' => '\1',
     );
     /**
      * The constuctor sets things up so that we are ready to generate.
@@ -340,6 +340,20 @@ class Bread_ContentGenerator
         $this->writeHTMLwithAdditionalMeetinglist($data);
     }
     /**
+     * Avoid making a deep copy of the PDF with all meetings when we
+     * create the additional list
+     *
+     * @var MPDF
+     */
+    private $deepCopy = null;
+    private function getDeepCopy($m)
+    {
+        if ($this->deepCopy === null) {
+            $this->deepCopy = deep_copy($m);
+        }
+        return $this->deepCopy;
+    }
+    /**
      * Generate the meeting list itself, using the specified template and the meetings as structed by the heading manager.
      *
      * @param string $template
@@ -361,7 +375,7 @@ class Bread_ContentGenerator
          * We want to check that a header and at least one meeting fits, so we write it
          * to a test PDF, see how big it is, and check if it will fit.
          */
-        $test_pages = deep_copy($this->mpdf);
+        $test_pages = $this->getDeepCopy($this->mpdf);
         while ($subheadings = $meetingslistStructure->iterateMainHeading()) {
             while ($meetings = $meetingslistStructure->iterateSubHeading($subheadings)) {
                 while ($meeting_value = $meetingslistStructure->iterateMeetings($meetings)) {

@@ -57,6 +57,8 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 
 = 2.9.12 =
 * Cleaned up commas after blank fields
+* Updated mPDF
+* Minor Bug Fixes
 
 = 2.9.11 =
 * Corrected Greek Translation
