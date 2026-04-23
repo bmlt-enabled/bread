@@ -94,7 +94,7 @@ class Bread_ContentGenerator
         '/\s\s+/i' => ' ',
         '/\([\s,]*\)\s*/i' => '',
         '/(<\/?p>|<br \/>|<td [^>]*>|\))\s*,/i' => '\1',
-        '/,\s*(,| \(|<\/?p|<br|<\/td>)/i' => '\1',
+        '/,\s*(,| \(|<\/?p|<br|<\/td>|<\/span><\/td>)/i' => '\1',
     );
     /**
      * The constuctor sets things up so that we are ready to generate.
