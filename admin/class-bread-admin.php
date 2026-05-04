@@ -269,12 +269,18 @@ class Bread_Admin
     function download_settings()
     {
         if ($this->bread->exportingMeetingList()) {
+            if (!current_user_can('manage_options')) {
+                return;
+            }
             $this->download_settings_inner();
         }
     }
     function download_mpdf_log()
     {
         if ($this->bread->exportingLogFile()) {
+            if (!current_user_can('manage_options')) {
+                return;
+            }
             $this->download_log_file();
         }
     }
