@@ -269,9 +269,6 @@ class Bread_Admin
     function download_settings()
     {
         if ($this->bread->exportingMeetingList()) {
-            if (!current_user_can('manage_options')) {
-                return;
-            }
             $this->download_settings_inner();
         }
     }
@@ -293,9 +290,14 @@ class Bread_Admin
         $blogname = trim(preg_replace('/[^a-z0-9]+/', '-', strtolower($blogname)), '-');
         $json_name = $blogname . $date . ".json"; // Naming the filename will be generated.
         $settings = $this->bread->getOptions();
-        foreach ($settings as $key => $value) {
-            $value = maybe_unserialize($value);
-            $need_options[$key] = $value;
+        $need_options = [];
+        if (!$this->current_user_can_modify() && !empty($settings['protection_password'])) {
+            $need_options['message'] = 'This configuration is protected by a password. It cannot be exported anonymously.';
+        } else {
+            foreach ($settings as $key => $value) {
+                $value = maybe_unserialize($value);
+                $need_options[$key] = $value;
+            }
         }
         $json_file = wp_json_encode($need_options); // Encode data into json data
         ignore_user_abort(true);
