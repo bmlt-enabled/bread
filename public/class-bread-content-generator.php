@@ -95,6 +95,7 @@ class Bread_ContentGenerator
         '/\([\s,]*\)\s*/i' => '',
         '/(<\/?p>|<br \/>|<td [^>]*>|\))\s*,/i' => '\1',
         '/,\s*(,| \(|<\/?p|<br|<\/td>|<\/span><\/td>)/i' => '\1',
+        '/<p>\s*/i' => '<p>',
     );
     /**
      * The constuctor sets things up so that we are ready to generate.
@@ -484,6 +485,9 @@ class Bread_ContentGenerator
                 '/>' .
                 substr($data, $qr_end + 1);
         }
+        do {
+            $data = preg_replace('/,\s*(,| \(|<p|<br)/i', '\1', $data, -1, $count);
+        } while ($count > 0);
         $data = str_replace(array_keys($this->clean_up), array_values($this->clean_up), $data);
         $data = preg_replace(array_keys($this->preg_clean_up), array_values($this->preg_clean_up), $data);
 
