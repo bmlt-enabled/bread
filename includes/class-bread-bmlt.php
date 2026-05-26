@@ -14,9 +14,9 @@ class Bread_Bmlt
         $this->bread = $bread;
     }
 
-    public function get_configured_root_server_request($url, $raw = false)
+    private function get_configured_root_server_request($url, $raw = false)
     {
-        $results = $this->bread->bmlt()->get($this->bread->getOption('root_server') . "/" . $url);
+        $results = $this->get($this->bread->getOption('root_server') . "/$url");
         if ($raw) {
             return $results;
         }
@@ -24,7 +24,7 @@ class Bread_Bmlt
     }
     public function get_formats_by_language(string $lang)
     {
-        return $this->bread->bmlt()->get_configured_root_server_request("client_interface/json/?switcher=GetFormats&lang_enum=$lang");
+        return $this->get_configured_root_server_request("client_interface/json/?switcher=GetFormats&lang_enum=$lang");
     }
     /**
      * Undocumented function
@@ -57,10 +57,10 @@ class Bread_Bmlt
      */
     public function get_all_meetings(): array
     {
-        $lang = $this->bread->bmlt()->get_bmlt_server_lang();
-        $result = $this->bread->bmlt()->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults&data_field_key=weekday_tinyint,start_time,service_body_bigint,id_bigint,meeting_name,location_text,email_contact&sort_keys=meeting_name,service_body_bigint,weekday_tinyint,start_time");
+        $lang = $this->get_bmlt_server_lang();
+        $result = $this->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults&data_field_key=weekday_tinyint,start_time,service_body_bigint,id_bigint,meeting_name,location_text,email_contact&sort_keys=meeting_name,service_body_bigint,weekday_tinyint,start_time");
 
-        $unique_areas = $this->bread->bmlt()->get_areas();
+        $unique_areas = $this->get_areas();
         $all_meetings = array();
         foreach ($result as $value) {
             foreach ($unique_areas as $unique_area) {
@@ -79,7 +79,7 @@ class Bread_Bmlt
     }
     public function get_fieldkeys()
     {
-        $ret = $this->bread->bmlt()->get_configured_root_server_request("client_interface/json/?switcher=GetFieldKeys");
+        $ret = $this->get_configured_root_server_request("client_interface/json/?switcher=GetFieldKeys");
         return is_null($ret) ? array() : $ret;
     }
     private $standard_keys = array(
@@ -108,7 +108,7 @@ class Bread_Bmlt
     );
     public function get_nonstandard_fieldkeys()
     {
-        $all_fks = $this->bread->bmlt()->get_fieldkeys();
+        $all_fks = $this->get_fieldkeys();
         $ret = array();
         foreach ($all_fks as $fk) {
             if (!in_array($fk['key'], $this->standard_keys)) {
@@ -131,7 +131,7 @@ class Bread_Bmlt
         if (!empty($this->unique_areas)) {
             return $this->unique_areas;
         }
-        $result = $this->bread->bmlt()->get_configured_root_server_request("client_interface/json/?switcher=GetServiceBodies");
+        $result = $this->get_configured_root_server_request("client_interface/json/?switcher=GetServiceBodies");
         $this->unique_areas = array();
 
         foreach ($result as $value) {
@@ -149,15 +149,80 @@ class Bread_Bmlt
 
         return $this->unique_areas;
     }
+    public function generateMainQuery($json = 'json')
+    {
+        $sort_keys = 'weekday_tinyint,start_time,meeting_name';
+        $get_used_formats = '&get_used_formats';
+        $select_language = '';
+        if ($this->bread->getOption('weekday_language') != $this->get_bmlt_server_lang()) {
+            $select_language = '&lang_enum=' . substr($this->bread->getOption('weekday_language'), 0, 2);
+        }
+        $services = $this->generateDefaultQuery();
+        if (isset($_GET['custom_query'])) {
+            $services = $_GET['custom_query'];
+        } elseif ($this->bread->getOption('custom_query') !== '') {
+            $services = $this->bread->getOption('custom_query');
+        }
+        if ($this->bread->getOption('used_format_1') == '') {
+            return "client_interface/$json/?switcher=GetSearchResults$services&sort_keys=$sort_keys$get_used_formats$select_language";
+        } else {
+            return "client_interface/$json/?switcher=GetSearchResults$services&sort_keys=$sort_keys&get_used_formats&formats[]=" . $this->bread->getOption('used_format_1') . $select_language;
+        }
+    }
+    public function doMainQuery()
+    {
+        return $this->get_configured_root_server_request($this->generateMainQuery());
+    }
+    public function generateExtraMeetingQuery($json = 'json')
+    {
+        if (empty($this->bread->getOption('extra_meetings'))) {
+            return null;
+        }
+        $sort_keys = 'weekday_tinyint,start_time,meeting_name';
+        $get_used_formats = '&get_used_formats';
+        $select_language = '';
+        $extras = "";
+        foreach ((array)$this->bread->getOption('extra_meetings') as $value) {
+            $data = array(" [", "]");
+            $value = str_replace($data, "", $value);
+            $extras .= "&meeting_ids[]=" . $value;
+        }
+
+            return "client_interface/$json/?switcher=GetSearchResults&sort_keys=" . $sort_keys . "" . $extras . "" . $get_used_formats . $select_language;
+    }
+    public function doExtraMeetingQuery()
+    {
+        return $this->get_configured_root_server_request($this->generateExtraMeetingQuery());
+    }
+    public function generateAdditionalListQuery($json = 'json')
+    {
+        if (!empty($this->options['additional_list_custom_query'])) {
+            $sort_order = $this->bread->getOption('additional_list_sort_order');
+            if ($sort_order == 'same') {
+                $sort_order = 'weekday_tinyint,start_time';
+            }
+            $services =  $this->bread->getOption('additional_list_custom_query');
+            return "client_interface/$json/?switcher=GetSearchResults$services&sort_keys=$sort_order";
+        }
+        return null;
+    }
+    public function doAdditionalListQuery()
+    {
+        $url = $this->generateAdditionalListQuery();
+        if ($url == null) {
+            return [];
+        }
+        return $this->get_configured_root_server_request($url);
+    }
     /**
      * Gets the default language of the root server.
      *
      * @return string 2 character string ISO standard for the language.
      */
-    public function get_bmlt_server_lang(): string
+    private function get_bmlt_server_lang(): string
     {
         if ($this->bmlt_server_lang == '') {
-            $result = $this->bread->bmlt()->testRootServer();
+            $result = $this->testRootServer();
             if (!($result && is_array($result) && is_array($result[0]))) {
                 return 'en';
             }
@@ -174,9 +239,9 @@ class Bread_Bmlt
     public function testRootServer(string $override_root_server = null): array|bool
     {
         if ($override_root_server == null) {
-            $results = $this->bread->bmlt()->get_configured_root_server_request("client_interface/json/?switcher=GetServerInfo", true);
+            $results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetServerInfo", true);
         } else {
-            $results = $this->bread->bmlt()->get($override_root_server . "/client_interface/json/?switcher=GetServerInfo", true);
+            $results = $this->get($override_root_server . "client_interface/json/?switcher=GetServerInfo", true);
         }
         if ($results instanceof WP_Error) {
             $this->connection_error = $results->get_error_message();
@@ -199,8 +264,8 @@ class Bread_Bmlt
     public function getFormatsForSelect(bool $all = false): array
     {
         if ($all) {
-            $results = $this->bread->bmlt()->get_configured_root_server_request("client_interface/json/?switcher=GetFormats");
-            $this->bread->bmlt()->sortBySubkey($results, 'key_string');
+            $results = $this->get_configured_root_server_request("client_interface/json/?switcher=GetFormats");
+            $this->sortBySubkey($results, 'key_string');
             return $results;
         }
         $area_data = explode(',', $this->bread->getOption('service_body_1'));
@@ -215,7 +280,7 @@ class Bread_Bmlt
         } else {
             $queryUrl = "client_interface/json/?switcher=GetSearchResults$services&get_formats_only";
         }
-        $results = $this->bread->bmlt()->get_configured_root_server_request($queryUrl);
+        $results = $this->get_configured_root_server_request($queryUrl);
         $results = empty($service_body_id) ? $results : $results['formats'];
         $this->sortBySubkey($results, 'key_string');
         return $results;

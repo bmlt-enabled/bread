@@ -67,6 +67,10 @@ class Bread_Public
         $this->version = $version;
         $this->bread = $bread;
         $this->options = $bread->getOptions();
+        add_shortcode('bread_button', array(
+                &$this,
+                "doBreadButton"
+            ));
     }
 
     /**
@@ -76,7 +80,6 @@ class Bread_Public
      */
     public function enqueue_styles()
     {
-        wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/bread-public.css', array(), $this->version, 'all');
     }
 
     /**
@@ -86,9 +89,64 @@ class Bread_Public
      */
     public function enqueue_scripts()
     {
-        wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/bread-public.js', array('jquery'), $this->version, false);
+        if (($current = $this->doPreloading()) > 0) {
+            wp_enqueue_script('fetch-jsonp', plugin_dir_url(__FILE__) . 'js/fetch-jsonp.js', array(), $this->version, true);
+            wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/bread-public.js', array('jquery','fetch-jsonp'), $this->version, true);
+            wp_localize_script($this->plugin_name, 'bread_ajax_obj', [
+                'ajaxurl' => admin_url('admin-ajax.php'),
+                'nonce'   => wp_create_nonce('bread-ajax-nonce'),
+                'config'  => $this->generatePreloadConfiguration($current)
+            ]);
+        }
     }
-
+    /**
+     * Check if the shortcode is being used on this page.
+     *
+     * @return boolean
+     */
+    private function doPreloading(): int
+    {
+        $post_to_check = get_post(get_the_ID());
+        $post_content = $post_to_check->post_content ?? '';
+        $tags = ['bread_button'];
+        preg_match_all('/' . get_shortcode_regex($tags) . '/', $post_content, $matches, PREG_SET_ORDER);
+        if (empty($matches)) {
+            return -1;
+        }
+        foreach ($matches as $shortcode) {
+            switch ($shortcode[2]) {
+                case 'bread_button':
+                    $atts = shortcode_parse_atts($shortcode[3]);
+                    return intval($atts['current_meeting_list']);
+            }
+        }
+        return -1;
+    }
+    private function generatePreloadConfiguration(int $id): array
+    {
+        $options = $this->bread->getConfigurationForSettingId($id);
+        return [
+            'root_server' => $options['root_server'],
+            'main_query' => $this->bread->bmlt()->generateMainQuery('jsonp'),
+            'extra_meetings_query' => $this->bread->bmlt()->generateExtraMeetingQuery('jsonp'),
+            'additional_list_query' => $this->bread->bmlt()->generateAdditionalListQuery('jsonp'),
+            'weekday_language' => $options['weekday_language'],
+            'additional_list_language' => $options['additional_list_language'],
+        ];
+    }
+    public function doBreadButton($atts)
+    {
+        $label = $atts['label'] ?? 'Generate PDF';
+        return '<button id="bread_button">'.$label.'</button>';
+    }
+    public function bread_preload()
+    {
+        if (! wp_verify_nonce($_POST['nonce'], 'bread-ajax-nonce')) {
+            die;
+        }
+        $preload = json_decode(stripslashes($_POST['preload']));
+            wp_send_json_success('Success!');
+    }
     public function bmlt_meeting_list($atts = null, $content = null)
     {
         if (!$this->bread->generatingMeetingList()) {
@@ -175,23 +233,7 @@ class Bread_Public
         ) {
             $this->drawLinesSeperatingColumns($mode, $mpdf_init_options['format'], $default_font);
         }
-        $sort_keys = 'weekday_tinyint,start_time,meeting_name';
-        $get_used_formats = '&get_used_formats';
-        $select_language = '';
-        if ($this->options['weekday_language'] != $this->bread->bmlt()->get_bmlt_server_lang()) {
-            $select_language = '&lang_enum=' . $this->getSingleLanguage($this->options['weekday_language']);
-        }
-        $services = $this->bread->bmlt()->generateDefaultQuery();
-        if (isset($_GET['custom_query'])) {
-            $services = $_GET['custom_query'];
-        } elseif ($this->options['custom_query'] !== '') {
-            $services = $this->options['custom_query'];
-        }
-        if ($this->options['used_format_1'] == '') {
-            $result = $this->bread->bmlt()->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=$sort_keys$get_used_formats$select_language");
-        } elseif ($this->options['used_format_1'] != '') {
-            $result = $this->bread->bmlt()->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=$sort_keys&get_used_formats&formats[]=" . $this->options['used_format_1'] . $select_language);
-        }
+        $result = $this->bread->bmlt()->doMainQuery();
 
         if ($result == null) {
             echo "<script type='text/javascript'>\n";
@@ -201,14 +243,7 @@ class Bread_Public
             exit;
         }
         if (!empty($this->options['extra_meetings'])) {
-            $extras = "";
-            foreach ((array)$this->options['extra_meetings'] as $value) {
-                $data = array(" [", "]");
-                $value = str_replace($data, "", $value);
-                $extras .= "&meeting_ids[]=" . $value;
-            }
-
-            $extra_result = $this->bread->bmlt()->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults&sort_keys=" . $sort_keys . "" . $extras . "" . $get_used_formats . $select_language);
+            $extra_result = $this->bread->bmlt()->doExtraMeetingQuery();
             $formatsManager = null;
             if ($extra_result <> null) {
                 $result_meetings = array_merge($result['meetings'], $extra_result['meetings']);
@@ -598,11 +633,6 @@ class Bread_Public
             $site = get_current_blog_id() . '_';
         }
         return "meetinglist_" . $site . $this->bread->getRequestedSetting() . $pos . '_' . strtolower(gmdate("njYghis")) . ".pdf";
-    }
-
-    function getSingleLanguage($lang)
-    {
-        return substr($lang, 0, 2);
     }
     function columnSeparators($oh)
     {

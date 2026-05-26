@@ -305,7 +305,7 @@ class Bread
         if ($current_setting < 1) {
             $current_setting = is_admin() ? 1 : $this->requested_setting;
         }
-        if (is_array($this->allSettings[$current_setting])) {
+        if ($this->allSettings && !empty($this->allSettings[$current_setting]) && is_array($this->allSettings[$current_setting])) {
             $this->options = $this->allSettings[$current_setting];
         } else {
             $this->optionsName = $this->generateOptionName($current_setting);
@@ -529,6 +529,8 @@ class Bread
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
         $this->loader->add_action('plugins_loaded', $plugin_public, 'bmlt_meeting_list');
+        $this->loader->add_action('wp_ajax_bread_preload_action', $plugin_public, 'bread_preload');
+        $this->loader->add_action('wp_ajax_nopriv_bread_preload_action', $plugin_public, 'bread_preload');
     }
 
     /**
@@ -721,7 +723,7 @@ class Bread
                 || $this->options['meeting_sort'] === 'weekday_city'
                 || $this->options['meeting_sort'] === 'weekday_county'
                 || $this->options['meeting_sort'] === 'day')) {
-                $this->options['weekday_language'] = $this->bmlt()->get_bmlt_server_lang();
+                $this->options['weekday_language'] = 'en';
             }
             if ($this->options['page_fold'] == 'half') {
                 if ($this->options['page_size'] == 'A5') {
