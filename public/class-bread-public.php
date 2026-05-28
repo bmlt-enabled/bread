@@ -93,8 +93,6 @@ class Bread_Public
             wp_enqueue_script('fetch-jsonp', plugin_dir_url(__FILE__) . 'js/fetch-jsonp.js', array(), $this->version, true);
             wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/bread-public.js', array('jquery','fetch-jsonp'), $this->version, true);
             wp_localize_script($this->plugin_name, 'bread_ajax_obj', [
-                'ajaxurl' => admin_url('admin-ajax.php'),
-                'nonce'   => wp_create_nonce('bread-ajax-nonce'),
                 'config'  => $this->generatePreloadConfiguration($current)
             ]);
         }
@@ -102,7 +100,7 @@ class Bread_Public
     /**
      * Check if the shortcode is being used on this page.
      *
-     * @return boolean
+     * @return int the id of the configuration
      */
     private function doPreloading(): int
     {
@@ -137,20 +135,25 @@ class Bread_Public
     public function doBreadButton($atts)
     {
         $label = $atts['label'] ?? 'Generate PDF';
-        return '<button id="bread_button">'.$label.'</button>';
+        $id = $atts['current-meeting-list'] ?? "1";
+        return "<form method='POST' target='_blank' id='bread_button_form'>".
+                    "<input type='hidden' name='nonce' value='".wp_create_nonce('bread-button-nonce')."'/>".
+                    "<input type='hidden' name='current-meeting-list' value='".$id."'/>".
+                    "<input type='hidden' name='preload' id='bread_preload_item'/>".
+                    "<input type='submit' value='".$label."'/>".
+                "</form>";
     }
-    public function bread_preload()
-    {
-        if (! wp_verify_nonce($_POST['nonce'], 'bread-ajax-nonce')) {
-            die;
-        }
-        $preload = json_decode(stripslashes($_POST['preload']));
-            wp_send_json_success('Success!');
-    }
-    public function bmlt_meeting_list($atts = null, $content = null)
+    public function bmlt_meeting_list()
     {
         if (!$this->bread->generatingMeetingList()) {
             return;
+        }
+        if (!empty($_POST['preload'])) {
+            if (! wp_verify_nonce($_POST['nonce'], 'bread-button-nonce')) {
+                die;
+            }
+            $preload = json_decode(stripslashes($_POST['preload']), true);
+            $this->bread->bmlt()->preload($preload);
         }
         $this->options = $this->bread->getConfigurationForSettingId($this->bread->getRequestedSetting());
         $import_streams = [];
@@ -305,7 +308,6 @@ class Bread_Public
             wp_delete_file($FilePath);
         }
         $this->bread->removeTempDir();
-        exit;
     }
     private function constuct_page_type_settings()
     {

@@ -8,12 +8,16 @@ class Bread_Bmlt
     private $bmlt_server_lang = '';
     private array $unique_areas;
     private Bread $bread;
+    private ?array $preloaded = null;
 
     function __construct($bread)
     {
         $this->bread = $bread;
     }
-
+    public function preload($results)
+    {
+        $this->preloaded = $results;
+    }
     private function get_configured_root_server_request($url, $raw = false)
     {
         $results = $this->get($this->bread->getOption('root_server') . "/$url");
@@ -24,6 +28,7 @@ class Bread_Bmlt
     }
     public function get_formats_by_language(string $lang)
     {
+        if ($this->preloaded !== null) return $this->preloaded['allFormats'][substr($lang, 0, 2)];
         return $this->get_configured_root_server_request("client_interface/json/?switcher=GetFormats&lang_enum=$lang");
     }
     /**
@@ -131,7 +136,8 @@ class Bread_Bmlt
         if (!empty($this->unique_areas)) {
             return $this->unique_areas;
         }
-        $result = $this->get_configured_root_server_request("client_interface/json/?switcher=GetServiceBodies");
+        $result = ($this->preloaded !== null) ? $this->preloaded['serviceBodies']
+            : $this->get_configured_root_server_request("client_interface/json/?switcher=GetServiceBodies");
         $this->unique_areas = array();
 
         foreach ($result as $value) {
@@ -171,6 +177,7 @@ class Bread_Bmlt
     }
     public function doMainQuery()
     {
+        if ($this->preloaded !== null) return $this->preloaded['mainResults'];
         return $this->get_configured_root_server_request($this->generateMainQuery());
     }
     public function generateExtraMeetingQuery($json = 'json')
@@ -192,6 +199,7 @@ class Bread_Bmlt
     }
     public function doExtraMeetingQuery()
     {
+        if ($this->preloaded !== null) return $this->preloaded['extraMeetings'];
         return $this->get_configured_root_server_request($this->generateExtraMeetingQuery());
     }
     public function generateAdditionalListQuery($json = 'json')
@@ -212,6 +220,7 @@ class Bread_Bmlt
         if ($url == null) {
             return [];
         }
+        if ($this->preloaded !== null) return $this->preloaded['additionalListMeetings'];
         return $this->get_configured_root_server_request($url);
     }
     /**

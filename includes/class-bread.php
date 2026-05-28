@@ -53,7 +53,7 @@ class Bread
     protected $version;
     public const SETTINGS = 'bmlt_meeting_list_settings';
     public const OPTIONS_NAME = 'bmlt_meeting_list_options';
-    private $optionsName;
+    private string $optionsName;
     private $allSettings = array();
     private $maxSetting = 1;
     /**
@@ -240,6 +240,9 @@ class Bread
     }
     public function getSettingName($id)
     {
+        if (count($this->allSettings) == 0) {
+            return "Default Setting";
+        }
         return $this->allSettings[$id];
     }
     public function getSettingNames()
@@ -529,8 +532,6 @@ class Bread
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
         $this->loader->add_action('plugins_loaded', $plugin_public, 'bmlt_meeting_list');
-        $this->loader->add_action('wp_ajax_bread_preload_action', $plugin_public, 'bread_preload');
-        $this->loader->add_action('wp_ajax_nopriv_bread_preload_action', $plugin_public, 'bread_preload');
     }
 
     /**
