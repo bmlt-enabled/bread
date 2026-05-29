@@ -61,43 +61,6 @@ class Bread_AdminDisplay
     {
         return $this->server_version;
     }
-    public function select_service_bodies()
-    {
-        for ($i = 1; $i <= 5; $i++) { ?>
-            <li><label for="service_body_<?php echo esc_html($i); ?>"><?php
-                /* translators: Bread can query up to five servers, the string is the number 1-5 */
-                echo esc_html(sprintf(__('Service Body %d', 'bread'), $i)) ?>: </label>
-                <select class="bread_service_body_select" id="service_body_<?php echo esc_html($i); ?>" name="service_body_<?php echo esc_html($i); ?>"><?php
-                if ($this->connected) {
-                    $this->select_service_body_options($i);
-                } else { ?>
-                        <option selected value=""><?php echo 'Not Connected - Cannot get Service Bodies'; ?></option><?php
-                } ?>
-                </select>
-            </li><?php
-        }
-    }
-    private function select_service_body_options(int $i)
-    {
-        ?>
-        <option value="Not Used">Not Used</option>
-        <?php
-        foreach ($this->unique_areas as $area) {
-            $area_data = explode(',', $area);
-            $area_name = $this->bread->arraySafeGet($area_data);
-            $area_id = $this->bread->arraySafeGet($area_data, 1);
-            $area_parent = $this->bread->arraySafeGet($area_data, 2);
-            $area_parent_name = $this->bread->arraySafeGet($area_data, 3);
-            $descr = $area_name . " (" . $area_id . ") " . $area_parent_name . " (" . $area_parent . ")";
-            $selected = '';
-            $sb = esc_html($this->bread->getOption("service_body_$i"));
-            $area_selected = explode(',', $sb);
-            if ($this->bread->arraySafeGet($area_selected) != "Not Used" && $area_id == $this->bread->arraySafeGet($area_selected, 1)) {
-                $selected = 'selected';
-            } ?>
-            <option <?php echo esc_attr($selected); ?> value="<?php echo esc_html($area) ?>"><?php echo esc_html($descr) ?></option><?php
-        }
-    }
     function admin_options_page($filename = '')
     {
         ?>

@@ -556,4 +556,4 @@ select.bread_service_body_select {
 .nav-tab-wrapper {
     width: max-content !important;
 }
-.select2-search--inline { display: contents; } .select2-search__field:placeholder-shown { width: 100% !important; }
+.select2-search--inline { display: contents; }

@@ -521,9 +521,9 @@ class Bread_Admin
         $settings['page_size'] = $layoutInfos[1];
         $settings['authors'] = array();
         $settings['root_server'] = sanitize_url($_POST['wizard_root_server']);
+        $settings['service_bodies'] = [];
         for ($i = 0; $i < count($_POST['wizard_service_bodies']); $i++) {
-            $j = $i + 1;
-            $settings['service_body_' . $j] = sanitize_text_field($_POST['wizard_service_bodies'][$i]);
+            $settings['service_bodies'][] = sanitize_text_field($_POST['wizard_service_bodies'][$i]);
         }
         $settings['used_format_1'] = intval($_POST['wizard_format_filter']);
         $settings['weekday_language'] = sanitize_key($_POST['wizard_language']);
@@ -675,7 +675,7 @@ class Bread_Admin
                 isset($_POST['pagenumbering_font_size']) ?
                     floatval($_POST['pagenumbering_font_size']) : '9'
             );
-            $this->bread->setOption('used_format_1', sanitize_text_field($_POST['used_format_1']));
+            $this->bread->setOption('used_format_1', isset($_POST['used_format_1']) ? sanitize_text_field($_POST['used_format_1']) : '');
             $this->bread->setOption('recurse_service_bodies', isset($_POST['recurse_service_bodies']) ? 1 : 0);
             $this->bread->setOption('extra_meetings_enabled', isset($_POST['extra_meetings_enabled']) ? intval($_POST['extra_meetings_enabled']) : 0);
             $this->bread->setOption('include_protection', boolval($_POST['include_protection']));
@@ -709,11 +709,7 @@ class Bread_Admin
             $this->bread->setOption('remove_space', boolval($_POST['remove_space']));
             $this->bread->setOption('content_line_height', floatval($_POST['content_line_height']));
             $this->bread->setOption('root_server', sanitize_url($_POST['root_server']));
-            $this->bread->setOption('service_body_1', sanitize_text_field($_POST['service_body_1']));
-            $this->bread->setOption('service_body_2', sanitize_text_field($_POST['service_body_2']));
-            $this->bread->setOption('service_body_3', sanitize_text_field($_POST['service_body_3']));
-            $this->bread->setOption('service_body_4', sanitize_text_field($_POST['service_body_4']));
-            $this->bread->setOption('service_body_5', sanitize_text_field($_POST['service_body_5']));
+            $this->bread->setOption('service_bodies', isset($_POST['service_bodies']) ? array_map('sanitize_text_field', $_POST['service_bodies']) : array());
             $this->bread->setOption('cache_time', intval($_POST['cache_time']));
             $this->bread->setOption('custom_query', sanitize_text_field($_POST['custom_query']));
             $this->bread->setOption('additional_list_custom_query', sanitize_text_field($_POST['additional_list_custom_query']));

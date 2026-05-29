@@ -109,16 +109,6 @@ function Bread_meetings_setup_page_render(Bread_AdminDisplay $breadAdmin)
                                 <option <?php echo ($bread->getOption('main_grouping') == 'location_sub_province' ? 'selected' : '') ?> value="location_sub_province"><?php esc_html_e('County', 'bread') ?></option>
                                 <option <?php echo ($bread->getOption('main_grouping') == 'location_city_subsection' ? 'selected' : '') ?> value="location_city_subsection"><?php esc_html_e('Borough', 'bread') ?></option>
                                 <option <?php echo ($bread->getOption('main_grouping') == 'location_province' ? 'selected' : '') ?> value="location_province"><?php esc_html_e('State', 'bread') ?></option>
-                                <?php
-                                $fks = $bread->bmlt()->get_nonstandard_fieldkeys();
-                                foreach ($fks as $fk) {
-                                    $selected = '';
-                                    if ($fk['key'] == $bread->getOption('main_grouping')) {
-                                        $selected = 'selected';
-                                    }
-                                    echo '<option value="' . esc_attr($fk['key']) . '" ' . esc_attr($selected) . '>' . esc_html($fk['description']) . '</option>';
-                                }
-                                ?>
                             </select>
                             <label for="subgrouping"><?php esc_html_e('Sub-Grouping: ', 'bread') ?></label>
                             <select id="subgrouping" name="subgrouping">
@@ -130,15 +120,6 @@ function Bread_meetings_setup_page_render(Bread_AdminDisplay $breadAdmin)
                                 <option <?php echo ($bread->getOption('subgrouping') == 'location_sub_province' ? 'selected' : '') ?> value="location_sub_province"><?php esc_html_e('County', 'bread') ?></option>
                                 <option <?php echo ($bread->getOption('subgrouping') == 'location_city_subsection' ? 'selected' : '') ?> value="location_city_subsection"><?php esc_html_e('Borough', 'bread') ?></option>
                                 <option <?php echo ($bread->getOption('subgrouping') == 'location_province' ? 'selected' : '') ?> value="location_province"><?php esc_html_e('State', 'bread') ?></option>
-                                <?php
-                                foreach ($fks as $fk) {
-                                    $selected = '';
-                                    if ($fk['key'] == $bread->getOption('subgrouping')) {
-                                        $selected = 'selected';
-                                    }
-                                    echo '<option value="' . esc_attr($fk['key']) . '" ' . esc_attr($selected) . '>' . esc_html($fk['description']) . '</option>';
-                                }
-                                ?>
                             </select>
                         </p>
                     </div>
@@ -282,22 +263,6 @@ function Bread_meetings_setup_page_render(Bread_AdminDisplay $breadAdmin)
                 <div class="inside">
                     <label for="used_format_1"><?php esc_html_e('Meeting Format: ', 'bread') ?></label>
                     <select id="used_format_1" name="used_format_1">
-                        <?php
-                        if ($breadAdmin->isConnected()) {
-                            echo '<option value="">Not Used</option>';
-                            $used_formats = $bread->bmlt()->getFormatsForSelect(false);
-                            foreach ($used_formats as $format) {
-                                $selected = '';
-                                if ($format['id'] == $bread->getOption('used_format_1')) {
-                                    $selected = 'selected';
-                                }
-                                $id = $format['id'];
-                                $str = esc_html($format['name_string']);
-                                echo "<option " . esc_attr($selected) . " value='" . esc_attr($id) . "'>" . esc_html($str) . "</option>";
-                            }
-                        } else { ?>
-                            <option selected value="Not Connected"></option><?php
-                        } ?>
                     </select>
                 </div>
             </div>
@@ -312,19 +277,8 @@ function Bread_meetings_setup_page_render(Bread_AdminDisplay $breadAdmin)
                         <label for="additional_list_format_key"><?php esc_html_e('Format of meetings in the additional list: ', 'bread') ?></label>
                         <select id="additional_list_format_key" name="additional_list_format_key">
                             <option value=""><?php esc_html_e('Not Used', 'bread') ?></option>
-                            <?php if ($breadAdmin->isConnected()) { ?>
                                 <option value="@Virtual@" <?php echo $bread->getOption('additional_list_format_key') == '@Virtual@' ? 'selected' : '' ?>><?php esc_html_e('Virtual Meetings', 'bread') ?></option>
                                 <option value="@F2F@" <?php echo $bread->getOption('additional_list_format_key') == '@F2F@' ? 'selected' : '' ?>><?php esc_html_e('Face-to-Face Meetings', 'bread') ?></option>
-                                <?php $used_formats = $bread->bmlt()->getFormatsForSelect(true);
-                                $countmax = count($used_formats);
-                                for ($count = 0; $count < $countmax; $count++) {
-                                    if ($used_formats[$count]['key_string'] == $bread->getOption('additional_list_format_key')) { ?>
-                                        <option selected value="<?php echo esc_attr($used_formats[$count]['key_string']) ?>"><?php echo esc_html($used_formats[$count]['name_string']) ?></option>
-                                    <?php   } else { ?>
-                                        <option value="<?php echo esc_attr($used_formats[$count]['key_string']) ?>"><?php echo esc_html($used_formats[$count]['name_string']) ?></option>
-                                    <?php   }
-                                }
-                            } ?>
                         </select>
                     </p>
                     <p>

@@ -780,7 +780,7 @@ class Bread
         $this->renamed_option('asm_language', 'additional_list_language');
         $this->renamed_option('asm_custom_query', 'additional_list_custom_query');
         $this->renamed_option('asm_template_content', 'additional_list_template_content');
-        if (!isset($this->options['bread_version']) || $this->options['bread_version'] < '2.8') {
+        if ($this->versionLessThan('2.8')) {
             if (($this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full') && trim($this->options['last_page_content']) !== '') {
                 $this->options['custom_section_content'] = $this->options['last_page_content'];
                 $this->options['custom_section_font_size'] = $this->options['last_page_font_size'];
@@ -790,7 +790,50 @@ class Bread
                 unset($this->options['last_page_font_size']);
             }
         }
+        if ($this->versionLessThan('2.10')) {
+            $this->options['service_bodies'] = [];
+            if (!empty($this->options['service_body_1']) && $this->options['service_body_1'] != 'Not Used') {
+                $this->options['service_bodies'][] = $this->options['service_body_1'];
+            }
+            if (!empty($this->options['service_body_2']) && $this->options['service_body_2'] != 'Not Used') {
+                $this->options['service_bodies'][] = $this->options['service_body_2'];
+            }
+            if (!empty($this->options['service_body_3']) && $this->options['service_body_3'] != 'Not Used') {
+                $this->options['service_bodies'][] = $this->options['service_body_3'];
+            }
+            if (!empty($this->options['service_body_4']) && $this->options['service_body_4'] != 'Not Used') {
+                $this->options['service_bodies'][] = $this->options['service_body_4'];
+            }
+            if (!empty($this->options['service_body_5']) && $this->options['service_body_5'] != 'Not Used') {
+                $this->options['service_bodies'][] = $this->options['service_body_5'];
+            }
+            unset($this->options['service_body_1']);
+            unset($this->options['service_body_2']);
+            unset($this->options['service_body_3']);
+            unset($this->options['service_body_4']);
+            unset($this->options['service_body_5']);
+        }
         $this->options['bread_version'] = BREAD_VERSION;
+    }
+    private function versionLessThan($version): bool
+    {
+        if (empty($this->options['bread_version'])) {
+            return true;
+        }
+        $current = explode('.', $this->options['bread_version']);
+        $test = explode('.', $version);
+        for ($i=0; $i<count($current); $i++) {
+            if ($i >= count($test)) {
+                return false;
+            }
+            if (intval($current[$i]) > intval($test[$i])) {
+                return false;
+            }
+            if (intval($current[$i]) < intval($test[$i])) {
+                return true;
+            }
+        }
+        return false;
     }
     private function renamed_option(string $old, string $new)
     {

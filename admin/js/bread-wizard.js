@@ -1,23 +1,5 @@
 jQuery(document).ready(function($){
     var BreadWizard = function() {
-        ask_bmlt = function(query, success, fail) {
-            const url = $("#wizard_root_server").val()+"/client_interface/jsonp/?"+query;
-            fetchJsonp(url)
-              .then((response) => {
-                if (response.ok) {
-                    return response.json();
-                }
-                return Promise.reject(response); // 2. reject instead of throw
-            })
-            .then((json) => {
-                success(json);
-                return json;
-            })
-            .catch((response) => {
-                fail(response)
-                return false;
-            })
-        }
         BreadWizard.prototype.ajax_submit = function() {
             $(".saving").show();
             var myform = document.getElementById("wizard_form");
@@ -60,12 +42,17 @@ jQuery(document).ready(function($){
             $('#bread-wizard').smartWizard("goToStep", 2);
         }
         BreadWizard.prototype.test_root_server = function() {
-            ask_bmlt("switcher=GetServerInfo",
-            (info) => {
+            const context = {
+                root_server: 'wizard_root_server',
+                service_bodies: 'wizard_service_bodies',
+                service_bodies_selected: []
+            }
+            ask_bmlt(context, "switcher=GetServerInfo",
+            (context, info) => {
                 $('#wizard_root_server_result').removeClass('invalid-feedback dashicons-dismiss')
                     .addClass('valid-feedback dashicons-before dashicons-yes-alt').html($('#wizard_connected_message').html()+info[0].version);
             },
-            (error) => {
+            (context, error) => {
                 $('#wizard_root_server_result').removeClass('valid-feedback dashicons-yes-alt')
                     .addClass('invalid-feedback dashicons-before dashicons-dismiss').html($('#wizard_disconnected_message').html());
             });
@@ -89,42 +76,6 @@ jQuery(document).ready(function($){
             form.appendChild(input);
             document.body.appendChild(form);
             form.submit();
-        }
-        write_service_body_with_childern = function(options, sb, parents, my_parent, level) {
-            let prefix = '';
-            for (i=0; i<level; i++) prefix += '-';
-            const sbVal = [sb.name,sb.id,sb.parent_id, my_parent].join(',');
-            options.push('<option value="'+sbVal+'">'+prefix+sb.name+'</option>');
-            found = parents.find((p) => p.id == sb.id);
-            if (typeof found !== 'undefined')
-                found.children.forEach((child) =>
-                    options = write_service_body_with_childern(options, child, parents, sb.name, level+1));
-            return options;
-        }
-        fill_service_bodies = function(service_bodies) {
-            service_bodies = service_bodies.sort((a,b) => a.name.localeCompare(b.name));
-            const roots = service_bodies.filter((sb) => sb.parent_id=='0');
-            const parents = service_bodies.reduce((carry,item) => {
-                const found = carry.find((p) => p.id == item.parent_id);
-                if (found) {
-                    found.children.push(item);
-                } else {
-                    carry.push({id: item.parent_id, children:[item]})
-                }
-                return carry;
-            }, []);
-            let options = [];
-            roots.forEach((sb) => {
-                options = write_service_body_with_childern(options, sb, parents, 'ROOT', 0);
-            });
-            $('#wizard_service_bodies').html(options.join(''));
-        }
-        fill_formats = function(formats) {
-            const options = formats.reduce((carry,item) => {
-                carry.push('<option value="'+item.id+'">Only '+item.name_string+'</option>');
-                return carry;
-            }, ['<option value="" selected>All Meetings</option>']);
-            $('#wizard_format_filter').html(options.join(''));
         }
         var hasVirtualMeetings = false;
         layout_options = function(meetings) {
@@ -168,15 +119,20 @@ jQuery(document).ready(function($){
                 $('#wizard-virtual-meeting-section').hide();
             }
         }
-        handle_error = function(error) {
+        wizard_handle_error = function(error) {
             console.log(error);
             $('#bread-wizard').smartWizard("goToStep", 0);
         }
         BreadWizard.prototype.getContent = function(idx, stepDirection, stepPosition, selStep, callback) {
+            const context = {
+                root_server: 'wizard_root_server',
+                service_bodies: 'wizard_service_bodies',
+                service_bodies_selected: []
+            }
             switch(idx) {
                 case 1:
-                    ask_bmlt('switcher=GetServiceBodies', fill_service_bodies, handle_error);
-                    ask_bmlt('switcher=GetFormats', fill_formats, handle_error);
+                    ask_bmlt(context, 'switcher=GetServiceBodies', fill_service_bodies, wizard_handle_error);
+                    ask_bmlt(context, 'switcher=GetFormats', fill_formats, wizard_handle_error);
                     break;
                 case 2:
                     const services = $('#wizard_service_bodies').val().reduce((carry,item) => {
@@ -185,12 +141,12 @@ jQuery(document).ready(function($){
                     }, '&recursive=1');
                     const formats = (Number($('#wizard_format_filter').val()) > 0) ? '&formats='+$('#wizard_format_filter').val() : '';
 
-                    ask_bmlt('switcher=GetSearchResults'+services+formats, layout_options, handle_error);
+                    ask_bmlt(context, 'switcher=GetSearchResults'+services+formats, layout_options, wizard_handle_error);
                     break;
                 case 3:
                     lang_options();
                 case 4:
-                    if ($("wizard_layout").val()=='') handle_error('Layout not defined');
+                    if ($("wizard_layout").val()=='') wizard_handle_error('Layout not defined');
                     $('#wizard-before-create').show();
                     $('#wizard-after-create').hide();
                 default:

@@ -163,7 +163,7 @@ class Bread_Public
             echo '<p><strong>bread Error: BMLT Server missing.<br/><br/>Please go to Settings -> bread and verify BMLT Server</strong></p>';
             exit;
         }
-        if ($this->options['service_body_1'] == 'Not Used' && true === ($this->options['custom_query'] == '')) {
+        if (count($this->options['service_bodies']) == 0 && true === ($this->options['custom_query'] == '')) {
             echo '<p><strong>bread Error: Service Body 1 missing from configuration.<br/><br/>Please go to Settings -> bread and verify Service Body</strong><br/><br/>Contact the bread administrator and report this problem!</p>';
             exit;
         }
@@ -301,7 +301,7 @@ class Bread_Public
                 $transient_key = $this->bread->get_TransientKey($this->bread->getRequestedSetting());
                 set_transient($transient_key, $content, intval($this->options['cache_time']) * HOUR_IN_SECONDS);
             }
-            $FilePath = apply_filters("Bread_Download_Name", $this->get_FilePath(), $this->options['service_body_1'], $this->bread->getSettingName($this->bread->getRequestedSetting()));
+            $FilePath = apply_filters("Bread_Download_Name", $this->get_FilePath(), $this->options['service_bodies'][0], $this->bread->getSettingName($this->bread->getRequestedSetting()));
             $this->mpdf->Output($FilePath, 'I');
         }
         foreach ($import_streams as $FilePath => $stream) {

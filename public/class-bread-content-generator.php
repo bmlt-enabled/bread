@@ -122,7 +122,7 @@ class Bread_ContentGenerator
             '<p>[page_break]</p>'           =>  '<pagebreak />',
             '[page_break]'                  =>  '<pagebreak />',
             '<!--nextpage-->'               =>  '<pagebreak />',
-            "[area]"                        =>  strtoupper($this->options['service_body_1']),
+            "[area]"                        =>  strtoupper($this->options['service_bodies'][0]),
             '<div>[new_column]</div>'       =>  '<columnbreak />',
             '<p>[new_column]</p>'           =>  '<columnbreak />',
             '[new_column]'                  =>  '<columnbreak />',
@@ -133,12 +133,12 @@ class Bread_ContentGenerator
             "[month]"                       => strtoupper(gmdate("F")),
             "[day]"                         => strtoupper(gmdate("j")),
             "[year]"                        => strtoupper(gmdate("Y")),
-            "[service_body]"                => strtoupper($this->options['service_body_1']),
-            "[service_body_1]"              => strtoupper($this->options['service_body_1']),
-            "[service_body_2]"              => strtoupper($this->options['service_body_2']),
-            "[service_body_3]"              => strtoupper($this->options['service_body_3']),
-            "[service_body_4]"              => strtoupper($this->options['service_body_4']),
-            "[service_body_5]"              => strtoupper($this->options['service_body_5']),
+            "[service_body]"                => strtoupper($this->options['service_bodies'][0]),
+            "[service_body_1]"              => strtoupper($this->options['service_bodies'][0]),
+            "[service_body_2]"              => (count($this->options['service_bodies']) > 1) ? strtoupper($this->options['service_bodies'][1]) : 'Not Used',
+            "[service_body_3]"              => (count($this->options['service_bodies']) > 2) ? strtoupper($this->options['service_bodies'][2]) : 'Not Used',
+            "[service_body_4]"              => (count($this->options['service_bodies']) > 3) ? strtoupper($this->options['service_bodies'][3]) : 'Not Used',
+            "[service_body_5]"              => (count($this->options['service_bodies']) > 4) ? strtoupper($this->options['service_bodies'][4]) : 'Not Used',
 
         );
         $this->shortcodes = apply_filters("Bread_Section_Shortcodes", $this->shortcodes, $this->bread->bmlt()->get_areas(), $formatsManager->getFormatsUsed());
