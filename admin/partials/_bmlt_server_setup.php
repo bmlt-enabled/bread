@@ -86,11 +86,12 @@ function Bread_bmlt_server_setup_page_render(Bread_AdminDisplay $breadAdmin)
                 </div>
                 <h3 class="hndle"><?php esc_html_e('Include Extra Meetings', 'bread') ?><span class="my-tooltip" data-tooltip-content="#extrameetings-tooltip-content"><span class="tooltipster-icon">(?)</span></span></h3>
                 <div class="inside">
-                    <?php if ($breadAdmin->isConnected() && $bread->getOption('extra_meetings_enabled') == 1) {?>
+                        <div id="fetching_meetings" style="margin:20px;" style="display:none;">
+                                Fetching meetings from server...
+                        </div>
                         <select class="bread-select" style="width: 400px;" data-placeholder="<?php esc_html_e('Extra Meetings', 'bread') ?>" id="extra_meetings" name="extra_meetings[]" multiple="multiple">
                         </select>
-                        <p><?php esc_html_e('Hint: Type a group name, weekday or area to narrow down your choices.', 'bread') ?></p>
-                    <?php }?>
+                        <p id="extra_meetings_hint"><?php esc_html_e('Hint: Type a group name, weekday or area to narrow down your choices.', 'bread') ?></p>
                     <div>
                         <input type="checkbox" id="extra_meetings_enabled" name="extra_meetings_enabled" value="1" <?php echo (!$bread->emptyOption('extra_meetings_enabled') && $bread->getOption('extra_meetings_enabled') == 1 ? 'checked' : '') ?> /><?php esc_html_e('Extra Meetings Enabled', 'bread') ?>
                     </div>
