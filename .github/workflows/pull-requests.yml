@@ -6,7 +6,7 @@ on:
 
 jobs:
   lint:
-    runs-on: ubuntu24/20260518.149
+    runs-on: ubuntu-22.04
     env:
       PLUGIN: bread
       BUILD_DIR: build
@@ -30,11 +30,10 @@ jobs:
           echo "ZIP_FILENAME=${ZIP_FILENAME}" >> $GITHUB_ENV
           PROD=1 make build
           unzip "${BUILD_DIR}/${ZIP_FILENAME}" -d "./bread"
-
-      - name: Run plugin check
-        uses: wordpress/plugin-check-action@v1
-        with:
-          build-dir: "./bread"
-          exclude-directories: 'vendor'
-          categories: 'plugin_repo'
-          ignore-warnings: true
+# Removed until https://github.com/WordPress/plugin-check-action/issues/579 is fixed
+#      - name: Run plugin check
+#        uses: wordpress/plugin-check-action@v1
+#       with:
+#         exclude-directories: 'vendor'
+#          categories: 'plugin_repo'
+#          ignore-warnings: true
