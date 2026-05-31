@@ -292,12 +292,12 @@
 		width: "60%",
 		placeholder: "Select Extra Meetings",
 	});
-	handle_error = function (context, error) {
+	handle_error = function (error) {
 		console.log(error);
 	};
-	ask_bmlt = function (context, query, success, fail) {
+	ask_bmlt = function (query, success, fail) {
 		const url =
-			$("#" + context.root_server).val() +
+			$("#root_server").val() +
 			"/client_interface/jsonp/?" +
 			query;
 		fetchJsonp(url)
@@ -308,71 +308,62 @@
 				return Promise.reject(response); // 2. reject instead of throw
 			})
 			.then((json) => {
-				success(context, json);
+				success(json);
 				return json;
 			})
 			.catch((response) => {
-				fail(context, response);
+				fail(response);
 				return false;
 			});
-	};
-	const admin_context = {
-		root_server: "root_server",
-		service_bodies: "service_bodies",
-		service_bodies_selected: bread_admin.service_bodies_selected,
 	};
 	test_root_server = function () {
 		if (!$("#root_server").val()) {
 			$("#connected_message").hide();
 			$("#disconnected_message").hide();
-			fill_service_bodies(admin_context, []);
-			fill_extra_meetings(admin_context, []);
+			fill_service_bodies([]);
+			fill_extra_meetings([]);
 			return;
 		}
 		ask_bmlt(
-			admin_context,
 			"switcher=GetServerInfo",
-			(context, info) => {
+			(info) => {
 				$("#server_version").html(info[0].version);
 				$("#connected_message").show();
 				$("#disconnected_message").hide();
 				ask_bmlt(
-					context,
 					"switcher=GetServiceBodies",
 					fill_service_bodies,
 					handle_error,
 				);
-				query_extra_meetings(context);
+				query_extra_meetings();
 			},
-			(context, error) => {
+			(error) => {
 				console.log(error);
 				$("#connected_message").hide();
 				$("#disconnected_message").show();
-				fill_service_bodies(context, []);
-				fill_extra_meetings(context, []);
+				fill_service_bodies([]);
+				fill_extra_meetings([]);
 			},
 		);
 	};
-	query_extra_meetings = function (context) {
+	query_extra_meetings = function () {
 		if ($("#extra_meetings_enabled").is(":checked")) {
 			$("#extra_meetings_select").hide();
 			$("#fetching_meetings").show();
 			ask_bmlt(
-				context,
 				"switcher=GetSearchResults",
 				fill_extra_meetings,
 				handle_error,
 			);
 		} else {
-			fill_extra_meetings(context, []);
+			fill_extra_meetings([]);
 		}
 	};
 	test_root_server();
 	$("#extra_meetings_enabled").on("change", function () {
-		query_extra_meetings(admin_context);
+		query_extra_meetings();
 	});
 	write_service_body_with_childern = function (
-		context,
 		options,
 		sb,
 		parents,
@@ -386,7 +377,7 @@
 			'<option value="' +
 			sbVal +
 			'" ' +
-			(context.service_bodies_selected.includes(sb.id)
+			(bread_admin.service_bodies_selected.includes(sb.id)
 				? "selected"
 				: "") +
 			">" +
@@ -401,7 +392,6 @@
 			found.children.forEach(
 				(child) =>
 					(options = write_service_body_with_childern(
-						context,
 						options,
 						child,
 						parents,
@@ -411,7 +401,7 @@
 			);
 		return options;
 	};
-	fill_service_bodies = function (context, service_bodies) {
+	fill_service_bodies = function (service_bodies) {
 		service_bodies = service_bodies.sort((a, b) =>
 			a.name.localeCompare(b.name),
 		);
@@ -428,7 +418,6 @@
 		let options = [];
 		roots.forEach((sb) => {
 			options = write_service_body_with_childern(
-				context,
 				options,
 				sb,
 				parents,
@@ -436,9 +425,9 @@
 				0,
 			);
 		});
-		$("#" + context.service_bodies).html(options.join(""));
+		$("#service_bodies").html(options.join(""));
 
-		query_used_formats(context);
+		query_used_formats();
 	};
 	root_server_keypress = function (event) {
 		if (event.code == "Enter") {
@@ -447,7 +436,7 @@
 		}
 		return true;
 	};
-	fill_extra_meetings = function (context, extra_meetings_array) {
+	fill_extra_meetings = function (extra_meetings_array) {
 		$("#fetching_meetings").hide();
 		if ($("#extra_meetings_enabled").is(":checked")) {
 			$("#extra_meetings").next(".select2-container").show();
@@ -478,7 +467,7 @@
 		);
 		$("#extra_meetings").html(options.join(""));
 	};
-	fill_formats = function (context, formats) {
+	fill_formats = function (formats) {
 		const select = (key) =>
 			bread_admin.used_format == key ? "selected" : "";
 		const options = formats.formats.reduce(
@@ -497,9 +486,9 @@
 			['<option value="" ' + select("") + '">All Meetings</option>'],
 		);
 		$("#used_format_1").html(options.join(""));
-		fill_additional_list_formats(context, formats);
+		fill_additional_list_formats(formats);
 	};
-	fill_additional_list_formats = function (context, formats) {
+	fill_additional_list_formats = function (formats) {
 		const select = (key) =>
 			bread_admin.additional_list_format_key == key ? "selected" : "";
 		const options = formats.formats.reduce(
@@ -527,12 +516,12 @@
 		);
 		$("#additional_list_format_key").html(options.join(""));
 	};
-	query_used_formats = function (context) {
+	query_used_formats = function () {
 		const serviceBodies = $("#service_bodies")
 			.val()
 			.map((s) => s.split(",")[1]);
 		if (serviceBodies.length == 0) {
-			fill_formats(context, []);
+			fill_formats({formats: []});
 			return;
 		}
 		const query = serviceBodies.reduce(
@@ -542,7 +531,6 @@
 			$("#recurse_service_bodies").is(":checked") ? "&recursive=1" : "",
 		);
 		ask_bmlt(
-			context,
 			"switcher=GetSearchResults&get_formats_only" + query,
 			fill_formats,
 			handle_error,
