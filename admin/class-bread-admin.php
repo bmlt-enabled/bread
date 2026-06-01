@@ -78,7 +78,6 @@ class Bread_Admin
         wp_enqueue_style("select2", plugin_dir_url(__FILE__) . "css/select2.min.css", false, BREAD_VERSION, 'all');
         wp_enqueue_style("smartWizard-dots", plugin_dir_url(__FILE__) . "css/smart_wizard_dots.css", false, BREAD_VERSION, 'all');
     }
-
     /**
      * Register the JavaScript for the admin area.
      *

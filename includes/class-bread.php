@@ -682,6 +682,7 @@ class Bread
         $this->fillUnsetStringOption('used_format_1', '');
         $this->fillUnsetOption('base_font', 'dejavusanscondensed');
         $this->fillUnsetOption('colorspace', 0);
+        $this->fillUnsetArrayOption('service_bodies', []);
         $this->fillUnsetOption('recurse_service_bodies', 1);
         $this->fillUnsetOption('extra_meetings_enabled', 0);
         $this->fillUnsetOption('include_protection', 0);

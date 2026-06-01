@@ -44,17 +44,17 @@ jQuery(document).ready(function($){
             $(".saving").hide();
             $('#wizard-before-create').hide();
             $('#wizard-after-create').show();
-            href = window.location.href.substring(0, window.location.href.indexOf('/wp-admin'));
-            setting = response.result.setting;
-            href = href+"?current-meeting-list="+setting;
-            const tag = '<div class="step-description"><pre>'+href+'</pre>';
+            BreadWizard.href = window.location.href.substring(0, window.location.href.indexOf('/wp-admin'));
+            BreadWizard.setting = response.result.setting;
+            BreadWizard.href = href+"?current-meeting-list="+BreadWizard.setting;
+            const tag = '<div class="step-description"><pre>'+BreadWizard.href+'</pre>';
             $('#wizard-show-link').html(tag);
         }
         BreadWizard.generate_meeting_list = function() {
-            window.open(href, '_blank').focus();
+            window.open(BreadWizard.href, '_blank').focus();
         }
         BreadWizard.redo_layout = function() {
-            $('#wizard_setting_id').val(setting);
+            $('#wizard_setting_id').val(BreadWizard.setting);
             $('#bread-wizard').smartWizard("goToStep", 2);
         }
         BreadWizard.test_root_server = function() {
@@ -83,7 +83,7 @@ jQuery(document).ready(function($){
             var input = document.createElement("input");
             input.type = "hidden";
             input.name = "current-meeting-list";
-            input.value = setting;
+            input.value = BreadWizard.setting;
             form.appendChild(input);
             document.body.appendChild(form);
             form.submit();
@@ -96,7 +96,7 @@ jQuery(document).ready(function($){
             found = parents.find((p) => p.id == sb.id);
             if (typeof found !== 'undefined')
                 found.children.forEach((child) =>
-                    options = write_service_body_with_childern(options, child, parents, sb.name, level+1));
+                    options = BreadWizard.write_service_body_with_childern(options, child, parents, sb.name, level+1));
             return options;
         }
         BreadWizard.fill_service_bodies = function(service_bodies) {
@@ -127,7 +127,7 @@ jQuery(document).ready(function($){
         BreadWizard.hasVirtualMeetings = false;
         BreadWizard.layout_options = function(meetings) {
             const meeting_count = meetings.length;
-            hasVirtualMeetings = meetings.some((m) => m.formats.split(',').some(format => ['VM','HY'].includes(format)));
+            BreadWizard.hasVirtualMeetings = meetings.some((m) => m.formats.split(',').some(format => ['VM','HY'].includes(format)));
             $('#wizard_meeting_count').html(meeting_count);
             const layouts = breadLayouts.find((layouts) => meeting_count <= Number(layouts.maxSize));
             const options = breadLayouts.reduce((carry,group) => {
