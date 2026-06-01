@@ -133,12 +133,12 @@ class Bread_ContentGenerator
             "[month]"                       => strtoupper(gmdate("F")),
             "[day]"                         => strtoupper(gmdate("j")),
             "[year]"                        => strtoupper(gmdate("Y")),
-            "[service_body]"                => strtoupper($this->options['service_bodies'][0]),
-            "[service_body_1]"              => strtoupper($this->options['service_bodies'][0]),
-            "[service_body_2]"              => (count($this->options['service_bodies']) > 1) ? strtoupper($this->options['service_bodies'][1]) : 'Not Used',
-            "[service_body_3]"              => (count($this->options['service_bodies']) > 2) ? strtoupper($this->options['service_bodies'][2]) : 'Not Used',
-            "[service_body_4]"              => (count($this->options['service_bodies']) > 3) ? strtoupper($this->options['service_bodies'][3]) : 'Not Used',
-            "[service_body_5]"              => (count($this->options['service_bodies']) > 4) ? strtoupper($this->options['service_bodies'][4]) : 'Not Used',
+            "[service_body]"                => explode(',', strtoupper($this->options['service_bodies'][0]))[0],
+            "[service_body_1]"              => explode(',', strtoupper($this->options['service_bodies'][0]))[0],
+            "[service_body_2]"              => (count($this->options['service_bodies']) > 1) ? explode(',', strtoupper($this->options['service_bodies'][1]))[0] : 'Not Used',
+            "[service_body_3]"              => (count($this->options['service_bodies']) > 2) ? explode(',', strtoupper($this->options['service_bodies'][2]))[0] : 'Not Used',
+            "[service_body_4]"              => (count($this->options['service_bodies']) > 3) ? explode(',', strtoupper($this->options['service_bodies'][3]))[0] : 'Not Used',
+            "[service_body_5]"              => (count($this->options['service_bodies']) > 4) ? explode(',', strtoupper($this->options['service_bodies'][4]))[0] : 'Not Used',
 
         );
         $this->shortcodes = apply_filters("Bread_Section_Shortcodes", $this->shortcodes, $this->bread->bmlt()->get_areas(), $formatsManager->getFormatsUsed());

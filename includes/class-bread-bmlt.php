@@ -90,10 +90,7 @@ class Bread_Bmlt
     {
         $sort_keys = 'weekday_tinyint,start_time,meeting_name';
         $get_used_formats = '&get_used_formats';
-        $select_language = '';
-        if ($this->bread->getOption('weekday_language') != $this->get_bmlt_server_lang()) {
-            $select_language = '&lang_enum=' . substr($this->bread->getOption('weekday_language'), 0, 2);
-        }
+        $select_language = '&lang_enum=' . substr($this->bread->getOption('weekday_language'), 0, 2);
         $services = $this->generateDefaultQuery();
         if (isset($_GET['custom_query'])) {
             $services = $_GET['custom_query'];

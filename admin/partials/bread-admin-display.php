@@ -32,26 +32,6 @@ class Bread_AdminDisplay
     {
         $this->admin = $admin;
         $this->bread = $admin->get_bread_instance();
-        $this->refresh_status();
-    }
-    private function refresh_status()
-    {
-        $serverInfo = $this->bread->bmlt()->testRootServer();
-        $this->connected = is_array($serverInfo) && array_key_exists("version", $serverInfo[0]) ? $serverInfo[0]["version"] : '';
-        if ($this->connected) {
-            $this->unique_areas = $this->bread->bmlt()->get_areas();
-            asort($this->unique_areas);
-            if ($serverInfo[0]["aggregator_mode_enabled"] ?? false) {
-                $this->server_version = "<span style='color: #00AD00;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-admin-site'></div>".__('Using Tomato Server', 'bread')."</span>";
-            } elseif ($this->connected) {
-                /* translators: string is the version number of the BMLT Server */
-                $this->server_version = "<span style='color: #0A8ADD;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-smiley'></div>".sprintf(__('Your BMLT Server is running %s', 'bread'), esc_html($this->connected)). "</span>";
-            }
-        }
-    }
-    public function isConnected()
-    {
-        return $this->connected;
     }
     public function getBreadInstance()
     {
@@ -122,7 +102,6 @@ class Bread_AdminDisplay
         <?php wp_nonce_field('closedpostboxes', 'closedpostboxesnonce', false); ?>
         <?php wp_nonce_field('meta-box-order', 'meta-box-order-nonce', false); ?>
         <?php wp_nonce_field('bmltmeetinglistupdate-options'); ?>
-        <?php $this->refresh_status(); ?>
                         <div id="tabs-first" class="tab-content">
         <?php Bread_bmlt_server_setup_page_render($this); ?>
                         </div>

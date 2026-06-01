@@ -135,7 +135,7 @@ class Bread_Public
     public function doBreadButton($atts)
     {
         $label = $atts['label'] ?? 'Generate PDF';
-        $id = $atts['current-meeting-list'] ?? "1";
+        $id = $atts['current_meeting_list'] ?? "1";
         return "<form method='POST' target='_blank' id='bread_button_form'>".
                     "<input type='hidden' name='nonce' value='".wp_create_nonce('bread-button-nonce')."'/>".
                     "<input type='hidden' name='current-meeting-list' value='".$id."'/>".
@@ -152,7 +152,7 @@ class Bread_Public
             if (! wp_verify_nonce($_POST['nonce'], 'bread-button-nonce')) {
                 die;
             }
-            $preload = json_decode(stripslashes($_POST['preload']), true);
+            $preload = json_decode($_POST['preload'], true);
             $this->bread->bmlt()->preload($preload);
         }
         $this->options = $this->bread->getConfigurationForSettingId($this->bread->getRequestedSetting());
