@@ -347,6 +347,14 @@
 		);
 	};
 	query_extra_meetings = function () {
+		if ($('#root_server').val() == aggregator) {
+			$("#extra_meetings_enabled").prop('checked', false)
+			$("#extra_meetings_enabled").prop("disabled", true)
+			$("#extra_meetings_select").hide();
+			$("#fetching_meetings").hide();
+			fill_extra_meetings([]);
+			return;
+		}
 		if ($("#extra_meetings_enabled").is(":checked")) {
 			$("#extra_meetings_select").hide();
 			$("#fetching_meetings").show();
