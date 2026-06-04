@@ -409,10 +409,12 @@
 			);
 		return options;
 	};
+	var breadServiceBodies ={} ;
 	fill_service_bodies = function (service_bodies) {
 		service_bodies = service_bodies.sort((a, b) =>
 			a.name.localeCompare(b.name),
 		);
+		breadServiceBodies = service_bodies.reduce((obj, item) => { obj[item.id] = item; return obj; }, {})
 		const roots = service_bodies.filter((sb) => sb.parent_id == "0");
 		const parents = service_bodies.reduce((carry, item) => {
 			const found = carry.find((p) => p.id == item.parent_id);
@@ -444,6 +446,12 @@
 		}
 		return true;
 	};
+	extraMeetingDayAndTime = function (extra_meeting) {
+		const meetingDay = dayjs().day(extra_meeting.weekday_tinyint)
+			.hour(parseInt(extra_meeting.start_time.substring(0, 2)))
+			.minute(parseInt(extra_meeting.start_time.substring(3, 5)));
+		return meetingDay.format("ddd h:mm A");
+	}
 	fill_extra_meetings = function (extra_meetings_array) {
 		$("#fetching_meetings").hide();
 		if ($("#extra_meetings_enabled").is(":checked")) {
@@ -462,16 +470,11 @@
 					? "selected"
 					: "") +
 				">" +
-				extra_meeting.meeting_name +
-				" [" +
-				extra_meeting.weekday_tinyint +
-				"][" +
-				extra_meeting.start_time +
-				"][" +
-				extra_meeting.location_municipality +
-				"][" +
-				extra_meeting.service_body_bigint +
-				"]</option>",
+				extra_meeting.meeting_name + ' - ' +
+				extraMeetingDayAndTime(extra_meeting) + ' - ' +
+				extra_meeting.location_municipality + ' - ' +
+				breadServiceBodies[extra_meeting.service_body_bigint]?.name +
+				"</option>",
 		);
 		$("#extra_meetings").html(options.join(""));
 	};
