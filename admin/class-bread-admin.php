@@ -421,36 +421,6 @@ class Bread_Admin
     {
         $this->bread->updateOptions();
     }
-    public function getLatestRootVersion()
-    {
-        $results = $this->get("https://api.github.com/repos/bmlt-enabled/bmlt-root-server/releases/latest");
-        $httpcode = wp_remote_retrieve_response_code($results);
-        $response_message = wp_remote_retrieve_response_message($results);
-        if ($httpcode != 200 && $httpcode != 302 && $httpcode != 304 && ! empty($response_message)) {
-            return 'Problem Connecting to Server!';
-        };
-        $body = wp_remote_retrieve_body($results);
-        $result = json_decode($body, true);
-        return $result['name'];
-    }
-    function get($url, $cookies = array())
-    {
-        $args = array(
-            'timeout' => '120',
-            'cookies' => $cookies,
-        );
-        if (isset($this->options['user_agent'])
-            && $this->bread->getOption('user_agent') != 'None'
-        ) {
-            $args['headers'] = array(
-                'User-Agent' => $this->bread->getOption('user_agent')
-            );
-        }
-        if ($this->bread->getOption('sslverify') == '1') {
-            $args['sslverify'] = false;
-        }
-        return wp_remote_get($url, $args);
-    }
     /**
      * @desc Adds the options sub-panel
      */

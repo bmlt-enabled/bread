@@ -80,6 +80,9 @@ class Bread_Public
      */
     public function enqueue_styles()
     {
+        if (($current = $this->doPreloading()) > 0) {
+            wp_enqueue_style('bread-public', plugin_dir_url(__FILE__) . 'css/bread-public.css', array(), $this->version, 'all');
+        }
     }
 
     /**
@@ -93,7 +96,8 @@ class Bread_Public
             wp_enqueue_script('fetch-jsonp', plugin_dir_url(__FILE__) . 'js/fetch-jsonp.js', array(), $this->version, true);
             wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/bread-public.js', array('jquery','fetch-jsonp'), $this->version, true);
             wp_localize_script($this->plugin_name, 'ajax_object', [
-                'ajax_url' => admin_url('admin-ajax.php')
+                'ajax_url' => admin_url('admin-ajax.php'),
+                'nonce' => wp_create_nonce('bread-ajax-nonce'), // Can use the same even if there are multiple buttons on the page since WP nonces are single use but can be used multiple times within 24 hours
         ]);
         }
     }
@@ -122,6 +126,9 @@ class Bread_Public
     }
     public function generate_preload_configuration(): string
     {
+        if (!wp_verify_nonce($_GET['nonce'], 'bread-ajax-nonce')) {
+            wp_die('Security check failed');
+        }
         $id = intval($_GET['current-meeting-list'] ?? 1);
         $options = $this->bread->getConfigurationForSettingId($id);
         wp_send_json([
