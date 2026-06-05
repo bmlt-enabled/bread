@@ -92,9 +92,9 @@ class Bread_Public
         if (($current = $this->doPreloading()) > 0) {
             wp_enqueue_script('fetch-jsonp', plugin_dir_url(__FILE__) . 'js/fetch-jsonp.js', array(), $this->version, true);
             wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/bread-public.js', array('jquery','fetch-jsonp'), $this->version, true);
-            wp_localize_script($this->plugin_name, 'bread_ajax_obj', [
-                'config'  => $this->generatePreloadConfiguration($current)
-            ]);
+            wp_localize_script($this->plugin_name, 'ajax_object', [
+                'ajax_url' => admin_url('admin-ajax.php')
+        ]);
         }
     }
     /**
@@ -120,27 +120,29 @@ class Bread_Public
         }
         return -1;
     }
-    private function generatePreloadConfiguration(int $id): array
+    public function generate_preload_configuration(): string
     {
+        $id = intval($_GET['current-meeting-list'] ?? 1);
         $options = $this->bread->getConfigurationForSettingId($id);
-        return [
+        wp_send_json([
             'root_server' => $options['root_server'],
             'main_query' => $this->bread->bmlt()->generateMainQuery('jsonp'),
             'extra_meetings_query' => $this->bread->bmlt()->generateExtraMeetingQuery('jsonp'),
             'additional_list_query' => $this->bread->bmlt()->generateAdditionalListQuery('jsonp'),
             'weekday_language' => $options['weekday_language'],
             'additional_list_language' => $options['additional_list_language'],
-        ];
+        ]);
+        die();
     }
     public function doBreadButton($atts)
     {
         $label = $atts['label'] ?? 'Generate PDF';
         $id = $atts['current_meeting_list'] ?? "1";
-        return "<form method='POST' target='_blank' id='bread_button_form'>".
+        return "<form method='POST' target='_blank' class='bread_button_form'>".
                     "<input type='hidden' name='nonce' value='".wp_create_nonce('bread-button-nonce')."'/>".
                     "<input type='hidden' name='current-meeting-list' value='".$id."'/>".
                     "<input type='hidden' name='preload' id='bread_preload_item'/>".
-                    "<input type='submit' value='".$label."'/>".
+                    "<input type='submit' class='bread_button' value='".$label."'/>".
                 "</form>";
     }
     public function bmlt_meeting_list()
