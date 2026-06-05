@@ -98,7 +98,7 @@ class Bread_Public
             wp_localize_script($this->plugin_name, 'ajax_object', [
                 'ajax_url' => admin_url('admin-ajax.php'),
                 'nonce' => wp_create_nonce('bread-ajax-nonce'), // Can use the same even if there are multiple buttons on the page since WP nonces are single use but can be used multiple times within 24 hours
-        ]);
+            ]);
         }
     }
     /**
