@@ -131,6 +131,7 @@ class Bread_Public
         }
         $id = intval($_GET['current-meeting-list'] ?? 1);
         $options = $this->bread->getConfigurationForSettingId($id);
+        ob_clean();
         wp_send_json([
             'root_server' => $options['root_server'],
             'main_query' => $this->bread->bmlt()->generateMainQuery('jsonp'),
