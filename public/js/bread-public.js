@@ -1,20 +1,28 @@
 jQuery(document).ready(function($) {
     $('.bread_button_form').submit(async function(event) {
         event.preventDefault(); // Block default submission
+        const $working = $("<div>", {"class": "working"});
         const doFetchP = async (url) => {
             try {
                 const x = await fetchJsonp(url);
                 return x.json();
-            } catch (e) {console.log(e)}
+            } catch (e) {
+                $working.remove();
+                alert(e);
+                console.log(e)
+            }
         }
         const doFetch = async (url) => {
             try {
                 const x = await fetch(url);
                 const json = await x.json();
                 return json;
-            } catch (e) {console.log(e)}
+            } catch (e) {
+                $working.remove();
+                alert(e);
+                console.log(e)
+            }
         }
-        const $working = $("<div>", {"class": "working"});
         $("body").append($working);
         const form = $(event.target);
         const currentMeetingList = form.children('input[name="current-meeting-list"]').val();

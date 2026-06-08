@@ -524,6 +524,7 @@ class Bread_Public
                 'restrictColorSpace' => $this->options['colorspace'],
             ];
             $mpdfOptions['format'] =  $this->options['page_size'] . "-" . $this->options['page_orientation'];
+            $mpdfOptions['default_font'] =  $this->options['base_font'] == "freesans" ? "dejavusanscondensed" : $this->options['base_font'];
             $mpdfOptions = apply_filters("Bread_Mpdf_Init_Options", $mpdfOptions, $this->options);
             $mpdftmp = new mPDF($mpdfOptions);
             $this->mpdf->shrink_tables_to_fit = 1;
