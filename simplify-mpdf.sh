@@ -1,1 +1,1 @@
-find vendor/mpdf/mpdf/ttfonts -type f ! -name 'DejaVu*.ttf' -delete
+find vendor/mpdf/mpdf/ttfonts -type f ! -name 'DejaVuSansC*.ttf' -delete
