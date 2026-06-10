@@ -56,7 +56,7 @@ class Bread
     private string $optionsName;
     private $allSettings = array();
     private $maxSetting = 1;
-    public$fonts = [];
+    public $fonts = [];
     /**
      * The setting we are editing, generating or otherwise working with.  Generally set with query string "?current-meeting-list".
      *

@@ -7,6 +7,7 @@ use Mpdf\Config\ConfigVariables;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Monolog\Level;
+
 define('MPDF_MODE', 's');  // Try to keep the file small by subsetting fonts and only including the characters we need.  This is especially important for languages with large character sets like Chinese, Japanese, and Korean.  If you have a lot of different characters in your meeting list, you may want to switch to 'utf-8' or 'c' mode which includes more characters but results in larger file sizes.
 /**
  * Main class for generating the PDF meeting list.
@@ -392,15 +393,15 @@ class Bread_Public
                 'restrictColorSpace' => $this->options['colorspace'],
                 'fontDir' => $defaultConfig['fontDir'],  // Set these, so that life is easier to add custom fonts in filters.
                 'fontData' => [
-				    "dejavusanscondensed" => [
-					    'R' => "DejaVuSansCondensed.ttf",
-					    'B' => "DejaVuSansCondensed-Bold.ttf",
-					    'I' => "DejaVuSansCondensed-Oblique.ttf",
-					    'BI' => "DejaVuSansCondensed-BoldOblique.ttf",
-					    'useOTL' => 0xFF,
-					    'useKashida' => 75,
-				    ], // Set these, so that life is easier to add custom fonts in filters.
-            ],
+                    "dejavusanscondensed" => [
+                        'R' => "DejaVuSansCondensed.ttf",
+                        'B' => "DejaVuSansCondensed-Bold.ttf",
+                        'I' => "DejaVuSansCondensed-Oblique.ttf",
+                        'BI' => "DejaVuSansCondensed-BoldOblique.ttf",
+                        'useOTL' => 0xFF,
+                        'useKashida' => 75,
+                    ], // Set these, so that life is easier to add custom fonts in filters.
+                ],
         ];
         if ($default_font == 'arial' || $default_font == 'times' || $default_font == 'courier') {
             $mpdf_init_options['useSubstitutions'] = true;
@@ -509,7 +510,7 @@ class Bread_Public
         } else if ($this->options['page_fold'] == 'full' && $this->options['booklet_pages']) {
             $FilePath = $this->bread->temp_dir() . DIRECTORY_SEPARATOR . $this->get_FilePath('_full');
             $this->mpdf->Output($FilePath, 'F');
-        $defaultConfig = (new ConfigVariables())->getDefaults();
+            $defaultConfig = (new ConfigVariables())->getDefaults();
             $mpdfOptions = [
                 'mode' => MPDF_MODE,
                 'tempDir' => $this->bread->temp_dir(),
@@ -525,14 +526,14 @@ class Bread_Public
                 'default_font' => $this->options['base_font'],
                'fontDir' => $defaultConfig['fontDir'],  // Set these, so that life is easier to add custom fonts in filters.
                 'fontData' => [
-				    "dejavusanscondensed" => [
-					    'R' => "DejaVuSansCondensed.ttf",
-					    'B' => "DejaVuSansCondensed-Bold.ttf",
-					    'I' => "DejaVuSansCondensed-Oblique.ttf",
-					    'BI' => "DejaVuSansCondensed-BoldOblique.ttf",
-					    'useOTL' => 0xFF,
-					    'useKashida' => 75,
-				    ],
+                    "dejavusanscondensed" => [
+                        'R' => "DejaVuSansCondensed.ttf",
+                        'B' => "DejaVuSansCondensed-Bold.ttf",
+                        'I' => "DejaVuSansCondensed-Oblique.ttf",
+                        'BI' => "DejaVuSansCondensed-BoldOblique.ttf",
+                        'useOTL' => 0xFF,
+                        'useKashida' => 75,
+                    ],
                 ],
             ];
             $mpdfOptions = apply_filters("Bread_Mpdf_Init_Options", $mpdfOptions, $this->options);
