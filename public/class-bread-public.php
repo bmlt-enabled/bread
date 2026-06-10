@@ -208,7 +208,7 @@ class Bread_Public
         include_once plugin_dir_path(__FILE__) . '../vendor/autoload.php';
         require_once __DIR__ . '/class-bread-content-generator.php';
         require_once __DIR__ . '/class-bread-format-manager.php';
-        $default_font = $this->get_default_font();
+        $default_font = $this->options['base_font'];
         $mpdf_init_options = $this->construct_init_options($default_font);
         if (isset($this->options['packTabledata']) && $this->options['packTabledata']) {
             $mpdf_init_options['packTabledata'] = true;
@@ -522,7 +522,7 @@ class Bread_Public
                 'orientation' => $this->options['page_orientation'],
                 'restrictColorSpace' => $this->options['colorspace'],
                 'format' => $this->options['page_size'] . "-" . $this->options['page_orientation'],
-                'default_font' => $this->get_default_font(),
+                'default_font' => $this->options['base_font'],
                'fontDir' => $defaultConfig['fontDir'],  // Set these, so that life is easier to add custom fonts in filters.
                 'fontData' => [
 				    "dejavusanscondensed" => [
@@ -626,13 +626,6 @@ class Bread_Public
             }
             $this->mpdf = $mpdftmp;
         }
-    }
-    private function get_default_font()
-    {
-        if ($this->options['base_font'] == "freesans") {
-            return "dejavusanscondensed";
-        }
-        return $this->options['base_font'];
     }
     private function get_booklet_pages($np, $backcover = true)
     {

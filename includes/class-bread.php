@@ -389,10 +389,11 @@ class Bread
 
         $this->fonts = [
             'dejavusanscondensed' => __('DejaVu Sans Condensed', 'bread'),
-            'ccourier' => __('Courier', 'bread'),
-            'ctimes' => __('Times', 'bread'),
-            'chelvetica' => __('Helvetica', 'bread'),
-            'arial' => __('Arial', 'bread'),
+            'times' => __('New Times Roman (DejaVu Serif)', 'bread'),
+            'courier' => __('Courier (DejaVu Sans Mono)', 'bread'),
+            'ccourier' => __('PDF Core Font - Courier', 'bread'),
+            'ctimes' => __('PDF Core Font - New Times Roman', 'bread'),
+            'chelvetica' => __('PDF Core Font - Helvetica', 'bread'),
         ];
     }
     function load_translations()
@@ -823,6 +824,10 @@ class Bread
             unset($this->options['service_body_3']);
             unset($this->options['service_body_4']);
             unset($this->options['service_body_5']);
+
+            if ($this->options['base_font'] == 'arial') {
+                $this->options['base_font'] = 'dejabusanscondensed';
+            }
         }
         $this->options['bread_version'] = BREAD_VERSION;
     }

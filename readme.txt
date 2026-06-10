@@ -57,6 +57,8 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 
 = 2.10.0 =
 * [bread_button] shortcode added that can generate PDFs even when the hosting provider has blocked access to the BMLT server.
+* PDF Core Fonts (Helvertica, New Times Roman and Courier) may be selected
++ Extension points added to allow for custom fonts
 
 = 2.9.15 =
 * More commas cleaned up.
