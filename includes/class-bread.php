@@ -56,6 +56,7 @@ class Bread
     private string $optionsName;
     private $allSettings = array();
     private $maxSetting = 1;
+    public$fonts = [];
     /**
      * The setting we are editing, generating or otherwise working with.  Generally set with query string "?current-meeting-list".
      *
@@ -385,6 +386,14 @@ class Bread
         $this->load_translations();
         $this->define_admin_hooks();
         $this->define_public_hooks();
+
+        $this->fonts = [
+            'dejavusanscondensed' => __('DejaVu Sans Condensed', 'bread'),
+            'ccourier' => __('Courier', 'bread'),
+            'ctimes' => __('Times', 'bread'),
+            'chelvetica' => __('Helvetica', 'bread'),
+            'arial' => __('Arial', 'bread'),
+        ];
     }
     function load_translations()
     {
@@ -501,7 +510,6 @@ class Bread
         $this->loader->add_filter('tiny_mce_before_init', $plugin_admin, 'tiny_tweaks');
         $this->loader->add_filter('mce_external_plugins', $plugin_admin, 'my_custom_plugins');
         $this->loader->add_filter('mce_buttons', $plugin_admin, 'my_register_mce_button');
-        //add_action("admin_notices", $plugin_admin, "is_root_server_missing");
         $this->loader->add_action("admin_init", $plugin_admin, "my_theme_add_editor_styles");
         $this->loader->add_action("wp_default_editor", $plugin_admin, "ml_default_editor");
         $this->loader->add_filter('tiny_mce_version', $plugin_admin, 'force_mce_refresh');

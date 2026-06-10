@@ -3,10 +3,11 @@ if (! defined('ABSPATH')) {
     exit;
 }
 use Mpdf\Mpdf;
+use Mpdf\Config\ConfigVariables;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Monolog\Level;
-
+define('MPDF_MODE', 's');  // Try to keep the file small by subsetting fonts and only including the characters we need.  This is especially important for languages with large character sets like Chinese, Japanese, and Korean.  If you have a lot of different characters in your meeting list, you may want to switch to 'utf-8' or 'c' mode which includes more characters but results in larger file sizes.
 /**
  * Main class for generating the PDF meeting list.
  *
@@ -19,7 +20,6 @@ use Monolog\Level;
  */
 class Bread_Public
 {
-
     /**
      * The ID of this plugin.
      *
@@ -199,13 +199,7 @@ class Bread_Public
                 exit;
             }
         }
-        $page_type_settings = $this->constuct_page_type_settings();
-        $default_font = $this->options['base_font'] == "freesans" ? "dejavusanscondensed" : $this->options['base_font'];
-        $mode = 's';
-        $mpdf_init_options = $this->construct_init_options($default_font, $mode, $page_type_settings);
-        if (isset($this->options['packTabledata']) && $this->options['packTabledata']) {
-            $mpdf_init_options['packTabledata'] = true;
-        }
+
         @ob_end_clean();
         // We load mPDF only when we need to and as late as possible.  This prevents
         // conflicts with other plugins that use the same PSRs in different versions
@@ -214,6 +208,11 @@ class Bread_Public
         include_once plugin_dir_path(__FILE__) . '../vendor/autoload.php';
         require_once __DIR__ . '/class-bread-content-generator.php';
         require_once __DIR__ . '/class-bread-format-manager.php';
+        $default_font = $this->get_default_font();
+        $mpdf_init_options = $this->construct_init_options($default_font);
+        if (isset($this->options['packTabledata']) && $this->options['packTabledata']) {
+            $mpdf_init_options['packTabledata'] = true;
+        }
         $this->mpdf = new mPDF($mpdf_init_options);
         if (isset($this->options['logging']) && $this->options['logging']) {
             $logger = new Logger('bread-log');
@@ -244,7 +243,7 @@ class Bread_Public
         if ($this->options['column_line'] == 1
             && ($this->options['page_fold'] == 'tri' || $this->options['page_fold'] == 'quad')
         ) {
-            $this->drawLinesSeperatingColumns($mode, $mpdf_init_options['format'], $default_font);
+            $this->drawLinesSeperatingColumns($mpdf_init_options['format'], $default_font);
         }
         $result = $this->bread->bmlt()->doMainQuery();
 
@@ -295,7 +294,7 @@ class Bread_Public
         $generator = new Bread_ContentGenerator($this->mpdf, $this->bread, $result_meetings, $formatsManager);
         $generator->generate($num_columns);
         $this->mpdf->SetDisplayMode('fullpage', 'two');
-        $this->reorder_booklet_pages($mode);
+        $this->reorder_booklet_pages();
         if ($this->options['include_protection'] == 1) {
             // 'copy','print','modify','annot-forms','fill-forms','extract','assemble','print-highres'
             $this->mpdf->SetProtection(array('copy', 'print', 'print-highres'), '', $this->options['protection_password']);
@@ -319,7 +318,7 @@ class Bread_Public
         }
         $this->bread->removeTempDir();
     }
-    private function constuct_page_type_settings()
+    private function construct_page_type_settings(): array
     {
         $page_type_settings = array();
         // TODO: The page number is always 5 from botton...this should be adjustable
@@ -377,42 +376,41 @@ class Bread_Public
         }
         return $page_type_settings;
     }
-    private function construct_init_options($default_font, $mode, $page_type_settings): array
+    private function construct_init_options(string $default_font): array
     {
+        $defaultConfig = (new ConfigVariables())->getDefaults();
+        $mpdf_init_options = [
+                'mode' => 's',
+                'tempDir' => $this->bread->temp_dir(),
+                'default_font_size' => 7,
+                'default_font' => $default_font,
+                'margin_left' => $this->options['margin_left'],
+                'margin_right' => $this->options['margin_right'],
+                'margin_top' => $this->options['margin_top'],
+                'margin_bottom' => $this->options['margin_bottom'],
+                'margin_header' => $this->options['margin_header'],
+                'restrictColorSpace' => $this->options['colorspace'],
+                'fontDir' => $defaultConfig['fontDir'],  // Set these, so that life is easier to add custom fonts in filters.
+                'fontData' => [
+				    "dejavusanscondensed" => [
+					    'R' => "DejaVuSansCondensed.ttf",
+					    'B' => "DejaVuSansCondensed-Bold.ttf",
+					    'I' => "DejaVuSansCondensed-Oblique.ttf",
+					    'BI' => "DejaVuSansCondensed-BoldOblique.ttf",
+					    'useOTL' => 0xFF,
+					    'useKashida' => 75,
+				    ], // Set these, so that life is easier to add custom fonts in filters.
+            ],
+        ];
         if ($default_font == 'arial' || $default_font == 'times' || $default_font == 'courier') {
-            $mpdf_init_options = [
-
-                'tempDir' => $this->bread->temp_dir(),
-                'mode' => $mode,
-                'default_font_size' => 7,
-                'default_font' => $default_font,
-                'useSubstitutions' => false,
-                'margin_left' => $this->options['margin_left'],
-                'margin_right' => $this->options['margin_right'],
-                'margin_top' => $this->options['margin_top'],
-                'margin_bottom' => $this->options['margin_bottom'],
-                'margin_header' => $this->options['margin_header'],
-            ];
-        } else {
-            $mpdf_init_options = [
-                'mode' => $mode,
-                'tempDir' => $this->bread->temp_dir(),
-                'default_font_size' => 7,
-                'default_font' => $default_font,
-                'margin_left' => $this->options['margin_left'],
-                'margin_right' => $this->options['margin_right'],
-                'margin_top' => $this->options['margin_top'],
-                'margin_bottom' => $this->options['margin_bottom'],
-                'margin_header' => $this->options['margin_header'],
-            ];
+            $mpdf_init_options['useSubstitutions'] = true;
         }
-        $mpdf_init_options['restrictColorSpace'] = $this->options['colorspace'];
-        $mpdf_init_options = array_merge($mpdf_init_options, $page_type_settings);
+        $mpdf_init_options = array_merge($mpdf_init_options, $this->construct_page_type_settings());
         $mpdf_init_options = apply_filters("Bread_Mpdf_Init_Options", $mpdf_init_options, $this->options);
 
         return $mpdf_init_options;
     }
-    private function drawLinesSeperatingColumns($mode, $format, $default_font)
+    private function drawLinesSeperatingColumns($format, $default_font)
     {
         $html = '<body style="background-color:#fff;">';
         if ($this->options['page_fold'] == 'tri') {
@@ -440,7 +438,7 @@ class Bread_Public
         }
         $mpdf_column = new mPDF(
             [
-                'mode' => $mode,
+                'mode' => MPDF_MODE,
                 'tempDir' => $this->bread->temp_dir(),
                 'format' => $format,
                 'default_font_size' => 7,
@@ -462,13 +460,13 @@ class Bread_Public
         $tplId = $this->mpdf->importPage($pagecount);
         $this->mpdf->SetPageTemplate($tplId);
     }
-    private function reorder_booklet_pages($mode)
+    private function reorder_booklet_pages()
     {
         if ($this->options['page_fold'] == 'half') {
             $FilePath = $this->bread->temp_dir() . DIRECTORY_SEPARATOR . $this->get_FilePath('_half');
             $this->mpdf->Output($FilePath, 'F');
             $mpdfOptions = [
-                'mode' => $mode,
+                'mode' => MPDF_MODE,
                 'tempDir' => $this->bread->temp_dir(),
                 'default_font_size' => '',
                 'margin_left' => 0,
@@ -511,8 +509,9 @@ class Bread_Public
         } else if ($this->options['page_fold'] == 'full' && $this->options['booklet_pages']) {
             $FilePath = $this->bread->temp_dir() . DIRECTORY_SEPARATOR . $this->get_FilePath('_full');
             $this->mpdf->Output($FilePath, 'F');
+        $defaultConfig = (new ConfigVariables())->getDefaults();
             $mpdfOptions = [
-                'mode' => $mode,
+                'mode' => MPDF_MODE,
                 'tempDir' => $this->bread->temp_dir(),
                 'default_font_size' => '',
                 'margin_left' => 0,
@@ -522,9 +521,20 @@ class Bread_Public
                 'margin_footer' => 6,
                 'orientation' => $this->options['page_orientation'],
                 'restrictColorSpace' => $this->options['colorspace'],
+                'format' => $this->options['page_size'] . "-" . $this->options['page_orientation'],
+                'default_font' => $this->get_default_font(),
+               'fontDir' => $defaultConfig['fontDir'],  // Set these, so that life is easier to add custom fonts in filters.
+                'fontData' => [
+				    "dejavusanscondensed" => [
+					    'R' => "DejaVuSansCondensed.ttf",
+					    'B' => "DejaVuSansCondensed-Bold.ttf",
+					    'I' => "DejaVuSansCondensed-Oblique.ttf",
+					    'BI' => "DejaVuSansCondensed-BoldOblique.ttf",
+					    'useOTL' => 0xFF,
+					    'useKashida' => 75,
+				    ],
+                ],
             ];
-            $mpdfOptions['format'] =  $this->options['page_size'] . "-" . $this->options['page_orientation'];
-            $mpdfOptions['default_font'] =  $this->options['base_font'] == "freesans" ? "dejavusanscondensed" : $this->options['base_font'];
             $mpdfOptions = apply_filters("Bread_Mpdf_Init_Options", $mpdfOptions, $this->options);
             $mpdftmp = new mPDF($mpdfOptions);
             $this->mpdf->shrink_tables_to_fit = 1;
@@ -546,7 +556,7 @@ class Bread_Public
             $FilePath = $this->bread->temp_dir() . DIRECTORY_SEPARATOR . $this->get_FilePath('_pocket');
             $this->mpdf->Output($FilePath, 'F');
             $mpdfOptions = [
-                'mode' => $mode,
+                'mode' => MPDF_MODE,
                 'tempDir' => $this->bread->temp_dir(),
                 'default_font_size' => '',
                 'margin_left' => 0,
@@ -579,7 +589,7 @@ class Bread_Public
             $FilePath = $this->bread->temp_dir() . DIRECTORY_SEPARATOR . $this->get_FilePath('_flyer');
             $this->mpdf->Output($FilePath, 'F');
             $mpdfOptions = [
-                'mode' => $mode,
+                'mode' => MPDF_MODE,
                 'tempDir' => $this->bread->temp_dir(),
                 'default_font_size' => '',
                 'margin_left' => 0,
@@ -617,7 +627,14 @@ class Bread_Public
             $this->mpdf = $mpdftmp;
         }
     }
-    function get_booklet_pages($np, $backcover = true)
+    private function get_default_font()
+    {
+        if ($this->options['base_font'] == "freesans") {
+            return "dejavusanscondensed";
+        }
+        return $this->options['base_font'];
+    }
+    private function get_booklet_pages($np, $backcover = true)
     {
         $lastpage = $np;
         $np = 4 * ceil($np / 4);
@@ -639,7 +656,7 @@ class Bread_Public
         }
         return $pp;
     }
-    function get_FilePath($pos = '')
+    private function get_FilePath($pos = '')
     {
         $site = '';
         if (is_multisite()) {
@@ -647,7 +664,7 @@ class Bread_Public
         }
         return "meetinglist_" . $site . $this->bread->getRequestedSetting() . $pos . '_' . strtolower(gmdate("njYghis")) . ".pdf";
     }
-    function columnSeparators($oh)
+    private function columnSeparators($oh)
     {
         if ($this->options['column_line'] == 1) {
             return '<body style="background:none;">

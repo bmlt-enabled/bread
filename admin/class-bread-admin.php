@@ -74,7 +74,6 @@ class Bread_Admin
         wp_enqueue_style("tooltipster", plugin_dir_url(__FILE__) . "css/tooltipster.bundle.min.css", false, BREAD_VERSION, 'all');
         wp_enqueue_style("tooltipster-noir", plugin_dir_url(__FILE__) . "css/tooltipster-sideTip-noir.min.css", false, BREAD_VERSION, 'all');
         wp_enqueue_style("admin", plugin_dir_url(__FILE__) . "css/admin.css", false, BREAD_VERSION, 'all');
-        wp_enqueue_style("bread-fonts", plugin_dir_url(__FILE__) . "css/admin-fonts.css", false, BREAD_VERSION, 'all');
         wp_enqueue_style("select2", plugin_dir_url(__FILE__) . "css/select2.min.css", false, BREAD_VERSION, 'all');
         wp_enqueue_style("smartWizard-dots", plugin_dir_url(__FILE__) . "css/smart_wizard_dots.css", false, BREAD_VERSION, 'all');
     }
@@ -204,45 +203,22 @@ class Bread_Admin
     {
         if (function_exists('get_current_screen')) {
             $screen = get_current_screen();
+            $fonts = apply_filters('bread_custom_fonts', $this->bread->fonts);
             if ($screen != null && str_ends_with($screen->id, $this->bmltEnabled_admin->getSlug())) {
                 $initArray['fontsize_formats'] = "5pt 6pt 7pt 8pt 9pt 10pt 11pt 12pt 13pt 14pt 15pt 16pt 17pt 18pt 19pt 20pt 22pt 24pt 26pt 28pt 30pt 32pt 34pt 36pt 38pt";
                 $initArray['theme_advanced_blockformats'] = 'h2,h3,h4,p';
                 $initArray['wordpress_adv_hidden'] = false;
-                $initArray['font_formats'] = 'Arial (Sans-Serif)=arial;';
-                $initArray['font_formats'] .= 'Times (Sans-Serif)=times;';
-                $initArray['font_formats'] .= 'Courier (Monospace)=courier;';
-                $initArray['font_formats'] .= 'DejaVu (Sans-Serif)=DejaVuSansCondensed;';
+                $initArray['font_formats'] = '';
+                foreach ($fonts as $font_key => $font_name) {
+                    $initArray['font_formats'] .= "$font_name=$font_key;";
+                }
                 $dir = plugin_dir_url(__FILE__);
                 $font = $this->bread->getOption('base_font');
-                if ($font == 'dejavusanscondensed') {
-                    $initArray['content_style'] = "@import url('$dir/css/fonts.css'); body { font-family: DejaVuSansCondensed; }";
-                } elseif ($font == 'times') {
-                    $initArray['content_style'] = "@import url('$dir/css/fonts.css'); body { font-family: Times; }";
-                } elseif ($font == 'courier') {
-                    $initArray['content_style'] = "@import url('$dir/css/fonts.css'); body { font-family: Courier; }";
-                } else {
-                    $initArray['content_style'] = "@import url('$dir/css/fonts.css'); body { font-family: Arial; }";
-                }
-                //$initArray['content_style'] = "body { font-family: Arial; }";
+                $initArray['content_style'] = apply_filters('bread_content_style', "@import url('$dir/css/fonts.css');");
+                $initArray['content_style'] .= "body { font-family: $font; }";
             }
         }
         return $initArray;
-    }
-    function is_root_server_missing()
-    {
-        if (!function_exists('get_current_screen')) {
-            return;
-        }
-        $screen = get_current_screen();
-        if ($screen != null && str_ends_with($screen->id, $this->bmltEnabled_admin->getSlug())) {
-            $root_server = $this->bread->getOption('root_server');
-            if ($root_server == '') {
-                echo '<div id="message" class="error"><p>Missing BMLT Server in settings for bread.</p>';
-                $url = admin_url('options-general.php?page=class-bread-admin.php');
-                echo "<p><a href='" . esc_url($url) . "'>Settings</a></p>";
-                echo '</div>';
-            }
-        }
     }
 
     function pwsix_process_rename_settings()
