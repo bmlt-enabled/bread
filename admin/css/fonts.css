@@ -22,3 +22,15 @@
     font-display: block;
     font-style: italic;
 }
+@font-face {
+   font-family: ccourier;
+   src: local('Courier');
+}
+@font-face {
+   font-family: ctimes;
+   src: local('Times New Roman');
+}
+@font-face {
+   font-family: chelvetica;
+   src: local('Helvetica');
+}
