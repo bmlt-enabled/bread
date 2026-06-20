@@ -2,11 +2,14 @@
 if (! defined('ABSPATH')) {
     exit;
 }
-function echo_font_options($base_font, $bread)
+function echo_font_options(string $base_font, Bread $bread)
 {
-    $fonts = apply_filters('bread_custom_fonts', $bread->fonts);
-    foreach ($fonts as $font_key => $font_name) {
-        echo '<option value="' . esc_attr($font_key) . '" ' . ($base_font == $font_key ? 'selected="selected"' : '') . '>' . esc_html($font_name) . '</option>';
+    $fonts = $bread->getActiveFonts();
+    $infos = $bread->getAvailableFonts();
+    foreach ($fonts as $font_key) {
+        if (!isset($infos[$font_key])) continue;
+        $font_info = $infos[$font_key];
+        echo '<option value="' . esc_attr($font_key) . '" ' . ($base_font == $font_key ? 'selected="selected"' : '') . '>' . esc_html($font_info['name']) . '</option>';
     }
 }
 function Bread_layout_setup_page_render(Bread_AdminDisplay $breadAdmin)

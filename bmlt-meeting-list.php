@@ -61,6 +61,7 @@ register_deactivation_hook(__FILE__, 'Bread_deactivate');
  */
 require plugin_dir_path(__FILE__) . 'includes/class-bread.php';
 require plugin_dir_path(__FILE__) . 'includes/class-bread-bmlt.php';
+require plugin_dir_path(__FILE__) . 'bread_loadable_fonts/class-bread-loadable-fonts.php';
 /**
  * Begins execution of the plugin.
  *

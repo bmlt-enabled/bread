@@ -23,7 +23,15 @@ if (! defined('ABSPATH')) {
  */
 class Bread
 {
-
+    /**
+     * The loader that's responsible for maintaining and registering all hooks that power
+     * the plugin.
+     *
+     * @since  2.19.0
+     * @access protected
+     * @var    BreadLoadableFonts    $fontLoader    Maintains and registers all hooks for the plugin.
+     */
+    protected $fontLoader;
     /**
      * The loader that's responsible for maintaining and registering all hooks that power
      * the plugin.
@@ -227,6 +235,47 @@ class Bread
         }
         return isset($holder['current-meeting-list']) ? intval($holder['current-meeting-list']) : 1;
     }
+    public function getIncludedFonts()
+    {
+        $fonts = [
+            'dejavusanscondensed' => ['name' => 'DejaVu Sans Condensed',
+                                      'stack' => 'Helvetica, sans-serif',
+                                      'scripts' => ['latin', 'latin-ext', 'cyrillic', 'cyrillic-ext', 'greek', 'greek-ext', 'arabic', 'vietnamese', 'hebrew'],
+                                      'description' => 'A clean and modern sans-serif font with extensive language support. It is a condensed version of the DejaVu Sans font, making it ideal for fitting more text in limited space while maintaining readability.',
+                                      'required' => true],
+            'dejavuserifcondensed' => ['name' => 'DejaVu Serif Condensed',
+                                      'stack' => 'Times New Roman, serif',
+                                      'scripts' => ['latin', 'latin-ext', 'cyrillic', 'cyrillic-ext', 'greek', 'greek-ext'],
+                                      'description' => 'A clean and modern serif font with extensive language support. It is a condensed version of the DejaVu Serif font, making it ideal for fitting more text in limited space while maintaining readability.',
+                                      'required' => true],
+            'dejavusansmono' => ['name' => 'DejaVu Sans Mono',
+                                      'stack' => 'Courier New, monospace',
+                                      'scripts' => ['latin', 'latin-ext', 'cyrillic', 'cyrillic-ext', 'greek', 'greek-ext', 'arabic', 'vietnamese'],
+                                      'description' => 'A clean and modern monospace font with extensive language support. It is ideal for displaying code or tabular data, as each character occupies the same amount of horizontal space.',
+                                      'required' => true],
+            'chelvetica'    => ['name' => 'Helvetica (PDF Core Font)',
+                                'stack' => 'dejavusanscondensed, sans-serif',
+                                'scripts' => ['latin'],
+                                'description' => 'Using PDF Core Fonts results in smaller files.',],
+            'ccourier' => ['name' => 'Courier New (PDF Core Font)',
+                            'stack' => 'Courier New, monospace',
+                            'scripts' => ['latin'],
+                            'description' => 'Using PDF Core Fonts results in smaller files.',],
+            'ctimes' => ['name' => 'Times New Roman (PDF Core Font)',
+                            'stack' => 'dejavuserifcondensed, serif',
+                            'scripts' => ['latin'],
+                            'description' => 'Using PDF Core Fonts results in smaller files.',],
+        ];
+        return $fonts;
+    }
+    public function getAvailableFonts(): array
+    {
+        return apply_filters('bread_custom_fonts', $this->getIncludedFonts());
+    }
+    public function getActiveFonts(): array
+    {
+        return apply_filters('Bread_active_fonts', array_keys($this->getIncludedFonts()));
+    }
     /**
      * Undocumented function
      *
@@ -386,15 +435,6 @@ class Bread
         $this->load_translations();
         $this->define_admin_hooks();
         $this->define_public_hooks();
-
-        $this->fonts = [
-            'dejavusanscondensed' => __('DejaVu Sans Condensed', 'bread'),
-            'times' => __('New Times Roman (DejaVu Serif)', 'bread'),
-            'courier' => __('Courier (DejaVu Sans Mono)', 'bread'),
-            'ccourier' => __('PDF Core Font - Courier', 'bread'),
-            'ctimes' => __('PDF Core Font - New Times Roman', 'bread'),
-            'chelvetica' => __('PDF Core Font - Helvetica', 'bread'),
-        ];
     }
     function load_translations()
     {
@@ -471,7 +511,12 @@ class Bread
          * side of the site.
          */
         include_once plugin_dir_path(dirname(__FILE__)) . 'public/class-bread-public.php';
-
+        /**
+         * Loading fonts uses the API created to add fonts via plugin.
+         * We need to instanciate this plugin and let the constructor do its work
+         */
+        include_once plugin_dir_path(dirname(__FILE__)) . 'bread_loadable_fonts/class-bread-loadable-fonts.php';
+        $this->fontLoader = new BreadLoadableFonts();
         $this->loader = new Bread_Loader();
     }
 

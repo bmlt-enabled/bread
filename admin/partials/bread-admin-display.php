@@ -19,6 +19,7 @@ include_once '_front_page_setup.php';
 include_once '_meetings_setup.php';
 include_once '_custom_section_setup.php';
 include_once '_backup_restore_setup.php';
+include_once '_custom_fonts_setup.php';
 class Bread_AdminDisplay
 {
 
@@ -36,6 +37,10 @@ class Bread_AdminDisplay
     public function getBreadInstance()
     {
         return $this->bread;
+    }
+    public function getAdmin()
+    {
+        return $this->admin;
     }
     public function getServerVersion()
     {
@@ -84,6 +89,7 @@ class Bread_AdminDisplay
                 <ul class="nav">
                     <li><a href="#instructions"><?php esc_html_e('Getting Started', 'bread'); ?></a></li>
                     <li><a href="#editor" id='click-customizer'><?php esc_html_e('Customizer', 'bread'); ?></a></li>
+                    <li><a href="#custom-fonts"><?php esc_html_e('Custom Fonts', 'bread'); ?></a></li>
                     <li><a href="#import-export"><?php esc_html_e('Backup/ Restore', 'bread'); ?></a></li>
                 </ul>
                 <div id="instructions">
@@ -125,6 +131,9 @@ class Bread_AdminDisplay
                             <br class="clear">
         <?php } ?>
                     </form>
+                </div>
+                <div id="custom-fonts">
+        <?php Bread_custom_fonts_setup_page_render($this); ?>
                 </div>
                 <div id="import-export">
         <?php Bread_backup_restore_setup_page_render($this); ?>

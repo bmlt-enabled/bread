@@ -73,9 +73,15 @@ class Bread_Admin
         wp_enqueue_style("spectrum", plugin_dir_url(__FILE__) . "css/spectrum.min.css", false, BREAD_VERSION, 'all');
         wp_enqueue_style("tooltipster", plugin_dir_url(__FILE__) . "css/tooltipster.bundle.min.css", false, BREAD_VERSION, 'all');
         wp_enqueue_style("tooltipster-noir", plugin_dir_url(__FILE__) . "css/tooltipster-sideTip-noir.min.css", false, BREAD_VERSION, 'all');
-        wp_enqueue_style("admin", plugin_dir_url(__FILE__) . "css/admin.css", false, BREAD_VERSION, 'all');
+        wp_enqueue_style("bread-admin", plugin_dir_url(__FILE__) . "css/admin.css", false, BREAD_VERSION, 'all');
         wp_enqueue_style("select2", plugin_dir_url(__FILE__) . "css/select2.min.css", false, BREAD_VERSION, 'all');
+        wp_add_inline_style("bread-admin", $this->generate_custom_fonts_script());
         wp_enqueue_style("smartWizard-dots", plugin_dir_url(__FILE__) . "css/smart_wizard_dots.css", false, BREAD_VERSION, 'all');
+    }
+    public function generate_custom_fonts_script(): string
+    {
+        $dir = plugin_dir_url(__FILE__);
+        return apply_filters('bread_content_style', "@import url('$dir/css/fonts.css');");
     }
     /**
      * Register the JavaScript for the admin area.
@@ -197,24 +203,27 @@ class Bread_Admin
         }
         return $plugins_array;
     }
-
     // Enable font size & font family selects in the editor
     function tiny_tweaks($initArray)
     {
         if (function_exists('get_current_screen')) {
             $screen = get_current_screen();
-            $fonts = apply_filters('bread_custom_fonts', $this->bread->fonts);
+            $fonts = $this->bread->getAvailableFonts();
+            $active_fonts = $this->bread->getActiveFonts();
             if ($screen != null && str_ends_with($screen->id, $this->bmltEnabled_admin->getSlug())) {
                 $initArray['fontsize_formats'] = "5pt 6pt 7pt 8pt 9pt 10pt 11pt 12pt 13pt 14pt 15pt 16pt 17pt 18pt 19pt 20pt 22pt 24pt 26pt 28pt 30pt 32pt 34pt 36pt 38pt";
                 $initArray['theme_advanced_blockformats'] = 'h2,h3,h4,p';
                 $initArray['wordpress_adv_hidden'] = false;
                 $initArray['font_formats'] = '';
-                foreach ($fonts as $font_key => $font_name) {
+                foreach ($fonts as $font_key => $font_info) {
+                    if (!in_array($font_key, $active_fonts)) {
+                        continue;
+                    }
+                    $font_name = $font_info['name'];
                     $initArray['font_formats'] .= "$font_name=$font_key;";
                 }
-                $dir = plugin_dir_url(__FILE__);
                 $font = $this->bread->getOption('base_font');
-                $initArray['content_style'] = apply_filters('bread_content_style', "@import url('$dir/css/fonts.css');");
+                $initArray['content_style'] = $this->generate_custom_fonts_script();
                 $initArray['content_style'] .= "body { font-family: $font; }";
             }
         }
@@ -422,6 +431,27 @@ class Bread_Admin
     function admin_options_page()
     {
         $filename = '';
+        if (!empty($_GET['fontAction'])) {
+            $action = sanitize_key($_GET['fontAction']);
+            if (!wp_verify_nonce($_GET['nonce'], 'bread_font_action')) {
+                wp_die('Request invalid due to timeout');
+            }
+            $fonts = $this->bread->getAvailableFonts();
+            $font = $_GET['font'];
+            if (!isset($fonts[$font])) {
+                wp_die('Request invalid');
+            }
+            if (!isset($fonts[$font])) {
+                wp_die('Request invalid');
+            }
+            if (!isset($fonts[$font]['actions'])) {
+                wp_die('Request invalid');
+            }
+            if (!isset($fonts[$font]['actions'][$action])) {
+                wp_die('Request invalid');
+            }
+            call_user_func($fonts[$font]['actions'][$action]['lambda'], $font);
+        }
         if (!empty($_POST['pwsix_action']) && (!isset($_POST['bmltmeetinglistsave']) || $_POST['bmltmeetinglistsave'] != 'Save Changes')) {
             switch ($_POST['pwsix_action']) {
                 case 'settings_admin':
@@ -436,6 +466,7 @@ class Bread_Admin
                 case 'import_settings':
                     $filename = $this->pwsix_process_settings_import();
                     break;
+                case 'uploadFont':
                 default:
                     break;
             }
