@@ -1,9 +1,4 @@
 <?php
-
-use PHP_CodeSniffer\Standards\Generic\Sniffs\NamingConventions\TraitNameSuffixSniff;
-
-use function PHPUnit\Framework\throwException;
-
 class BreadLoadableFonts
 {
 
@@ -13,26 +8,28 @@ class BreadLoadableFonts
                                       'scripts' => ['latin', 'latin-ext', 'cyrillic', 'cyrillic-ext', 'greek', 'greek-ext'],
                                       'description' => 'Roboto has a dual nature. It has a mechanical skeleton and the forms are largely geometric. At the same time, the font features friendly and open curves. While some grotesks distort their letterforms to force a rigid rhythm, Roboto doesn’t compromise, allowing letters to be settled into their natural width. This makes for a more natural reading rhythm more commonly found in humanist and serif types.',
                                       'remote' => [
-                                        'directory' => 'https://github.com/google/fonts/raw/refs/heads/main/ofl/roboto/',
-                                        'R' => 'Roboto[wdth,wght].ttf',
-                                        'I' => 'Roboto-Italic[wdth,wght].ttf',
-                                        'type' => 'variable',
+                                        'manifest' => 'https://fonts.google.com/download/list?family=Roboto',
+                                        'R' => 'Roboto_Condensed-Regular.ttf',
+                                        'B' => 'Roboto_Condensed-Bold.ttf',
+                                        'I' => 'Roboto_Condensed-Italic.ttf',
+                                        'BI' => 'Roboto_Condensed-BoldItalic.ttf',
                                       ],
                                       'configuration' => [
-                                        'useOTL' => '0xFF',
+                                        'useOTL' => 0xFF,
                                         'kashida' => 75,
                                       ]],
             'rubik' => ['name' => 'Rubik',
                                       'stack' => 'Helvetica, sans-serif',
                                       'scripts' => ['latin', 'latin-ext', 'cyrillic', 'cyrillic-ext', 'arabic'],
                                       'remote' => [
-                                        'directory' => 'https://github.com/google/fonts/raw/refs/heads/main/ofl/rubik/',
-                                        'R' => 'Rubik[wght].ttf',
-                                        'I' => 'Rubik-Italic[wght].ttf',
-                                        'type' => 'variable',
+                                        'manifest' => 'https://fonts.google.com/download/list?family=Rubik',
+                                        'R' => 'Rubik-Regular.ttf',
+                                        'B' => 'Rubik-Bold.ttf',
+                                        'I' => 'Rubik-Italic.ttf',
+                                        'BI' => 'Rubik-BoldItalic.ttf',
                                       ],
                                       'configuration' => [
-                                        'useOTL' => '0xFF',
+                                        'useOTL' => 0xFF,
                                         'kashida' => 75,
                                       ]],
         ];
@@ -42,6 +39,7 @@ class BreadLoadableFonts
                 $font['actions'] = $this->calcActions($key);
             }
             $this->addAdminHooks();
+            $this->addPublicHooks();
         }
         public function addAdminHooks()
         {
@@ -115,7 +113,27 @@ class BreadLoadableFonts
 
             return true;
         }
-        public function installFont($fontFamily)
+        private function getURLtoFileMap(string $manifest): array|false
+        {
+            $response = wp_remote_get($manifest, array('timeout' => 15, 'redirection' => 3));
+            if (is_wp_error($response)) {
+                $this->outputWarning("Could not retrieve $manifest");
+                return false;
+            }
+            $code = wp_remote_retrieve_response_code($response);
+            $body = wp_remote_retrieve_body($response);
+            if ($code === 200 && is_string($body)) {
+                $contents = json_decode(substr($body,4), true);
+                $ret = [];
+                foreach ($contents['manifest']['fileRefs'] as $item) {
+                    $split = explode('/', $item['filename']);
+                    $ret[end($split)] = $item['url'];
+                }
+                return $ret;
+            }
+            return false;
+        }
+        public function installFont(string $fontFamily)
         {
             if (!current_user_can('manage_options')) {
                 $this->outputWarning("You must be an administrator to install fonts");
@@ -127,7 +145,22 @@ class BreadLoadableFonts
             }
 
             $fontInfo = $this->custom_fonts[$fontFamily];
-            $directory = $fontInfo['remote']['directory'];
+            $fileToUrl = [];
+            if (isset($fontInfo['remote']['manifest'])) {
+                $fileToUrl = $this->getURLtoFileMap($fontInfo['remote']['manifest']);
+                if (!$fileToUrl) {
+                    $this->outputWarning("Could not parse manifest file");
+                    return;
+                }
+            } elseif (isset(($fontInfo['remote']['directory']))) {
+                $directory = $fontInfo['remote']['directory'];
+                foreach (['R', 'B', 'I', 'BI'] as $key) {
+                    if (!isset($fontInfo['remote'][$key])) {
+                        continue;
+                    }
+                    $fileToUrl[$fontInfo['remote'][$key]] = $directory . rawurlencode($fontInfo['remote'][$key]);
+                }
+            }
             $localDir = $this->getUploadDirectory($fontFamily);
             foreach (['R', 'B', 'I', 'BI'] as $key) {
                 if (!isset($fontInfo['remote'][$key])) {
@@ -136,7 +169,11 @@ class BreadLoadableFonts
 
                 $file = $fontInfo['remote'][$key];
                 $local = trailingslashit($localDir) . $file;
-                $url = $directory . rawurlencode($file);
+                if (!isset($fileToUrl[$fontInfo['remote'][$key]])) {
+                    $this->outputWarning("No URL for " . $fileToUrl[$fontInfo['remote'][$key]]);
+                    return;
+                }
+                $url = $fileToUrl[$fontInfo['remote'][$key]];
                 $response = wp_remote_get($url, array('timeout' => 15, 'redirection' => 3));
                 if (is_wp_error($response)) {
                     $this->outputWarning("Could not retrieve $url");
@@ -246,5 +283,6 @@ class BreadLoadableFonts
         }
         $options['fontDir'] = $fontDirs;
         $options['fontdata'] = $fontdata;
+        return $options;
     }
 }
