@@ -428,29 +428,51 @@ class Bread_Admin
             2
         );
     }
+    private function outputSuccess(string $str)
+    {
+        echo '<div class="notice notice-success is-dismissible">';
+        echo '<p style="color: #000;">'.esc_html($str).'</p>';
+        echo '</div>';
+    }
+    private function outputWarning(string $str)
+    {
+        echo '<div class="notice notice-error is-dismissible">';
+        echo '<p style="color: #F00;">'.esc_html($str).'</p>';
+        echo '</div>';
+    }
     function admin_options_page()
     {
         $filename = '';
-        if (!empty($_GET['fontAction'])) {
+        if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_GET['fontAction'])) {
             $action = sanitize_key($_GET['fontAction']);
             if (!wp_verify_nonce($_GET['nonce'], 'bread_font_action')) {
                 wp_die('Request invalid due to timeout');
             }
-            $fonts = $this->bread->getAvailableFonts();
-            $font = $_GET['font'];
-            if (!isset($fonts[$font])) {
-                wp_die('Request invalid');
+            switch ($action) {
+                case 'success':
+                    $this->outputSuccess(esc_html($_GET['message']));
+                    break;
+                case 'warning':
+                    $this->outputWarning(esc_html($_GET['message']));
+                    break;
+                default:
+                    $fonts = $this->bread->getAvailableFonts();
+                    $font = $_GET['font'];
+                    if (!isset($fonts[$font])) {
+                        wp_die('Request invalid');
+                    }
+                    if (!isset($fonts[$font])) {
+                         wp_die('Request invalid');
+                    }
+                    if (!isset($fonts[$font]['actions'])) {
+                        wp_die('Request invalid');
+                    }
+                    if (!isset($fonts[$font]['actions'][$action])) {
+                        wp_die('Request invalid');
+                    }
+                    call_user_func($fonts[$font]['actions'][$action]['lambda'], $font);
+                    break;
             }
-            if (!isset($fonts[$font])) {
-                wp_die('Request invalid');
-            }
-            if (!isset($fonts[$font]['actions'])) {
-                wp_die('Request invalid');
-            }
-            if (!isset($fonts[$font]['actions'][$action])) {
-                wp_die('Request invalid');
-            }
-            call_user_func($fonts[$font]['actions'][$action]['lambda'], $font);
         }
         if (!empty($_POST['pwsix_action']) && (!isset($_POST['bmltmeetinglistsave']) || $_POST['bmltmeetinglistsave'] != 'Save Changes')) {
             switch ($_POST['pwsix_action']) {

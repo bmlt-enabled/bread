@@ -7,7 +7,9 @@ function echo_font_options(string $base_font, Bread $bread)
     $fonts = $bread->getActiveFonts();
     $infos = $bread->getAvailableFonts();
     foreach ($fonts as $font_key) {
-        if (!isset($infos[$font_key])) continue;
+        if (!isset($infos[$font_key])) {
+            continue;
+        }
         $font_info = $infos[$font_key];
         echo '<option value="' . esc_attr($font_key) . '" ' . ($base_font == $font_key ? 'selected="selected"' : '') . '>' . esc_html($font_info['name']) . '</option>';
     }

@@ -9,6 +9,7 @@ class Bread_Custom_Fonts_Table extends WP_List_Table
 {
     private Bread $bread;
     private array $fonts;
+    private array $active;
     private string $nonce;
     function getTypeFromStack(string $stack): string
     {
@@ -19,6 +20,7 @@ class Bread_Custom_Fonts_Table extends WP_List_Table
     {
         $this->bread = $bread;
         $this->fonts = $bread->getAvailableFonts();
+        $this->active = $bread->getActiveFonts();
         $this->nonce = wp_create_nonce("bread_font_action");
         return parent::__construct();
     }
@@ -28,7 +30,7 @@ class Bread_Custom_Fonts_Table extends WP_List_Table
             'name' => 'Font Family',
             'type' => 'Type',
             'scripts' => 'Character Sets',
-            'description' => 'Description',
+            'specimen' => 'More Information',
         ];
     }
     function column_default($font, $column)
@@ -52,10 +54,14 @@ class Bread_Custom_Fonts_Table extends WP_List_Table
         $actions = [];
         if (isset($font['actions'])) {
             foreach ($font['actions'] as $key => $action) {
-                $actions[$key] = sprintf('<a href="?page=%s&fontAction=%s&font=%s&nonce=%s">' . $action['text'] . '</a>', $_REQUEST['page'], $action['action'], $font['slug'], $this->nonce);
+                $actions[$key] = sprintf('<a href="?page=%s&fontAction=%s&font=%s&nonce=%s&noheader=true">' . $action['text'] . '</a>', $_REQUEST['page'], $action['action'], $font['slug'], $this->nonce);
             }
         }
-        return sprintf('%1$s %2$s', $font['name'], $this->row_actions($actions));
+        $name =  $font['name'];
+        if (in_array($font['slug'], $this->active)) {
+            $name = "<strong>" . $name  . "</strong>";
+        }
+        return sprintf('%1$s %2$s', $name, $this->row_actions($actions));
     }
     function prepare_items()
     {

@@ -1,12 +1,15 @@
 <?php
+if (! defined('ABSPATH')) {
+    exit;
+}
 class BreadLoadableFonts
 {
 
         var $custom_fonts = [
             'roboto' => ['name' => 'Roboto',
-                                      'stack' => 'Helvetica, sans-serif',
+                                      'stack' => 'Sans-Serif - Neo-Grotesque',
                                       'scripts' => ['latin', 'latin-ext', 'cyrillic', 'cyrillic-ext', 'greek', 'greek-ext'],
-                                      'description' => 'Roboto has a dual nature. It has a mechanical skeleton and the forms are largely geometric. At the same time, the font features friendly and open curves. While some grotesks distort their letterforms to force a rigid rhythm, Roboto doesn’t compromise, allowing letters to be settled into their natural width. This makes for a more natural reading rhythm more commonly found in humanist and serif types.',
+                                      'specimen' => '<a href="https://fonts.google.com/specimen/Roboto" target="_blank">Google Fonts</a>',
                                       'remote' => [
                                         'manifest' => 'https://fonts.google.com/download/list?family=Roboto',
                                         'R' => 'Roboto_Condensed-Regular.ttf',
@@ -19,8 +22,9 @@ class BreadLoadableFonts
                                         'kashida' => 75,
                                       ]],
             'rubik' => ['name' => 'Rubik',
-                                      'stack' => 'Helvetica, sans-serif',
+                                      'stack' => 'Sans-Serif - Neo-Grotesque',
                                       'scripts' => ['latin', 'latin-ext', 'cyrillic', 'cyrillic-ext', 'arabic'],
+                                      'specimen' => '<a href="https://fonts.google.com/specimen/Rubik" target="_blank">Google Fonts</a>',
                                       'remote' => [
                                         'manifest' => 'https://fonts.google.com/download/list?family=Rubik',
                                         'R' => 'Rubik-Regular.ttf',
@@ -32,7 +36,76 @@ class BreadLoadableFonts
                                         'useOTL' => 0xFF,
                                         'kashida' => 75,
                                       ]],
-        ];
+            'oswald' => ['name' => 'Oswald',
+                                      'stack' => 'Sans-Serif - Neo-Grotesque',
+                                      'scripts' => ['latin', 'latin-ext', 'cyrillic', 'cyrillic-ext'],
+                                      'specimen' => '<a href="https://fonts.google.com/specimen/Oswald" target="_blank">Google Fonts</a>',
+                                      'remote' => [
+                                        'manifest' => 'https://fonts.google.com/download/list?family=Oswald',
+                                        'R' => 'Oswald-Regular.ttf',
+                                        'B' => 'Oswald-Bold.ttf',
+                                      ],
+                                      'configuration' => [
+                                        'useOTL' => 0xFF,
+                                        'kashida' => 75,
+                                      ]],
+            'opensans' => ['name' => 'Open Sans Condensed',
+                                      'stack' => 'Sans-Serif - Humanist',
+                                      'scripts' => ['latin', 'latin-ext', 'cyrillic', 'cyrillic-ext', 'greek'],
+                                      'specimen' => '<a href="https://fonts.google.com/specimen/Open+Sans" target="_blank">Google Fonts</a>',
+                                      'remote' => [
+                                        'manifest' => 'https://fonts.google.com/download/list?family=Open%20Sans',
+                                        'R' => 'OpenSans_Condensed-Regular.ttf',
+                                        'B' => 'OpenSans_Condensed-Bold.ttf',
+                                        'I' => 'OpenSans_Condensed-Italic.ttf',
+                                        'BI' => 'OpenSans_Condensed-BoldItalic.ttf',
+                                      ],
+                                      'configuration' => [
+                                        'useOTL' => 0xFF,
+                                        'kashida' => 75,
+                                      ]],
+            'arimo' => ['name' => 'Arimo',
+                                      'stack' => 'Sans-Serif - Arial-like',
+                                      'scripts' => ['latin', 'latin-ext', 'cyrillic', 'cyrillic-ext', 'greek', 'hebrew'],
+                                      'specimen' => '<a href="https://fonts.google.com/specimen/Animo" target="_blank">Google Fonts</a>',
+                                      'remote' => [
+                                        'manifest' => 'https://fonts.google.com/download/list?family=Arimo',
+                                        'R' => 'Arimo-Regular.ttf',
+                                        'B' => 'Arimo-Bold.ttf',
+                                        'I' => 'Arimo-Italic.ttf',
+                                        'BI' => 'Arimo-BoldItalic.ttf',
+                                      ],
+                                      'configuration' => [
+                                        'useOTL' => 0xFF,
+                                        'kashida' => 75,
+                                      ]],
+            'arvo' => ['name' => 'Arvo',
+                                      'stack' => 'Slab-Serif',
+                                      'scripts' => ['latin', 'latin-ext'],
+                                      'specimen' => '<a href="https://fonts.google.com/specimen/Arvo" target="_blank">Google Fonts</a>',
+                                      'remote' => [
+                                        'manifest' => 'https://fonts.google.com/download/list?family=Arvo',
+                                        'R' => 'Arvo-Regular.ttf',
+                                        'B' => 'Arvo-Bold.ttf',
+                                        'I' => 'Arvo-Italic.ttf',
+                                        'BI' => 'Arvo-BoldItalic.ttf',
+                                      ],
+                                      'configuration' => [
+                                      ]],
+            'cairo' => ['name' => 'Cairo',
+                                      'stack' => 'Sans-Serif - Superellipse',
+                                      'scripts' => ['latin', 'latin-ext', 'arabic'],
+                                      'specimen' => '<a href="https://fonts.google.com/specimen/Cairo" target="_blank">Google Fonts</a>',
+                                      'remote' => [
+                                        'manifest' => 'https://fonts.google.com/download/list?family=Cairo',
+                                        'R' => 'Cairo-Regular.ttf',
+                                        'B' => 'Cairo-Bold.ttf',
+                                      ],
+                                      'configuration' => [
+                                        'useOTL' => 0xFF,
+                                        'kashida' => 75,
+                                      ]],
+            ];
         public function __construct()
         {
             foreach ($this->custom_fonts as $key => &$font) {
@@ -74,7 +147,7 @@ class BreadLoadableFonts
             }
             return $dir;
         }
-        public function bread_active_fonts($fonts)
+        public function bread_active_fonts(array $fonts): array
         {
             return array_merge($fonts, $this->getUploadedFonts());
         }
@@ -98,7 +171,7 @@ class BreadLoadableFonts
                 return false;
             }
             if (!isset($this->custom_fonts[$fontFamily])) {
-                throw new Exception("$fontFamily not in list of defined fonts");
+                return false;
             }
 
             $fontInfo = $this->custom_fonts[$fontFamily];
@@ -123,7 +196,7 @@ class BreadLoadableFonts
             $code = wp_remote_retrieve_response_code($response);
             $body = wp_remote_retrieve_body($response);
             if ($code === 200 && is_string($body)) {
-                $contents = json_decode(substr($body,4), true);
+                $contents = json_decode(substr($body, 4), true);
                 $ret = [];
                 foreach ($contents['manifest']['fileRefs'] as $item) {
                     $split = explode('/', $item['filename']);
@@ -189,19 +262,18 @@ class BreadLoadableFonts
                     }
                 }
             }
+            $this->custom_fonts[$fontFamily]['actions'] = $this->calcActions($fontFamily);
             $this->outputSuccess("Font $fontFamily successfully uploaded");
         }
         private function outputWarning($str)
         {
-            echo '<div class="notice notice-error is-dismissible">';
-            echo '<p style="color: #F00;">'.esc_html($str).'</p>';
-            echo '</div>';
+            wp_redirect(admin_url('admin.php?page=bmlt-enabled-bread&fontAction=warning&message=' . rawurlencode($str) . '&nonce=' . wp_create_nonce('bread_font_action')));
+            exit;
         }
         private function outputSuccess($str)
         {
-            echo '<div class="notice notice-success is-dismissible">';
-            echo '<p style="color: #000;">'.esc_html($str).'</p>';
-            echo '</div>';
+            wp_redirect(admin_url('admin.php?page=bmlt-enabled-bread&fontAction=success&message=' . rawurlencode($str) . '&nonce=' . wp_create_nonce('bread_font_action')));
+            exit;
         }
         public function removeFont($fontFamily)
         {
@@ -211,7 +283,8 @@ class BreadLoadableFonts
             }
             $dirname = trailingslashit($this->getUploadDirectory()) . $fontFamily;
             array_map('unlink', glob("$dirname/*.*"));
-            rmdir($dirname);
+            (new WP_Filesystem_Direct(null))->rmdir($dirname);
+            $this->custom_fonts[$fontFamily]['actions'] = $this->calcActions($fontFamily);
             $this->outputSuccess("Font $fontFamily removed.");
         }
         public function bread_content_style($content_style)
@@ -259,30 +332,27 @@ class BreadLoadableFonts
                 ]];
             }
         }
-    public function mpdf_init_options( $options ) {
-		$fontDirs = $options['fontDir']??[];
-		$fontdata = $options['fontdata']??[];
-        foreach($this->getUploadedFonts() as $fontKey) {
-            $fontDirs[] = $this->getUploadDirectory($fontKey);
-            $info = $this->custom_fonts[$fontKey];
-            $fontdata[$fontKey] = [];
-            foreach(['R', 'B', 'I', 'BI'] as $style) {
-                if (isset($info['remote'][$style])) {
-                    $fontdata[$fontKey][$style] = $info['remote'][$style];
-                } elseif ($style === 'B') {
-                    $fontdata[$fontKey][$style] = $info['remote']['R'];
-                } elseif ($style === 'BI') {
-                    $fontdata[$fontKey][$style] = $info['remote']['I'];
+        public function mpdf_init_options($options)
+        {
+            $fontDirs = $options['fontDir']??[];
+            $fontdata = $options['fontdata']??[];
+            foreach ($this->getUploadedFonts() as $fontKey) {
+                $fontDirs[] = $this->getUploadDirectory($fontKey);
+                $info = $this->custom_fonts[$fontKey];
+                $fontdata[$fontKey] = [];
+                foreach (['R', 'B', 'I', 'BI'] as $style) {
+                    if (isset($info['remote'][$style])) {
+                        $fontdata[$fontKey][$style] = $info['remote'][$style];
+                    }
+                }
+                if (isset($info['configuration'])) {
+                    foreach ($info['configuration'] as $key => $value) {
+                        $fontdata[$fontKey][$key] = $value;
+                    }
                 }
             }
-            if (isset($info['configuration'])) {
-                foreach ($info['configuration'] as $key => $value) {
-                    $fontdata[$fontKey][$key] = $value;
-                }
-            }
+            $options['fontDir'] = $fontDirs;
+            $options['fontdata'] = $fontdata;
+            return $options;
         }
-        $options['fontDir'] = $fontDirs;
-        $options['fontdata'] = $fontdata;
-        return $options;
-    }
 }
