@@ -461,9 +461,6 @@ class Bread_Admin
                     if (!isset($fonts[$font])) {
                         wp_die('Request invalid');
                     }
-                    if (!isset($fonts[$font])) {
-                         wp_die('Request invalid');
-                    }
                     if (!isset($fonts[$font]['actions'])) {
                         wp_die('Request invalid');
                     }

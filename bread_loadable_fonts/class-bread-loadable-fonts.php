@@ -301,9 +301,7 @@ class BreadLoadableFonts
                     $content_style .= "font-family: $font;";
                     $content_style .= "src:url($loc) format('truetype');";
                     $content_style .= "font-display: block;";
-                    if (isset($fontInfo['remote']['variable']) && $fontInfo['remote']['variable']) {
-                        $content_style .= "font-weight: 100 1000;";
-                    } elseif ($key == 'B' || $key == 'BI') {
+                    if ($key == 'B' || $key == 'BI') {
                         $content_style .= "font-weight: bold;";
                     }
                     if ($key == 'I' || $key == 'BI') {
