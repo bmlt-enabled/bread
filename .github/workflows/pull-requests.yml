@@ -30,10 +30,9 @@ jobs:
           echo "ZIP_FILENAME=${ZIP_FILENAME}" >> $GITHUB_ENV
           PROD=1 make build
           unzip "${BUILD_DIR}/${ZIP_FILENAME}" -d "./bread"
-# Removed until https://github.com/WordPress/plugin-check-action/issues/579 is fixed
-#      - name: Run plugin check
-#        uses: wordpress/plugin-check-action@v1
-#       with:
-#         exclude-directories: 'vendor'
-#          categories: 'plugin_repo'
-#          ignore-warnings: true
+      - name: Run plugin check
+        uses: wordpress/plugin-check-action@v1
+        with:
+          exclude-directories: 'vendor'
+          categories: 'plugin_repo'
+          ignore-warnings: true
