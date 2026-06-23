@@ -596,4 +596,7 @@
 		hideAllTabs();
 		activateTab($(this));
 	});
+	$('.bread-font-filter').change(function() {
+		$('#filter-fonts-form').submit();
+	})
 });
