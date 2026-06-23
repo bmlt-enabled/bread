@@ -37,7 +37,7 @@ class Bread_Custom_Fonts_Table extends WP_List_Table
     {
         switch ($column) {
             case 'type':
-                $stack = $font['stack'];
+                $stack = $font['letterform'];
                 $array = explode(',', $stack);
                 return $array[count($array)-1];
             case 'scripts':
@@ -74,13 +74,13 @@ class Bread_Custom_Fonts_Table extends WP_List_Table
             $this->items = array_filter($this->items, function($font) { return in_array($_GET['script'], $font['scripts']);});
         }
         if (isset($_GET['letterform']) && $_GET['letterform'] != '*') {
-            $this->items = array_filter($this->items, function($font) { return $_GET['letterform'] == $font['scripts'];});
+            $this->items = array_filter($this->items, function($font) { return $_GET['letterform'] == $font['letterform'];});
         }
         foreach ($this->items as $slug => &$info) {
             $info['slug'] = $slug;
         }
     }
-    private function selected($a, $b): string
+    private function selected($a, $b)
     {
         return ($a == $b) ? 'selected' : '';
     }
@@ -100,8 +100,8 @@ class Bread_Custom_Fonts_Table extends WP_List_Table
     {
         $ret = [];
         foreach($this->fonts as $font) {
-            if (!in_array($font['stack'], $ret)) {
-                $ret[] = $font['stack'];
+            if (!in_array($font['letterform'], $ret)) {
+                $ret[] = $font['letterform'];
             }
         }
         return $ret;
@@ -114,19 +114,19 @@ class Bread_Custom_Fonts_Table extends WP_List_Table
         <input type="hidden" name="page" value="<?php echo $_REQUEST['page'];?>">
 		<label for="filter-fonts-by-script" class="screen-reader-text">Filter by supported scripts</label>
 		<select name="script" id="filter-fonts-by-script" class="bread-font-filter">
-			<option <?php $this->selected( $script, '*' ); ?> value="*"><?php _e( 'All scripts' ); ?></option>
+			<option <?php echo $this->selected( $script, '*' ); ?> value="*"><?php _e( 'All scripts' ); ?></option>
         <?php
         foreach($this->getAllScripts() as $s) {
-            echo '<option ' . $this->selected($script, $s) . "value='$s'>$s</option>";
+            echo '<option ' . $this->selected($script, $s) . " value='$s'>$s</option>";
         }
         ?>
         </select>
 		<label for="filter-fonts-by-letterform" class="screen-reader-text">Filter by letterform</label>
 		<select name="letterform" id="filter-fonts-by-letterform" class="bread-font-filter">
-			<option <?php $this->selected( $letterform, '*' ); ?> value="*"><?php _e( 'All letterforms' ); ?></option>
+			<option <?php echo $this->selected( $letterform, '*' ); ?> value="*"><?php _e( 'All letterforms' ); ?></option>
         <?php
         foreach($this->getAllLetterforms() as $s) {
-            echo '<option ' . $this->selected($script, $s) . "value='$s'>$s</option>";
+            echo '<option ' . $this->selected($letterform, $s) . " value='$s'>$s</option>";
         }
         ?>
         </select>

@@ -7,7 +7,7 @@ class BreadLoadableFonts
 
         var $custom_fonts = [
             'roboto' => ['name' => 'Roboto',
-                                      'stack' => 'Sans-Serif - Neo-Grotesque',
+                                      'letterform' => 'Sans-Serif - Neo-Grotesque',
                                       'scripts' => ['latin', 'latin-ext', 'cyrillic', 'cyrillic-ext', 'greek', 'greek-ext'],
                                       'specimen' => '<a href="https://fonts.google.com/specimen/Roboto" target="_blank">Google Fonts</a>',
                                       'remote' => [
@@ -22,7 +22,7 @@ class BreadLoadableFonts
                                         'kashida' => 75,
                                       ]],
             'rubik' => ['name' => 'Rubik',
-                                      'stack' => 'Sans-Serif - Neo-Grotesque',
+                                      'letterform' => 'Sans-Serif - Neo-Grotesque',
                                       'scripts' => ['latin', 'latin-ext', 'cyrillic', 'cyrillic-ext', 'arabic'],
                                       'specimen' => '<a href="https://fonts.google.com/specimen/Rubik" target="_blank">Google Fonts</a>',
                                       'remote' => [
@@ -37,7 +37,7 @@ class BreadLoadableFonts
                                         'kashida' => 75,
                                       ]],
             'oswald' => ['name' => 'Oswald',
-                                      'stack' => 'Sans-Serif - Neo-Grotesque',
+                                      'letterform' => 'Sans-Serif - Neo-Grotesque',
                                       'scripts' => ['latin', 'latin-ext', 'cyrillic', 'cyrillic-ext'],
                                       'specimen' => '<a href="https://fonts.google.com/specimen/Oswald" target="_blank">Google Fonts</a>',
                                       'remote' => [
@@ -50,7 +50,7 @@ class BreadLoadableFonts
                                         'kashida' => 75,
                                       ]],
             'opensans' => ['name' => 'Open Sans Condensed',
-                                      'stack' => 'Sans-Serif - Humanist',
+                                      'letterform' => 'Sans-Serif - Humanist',
                                       'scripts' => ['latin', 'latin-ext', 'cyrillic', 'cyrillic-ext', 'greek'],
                                       'specimen' => '<a href="https://fonts.google.com/specimen/Open+Sans" target="_blank">Google Fonts</a>',
                                       'remote' => [
@@ -65,7 +65,7 @@ class BreadLoadableFonts
                                         'kashida' => 75,
                                       ]],
             'arimo' => ['name' => 'Arimo',
-                                      'stack' => 'Sans-Serif - Arial-like',
+                                      'letterform' => 'Sans-Serif - Arial-like',
                                       'scripts' => ['latin', 'latin-ext', 'cyrillic', 'cyrillic-ext', 'greek', 'hebrew'],
                                       'specimen' => '<a href="https://fonts.google.com/specimen/Animo" target="_blank">Google Fonts</a>',
                                       'remote' => [
@@ -80,7 +80,7 @@ class BreadLoadableFonts
                                         'kashida' => 75,
                                       ]],
             'ibmplexsans' => ['name' => 'IBM Plex Sans',
-                                      'stack' => 'Sans-Serif - Neo Grotesque',
+                                      'letterform' => 'Sans-Serif - Neo Grotesque',
                                       'scripts' => ['latin', 'latin-ext', 'cyrillic', 'cyrillic-ext', 'greek'],
                                       'specimen' => '<a href="https://fonts.google.com/specimen/IBM+Plex+Sans" target="_blank">Google Fonts</a>',
                                       'remote' => [
@@ -95,7 +95,7 @@ class BreadLoadableFonts
                                         'kashida' => 75,
                                       ]],
             'arvo' => ['name' => 'Arvo',
-                                      'stack' => 'Slab-Serif',
+                                      'letterform' => 'Slab-Serif',
                                       'scripts' => ['latin', 'latin-ext'],
                                       'specimen' => '<a href="https://fonts.google.com/specimen/Arvo" target="_blank">Google Fonts</a>',
                                       'remote' => [
@@ -108,7 +108,7 @@ class BreadLoadableFonts
                                       'configuration' => [
                                       ]],
             'cairo' => ['name' => 'Cairo',
-                                      'stack' => 'Sans-Serif - Superellipse',
+                                      'letterform' => 'Sans-Serif - Superellipse',
                                       'scripts' => ['latin', 'latin-ext', 'arabic'],
                                       'specimen' => '<a href="https://fonts.google.com/specimen/Cairo" target="_blank">Google Fonts</a>',
                                       'remote' => [
