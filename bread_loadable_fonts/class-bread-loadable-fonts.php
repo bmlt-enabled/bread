@@ -8,7 +8,7 @@ class BreadLoadableFonts
         var $custom_fonts = [
             'roboto' => ['name' => 'Roboto',
                                       'letterform' => 'Sans-Serif - Neo-Grotesque',
-                                      'scripts' => ['latin', 'cyrillic', 'greek', 'greek-ext'],
+                                      'scripts' => ['latin', 'cyrillic', 'greek',],
                                       'specimen' => '<a href="https://fonts.google.com/specimen/Roboto" target="_blank">Google Fonts</a>',
                                       'remote' => [
                                         'manifest' => 'https://fonts.google.com/download/list?family=Roboto',

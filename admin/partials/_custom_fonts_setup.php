@@ -115,22 +115,22 @@ class Bread_Custom_Fonts_Table extends WP_List_Table
         $letterform = $_GET['letterform'] ?? '*';
         $script = $_GET['script'] ?? '*'; ?>
         <form method="GET" action="#" id="filter-fonts-form">
-        <input type="hidden" name="page" value="<?php echo $_REQUEST['page'];?>">
+        <input type="hidden" name="page" value="<?php echo esc_attr($_REQUEST['page']);?>">
         <label for="filter-fonts-by-script" class="screen-reader-text">Filter by supported scripts</label>
         <select name="script" id="filter-fonts-by-script" class="bread-font-filter">
-            <option <?php echo $this->selected($script, '*'); ?> value="*"><?php _e('All scripts'); ?></option>
+            <option <?php echo esc_attr($this->selected($script, '*')); ?> value="*">All scripts</option>
         <?php
         foreach ($this->getAllScripts() as $s) {
-            echo '<option ' . $this->selected($script, $s) . " value='$s'>$s</option>";
+            echo '<option ' . esc_attr($this->selected($script, $s)) . " value='".esc_attr($s)."'>".esc_attr($s)."</option>";
         }
         ?>
         </select>
         <label for="filter-fonts-by-letterform" class="screen-reader-text">Filter by letterform</label>
         <select name="letterform" id="filter-fonts-by-letterform" class="bread-font-filter">
-            <option <?php echo $this->selected($letterform, '*'); ?> value="*"><?php _e('All letterforms'); ?></option>
+            <option <?php echo esc_attr($this->selected($letterform, '*')); ?> value="*">All letterforms</option>
         <?php
         foreach ($this->getAllLetterforms() as $s) {
-            echo '<option ' . $this->selected($letterform, $s) . " value='$s'>$s</option>";
+            echo '<option ' . esc_attr($this->selected($letterform, $s)) . " value='".esc_attr($s)."'>".esc_attr($s)."</option>";
         }
         ?>
         </select>
