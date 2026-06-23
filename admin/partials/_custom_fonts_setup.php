@@ -71,10 +71,14 @@ class Bread_Custom_Fonts_Table extends WP_List_Table
         $this->_column_headers = array($columns, $hidden, $sortable);
         $this->items = $this->fonts;
         if (isset($_GET['script']) && $_GET['script'] != '*') {
-            $this->items = array_filter($this->items, function($font) { return in_array($_GET['script'], $font['scripts']);});
+            $this->items = array_filter($this->items, function ($font) {
+                return in_array($_GET['script'], $font['scripts']);
+            });
         }
         if (isset($_GET['letterform']) && $_GET['letterform'] != '*') {
-            $this->items = array_filter($this->items, function($font) { return $_GET['letterform'] == $font['letterform'];});
+            $this->items = array_filter($this->items, function ($font) {
+                return $_GET['letterform'] == $font['letterform'];
+            });
         }
         foreach ($this->items as $slug => &$info) {
             $info['slug'] = $slug;
@@ -87,8 +91,8 @@ class Bread_Custom_Fonts_Table extends WP_List_Table
     private function getAllScripts(): array
     {
         $ret = [];
-        foreach($this->fonts as $font) {
-            foreach($font['scripts'] as $script) {
+        foreach ($this->fonts as $font) {
+            foreach ($font['scripts'] as $script) {
                 if (!in_array($script, $ret)) {
                     $ret[] = $script;
                 }
@@ -99,39 +103,39 @@ class Bread_Custom_Fonts_Table extends WP_List_Table
     private function getAllLetterforms(): array
     {
         $ret = [];
-        foreach($this->fonts as $font) {
+        foreach ($this->fonts as $font) {
             if (!in_array($font['letterform'], $ret)) {
                 $ret[] = $font['letterform'];
             }
         }
         return $ret;
     }
-    protected function extra_tablenav( $which )
+    protected function extra_tablenav($which)
     {
         $letterform = $_GET['letterform'] ?? '*';
         $script = $_GET['script'] ?? '*'; ?>
         <form method="GET" action="#" id="filter-fonts-form">
         <input type="hidden" name="page" value="<?php echo $_REQUEST['page'];?>">
-		<label for="filter-fonts-by-script" class="screen-reader-text">Filter by supported scripts</label>
-		<select name="script" id="filter-fonts-by-script" class="bread-font-filter">
-			<option <?php echo $this->selected( $script, '*' ); ?> value="*"><?php _e( 'All scripts' ); ?></option>
+        <label for="filter-fonts-by-script" class="screen-reader-text">Filter by supported scripts</label>
+        <select name="script" id="filter-fonts-by-script" class="bread-font-filter">
+            <option <?php echo $this->selected($script, '*'); ?> value="*"><?php _e('All scripts'); ?></option>
         <?php
-        foreach($this->getAllScripts() as $s) {
+        foreach ($this->getAllScripts() as $s) {
             echo '<option ' . $this->selected($script, $s) . " value='$s'>$s</option>";
         }
         ?>
         </select>
-		<label for="filter-fonts-by-letterform" class="screen-reader-text">Filter by letterform</label>
-		<select name="letterform" id="filter-fonts-by-letterform" class="bread-font-filter">
-			<option <?php echo $this->selected( $letterform, '*' ); ?> value="*"><?php _e( 'All letterforms' ); ?></option>
+        <label for="filter-fonts-by-letterform" class="screen-reader-text">Filter by letterform</label>
+        <select name="letterform" id="filter-fonts-by-letterform" class="bread-font-filter">
+            <option <?php echo $this->selected($letterform, '*'); ?> value="*"><?php _e('All letterforms'); ?></option>
         <?php
-        foreach($this->getAllLetterforms() as $s) {
+        foreach ($this->getAllLetterforms() as $s) {
             echo '<option ' . $this->selected($letterform, $s) . " value='$s'>$s</option>";
         }
         ?>
         </select>
         </form>
-		<?php
+        <?php
     }
 }
 function Bread_custom_fonts_setup_page_render(Bread_AdminDisplay $breadAdminDisplay)

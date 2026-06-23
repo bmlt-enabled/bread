@@ -450,7 +450,9 @@ class Bread_Admin
             }
             switch ($action) {
                 case 'success':
-                    $this->outputSuccess(esc_html($_GET['message']));
+                    if (isset($_GET['message'])) {
+                        $this->outputSuccess(esc_html($_GET['message']));
+                    }
                     break;
                 case 'warning':
                     $this->outputWarning(esc_html($_GET['message']));

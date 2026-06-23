@@ -8,7 +8,7 @@ class BreadLoadableFonts
         var $custom_fonts = [
             'roboto' => ['name' => 'Roboto',
                                       'letterform' => 'Sans-Serif - Neo-Grotesque',
-                                      'scripts' => ['latin', 'latin-ext', 'cyrillic', 'cyrillic-ext', 'greek', 'greek-ext'],
+                                      'scripts' => ['latin', 'cyrillic', 'greek', 'greek-ext'],
                                       'specimen' => '<a href="https://fonts.google.com/specimen/Roboto" target="_blank">Google Fonts</a>',
                                       'remote' => [
                                         'manifest' => 'https://fonts.google.com/download/list?family=Roboto',
@@ -23,7 +23,7 @@ class BreadLoadableFonts
                                       ]],
             'rubik' => ['name' => 'Rubik',
                                       'letterform' => 'Sans-Serif - Neo-Grotesque',
-                                      'scripts' => ['latin', 'latin-ext', 'cyrillic', 'cyrillic-ext', 'arabic'],
+                                      'scripts' => ['latin', 'cyrillic', 'arabic', 'hebrew'],
                                       'specimen' => '<a href="https://fonts.google.com/specimen/Rubik" target="_blank">Google Fonts</a>',
                                       'remote' => [
                                         'manifest' => 'https://fonts.google.com/download/list?family=Rubik',
@@ -36,22 +36,9 @@ class BreadLoadableFonts
                                         'useOTL' => 0xFF,
                                         'kashida' => 75,
                                       ]],
-            'oswald' => ['name' => 'Oswald',
-                                      'letterform' => 'Sans-Serif - Neo-Grotesque',
-                                      'scripts' => ['latin', 'latin-ext', 'cyrillic', 'cyrillic-ext'],
-                                      'specimen' => '<a href="https://fonts.google.com/specimen/Oswald" target="_blank">Google Fonts</a>',
-                                      'remote' => [
-                                        'manifest' => 'https://fonts.google.com/download/list?family=Oswald',
-                                        'R' => 'Oswald-Regular.ttf',
-                                        'B' => 'Oswald-Bold.ttf',
-                                      ],
-                                      'configuration' => [
-                                        'useOTL' => 0xFF,
-                                        'kashida' => 75,
-                                      ]],
             'opensans' => ['name' => 'Open Sans Condensed',
                                       'letterform' => 'Sans-Serif - Humanist',
-                                      'scripts' => ['latin', 'latin-ext', 'cyrillic', 'cyrillic-ext', 'greek'],
+                                      'scripts' => ['latin', 'cyrillic', 'greek'],
                                       'specimen' => '<a href="https://fonts.google.com/specimen/Open+Sans" target="_blank">Google Fonts</a>',
                                       'remote' => [
                                         'manifest' => 'https://fonts.google.com/download/list?family=Open%20Sans',
@@ -66,7 +53,7 @@ class BreadLoadableFonts
                                       ]],
             'arimo' => ['name' => 'Arimo',
                                       'letterform' => 'Sans-Serif - Arial-like',
-                                      'scripts' => ['latin', 'latin-ext', 'cyrillic', 'cyrillic-ext', 'greek', 'hebrew'],
+                                      'scripts' => ['latin', 'cyrillic', 'greek', 'hebrew'],
                                       'specimen' => '<a href="https://fonts.google.com/specimen/Animo" target="_blank">Google Fonts</a>',
                                       'remote' => [
                                         'manifest' => 'https://fonts.google.com/download/list?family=Arimo',
@@ -79,9 +66,22 @@ class BreadLoadableFonts
                                         'useOTL' => 0xFF,
                                         'kashida' => 75,
                                       ]],
+            'lato' => ['name' => 'Lato',
+                                      'letterform' => 'Sans-Serif - Humanist',
+                                      'scripts' => ['latin'],
+                                      'specimen' => '<a href="https://fonts.google.com/specimen/Lato" target="_blank">Google Fonts</a>',
+                                      'remote' => [
+                                        'manifest' => 'https://fonts.google.com/download/list?family=Lato',
+                                        'R' => 'Lato-Regular.ttf',
+                                        'B' => 'Lato-Bold.ttf',
+                                        'I' => 'Lato-Italic.ttf',
+                                        'BI' => 'Lato-BoldItalic.ttf',
+                                      ],
+                                      'configuration' => [
+                                      ]],
             'ibmplexsans' => ['name' => 'IBM Plex Sans',
                                       'letterform' => 'Sans-Serif - Neo Grotesque',
-                                      'scripts' => ['latin', 'latin-ext', 'cyrillic', 'cyrillic-ext', 'greek'],
+                                      'scripts' => ['latin', 'cyrillic', 'greek'],
                                       'specimen' => '<a href="https://fonts.google.com/specimen/IBM+Plex+Sans" target="_blank">Google Fonts</a>',
                                       'remote' => [
                                         'manifest' => 'https://fonts.google.com/download/list?family=IBM%20Plex%20Sans%20Condensed',
@@ -89,6 +89,47 @@ class BreadLoadableFonts
                                         'B' => 'IBMPlexSansCondensed-Bold.ttf',
                                         'I' => 'IBMPlexSansCondensed-Italic.ttf',
                                         'BI' => 'IBMPlexSansCondensed-BoldItalic.ttf',
+                                      ],
+                                      'configuration' => [
+                                        'useOTL' => 0xFF,
+                                        'kashida' => 75,
+                                      ]],
+            'ibmplexsansarabic' => ['name' => 'IBM Plex Sans Arabic',
+                                      'letterform' => 'Sans-Serif - Neo Grotesque',
+                                      'scripts' => ['latin', 'arabic'],
+                                      'specimen' => '<a href="https://fonts.google.com/specimen/IBM+Plex+Sans+Arabic" target="_blank">Google Fonts</a>',
+                                      'remote' => [
+                                        'manifest' => 'https://fonts.google.com/download/list?family=IBM%20Plex%20Sans%20Arabic',
+                                        'R' => 'IBMPlexSansArabic-Regular.ttf',
+                                        'B' => 'IBMPlexSansArabic-Bold.ttf',
+                                      ],
+                                      'configuration' => [
+                                        'useOTL' => 0xFF,
+                                        'kashida' => 75,
+                                      ]],
+            'ibmplexsanshebrew' => ['name' => 'IBM Plex Sans Hebrew',
+                                      'letterform' => 'Sans-Serif - Neo Grotesque',
+                                      'scripts' => ['latin', 'hebrew'],
+                                      'specimen' => '<a href="https://fonts.google.com/specimen/IBM+Plex+Sans+Hebrew" target="_blank">Google Fonts</a>',
+                                      'remote' => [
+                                        'manifest' => 'https://fonts.google.com/download/list?family=IBM%20Plex%20Sans%20Hebrew',
+                                        'R' => 'IBMPlexSansHebrew-Regular.ttf',
+                                        'B' => 'IBMPlexSansHebrew-Bold.ttf',
+                                      ],
+                                      'configuration' => [
+                                        'useOTL' => 0xFF,
+                                        'kashida' => 75,
+                                      ]],
+            'ibmplexserif' => ['name' => 'IBM Plex Serif',
+                                      'letterform' => 'Serif - Scotch',
+                                      'scripts' => ['latin', 'cyrillic', 'cyrillic-ext'],
+                                      'specimen' => '<a href="https://fonts.google.com/specimen/IBM+Plex+Serif" target="_blank">Google Fonts</a>',
+                                      'remote' => [
+                                        'manifest' => 'https://fonts.google.com/download/list?family=IBM%20Plex%20Serif',
+                                        'R' => 'IBMPlexSerif-Regular.ttf',
+                                        'B' => 'IBMPlexSerif-Bold.ttf',
+                                        'I' => 'IBMPlexSerif-Italic.ttf',
+                                        'BI' => 'IBMPlexSerif-BoldItalic.ttf',
                                       ],
                                       'configuration' => [
                                         'useOTL' => 0xFF,
@@ -109,7 +150,7 @@ class BreadLoadableFonts
                                       ]],
             'cairo' => ['name' => 'Cairo',
                                       'letterform' => 'Sans-Serif - Superellipse',
-                                      'scripts' => ['latin', 'latin-ext', 'arabic'],
+                                      'scripts' => ['latin', 'arabic'],
                                       'specimen' => '<a href="https://fonts.google.com/specimen/Cairo" target="_blank">Google Fonts</a>',
                                       'remote' => [
                                         'manifest' => 'https://fonts.google.com/download/list?family=Cairo',
@@ -332,14 +373,14 @@ class BreadLoadableFonts
             if (in_array($font, $this->getUploadedFonts())) {
                 return [
                 'removefont' => [
-                'text' => __('remove', 'bread'),
+                'text' => 'Remove',
                 'action' => 'removefont',
                 'lambda' => [$this, 'removeFont']
                 ]];
             } else {
                 return [
                 'installfont' => [
-                'text' => __('Install', 'bread'),
+                'text' => 'Install',
                 'action' => 'installfont',
                 'lambda' => [$this, 'installFont']
                 ]];
