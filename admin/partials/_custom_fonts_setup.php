@@ -54,7 +54,7 @@ class Bread_Custom_Fonts_Table extends WP_List_Table
         $actions = [];
         if (isset($font['actions'])) {
             foreach ($font['actions'] as $key => $action) {
-                $actions[$key] = sprintf('<a href="?page=%s&fontAction=%s&font=%s&nonce=%s&noheader=true">' . $action['text'] . '</a>', $_REQUEST['page'], $action['action'], $font['slug'], $this->nonce);
+                $actions[$key] = sprintf('<a href="?page=%s&fontAction=%s&font=%s&nonce=%s&noheader=true">' . esc_attr($action['text']) . '</a>', esc_attr($_REQUEST['page']), esc_attr($action['action']), esc_attr($font['slug']), esc_attr($this->nonce));
             }
         }
         $name =  $font['name'];
@@ -77,11 +77,17 @@ class Bread_Custom_Fonts_Table extends WP_List_Table
         }
         if (isset($_GET['letterform']) && $_GET['letterform'] != '*') {
             $this->items = array_filter($this->items, function ($font) {
-                return $_GET['letterform'] == $font['letterform'];
+                return stt_starts_with($font['letterform'], $_GET['letterform']);
             });
         }
         foreach ($this->items as $slug => &$info) {
             $info['slug'] = $slug;
+        }
+        if (isset($_GET['view']) && $_GET['view'] != 'all') {
+            $this->items = array_filter($this->items, function ($font) {
+                $bool = in_array($font['slug'], $this->active);
+                return ($_GET['view'] == 'active') ? $bool : !$bool;
+            });
         }
     }
     private function selected($a, $b)
@@ -110,12 +116,34 @@ class Bread_Custom_Fonts_Table extends WP_List_Table
         }
         return $ret;
     }
+    protected function get_views(): array
+    {
+        $filters = "";
+        if (isset($_GET['script'])) {
+            $filters .= "&script=" . $_GET['script'];
+        }
+        if (isset($_GET['letterform'])) {
+            $filters .= "&letterform=" . $_GET['letterform'];
+        }
+        $ret = [
+            'all' => sprintf('<a href="?page=%s&view=all%s">All</a>', esc_attr($_REQUEST['page']), $filters),
+            'active' => sprintf('<a href="?page=%s&view=active%s">Active</a>', esc_attr($_REQUEST['page']), $filters),
+            'disabled' => sprintf('<a href="?page=%s&view=disabled%s">Disabled</a>', esc_attr($_REQUEST['page']), $filters),
+        ];
+        if (isset($_GET['view']) && in_array($_GET['view'], array_keys($ret))) {
+            $ret[$_GET['view']] = "<strong>" . $ret[$_GET['view']] . "</strong>";
+        } else {
+            $ret['all'] = "<strong>" . $ret['all'] . "</strong>";
+        }
+        return $ret;
+    }
     protected function extra_tablenav($which)
     {
         $letterform = $_GET['letterform'] ?? '*';
         $script = $_GET['script'] ?? '*'; ?>
         <form method="GET" action="#" id="filter-fonts-form">
         <input type="hidden" name="page" value="<?php echo esc_attr($_REQUEST['page']);?>">
+        <input type="hidden" name="view" value="<?php echo esc_attr($_REQUEST['view'] ?? '*');?>">
         <label for="filter-fonts-by-script" class="screen-reader-text">Filter by supported scripts</label>
         <select name="script" id="filter-fonts-by-script" class="bread-font-filter">
             <option <?php echo esc_attr($this->selected($script, '*')); ?> value="*">All scripts</option>
@@ -141,6 +169,7 @@ class Bread_Custom_Fonts_Table extends WP_List_Table
 function Bread_custom_fonts_setup_page_render(Bread_AdminDisplay $breadAdminDisplay)
 {
     $table = new Bread_Custom_Fonts_Table($breadAdminDisplay->getBreadInstance());
+    $table->views();
     $table->prepare_items();
     $table->display();
 }

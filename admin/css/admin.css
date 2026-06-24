@@ -557,3 +557,6 @@ select.bread_service_body_select {
     width: max-content !important;
 }
 .select2-search--inline { display: contents; }
+#custom-fonts .bulkactions {
+    display: none;
+}

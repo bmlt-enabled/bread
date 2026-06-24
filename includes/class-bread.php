@@ -240,15 +240,15 @@ class Bread
         $fonts = [
             'dejavusanscondensed' => ['name' => 'DejaVu Sans Condensed',
                                       'letterform' => 'Sans-Serif',
-                                      'scripts' => ['latin', 'latin-ext', 'cyrillic', 'cyrillic-ext', 'greek', 'greek-ext', 'arabic', 'vietnamese', 'hebrew'],
+                                      'scripts' => ['latin', 'cyrillic', 'cyrillic', 'greek', 'greek', 'arabic', 'vietnamese', 'hebrew'],
                                       'specimen' => '<a href="https://dejavu-fonts.github.io/" target="_blank">DejaVu Fonts</a>',],
             'dejavuserifcondensed' => ['name' => 'DejaVu Serif Condensed',
                                       'letterform' => 'Serif',
-                                      'scripts' => ['latin', 'latin-ext', 'cyrillic', 'cyrillic-ext', 'greek', 'greek-ext'],
+                                      'scripts' => ['latin', 'latin', 'cyrillic', 'cyrillic', 'greek', 'greek'],
                                       'specimen' => '<a href="https://dejavu-fonts.github.io/" target="_blank">DejaVu Fonts</a>',],
             'dejavusansmono' => ['name' => 'DejaVu Sans Mono',
                                       'letterform' => 'Monospace',
-                                      'scripts' => ['latin', 'latin-ext', 'cyrillic', 'cyrillic-ext', 'greek', 'greek-ext', 'arabic', 'vietnamese'],
+                                      'scripts' => ['latin', 'latin', 'cyrillic', 'cyrillic', 'greek', 'greek', 'arabic', 'vietnamese'],
                                       'specimen' => '<a href="https://dejavu-fonts.github.io/" target="_blank">DejaVu Fonts</a>',],
             'chelvetica'    => ['name' => 'Helvetica (PDF Core Font)',
                                 'letterform' => 'Sans-Serif',
@@ -428,7 +428,6 @@ class Bread
         }
 
         $this->load_dependencies();
-        $this->set_locale();
         $this->load_translations();
         $this->define_admin_hooks();
         $this->define_public_hooks();
@@ -468,7 +467,6 @@ class Bread
      * Include the following files that make up the plugin:
      *
      * - Bread_Loader. Orchestrates the hooks of the plugin.
-     * - Bread_i18n. Defines internationalization functionality.
      * - Bread_Admin. Defines all hooks for the admin area.
      * - Bread_Public. Defines all hooks for the public side of the site.
      *
@@ -486,12 +484,6 @@ class Bread
          * core plugin.
          */
         include_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-bread-loader.php';
-
-        /**
-         * The class responsible for defining internationalization functionality
-         * of the plugin.
-         */
-        include_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-bread-i18n.php';
 
         /**
          * The class responsible for defining all actions that occur in the admin area.
@@ -517,22 +509,6 @@ class Bread
         $this->loader = new Bread_Loader();
     }
 
-    /**
-     * Define the locale for this plugin for internationalization.
-     *
-     * Uses the Bread_i18n class in order to set the domain and to register the hook
-     * with WordPress.
-     *
-     * @since  2.8.0
-     * @access private
-     */
-    private function set_locale()
-    {
-
-        $plugin_i18n = new Bread_i18n();
-
-        $this->loader->add_action('plugins_loaded', $plugin_i18n, 'load_plugin_textdomain');
-    }
     /**
      * Register all of the hooks related to the admin area functionality
      * of the plugin.
