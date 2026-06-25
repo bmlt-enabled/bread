@@ -182,8 +182,11 @@ class BreadLoadableFonts
             foreach ($this->custom_fonts as $key => &$font) {
                 $font['actions'] = $this->calcActions($key);
             }
-            $this->addAdminHooks();
-            $this->addPublicHooks();
+            if (is_admin()) {
+                $this->addAdminHooks();
+            } else {
+                $this->addPublicHooks();
+            }
         }
         public function addAdminHooks()
         {

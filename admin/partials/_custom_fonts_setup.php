@@ -143,7 +143,7 @@ class Bread_Custom_Fonts_Table extends WP_List_Table
         $script = $_GET['script'] ?? '*'; ?>
         <form method="GET" action="#" id="filter-fonts-form">
         <input type="hidden" name="page" value="<?php echo esc_attr($_REQUEST['page']);?>">
-        <input type="hidden" name="view" value="<?php echo esc_attr($_REQUEST['view'] ?? '*');?>">
+        <input type="hidden" name="view" value="<?php echo esc_attr($_REQUEST['view'] ?? 'all');?>">
         <label for="filter-fonts-by-script" class="screen-reader-text">Filter by supported scripts</label>
         <select name="script" id="filter-fonts-by-script" class="bread-font-filter">
             <option <?php echo esc_attr($this->selected($script, '*')); ?> value="*">All scripts</option>
