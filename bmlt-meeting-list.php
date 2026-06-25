@@ -11,7 +11,7 @@
  * Plugin Name:       Bread
  * Plugin URI:        https://bmlt.app
  * Description:       Maintains and generates PDF Meeting Lists from BMLT.
- * Version:           2.9.15
+ * Version:           2.10.0
  * Author:            bmlt-enabled
  * Author URI:        https://bmlt.app/
  * License:           GPL-2.0+
@@ -30,7 +30,7 @@ if (! defined('WPINC')) {
  * Start at version 2.8.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define('BREAD_VERSION', '2.9.13');
+define('BREAD_VERSION', '2.10.0');
 
 /**
  * The code that runs during plugin activation.
@@ -61,6 +61,7 @@ register_deactivation_hook(__FILE__, 'Bread_deactivate');
  */
 require plugin_dir_path(__FILE__) . 'includes/class-bread.php';
 require plugin_dir_path(__FILE__) . 'includes/class-bread-bmlt.php';
+require plugin_dir_path(__FILE__) . 'bread_loadable_fonts/class-bread-loadable-fonts.php';
 /**
  * Begins execution of the plugin.
  *

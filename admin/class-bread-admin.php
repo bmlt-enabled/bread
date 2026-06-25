@@ -73,12 +73,16 @@ class Bread_Admin
         wp_enqueue_style("spectrum", plugin_dir_url(__FILE__) . "css/spectrum.min.css", false, BREAD_VERSION, 'all');
         wp_enqueue_style("tooltipster", plugin_dir_url(__FILE__) . "css/tooltipster.bundle.min.css", false, BREAD_VERSION, 'all');
         wp_enqueue_style("tooltipster-noir", plugin_dir_url(__FILE__) . "css/tooltipster-sideTip-noir.min.css", false, BREAD_VERSION, 'all');
-        wp_enqueue_style("admin", plugin_dir_url(__FILE__) . "css/admin.css", false, BREAD_VERSION, 'all');
-        wp_enqueue_style("bread-fonts", plugin_dir_url(__FILE__) . "css/admin-fonts.css", false, BREAD_VERSION, 'all');
+        wp_enqueue_style("bread-admin", plugin_dir_url(__FILE__) . "css/admin.css", false, BREAD_VERSION, 'all');
         wp_enqueue_style("select2", plugin_dir_url(__FILE__) . "css/select2.min.css", false, BREAD_VERSION, 'all');
+        wp_add_inline_style("bread-admin", $this->generate_custom_fonts_script());
         wp_enqueue_style("smartWizard-dots", plugin_dir_url(__FILE__) . "css/smart_wizard_dots.css", false, BREAD_VERSION, 'all');
     }
-
+    public function generate_custom_fonts_script(): string
+    {
+        $dir = plugin_dir_url(__FILE__);
+        return apply_filters('bread_content_style', "@import url('$dir/css/fonts.css');");
+    }
     /**
      * Register the JavaScript for the admin area.
      *
@@ -97,6 +101,7 @@ class Bread_Admin
         wp_enqueue_script("tooltipster", plugin_dir_url(__FILE__) . "js/tooltipster.bundle.min.js", array('jquery'), "1.2", true);
         wp_enqueue_script("spectrum", plugin_dir_url(__FILE__) . "js/spectrum.min.js", array('jquery'), "1.2", true);
         wp_enqueue_script("select2", plugin_dir_url(__FILE__) . "js/select2.min.js", array('jquery'), "1.2", true);
+        wp_enqueue_script("dayjs", plugin_dir_url(__FILE__) . "js/dayjs.min.js", array('jquery'), "1.2", true);
         wp_enqueue_script("fetch-jsonp", plugin_dir_url(__FILE__) . "js/fetch-jsonp.js", array('jquery'), "1.30", true);
         wp_enqueue_script("smartWizard", plugin_dir_url(__FILE__) . "js/jquery.smartWizard.js", array('jquery'), "6.0.6", true);
         wp_enqueue_script("breadWizard", plugin_dir_url(__FILE__) . "js/bread-wizard.js", array('smartWizard'), BREAD_VERSION, true);
@@ -198,51 +203,31 @@ class Bread_Admin
         }
         return $plugins_array;
     }
-
     // Enable font size & font family selects in the editor
     function tiny_tweaks($initArray)
     {
         if (function_exists('get_current_screen')) {
             $screen = get_current_screen();
+            $fonts = $this->bread->getAvailableFonts();
+            $active_fonts = $this->bread->getActiveFonts();
             if ($screen != null && str_ends_with($screen->id, $this->bmltEnabled_admin->getSlug())) {
                 $initArray['fontsize_formats'] = "5pt 6pt 7pt 8pt 9pt 10pt 11pt 12pt 13pt 14pt 15pt 16pt 17pt 18pt 19pt 20pt 22pt 24pt 26pt 28pt 30pt 32pt 34pt 36pt 38pt";
                 $initArray['theme_advanced_blockformats'] = 'h2,h3,h4,p';
                 $initArray['wordpress_adv_hidden'] = false;
-                $initArray['font_formats'] = 'Arial (Sans-Serif)=arial;';
-                $initArray['font_formats'] .= 'Times (Sans-Serif)=times;';
-                $initArray['font_formats'] .= 'Courier (Monospace)=courier;';
-                $initArray['font_formats'] .= 'DejaVu (Sans-Serif)=DejaVuSansCondensed;';
-                $dir = plugin_dir_url(__FILE__);
-                $font = $this->bread->getOption('base_font');
-                if ($font == 'dejavusanscondensed') {
-                    $initArray['content_style'] = "@import url('$dir/css/fonts.css'); body { font-family: DejaVuSansCondensed; }";
-                } elseif ($font == 'times') {
-                    $initArray['content_style'] = "@import url('$dir/css/fonts.css'); body { font-family: Times; }";
-                } elseif ($font == 'courier') {
-                    $initArray['content_style'] = "@import url('$dir/css/fonts.css'); body { font-family: Courier; }";
-                } else {
-                    $initArray['content_style'] = "@import url('$dir/css/fonts.css'); body { font-family: Arial; }";
+                $initArray['font_formats'] = '';
+                foreach ($fonts as $font_key => $font_info) {
+                    if (!in_array($font_key, $active_fonts)) {
+                        continue;
+                    }
+                    $font_name = $font_info['name'];
+                    $initArray['font_formats'] .= "$font_name=$font_key;";
                 }
-                //$initArray['content_style'] = "body { font-family: Arial; }";
+                $font = $this->bread->getOption('base_font');
+                $initArray['content_style'] = $this->generate_custom_fonts_script();
+                $initArray['content_style'] .= "body { font-family: $font; }";
             }
         }
         return $initArray;
-    }
-    function is_root_server_missing()
-    {
-        if (!function_exists('get_current_screen')) {
-            return;
-        }
-        $screen = get_current_screen();
-        if ($screen != null && str_ends_with($screen->id, $this->bmltEnabled_admin->getSlug())) {
-            $root_server = $this->bread->getOption('root_server');
-            if ($root_server == '') {
-                echo '<div id="message" class="error"><p>Missing BMLT Server in settings for bread.</p>';
-                $url = admin_url('options-general.php?page=class-bread-admin.php');
-                echo "<p><a href='" . esc_url($url) . "'>Settings</a></p>";
-                echo '</div>';
-            }
-        }
     }
 
     function pwsix_process_rename_settings()
@@ -421,36 +406,6 @@ class Bread_Admin
     {
         $this->bread->updateOptions();
     }
-    public function getLatestRootVersion()
-    {
-        $results = $this->get("https://api.github.com/repos/bmlt-enabled/bmlt-root-server/releases/latest");
-        $httpcode = wp_remote_retrieve_response_code($results);
-        $response_message = wp_remote_retrieve_response_message($results);
-        if ($httpcode != 200 && $httpcode != 302 && $httpcode != 304 && ! empty($response_message)) {
-            return 'Problem Connecting to Server!';
-        };
-        $body = wp_remote_retrieve_body($results);
-        $result = json_decode($body, true);
-        return $result['name'];
-    }
-    function get($url, $cookies = array())
-    {
-        $args = array(
-            'timeout' => '120',
-            'cookies' => $cookies,
-        );
-        if (isset($this->options['user_agent'])
-            && $this->bread->getOption('user_agent') != 'None'
-        ) {
-            $args['headers'] = array(
-                'User-Agent' => $this->bread->getOption('user_agent')
-            );
-        }
-        if ($this->bread->getOption('sslverify') == '1') {
-            $args['sslverify'] = false;
-        }
-        return wp_remote_get($url, $args);
-    }
     /**
      * @desc Adds the options sub-panel
      */
@@ -473,9 +428,51 @@ class Bread_Admin
             2
         );
     }
+    private function outputSuccess(string $str)
+    {
+        echo '<div class="notice notice-success is-dismissible">';
+        echo '<p style="color: #000;">'.esc_html($str).'</p>';
+        echo '</div>';
+    }
+    private function outputWarning(string $str)
+    {
+        echo '<div class="notice notice-error is-dismissible">';
+        echo '<p style="color: #F00;">'.esc_html($str).'</p>';
+        echo '</div>';
+    }
     function admin_options_page()
     {
         $filename = '';
+        if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_GET['fontAction'])) {
+            $action = sanitize_key($_GET['fontAction']);
+            if (!wp_verify_nonce($_GET['nonce'], 'bread_font_action')) {
+                wp_die('Request invalid due to timeout');
+            }
+            switch ($action) {
+                case 'success':
+                    if (isset($_GET['message'])) {
+                        $this->outputSuccess(esc_html($_GET['message']));
+                    }
+                    break;
+                case 'warning':
+                    $this->outputWarning(esc_html($_GET['message']));
+                    break;
+                default:
+                    $fonts = $this->bread->getAvailableFonts();
+                    $font = $_GET['font'];
+                    if (!isset($fonts[$font])) {
+                        wp_die('Request invalid');
+                    }
+                    if (!isset($fonts[$font]['actions'])) {
+                        wp_die('Request invalid');
+                    }
+                    if (!isset($fonts[$font]['actions'][$action])) {
+                        wp_die('Request invalid');
+                    }
+                    call_user_func($fonts[$font]['actions'][$action]['lambda'], $font);
+                    break;
+            }
+        }
         if (!empty($_POST['pwsix_action']) && (!isset($_POST['bmltmeetinglistsave']) || $_POST['bmltmeetinglistsave'] != 'Save Changes')) {
             switch ($_POST['pwsix_action']) {
                 case 'settings_admin':
@@ -490,6 +487,7 @@ class Bread_Admin
                 case 'import_settings':
                     $filename = $this->pwsix_process_settings_import();
                     break;
+                case 'uploadFont':
                 default:
                     break;
             }
@@ -521,9 +519,9 @@ class Bread_Admin
         $settings['page_size'] = $layoutInfos[1];
         $settings['authors'] = array();
         $settings['root_server'] = sanitize_url($_POST['wizard_root_server']);
+        $settings['service_bodies'] = [];
         for ($i = 0; $i < count($_POST['wizard_service_bodies']); $i++) {
-            $j = $i + 1;
-            $settings['service_body_' . $j] = sanitize_text_field($_POST['wizard_service_bodies'][$i]);
+            $settings['service_bodies'][] = sanitize_text_field($_POST['wizard_service_bodies'][$i]);
         }
         $settings['used_format_1'] = intval($_POST['wizard_format_filter']);
         $settings['weekday_language'] = sanitize_key($_POST['wizard_language']);
@@ -675,7 +673,7 @@ class Bread_Admin
                 isset($_POST['pagenumbering_font_size']) ?
                     floatval($_POST['pagenumbering_font_size']) : '9'
             );
-            $this->bread->setOption('used_format_1', sanitize_text_field($_POST['used_format_1']));
+            $this->bread->setOption('used_format_1', isset($_POST['used_format_1']) ? sanitize_text_field($_POST['used_format_1']) : '');
             $this->bread->setOption('recurse_service_bodies', isset($_POST['recurse_service_bodies']) ? 1 : 0);
             $this->bread->setOption('extra_meetings_enabled', isset($_POST['extra_meetings_enabled']) ? intval($_POST['extra_meetings_enabled']) : 0);
             $this->bread->setOption('include_protection', boolval($_POST['include_protection']));
@@ -709,11 +707,7 @@ class Bread_Admin
             $this->bread->setOption('remove_space', boolval($_POST['remove_space']));
             $this->bread->setOption('content_line_height', floatval($_POST['content_line_height']));
             $this->bread->setOption('root_server', sanitize_url($_POST['root_server']));
-            $this->bread->setOption('service_body_1', sanitize_text_field($_POST['service_body_1']));
-            $this->bread->setOption('service_body_2', sanitize_text_field($_POST['service_body_2']));
-            $this->bread->setOption('service_body_3', sanitize_text_field($_POST['service_body_3']));
-            $this->bread->setOption('service_body_4', sanitize_text_field($_POST['service_body_4']));
-            $this->bread->setOption('service_body_5', sanitize_text_field($_POST['service_body_5']));
+            $this->bread->setOption('service_bodies', isset($_POST['service_bodies']) ? array_map('sanitize_text_field', $_POST['service_bodies']) : array());
             $this->bread->setOption('cache_time', intval($_POST['cache_time']));
             $this->bread->setOption('custom_query', sanitize_text_field($_POST['custom_query']));
             $this->bread->setOption('additional_list_custom_query', sanitize_text_field($_POST['additional_list_custom_query']));

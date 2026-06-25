@@ -15,6 +15,14 @@ function Bread_bmlt_server_setup_page_render(Bread_AdminDisplay $breadAdmin)
         }
     }
     ?>
+<script type="text/javascript">
+    window.bread_admin = {};
+    window.bread_admin.root_server = '<?php echo esc_js($bread->getOption('root_server')); ?>';
+    window.bread_admin.service_bodies_selected = <?php echo json_encode($bread->getOption('service_bodies')); ?>.map(x => x.split(',')[1]);
+    window.bread_admin.extra_meetings = <?php echo json_encode($bread->getOption('extra_meetings')); ?>;
+    window.bread_admin.used_format = '<?php echo esc_js($bread->getOption('used_format_1')); ?>';
+    window.bread_admin.additional_list_format_key = '<?php echo esc_js($bread->getOption('additional_list_format_key')); ?>';
+</script>
 <div id="poststuff">
     <div id="postbox-container" class="postbox-container">
         <div id="normal-sortables" class="meta-box-sortables ui-sortable">
@@ -23,49 +31,30 @@ function Bread_bmlt_server_setup_page_render(Bread_AdminDisplay $breadAdmin)
                 <div class="inside">
                     <p>
                         <label for="root_server"><?php esc_html_e('BMLT Server URL: ', 'bread') ?></label>
-                        <input class="bmlt-input" id="root_server" type="text" name="root_server" value="<?php echo esc_url($bread->getOption('root_server')); ?>" />
-                    </p>
-                    <?php
-                    if ($breadAdmin->isConnected()) {
-                        echo wp_kses($breadAdmin->getServerVersion(), 'post');
-                        echo '<input type="hidden" id="user_agent" value="' . esc_html($bread->getOption('user_agent')) . '" />';
-                        if ($bread->getOption('sslverify') == '1') { ?>
-                            <p>
-                                <input type="checkbox" id="sslverify" name="sslverify" value="1" checked />
-                                <label for="sslverify"><?php esc_html_e('Disable SSL verification of server', 'bread') ?></label>
-                        <?php }
-                    } elseif ($bread->emptyOption('root_server')) {
-                        echo "<span style='color: #f00;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-dismiss'></div>".esc_html(__('ERROR: Please enter a BMLT Server', 'bread'))."</span>";
-                        echo '<input type="hidden" id="user_agent" value="' . esc_html($bread->getOption('user_agent')) . '" />';
-                        if ($bread->getOption('sslverify') == '1') { ?>
-                            <p>
-                                <input type="checkbox" id="sslverify" name="sslverify" value="1" checked />
-                                <label for="sslverify"><?php esc_html_e('Disable SSL verification of server', 'bread') ?></label>
-                            </p>
-                        <?php }
-                    } else {
-                        ?><span style='color: #f00;'>
-                            <div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-dismiss'></div><?php esc_html_e('ERROR: Problem Connecting to BMLT Server', 'bread') ?><br /><?php echo esc_html($bread->bmlt()->connection_error); ?>
+                        <input class="bmlt-input" id="root_server" type="text" name="root_server" value="<?php echo esc_url($bread->getOption('root_server')); ?>"
+                            onKeypress="root_server_keypress(event)" onChange="test_root_server()" />
+                        <span id="connected_message" style="display:none; color:green;">
+                            <span style='font-size: 16px;vertical-align: text-top;' class='dashicons dashicons-yes'></span>
+                            Version: <span id="server_version"></span>
                         </span>
-                        <p>
-                            <label for="user_agent"><?php esc_html_e('Try a different user agent or "None" for Wordpress default: ', 'bread') ?></label>
-                            <input class="bmlt-input" id="user_agent" type="text" name="user_agent" value="<?php echo esc_attr($bread->getOption('user_agent')); ?>" />
-                        </p>
-                        <p>
-                            <input type="checkbox" id="sslverify" name="sslverify" value="1" <?php echo $bread->getOption('sslverify') ? 'checked' : ''; ?> />
-                            <label for="sslverify"><?php esc_html_e('Disable SSL verification of server', 'bread') ?></label>
-                        </p>
-                        <?php
-                    }
-                    ?>
+                        <span id="disconnected_message" style="display:none; color:red;">
+                            <span style='font-size: 16px;vertical-align: text-top;' class='dashicons dashicons-no'></span>
+                            <?php esc_html_e('ERROR: Problem Connecting to BMLT Server', 'bread') ?>
+                        </span>
+                    </p>
                     <p>
                         <input type="checkbox" id="use_aggregator" name="use_aggregator" value="1" />
                         <label for="use_aggregator"><?php esc_html_e('Use Aggregator &#127813;', 'bread') ?></label>
                         <span title='<p>The aggregator collects meeting data <br/>from all known root servers and pretends to be one large server</p><p>This can be useful to use if you want to display meetings outside <br/>of your server, for instance a statewide listing where the state <br/>covers multiple root servers<br/>Another good use case is if you want to display meetings by users<br/> location</p>' class="tooltip"></span>
                     </p>
-                    <ul><?php $breadAdmin->select_service_bodies(); ?></ul>
+                    <p>
+                        <label for="service_bodies"><?php esc_html_e('Service Bodies: ', 'bread') ?></label>
+                        <select class="bread-select" style="width: 400px;" data-placeholder="<?php esc_html_e('Choose up to 5 service bodies', 'bread') ?>" id="service_bodies" name="service_bodies[]" multiple="multiple">
+                            <?php esc_html_e('Select Service Bodies', 'bread'); ?>">
+                        </select>
+                    </p>
                     <div>
-                        <input type="checkbox" name="recurse_service_bodies" value="1" <?php echo ($bread->getOption('recurse_service_bodies') == 1 ? 'checked' : '') ?> /> <?php esc_html_e('Recurse Service Bodies', 'bread') ?>
+                        <input type="checkbox" name="recurse_service_bodies" id="recurse_service_bodies" value="1" <?php echo ($bread->getOption('recurse_service_bodies') == 1 ? 'checked' : '') ?> /> <?php esc_html_e('Recurse Service Bodies', 'bread') ?>
                     </div>
                 </div>
             </div>
@@ -97,21 +86,14 @@ function Bread_bmlt_server_setup_page_render(Bread_AdminDisplay $breadAdmin)
                 </div>
                 <h3 class="hndle"><?php esc_html_e('Include Extra Meetings', 'bread') ?><span class="my-tooltip" data-tooltip-content="#extrameetings-tooltip-content"><span class="tooltipster-icon">(?)</span></span></h3>
                 <div class="inside">
-                    <?php if ($breadAdmin->isConnected() && $bread->getOption('extra_meetings_enabled') == 1) {?>
-                        <select id="extra_meetings" class="bread-select" id="extra_meetings" name="extra_meetings[]" multiple="multiple">
-                        <?php
-                            $extra_meetings_array = $bread->bmlt()->get_all_meetings();
-                            echo "<option value=''>Select Extra Meetings</option>";
-                        foreach ($extra_meetings_array as $id => $descr) {
-                            $selected = $bread->getOption('extra_meetings') != '' && in_array($id, $bread->getOption('extra_meetings')) ? 'selected' : '';
-                            echo "<option " . esc_attr($selected) . " value='" . esc_attr($id) . "'>" . esc_html($descr) . "</option>";
-                        }
-                        ?>
+                        <div id="fetching_meetings" style="margin:20px;" style="display:none;">
+                                Fetching meetings from server...
+                        </div>
+                        <select class="bread-select" style="width: 400px;" data-placeholder="<?php esc_html_e('Extra Meetings', 'bread') ?>" id="extra_meetings" name="extra_meetings[]" multiple="multiple">
                         </select>
-                        <p><?php esc_html_e('Hint: Type a group name, weekday or area to narrow down your choices.', 'bread') ?></p>
-                    <?php }?>
+                        <p id="extra_meetings_hint"><?php esc_html_e('Hint: Type a group name, weekday or area to narrow down your choices.', 'bread') ?></p>
                     <div>
-                        <input type="checkbox" name="extra_meetings_enabled" value="1" <?php echo (!$bread->emptyOption('extra_meetings_enabled') && $bread->getOption('extra_meetings_enabled') == 1 ? 'checked' : '') ?> /><?php esc_html_e('Extra Meetings Enabled', 'bread') ?>
+                        <input type="checkbox" id="extra_meetings_enabled" name="extra_meetings_enabled" value="1" <?php echo (!$bread->emptyOption('extra_meetings_enabled') && $bread->getOption('extra_meetings_enabled') == 1 ? 'checked' : '') ?> /><?php esc_html_e('Extra Meetings Enabled', 'bread') ?>
                     </div>
                 </div>
 

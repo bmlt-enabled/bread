@@ -19,6 +19,7 @@ include_once '_front_page_setup.php';
 include_once '_meetings_setup.php';
 include_once '_custom_section_setup.php';
 include_once '_backup_restore_setup.php';
+include_once '_custom_fonts_setup.php';
 class Bread_AdminDisplay
 {
 
@@ -32,71 +33,18 @@ class Bread_AdminDisplay
     {
         $this->admin = $admin;
         $this->bread = $admin->get_bread_instance();
-        $this->refresh_status();
-    }
-    private function refresh_status()
-    {
-        $serverInfo = $this->bread->bmlt()->testRootServer();
-        $this->connected = is_array($serverInfo) && array_key_exists("version", $serverInfo[0]) ? $serverInfo[0]["version"] : '';
-        if ($this->connected) {
-            $this->unique_areas = $this->bread->bmlt()->get_areas();
-            asort($this->unique_areas);
-            if ($serverInfo[0]["aggregator_mode_enabled"] ?? false) {
-                $this->server_version = "<span style='color: #00AD00;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-admin-site'></div>".__('Using Tomato Server', 'bread')."</span>";
-            } elseif ($this->connected) {
-                /* translators: string is the version number of the BMLT Server */
-                $this->server_version = "<span style='color: #0A8ADD;'><div style='font-size: 16px;vertical-align: middle;' class='dashicons dashicons-smiley'></div>".sprintf(__('Your BMLT Server is running %s', 'bread'), esc_html($this->connected)). "</span>";
-            }
-        }
-    }
-    public function isConnected()
-    {
-        return $this->connected;
     }
     public function getBreadInstance()
     {
         return $this->bread;
     }
+    public function getAdmin()
+    {
+        return $this->admin;
+    }
     public function getServerVersion()
     {
         return $this->server_version;
-    }
-    public function select_service_bodies()
-    {
-        for ($i = 1; $i <= 5; $i++) { ?>
-            <li><label for="service_body_<?php echo esc_html($i); ?>"><?php
-                /* translators: Bread can query up to five servers, the string is the number 1-5 */
-                echo esc_html(sprintf(__('Service Body %d', 'bread'), $i)) ?>: </label>
-                <select class="bread_service_body_select" id="service_body_<?php echo esc_html($i); ?>" name="service_body_<?php echo esc_html($i); ?>"><?php
-                if ($this->connected) {
-                    $this->select_service_body_options($i);
-                } else { ?>
-                        <option selected value=""><?php echo 'Not Connected - Cannot get Service Bodies'; ?></option><?php
-                } ?>
-                </select>
-            </li><?php
-        }
-    }
-    private function select_service_body_options(int $i)
-    {
-        ?>
-        <option value="Not Used">Not Used</option>
-        <?php
-        foreach ($this->unique_areas as $area) {
-            $area_data = explode(',', $area);
-            $area_name = $this->bread->arraySafeGet($area_data);
-            $area_id = $this->bread->arraySafeGet($area_data, 1);
-            $area_parent = $this->bread->arraySafeGet($area_data, 2);
-            $area_parent_name = $this->bread->arraySafeGet($area_data, 3);
-            $descr = $area_name . " (" . $area_id . ") " . $area_parent_name . " (" . $area_parent . ")";
-            $selected = '';
-            $sb = esc_html($this->bread->getOption("service_body_$i"));
-            $area_selected = explode(',', $sb);
-            if ($this->bread->arraySafeGet($area_selected) != "Not Used" && $area_id == $this->bread->arraySafeGet($area_selected, 1)) {
-                $selected = 'selected';
-            } ?>
-            <option <?php echo esc_attr($selected); ?> value="<?php echo esc_html($area) ?>"><?php echo esc_html($descr) ?></option><?php
-        }
     }
     function admin_options_page($filename = '')
     {
@@ -141,6 +89,7 @@ class Bread_AdminDisplay
                 <ul class="nav">
                     <li><a href="#instructions"><?php esc_html_e('Getting Started', 'bread'); ?></a></li>
                     <li><a href="#editor" id='click-customizer'><?php esc_html_e('Customizer', 'bread'); ?></a></li>
+                    <li><a href="#custom-fonts"><?php esc_html_e('Custom Fonts', 'bread'); ?></a></li>
                     <li><a href="#import-export"><?php esc_html_e('Backup/ Restore', 'bread'); ?></a></li>
                 </ul>
                 <div id="instructions">
@@ -159,7 +108,6 @@ class Bread_AdminDisplay
         <?php wp_nonce_field('closedpostboxes', 'closedpostboxesnonce', false); ?>
         <?php wp_nonce_field('meta-box-order', 'meta-box-order-nonce', false); ?>
         <?php wp_nonce_field('bmltmeetinglistupdate-options'); ?>
-        <?php $this->refresh_status(); ?>
                         <div id="tabs-first" class="tab-content">
         <?php Bread_bmlt_server_setup_page_render($this); ?>
                         </div>
@@ -183,6 +131,9 @@ class Bread_AdminDisplay
                             <br class="clear">
         <?php } ?>
                     </form>
+                </div>
+                <div id="custom-fonts">
+        <?php Bread_custom_fonts_setup_page_render($this); ?>
                 </div>
                 <div id="import-export">
         <?php Bread_backup_restore_setup_page_render($this); ?>

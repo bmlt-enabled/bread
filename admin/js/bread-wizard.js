@@ -1,6 +1,6 @@
 jQuery(document).ready(function($){
-    var BreadWizard = function() {
-        ask_bmlt = function(query, success, fail) {
+    window.BreadWizard = {};
+    BreadWizard.ask_bmlt = function(query, success, fail) {
             const url = $("#wizard_root_server").val()+"/client_interface/jsonp/?"+query;
             fetchJsonp(url)
               .then((response) => {
@@ -18,7 +18,7 @@ jQuery(document).ready(function($){
                 return false;
             })
         }
-        BreadWizard.prototype.ajax_submit = function() {
+        BreadWizard.ajax_submit = function() {
             $(".saving").show();
             var myform = document.getElementById("wizard_form");
             var formData = new FormData(myform);
@@ -33,34 +33,32 @@ jQuery(document).ready(function($){
                 return response.json();
               })
               .then((resp) => {
-                finalInstructions(resp);
+                BreadWizard.finalInstructions(resp);
               })
               .catch((error) => {
                 // Handle error
                 console.log("error ", error);
               });
           }
-        var href;
-        var setting;
-        finalInstructions = function(response) {
+        BreadWizard.finalInstructions = function(response) {
             $(".saving").hide();
             $('#wizard-before-create').hide();
             $('#wizard-after-create').show();
-            href = window.location.href.substring(0, window.location.href.indexOf('/wp-admin'));
-            setting = response.result.setting;
-            href = href+"?current-meeting-list="+setting;
-            const tag = '<div class="step-description"><pre>'+href+'</pre>';
+            BreadWizard.href = window.location.href.substring(0, window.location.href.indexOf('/wp-admin'));
+            BreadWizard.setting = response.result.setting;
+            BreadWizard.href = href+"?current-meeting-list="+BreadWizard.setting;
+            const tag = '<div class="step-description"><pre>'+BreadWizard.href+'</pre>';
             $('#wizard-show-link').html(tag);
         }
-        BreadWizard.prototype.generate_meeting_list = function() {
-            window.open(href, '_blank').focus();
+        BreadWizard.generate_meeting_list = function() {
+            window.open(BreadWizard.href, '_blank').focus();
         }
-        BreadWizard.prototype.redo_layout = function() {
-            $('#wizard_setting_id').val(setting);
+        BreadWizard.redo_layout = function() {
+            $('#wizard_setting_id').val(BreadWizard.setting);
             $('#bread-wizard').smartWizard("goToStep", 2);
         }
-        BreadWizard.prototype.test_root_server = function() {
-            ask_bmlt("switcher=GetServerInfo",
+        BreadWizard.test_root_server = function() {
+            BreadWizard.ask_bmlt("switcher=GetServerInfo",
             (info) => {
                 $('#wizard_root_server_result').removeClass('invalid-feedback dashicons-dismiss')
                     .addClass('valid-feedback dashicons-before dashicons-yes-alt').html($('#wizard_connected_message').html()+info[0].version);
@@ -70,14 +68,14 @@ jQuery(document).ready(function($){
                     .addClass('invalid-feedback dashicons-before dashicons-dismiss').html($('#wizard_disconnected_message').html());
             });
         }
-        BreadWizard.prototype.root_server_keypress = function(event) {
+        BreadWizard.root_server_keypress = function(event) {
             if (event.code == 'Enter') this.test_root_server();
         }
-        BreadWizard.prototype.root_server_changed = function() {
+        BreadWizard.root_server_changed = function() {
             $('#wizard_root_server_result').removeClass('valid-feedback').addClass('invalid-feedback dashicons-before dashicons-dismiss')
                 .html($('#wizard_testnow_message').html());
         }
-        BreadWizard.prototype.finish = function() {
+        BreadWizard.finish = function() {
             $('#bread-wizard').smartWizard("reset");
             var form = document.createElement("form");
             form.method = "POST";
@@ -85,12 +83,12 @@ jQuery(document).ready(function($){
             var input = document.createElement("input");
             input.type = "hidden";
             input.name = "current-meeting-list";
-            input.value = setting;
+            input.value = BreadWizard.setting;
             form.appendChild(input);
             document.body.appendChild(form);
             form.submit();
         }
-        write_service_body_with_childern = function(options, sb, parents, my_parent, level) {
+        BreadWizard.write_service_body_with_childern = function(options, sb, parents, my_parent, level) {
             let prefix = '';
             for (i=0; i<level; i++) prefix += '-';
             const sbVal = [sb.name,sb.id,sb.parent_id, my_parent].join(',');
@@ -98,10 +96,10 @@ jQuery(document).ready(function($){
             found = parents.find((p) => p.id == sb.id);
             if (typeof found !== 'undefined')
                 found.children.forEach((child) =>
-                    options = write_service_body_with_childern(options, child, parents, sb.name, level+1));
+                    options = BreadWizard.write_service_body_with_childern(options, child, parents, sb.name, level+1));
             return options;
         }
-        fill_service_bodies = function(service_bodies) {
+        BreadWizard.fill_service_bodies = function(service_bodies) {
             service_bodies = service_bodies.sort((a,b) => a.name.localeCompare(b.name));
             const roots = service_bodies.filter((sb) => sb.parent_id=='0');
             const parents = service_bodies.reduce((carry,item) => {
@@ -115,28 +113,28 @@ jQuery(document).ready(function($){
             }, []);
             let options = [];
             roots.forEach((sb) => {
-                options = write_service_body_with_childern(options, sb, parents, 'ROOT', 0);
+                options = BreadWizard.write_service_body_with_childern(options, sb, parents, 'ROOT', 0);
             });
             $('#wizard_service_bodies').html(options.join(''));
         }
-        fill_formats = function(formats) {
+        BreadWizard.fill_formats = function(formats) {
             const options = formats.reduce((carry,item) => {
                 carry.push('<option value="'+item.id+'">Only '+item.name_string+'</option>');
                 return carry;
             }, ['<option value="" selected>All Meetings</option>']);
             $('#wizard_format_filter').html(options.join(''));
         }
-        var hasVirtualMeetings = false;
-        layout_options = function(meetings) {
+        BreadWizard.hasVirtualMeetings = false;
+        BreadWizard.layout_options = function(meetings) {
             const meeting_count = meetings.length;
-            hasVirtualMeetings = meetings.some((m) => m.formats.split(',').some(format => ['VM','HY'].includes(format)));
+            BreadWizard.hasVirtualMeetings = meetings.some((m) => m.formats.split(',').some(format => ['VM','HY'].includes(format)));
             $('#wizard_meeting_count').html(meeting_count);
             const layouts = breadLayouts.find((layouts) => meeting_count <= Number(layouts.maxSize));
             const options = breadLayouts.reduce((carry,group) => {
                 const name = (group.maxSize == '99999') ? 'Very Large Fellowships' : 'Approx. '+group.maxSize+' meetings';
                 carry.push('<optgroup label="'+name+'">');
                 group.configurations.reduce((carryGroup, item, idx) => {
-                    carryGroup.push(...getOptionsFromFilename(group.maxSize, item, idx, layouts));
+                    carryGroup.push(...BreadWizard.getOptionsFromFilename(group.maxSize, item, idx, layouts));
                     return carryGroup;
                 }, carry);
                 carry.push('</optgroup>');
@@ -144,7 +142,7 @@ jQuery(document).ready(function($){
             }, []);
             $('#wizard_layout').html(options.join(''));
         }
-        getOptionsFromFilename = function(size, filename, idx, layouts) {
+        BreadWizard.getOptionsFromFilename = function(size, filename, idx, layouts) {
             const type = filename.split('-');
             const fold = type[0];
             const orientation = type[1];
@@ -156,7 +154,7 @@ jQuery(document).ready(function($){
                 return carry;
             },[]);
         }
-        lang_options = function() {
+        BreadWizard.lang_options = function() {
             const options = breadTranslations.reduce((carry,item)=>{
                 const selected = (item.key==='en') ? ' selected' : '';
                 carry.push('<option value="'+item.key+'"'+selected+'>'+item.name+'</option>')
@@ -168,15 +166,15 @@ jQuery(document).ready(function($){
                 $('#wizard-virtual-meeting-section').hide();
             }
         }
-        handle_error = function(error) {
+        BreadWizard.handle_error = function(error) {
             console.log(error);
             $('#bread-wizard').smartWizard("goToStep", 0);
         }
-        BreadWizard.prototype.getContent = function(idx, stepDirection, stepPosition, selStep, callback) {
+        BreadWizard.getContent = function(idx, stepDirection, stepPosition, selStep, callback) {
             switch(idx) {
                 case 1:
-                    ask_bmlt('switcher=GetServiceBodies', fill_service_bodies, handle_error);
-                    ask_bmlt('switcher=GetFormats', fill_formats, handle_error);
+                    BreadWizard.ask_bmlt('switcher=GetServiceBodies', BreadWizard.fill_service_bodies, BreadWizard.handle_error);
+                    BreadWizard.ask_bmlt('switcher=GetFormats', BreadWizard.fill_formats, BreadWizard.handle_error);
                     break;
                 case 2:
                     const services = $('#wizard_service_bodies').val().reduce((carry,item) => {
@@ -185,10 +183,10 @@ jQuery(document).ready(function($){
                     }, '&recursive=1');
                     const formats = (Number($('#wizard_format_filter').val()) > 0) ? '&formats='+$('#wizard_format_filter').val() : '';
 
-                    ask_bmlt('switcher=GetSearchResults'+services+formats, layout_options, handle_error);
+                    BreadWizard.ask_bmlt('switcher=GetSearchResults'+services+formats, BreadWizard.layout_options, BreadWizard.handle_error);
                     break;
                 case 3:
-                    lang_options();
+                    BreadWizard.lang_options();
                 case 4:
                     if ($("wizard_layout").val()=='') handle_error('Layout not defined');
                     $('#wizard-before-create').show();
@@ -198,8 +196,7 @@ jQuery(document).ready(function($){
             }
             callback();
         }
-    };
-    window.breadWizard = new BreadWizard();
+
 
     // SmartWizard initialize
     $('#bread-wizard').smartWizard(
@@ -213,9 +210,9 @@ jQuery(document).ready(function($){
             anchor: {
                 enableNavigation: false,
             },
-            getContent: breadWizard.getContent
+            getContent: BreadWizard.getContent
         }
-    );
+    )
     // Initialize the leaveStep event
     $("#bread-wizard").on("leaveStep", function(e, anchorObject, currentStepIndex, nextStepIndex, stepDirection) {
         switch(currentStepIndex) {
@@ -238,4 +235,4 @@ jQuery(document).ready(function($){
         max_selected_options:5,
         width: "62%"
     });
-});
+})

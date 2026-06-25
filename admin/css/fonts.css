@@ -22,3 +22,63 @@
     font-display: block;
     font-style: italic;
 }
+@font-face {
+    font-family:'DejaVuSerifCondensed';
+    src:url(../../../vendor/mpdf/mpdf/ttfonts/DejaVuSerifCondensed.ttf) format('truetype');
+    font-display: block;
+}
+@font-face {
+    font-family:'DejaVuSerifCondensed';
+    src:url(../../../vendor/mpdf/mpdf/ttfonts/DejaVuSerifCondensed-Bold.ttf) format('truetype');
+    font-display: block;
+    font-weight: bold;
+}
+@font-face {
+    font-family:'DejaVuSerifCondensed';
+    src:url(../../../vendor/mpdf/mpdf/ttfonts/DejaVuSerifCondensed-BoldOblique.ttf) format('truetype');
+    font-display: block;
+    font-weight: bold;
+    font-style: italic;
+}
+@font-face {
+    font-family:'DejaVuSerifCondensed';
+    src:url(../../../vendor/mpdf/mpdf/ttfonts/DejaVuSerifCondensed-Oblique.ttf) format('truetype');
+    font-display: block;
+    font-style: italic;
+}
+@font-face {
+    font-family:'DejaVuSansMono';
+    src:url(../../../vendor/mpdf/mpdf/ttfonts/DejaVuSansMono.ttf) format('truetype');
+    font-display: block;
+}
+@font-face {
+    font-family:'DejaVuSansMono';
+    src:url(../../../vendor/mpdf/mpdf/ttfonts/DejaVuSansMono-Bold.ttf) format('truetype');
+    font-display: block;
+    font-weight: bold;
+}
+@font-face {
+    font-family:'DejaVuSansMono';
+    src:url(../../../vendor/mpdf/mpdf/ttfonts/DejaVuSansMono-BoldOblique.ttf) format('truetype');
+    font-display: block;
+    font-weight: bold;
+    font-style: italic;
+}
+@font-face {
+    font-family:'DejaVuSansMono';
+    src:url(../../../vendor/mpdf/mpdf/ttfonts/DejaVuSansMono-Oblique.ttf) format('truetype');
+    font-display: block;
+    font-style: italic;
+}
+@font-face {
+   font-family: ccourier;
+   src: local('Courier');
+}
+@font-face {
+   font-family: ctimes;
+   src: local('Times New Roman');
+}
+@font-face {
+   font-family: chelvetica;
+   src: local('Helvetica');
+}

@@ -122,7 +122,7 @@ class Bread_ContentGenerator
             '<p>[page_break]</p>'           =>  '<pagebreak />',
             '[page_break]'                  =>  '<pagebreak />',
             '<!--nextpage-->'               =>  '<pagebreak />',
-            "[area]"                        =>  strtoupper($this->options['service_body_1']),
+            "[area]"                        =>  strtoupper($this->options['service_bodies'][0]),
             '<div>[new_column]</div>'       =>  '<columnbreak />',
             '<p>[new_column]</p>'           =>  '<columnbreak />',
             '[new_column]'                  =>  '<columnbreak />',
@@ -133,20 +133,20 @@ class Bread_ContentGenerator
             "[month]"                       => strtoupper(gmdate("F")),
             "[day]"                         => strtoupper(gmdate("j")),
             "[year]"                        => strtoupper(gmdate("Y")),
-            "[service_body]"                => strtoupper($this->options['service_body_1']),
-            "[service_body_1]"              => strtoupper($this->options['service_body_1']),
-            "[service_body_2]"              => strtoupper($this->options['service_body_2']),
-            "[service_body_3]"              => strtoupper($this->options['service_body_3']),
-            "[service_body_4]"              => strtoupper($this->options['service_body_4']),
-            "[service_body_5]"              => strtoupper($this->options['service_body_5']),
+            "[service_body]"                => (count($this->options['service_bodies']) > 0) ? explode(',', strtoupper($this->options['service_bodies'][0]))[0] : 'Not Used',
+            "[service_body_1]"              => (count($this->options['service_bodies']) > 0) ?explode(',', strtoupper($this->options['service_bodies'][0]))[0] : 'Not Used',
+            "[service_body_2]"              => (count($this->options['service_bodies']) > 1) ? explode(',', strtoupper($this->options['service_bodies'][1]))[0] : 'Not Used',
+            "[service_body_3]"              => (count($this->options['service_bodies']) > 2) ? explode(',', strtoupper($this->options['service_bodies'][2]))[0] : 'Not Used',
+            "[service_body_4]"              => (count($this->options['service_bodies']) > 3) ? explode(',', strtoupper($this->options['service_bodies'][3]))[0] : 'Not Used',
+            "[service_body_5]"              => (count($this->options['service_bodies']) > 4) ? explode(',', strtoupper($this->options['service_bodies'][4]))[0] : 'Not Used',
 
         );
         $this->shortcodes = apply_filters("Bread_Section_Shortcodes", $this->shortcodes, $this->bread->bmlt()->get_areas(), $formatsManager->getFormatsUsed());
         if ($this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full') {
-            $this->mpdf->DefHTMLFooterByName('MyFooter', '<div style="text-align:center;font-size:' . $this->options['pagenumbering_font_size'] . 'pt;font-style: italic;">' . $this->options['nonmeeting_footer'] . '</div>');
-            $this->mpdf->DefHTMLFooterByName('_default', '<div style="text-align:center;font-size:' . $this->options['pagenumbering_font_size'] . 'pt;font-style: italic;">' . $this->options['nonmeeting_footer'] . '</div>');
-            $this->mpdf->DefHTMLFooterByName('Meeting1Footer', '<div style="text-align:center;font-size:' . $this->options['pagenumbering_font_size'] . 'pt;font-style: italic;">' . $this->options['meeting1_footer'] . '</div>');
-            $this->mpdf->DefHTMLFooterByName('Meeting2Footer', '<div style="text-align:center;font-size:' . $this->options['pagenumbering_font_size'] . 'pt;font-style: italic;">' . $this->options['meeting2_footer'] . '</div>');
+            @$this->mpdf->DefHTMLFooterByName('MyFooter', '<div style="text-align:center;font-size:' . $this->options['pagenumbering_font_size'] . 'pt;font-style: italic;">' . $this->options['nonmeeting_footer'] . '</div>');
+            @$this->mpdf->DefHTMLFooterByName('_default', '<div style="text-align:center;font-size:' . $this->options['pagenumbering_font_size'] . 'pt;font-style: italic;">' . $this->options['nonmeeting_footer'] . '</div>');
+            @$this->mpdf->DefHTMLFooterByName('Meeting1Footer', '<div style="text-align:center;font-size:' . $this->options['pagenumbering_font_size'] . 'pt;font-style: italic;">' . $this->options['meeting1_footer'] . '</div>');
+            @$this->mpdf->DefHTMLFooterByName('Meeting2Footer', '<div style="text-align:center;font-size:' . $this->options['pagenumbering_font_size'] . 'pt;font-style: italic;">' . $this->options['meeting2_footer'] . '</div>');
         }
         if (!empty($this->options['pageheader_content'])) {
             $data = $this->standard_shortcode_replacement('pageheader');
@@ -580,17 +580,7 @@ class Bread_ContentGenerator
          * If we are selecting the meetings in the second list based on some format, we don't need another BMLT query.
          */
         if (empty($this->options['additional_list_format_key'])) {
-            $additional_list_query = true;
-            $sort_order = $this->options['additional_list_sort_order'];
-            if ($sort_order == 'same') {
-                $sort_order = 'weekday_tinyint,start_time';
-            }
-            $services = $this->bread->bmlt()->generateDefaultQuery();
-            if (!empty($this->options['additional_list_custom_query'])) {
-                $services = $this->options['additional_list_custom_query'];
-            }
-            $additional_list_query = "client_interface/json/?switcher=GetSearchResults$services&sort_keys=$sort_order";
-            $additional_meetinglist_result = $this->bread->bmlt()->get_configured_root_server_request($additional_list_query);
+            $additional_meetinglist_result = $this->bread->bmlt()->doAdditionalListQuery();
             $this->adjust_timezone($additional_meetinglist_result, $this->target_timezone);
         }
         if ($additional_list_query || $this->options['weekday_language'] != $this->options['additional_list_language']) {

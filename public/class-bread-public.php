@@ -3,10 +3,13 @@ if (! defined('ABSPATH')) {
     exit;
 }
 use Mpdf\Mpdf;
+use Mpdf\Config\ConfigVariables;
+use Mpdf\Config\FontVariables;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 
+define('MPDF_MODE', 'utf-8-s');  // Try to keep the file small by subsetting fonts and only including the characters we need.  This is especially important for languages with large character sets like Chinese, Japanese, and Korean.  If you have a lot of different characters in your meeting list, you may want to switch to 'utf-8' or 'c' mode which includes more characters but results in larger file sizes.
 /**
  * Main class for generating the PDF meeting list.
  *
@@ -19,7 +22,6 @@ use Monolog\Level;
  */
 class Bread_Public
 {
-
     /**
      * The ID of this plugin.
      *
@@ -67,6 +69,10 @@ class Bread_Public
         $this->version = $version;
         $this->bread = $bread;
         $this->options = $bread->getOptions();
+        add_shortcode('bread_button', array(
+                &$this,
+                "doBreadButton"
+            ));
     }
 
     /**
@@ -76,7 +82,9 @@ class Bread_Public
      */
     public function enqueue_styles()
     {
-        wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/bread-public.css', array(), $this->version, 'all');
+        if (($current = $this->doPreloading()) > 0) {
+            wp_enqueue_style('bread-public', plugin_dir_url(__FILE__) . 'css/bread-public.css', array(), $this->version, 'all');
+        }
     }
 
     /**
@@ -86,13 +94,78 @@ class Bread_Public
      */
     public function enqueue_scripts()
     {
-        wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/bread-public.js', array('jquery'), $this->version, false);
+        if (($current = $this->doPreloading()) > 0) {
+            wp_enqueue_script('fetch-jsonp', plugin_dir_url(__FILE__) . 'js/fetch-jsonp.js', array(), $this->version, true);
+            wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/bread-public.js', array('jquery','fetch-jsonp'), $this->version, true);
+            wp_localize_script($this->plugin_name, 'ajax_object', [
+                'ajax_url' => admin_url('admin-ajax.php'),
+                'nonce' => wp_create_nonce('bread-ajax-nonce'), // Can use the same even if there are multiple buttons on the page since WP nonces are single use but can be used multiple times within 24 hours
+            ]);
+        }
     }
-
-    public function bmlt_meeting_list($atts = null, $content = null)
+    /**
+     * Check if the shortcode is being used on this page.
+     *
+     * @return int the id of the configuration
+     */
+    private function doPreloading(): int
+    {
+        $post_to_check = get_post(get_the_ID());
+        $post_content = $post_to_check->post_content ?? '';
+        $tags = ['bread_button'];
+        preg_match_all('/' . get_shortcode_regex($tags) . '/', $post_content, $matches, PREG_SET_ORDER);
+        if (empty($matches)) {
+            return -1;
+        }
+        foreach ($matches as $shortcode) {
+            switch ($shortcode[2]) {
+                case 'bread_button':
+                    $atts = shortcode_parse_atts($shortcode[3]);
+                    return intval($atts['current_meeting_list']);
+            }
+        }
+        return -1;
+    }
+    public function generate_preload_configuration(): string
+    {
+        if (!wp_verify_nonce($_GET['nonce'], 'bread-ajax-nonce')) {
+            wp_die('Security check failed');
+        }
+        $id = intval($_GET['current-meeting-list'] ?? 1);
+        $options = $this->bread->getConfigurationForSettingId($id);
+        ob_clean();
+        wp_send_json([
+            'root_server' => $options['root_server'],
+            'main_query' => $this->bread->bmlt()->generateMainQuery('jsonp'),
+            'extra_meetings_query' => $this->bread->bmlt()->generateExtraMeetingQuery('jsonp'),
+            'additional_list_query' => $this->bread->bmlt()->generateAdditionalListQuery('jsonp'),
+            'weekday_language' => $options['weekday_language'],
+            'additional_list_language' => $options['additional_list_language'],
+        ]);
+        die();
+    }
+    public function doBreadButton($atts)
+    {
+        $label = $atts['label'] ?? 'Generate PDF';
+        $id = $atts['current_meeting_list'] ?? "1";
+        return "<form method='POST' target='_blank' class='bread_button_form'>".
+                    "<input type='hidden' name='nonce' value='".wp_create_nonce('bread-button-nonce')."'/>".
+                    "<input type='hidden' name='current-meeting-list' value='".$id."'/>".
+                    "<input type='hidden' name='preload' id='bread_preload_item'/>".
+                    "<input type='submit' class='bread_button' value='".$label."'/>".
+                "</form>";
+    }
+    public function bmlt_meeting_list()
     {
         if (!$this->bread->generatingMeetingList()) {
             return;
+        }
+        if (!empty($_POST['preload'])) {
+            if (! wp_verify_nonce($_POST['nonce'], 'bread-button-nonce')) {
+                die;
+            }
+            $preload = json_decode($_POST['preload'], true);
+            $this->bread->bmlt()->preload($preload);
         }
         $this->options = $this->bread->getConfigurationForSettingId($this->bread->getRequestedSetting());
         $import_streams = [];
@@ -102,7 +175,7 @@ class Bread_Public
             echo '<p><strong>bread Error: BMLT Server missing.<br/><br/>Please go to Settings -> bread and verify BMLT Server</strong></p>';
             exit;
         }
-        if ($this->options['service_body_1'] == 'Not Used' && true === ($this->options['custom_query'] == '')) {
+        if (count($this->options['service_bodies']) == 0 && true === ($this->options['custom_query'] == '')) {
             echo '<p><strong>bread Error: Service Body 1 missing from configuration.<br/><br/>Please go to Settings -> bread and verify Service Body</strong><br/><br/>Contact the bread administrator and report this problem!</p>';
             exit;
         }
@@ -128,13 +201,7 @@ class Bread_Public
                 exit;
             }
         }
-        $page_type_settings = $this->constuct_page_type_settings();
-        $default_font = $this->options['base_font'] == "freesans" ? "dejavusanscondensed" : $this->options['base_font'];
-        $mode = 's';
-        $mpdf_init_options = $this->construct_init_options($default_font, $mode, $page_type_settings);
-        if (isset($this->options['packTabledata']) && $this->options['packTabledata']) {
-            $mpdf_init_options['packTabledata'] = true;
-        }
+
         @ob_end_clean();
         // We load mPDF only when we need to and as late as possible.  This prevents
         // conflicts with other plugins that use the same PSRs in different versions
@@ -143,7 +210,12 @@ class Bread_Public
         include_once plugin_dir_path(__FILE__) . '../vendor/autoload.php';
         require_once __DIR__ . '/class-bread-content-generator.php';
         require_once __DIR__ . '/class-bread-format-manager.php';
-        $this->mpdf = new mPDF($mpdf_init_options);
+        $default_font = $this->options['base_font'];
+        $mpdf_init_options = $this->construct_init_options($default_font);
+        if (isset($this->options['packTabledata']) && $this->options['packTabledata']) {
+            $mpdf_init_options['packTabledata'] = true;
+        }
+        $this->mpdf = @new mPDF($mpdf_init_options);
         if (isset($this->options['logging']) && $this->options['logging']) {
             $logger = new Logger('bread-log');
             $site = '';
@@ -173,25 +245,9 @@ class Bread_Public
         if ($this->options['column_line'] == 1
             && ($this->options['page_fold'] == 'tri' || $this->options['page_fold'] == 'quad')
         ) {
-            $this->drawLinesSeperatingColumns($mode, $mpdf_init_options['format'], $default_font);
+            $this->drawLinesSeperatingColumns($mpdf_init_options['format'], $default_font);
         }
-        $sort_keys = 'weekday_tinyint,start_time,meeting_name';
-        $get_used_formats = '&get_used_formats';
-        $select_language = '';
-        if ($this->options['weekday_language'] != $this->bread->bmlt()->get_bmlt_server_lang()) {
-            $select_language = '&lang_enum=' . $this->getSingleLanguage($this->options['weekday_language']);
-        }
-        $services = $this->bread->bmlt()->generateDefaultQuery();
-        if (isset($_GET['custom_query'])) {
-            $services = $_GET['custom_query'];
-        } elseif ($this->options['custom_query'] !== '') {
-            $services = $this->options['custom_query'];
-        }
-        if ($this->options['used_format_1'] == '') {
-            $result = $this->bread->bmlt()->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=$sort_keys$get_used_formats$select_language");
-        } elseif ($this->options['used_format_1'] != '') {
-            $result = $this->bread->bmlt()->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults$services&sort_keys=$sort_keys&get_used_formats&formats[]=" . $this->options['used_format_1'] . $select_language);
-        }
+        $result = $this->bread->bmlt()->doMainQuery();
 
         if ($result == null) {
             echo "<script type='text/javascript'>\n";
@@ -201,14 +257,7 @@ class Bread_Public
             exit;
         }
         if (!empty($this->options['extra_meetings'])) {
-            $extras = "";
-            foreach ((array)$this->options['extra_meetings'] as $value) {
-                $data = array(" [", "]");
-                $value = str_replace($data, "", $value);
-                $extras .= "&meeting_ids[]=" . $value;
-            }
-
-            $extra_result = $this->bread->bmlt()->get_configured_root_server_request("client_interface/json/?switcher=GetSearchResults&sort_keys=" . $sort_keys . "" . $extras . "" . $get_used_formats . $select_language);
+            $extra_result = $this->bread->bmlt()->doExtraMeetingQuery();
             $formatsManager = null;
             if ($extra_result <> null) {
                 $result_meetings = array_merge($result['meetings'], $extra_result['meetings']);
@@ -247,7 +296,7 @@ class Bread_Public
         $generator = new Bread_ContentGenerator($this->mpdf, $this->bread, $result_meetings, $formatsManager);
         $generator->generate($num_columns);
         $this->mpdf->SetDisplayMode('fullpage', 'two');
-        $this->reorder_booklet_pages($mode);
+        $this->reorder_booklet_pages();
         if ($this->options['include_protection'] == 1) {
             // 'copy','print','modify','annot-forms','fill-forms','extract','assemble','print-highres'
             $this->mpdf->SetProtection(array('copy', 'print', 'print-highres'), '', $this->options['protection_password']);
@@ -263,16 +312,15 @@ class Bread_Public
                 $transient_key = $this->bread->get_TransientKey($this->bread->getRequestedSetting());
                 set_transient($transient_key, $content, intval($this->options['cache_time']) * HOUR_IN_SECONDS);
             }
-            $FilePath = apply_filters("Bread_Download_Name", $this->get_FilePath(), $this->options['service_body_1'], $this->bread->getSettingName($this->bread->getRequestedSetting()));
+            $FilePath = apply_filters("Bread_Download_Name", $this->get_FilePath(), $this->options['service_bodies'][0], $this->bread->getSettingName($this->bread->getRequestedSetting()));
             $this->mpdf->Output($FilePath, 'I');
         }
         foreach ($import_streams as $FilePath => $stream) {
             wp_delete_file($FilePath);
         }
         $this->bread->removeTempDir();
-        exit;
     }
-    private function constuct_page_type_settings()
+    private function construct_page_type_settings(): array
     {
         $page_type_settings = array();
         // TODO: The page number is always 5 from botton...this should be adjustable
@@ -330,42 +378,33 @@ class Bread_Public
         }
         return $page_type_settings;
     }
-    private function construct_init_options($default_font, $mode, $page_type_settings): array
+    private function construct_init_options(string $default_font): array
     {
+        $defaultConfig = (new ConfigVariables())->getDefaults();
+        $defaultFontsConfig = (new FontVariables())->getDefaults();
+        $mpdf_init_options = [
+                'mode' => MPDF_MODE,
+                'tempDir' => $this->bread->temp_dir(),
+                'default_font_size' => 7,
+                'default_font' => $default_font,
+                'margin_left' => $this->options['margin_left'],
+                'margin_right' => $this->options['margin_right'],
+                'margin_top' => $this->options['margin_top'],
+                'margin_bottom' => $this->options['margin_bottom'],
+                'margin_header' => $this->options['margin_header'],
+                'restrictColorSpace' => $this->options['colorspace'],
+                'fontDir' => $defaultConfig['fontDir'],  // Set these, so that life is easier to add custom fonts in filters.
+                'fontdata' => $defaultFontsConfig ['fontdata'],  // Set these, so that life is easier to add custom fonts in filters.
+        ];
         if ($default_font == 'arial' || $default_font == 'times' || $default_font == 'courier') {
-            $mpdf_init_options = [
-
-                'tempDir' => $this->bread->temp_dir(),
-                'mode' => $mode,
-                'default_font_size' => 7,
-                'default_font' => $default_font,
-                'useSubstitutions' => false,
-                'margin_left' => $this->options['margin_left'],
-                'margin_right' => $this->options['margin_right'],
-                'margin_top' => $this->options['margin_top'],
-                'margin_bottom' => $this->options['margin_bottom'],
-                'margin_header' => $this->options['margin_header'],
-            ];
-        } else {
-            $mpdf_init_options = [
-                'mode' => $mode,
-                'tempDir' => $this->bread->temp_dir(),
-                'default_font_size' => 7,
-                'default_font' => $default_font,
-                'margin_left' => $this->options['margin_left'],
-                'margin_right' => $this->options['margin_right'],
-                'margin_top' => $this->options['margin_top'],
-                'margin_bottom' => $this->options['margin_bottom'],
-                'margin_header' => $this->options['margin_header'],
-            ];
+            $mpdf_init_options['useSubstitutions'] = true;
         }
-        $mpdf_init_options['restrictColorSpace'] = $this->options['colorspace'];
-        $mpdf_init_options = array_merge($mpdf_init_options, $page_type_settings);
+        $mpdf_init_options = array_merge($mpdf_init_options, $this->construct_page_type_settings());
         $mpdf_init_options = apply_filters("Bread_Mpdf_Init_Options", $mpdf_init_options, $this->options);
 
         return $mpdf_init_options;
     }
-    private function drawLinesSeperatingColumns($mode, $format, $default_font)
+    private function drawLinesSeperatingColumns($format, $default_font)
     {
         $html = '<body style="background-color:#fff;">';
         if ($this->options['page_fold'] == 'tri') {
@@ -393,7 +432,7 @@ class Bread_Public
         }
         $mpdf_column = new mPDF(
             [
-                'mode' => $mode,
+                'mode' => MPDF_MODE,
                 'tempDir' => $this->bread->temp_dir(),
                 'format' => $format,
                 'default_font_size' => 7,
@@ -415,13 +454,13 @@ class Bread_Public
         $tplId = $this->mpdf->importPage($pagecount);
         $this->mpdf->SetPageTemplate($tplId);
     }
-    private function reorder_booklet_pages($mode)
+    private function reorder_booklet_pages()
     {
         if ($this->options['page_fold'] == 'half') {
             $FilePath = $this->bread->temp_dir() . DIRECTORY_SEPARATOR . $this->get_FilePath('_half');
             $this->mpdf->Output($FilePath, 'F');
             $mpdfOptions = [
-                'mode' => $mode,
+                'mode' => MPDF_MODE,
                 'tempDir' => $this->bread->temp_dir(),
                 'default_font_size' => '',
                 'margin_left' => 0,
@@ -464,8 +503,9 @@ class Bread_Public
         } else if ($this->options['page_fold'] == 'full' && $this->options['booklet_pages']) {
             $FilePath = $this->bread->temp_dir() . DIRECTORY_SEPARATOR . $this->get_FilePath('_full');
             $this->mpdf->Output($FilePath, 'F');
+            $defaultConfig = (new ConfigVariables())->getDefaults();
             $mpdfOptions = [
-                'mode' => $mode,
+                'mode' => MPDF_MODE,
                 'tempDir' => $this->bread->temp_dir(),
                 'default_font_size' => '',
                 'margin_left' => 0,
@@ -475,8 +515,10 @@ class Bread_Public
                 'margin_footer' => 6,
                 'orientation' => $this->options['page_orientation'],
                 'restrictColorSpace' => $this->options['colorspace'],
+                'format' => $this->options['page_size'] . "-" . $this->options['page_orientation'],
+                'default_font' => $this->options['base_font'],
+                'fontDir' => $defaultConfig['fontDir'],  // Set these, so that life is easier to add custom fonts in filters.
             ];
-            $mpdfOptions['format'] =  $this->options['page_size'] . "-" . $this->options['page_orientation'];
             $mpdfOptions = apply_filters("Bread_Mpdf_Init_Options", $mpdfOptions, $this->options);
             $mpdftmp = new mPDF($mpdfOptions);
             $this->mpdf->shrink_tables_to_fit = 1;
@@ -498,7 +540,7 @@ class Bread_Public
             $FilePath = $this->bread->temp_dir() . DIRECTORY_SEPARATOR . $this->get_FilePath('_pocket');
             $this->mpdf->Output($FilePath, 'F');
             $mpdfOptions = [
-                'mode' => $mode,
+                'mode' => MPDF_MODE,
                 'tempDir' => $this->bread->temp_dir(),
                 'default_font_size' => '',
                 'margin_left' => 0,
@@ -531,7 +573,7 @@ class Bread_Public
             $FilePath = $this->bread->temp_dir() . DIRECTORY_SEPARATOR . $this->get_FilePath('_flyer');
             $this->mpdf->Output($FilePath, 'F');
             $mpdfOptions = [
-                'mode' => $mode,
+                'mode' => MPDF_MODE,
                 'tempDir' => $this->bread->temp_dir(),
                 'default_font_size' => '',
                 'margin_left' => 0,
@@ -569,7 +611,7 @@ class Bread_Public
             $this->mpdf = $mpdftmp;
         }
     }
-    function get_booklet_pages($np, $backcover = true)
+    private function get_booklet_pages($np, $backcover = true)
     {
         $lastpage = $np;
         $np = 4 * ceil($np / 4);
@@ -591,7 +633,7 @@ class Bread_Public
         }
         return $pp;
     }
-    function get_FilePath($pos = '')
+    private function get_FilePath($pos = '')
     {
         $site = '';
         if (is_multisite()) {
@@ -599,12 +641,7 @@ class Bread_Public
         }
         return "meetinglist_" . $site . $this->bread->getRequestedSetting() . $pos . '_' . strtolower(gmdate("njYghis")) . ".pdf";
     }
-
-    function getSingleLanguage($lang)
-    {
-        return substr($lang, 0, 2);
-    }
-    function columnSeparators($oh)
+    private function columnSeparators($oh)
     {
         if ($this->options['column_line'] == 1) {
             return '<body style="background:none;">

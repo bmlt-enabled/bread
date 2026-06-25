@@ -23,7 +23,15 @@ if (! defined('ABSPATH')) {
  */
 class Bread
 {
-
+    /**
+     * The loader that's responsible for maintaining and registering all hooks that power
+     * the plugin.
+     *
+     * @since  2.19.0
+     * @access protected
+     * @var    BreadLoadableFonts    $fontLoader    Maintains and registers all hooks for the plugin.
+     */
+    protected $fontLoader;
     /**
      * The loader that's responsible for maintaining and registering all hooks that power
      * the plugin.
@@ -53,9 +61,10 @@ class Bread
     protected $version;
     public const SETTINGS = 'bmlt_meeting_list_settings';
     public const OPTIONS_NAME = 'bmlt_meeting_list_options';
-    private $optionsName;
+    private string $optionsName;
     private $allSettings = array();
     private $maxSetting = 1;
+    public $fonts = [];
     /**
      * The setting we are editing, generating or otherwise working with.  Generally set with query string "?current-meeting-list".
      *
@@ -226,6 +235,44 @@ class Bread
         }
         return isset($holder['current-meeting-list']) ? intval($holder['current-meeting-list']) : 1;
     }
+    public function getIncludedFonts()
+    {
+        $fonts = [
+            'dejavusanscondensed' => ['name' => 'DejaVu Sans Condensed',
+                                      'letterform' => 'Sans-Serif',
+                                      'scripts' => ['latin', 'cyrillic', 'greek', 'arabic', 'vietnamese', 'hebrew'],
+                                      'specimen' => '<a href="https://dejavu-fonts.github.io/" target="_blank">DejaVu Fonts</a>',],
+            'dejavuserifcondensed' => ['name' => 'DejaVu Serif Condensed',
+                                      'letterform' => 'Serif',
+                                      'scripts' => ['latin', 'cyrillic', 'greek'],
+                                      'specimen' => '<a href="https://dejavu-fonts.github.io/" target="_blank">DejaVu Fonts</a>',],
+            'dejavusansmono' => ['name' => 'DejaVu Sans Mono',
+                                      'letterform' => 'Monospace',
+                                      'scripts' => ['latin', 'cyrillic', 'greek', 'arabic', 'vietnamese'],
+                                      'specimen' => '<a href="https://dejavu-fonts.github.io/" target="_blank">DejaVu Fonts</a>',],
+            'chelvetica'    => ['name' => 'Helvetica (PDF Core Font)',
+                                'letterform' => 'Sans-Serif',
+                                'scripts' => ['latin'],
+                                'specimen' => 'Using PDF Core Fonts results in smaller files.',],
+            'ccourier' => ['name' => 'Courier New (PDF Core Font)',
+                            'letterform' => 'Monospace',
+                            'scripts' => ['latin'],
+                            'specimen' => 'Using PDF Core Fonts results in smaller files.',],
+            'ctimes' => ['name' => 'Times New Roman (PDF Core Font)',
+                            'letterform' => 'Serif',
+                            'scripts' => ['latin'],
+                            'specimen' => 'Using PDF Core Fonts results in smaller files.',],
+        ];
+        return $fonts;
+    }
+    public function getAvailableFonts(): array
+    {
+        return apply_filters('bread_custom_fonts', $this->getIncludedFonts());
+    }
+    public function getActiveFonts(): array
+    {
+        return apply_filters('Bread_active_fonts', array_keys($this->getIncludedFonts()));
+    }
     /**
      * Undocumented function
      *
@@ -240,6 +287,9 @@ class Bread
     }
     public function getSettingName($id)
     {
+        if (count($this->allSettings) == 0) {
+            return "Default Setting";
+        }
         return $this->allSettings[$id];
     }
     public function getSettingNames()
@@ -305,7 +355,7 @@ class Bread
         if ($current_setting < 1) {
             $current_setting = is_admin() ? 1 : $this->requested_setting;
         }
-        if (is_array($this->allSettings[$current_setting])) {
+        if ($this->allSettings && !empty($this->allSettings[$current_setting]) && is_array($this->allSettings[$current_setting])) {
             $this->options = $this->allSettings[$current_setting];
         } else {
             $this->optionsName = $this->generateOptionName($current_setting);
@@ -378,7 +428,6 @@ class Bread
         }
 
         $this->load_dependencies();
-        $this->set_locale();
         $this->load_translations();
         $this->define_admin_hooks();
         $this->define_public_hooks();
@@ -418,7 +467,6 @@ class Bread
      * Include the following files that make up the plugin:
      *
      * - Bread_Loader. Orchestrates the hooks of the plugin.
-     * - Bread_i18n. Defines internationalization functionality.
      * - Bread_Admin. Defines all hooks for the admin area.
      * - Bread_Public. Defines all hooks for the public side of the site.
      *
@@ -438,12 +486,6 @@ class Bread
         include_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-bread-loader.php';
 
         /**
-         * The class responsible for defining internationalization functionality
-         * of the plugin.
-         */
-        include_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-bread-i18n.php';
-
-        /**
          * The class responsible for defining all actions that occur in the admin area.
          */
         include_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-bread-admin.php';
@@ -458,26 +500,15 @@ class Bread
          * side of the site.
          */
         include_once plugin_dir_path(dirname(__FILE__)) . 'public/class-bread-public.php';
-
+        /**
+         * Loading fonts uses the API created to add fonts via plugin.
+         * We need to instanciate this plugin and let the constructor do its work
+         */
+        include_once plugin_dir_path(dirname(__FILE__)) . 'bread_loadable_fonts/class-bread-loadable-fonts.php';
+        $this->fontLoader = new BreadLoadableFonts();
         $this->loader = new Bread_Loader();
     }
 
-    /**
-     * Define the locale for this plugin for internationalization.
-     *
-     * Uses the Bread_i18n class in order to set the domain and to register the hook
-     * with WordPress.
-     *
-     * @since  2.8.0
-     * @access private
-     */
-    private function set_locale()
-    {
-
-        $plugin_i18n = new Bread_i18n();
-
-        $this->loader->add_action('plugins_loaded', $plugin_i18n, 'load_plugin_textdomain');
-    }
     /**
      * Register all of the hooks related to the admin area functionality
      * of the plugin.
@@ -498,7 +529,6 @@ class Bread
         $this->loader->add_filter('tiny_mce_before_init', $plugin_admin, 'tiny_tweaks');
         $this->loader->add_filter('mce_external_plugins', $plugin_admin, 'my_custom_plugins');
         $this->loader->add_filter('mce_buttons', $plugin_admin, 'my_register_mce_button');
-        //add_action("admin_notices", $plugin_admin, "is_root_server_missing");
         $this->loader->add_action("admin_init", $plugin_admin, "my_theme_add_editor_styles");
         $this->loader->add_action("wp_default_editor", $plugin_admin, "ml_default_editor");
         $this->loader->add_filter('tiny_mce_version', $plugin_admin, 'force_mce_refresh');
@@ -528,6 +558,8 @@ class Bread
 
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
+        $this->loader->add_action('wp_ajax_bread_generate_queries_action', $plugin_public, 'generate_preload_configuration');
+        $this->loader->add_action('wp_ajax_nopriv_bread_generate_queries_action', $plugin_public, 'generate_preload_configuration');
         $this->loader->add_action('plugins_loaded', $plugin_public, 'bmlt_meeting_list');
     }
 
@@ -679,6 +711,7 @@ class Bread
         $this->fillUnsetStringOption('used_format_1', '');
         $this->fillUnsetOption('base_font', 'dejavusanscondensed');
         $this->fillUnsetOption('colorspace', 0);
+        $this->fillUnsetArrayOption('service_bodies', []);
         $this->fillUnsetOption('recurse_service_bodies', 1);
         $this->fillUnsetOption('extra_meetings_enabled', 0);
         $this->fillUnsetOption('include_protection', 0);
@@ -721,7 +754,7 @@ class Bread
                 || $this->options['meeting_sort'] === 'weekday_city'
                 || $this->options['meeting_sort'] === 'weekday_county'
                 || $this->options['meeting_sort'] === 'day')) {
-                $this->options['weekday_language'] = $this->bmlt()->get_bmlt_server_lang();
+                $this->options['weekday_language'] = 'en';
             }
             if ($this->options['page_fold'] == 'half') {
                 if ($this->options['page_size'] == 'A5') {
@@ -777,7 +810,7 @@ class Bread
         $this->renamed_option('asm_language', 'additional_list_language');
         $this->renamed_option('asm_custom_query', 'additional_list_custom_query');
         $this->renamed_option('asm_template_content', 'additional_list_template_content');
-        if (!isset($this->options['bread_version']) || $this->options['bread_version'] < '2.8') {
+        if ($this->versionLessThan('2.8')) {
             if (($this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full') && trim($this->options['last_page_content']) !== '') {
                 $this->options['custom_section_content'] = $this->options['last_page_content'];
                 $this->options['custom_section_font_size'] = $this->options['last_page_font_size'];
@@ -787,7 +820,54 @@ class Bread
                 unset($this->options['last_page_font_size']);
             }
         }
+        if ($this->versionLessThan('2.10')) {
+            $this->options['service_bodies'] = [];
+            if (!empty($this->options['service_body_1']) && $this->options['service_body_1'] != 'Not Used') {
+                $this->options['service_bodies'][] = $this->options['service_body_1'];
+            }
+            if (!empty($this->options['service_body_2']) && $this->options['service_body_2'] != 'Not Used') {
+                $this->options['service_bodies'][] = $this->options['service_body_2'];
+            }
+            if (!empty($this->options['service_body_3']) && $this->options['service_body_3'] != 'Not Used') {
+                $this->options['service_bodies'][] = $this->options['service_body_3'];
+            }
+            if (!empty($this->options['service_body_4']) && $this->options['service_body_4'] != 'Not Used') {
+                $this->options['service_bodies'][] = $this->options['service_body_4'];
+            }
+            if (!empty($this->options['service_body_5']) && $this->options['service_body_5'] != 'Not Used') {
+                $this->options['service_bodies'][] = $this->options['service_body_5'];
+            }
+            unset($this->options['service_body_1']);
+            unset($this->options['service_body_2']);
+            unset($this->options['service_body_3']);
+            unset($this->options['service_body_4']);
+            unset($this->options['service_body_5']);
+
+            if ($this->options['base_font'] == 'arial') {
+                $this->options['base_font'] = 'dejabusanscondensed';
+            }
+        }
         $this->options['bread_version'] = BREAD_VERSION;
+    }
+    private function versionLessThan($version): bool
+    {
+        if (empty($this->options['bread_version'])) {
+            return true;
+        }
+        $current = explode('.', $this->options['bread_version']);
+        $test = explode('.', $version);
+        for ($i=0; $i<count($current); $i++) {
+            if ($i >= count($test)) {
+                return false;
+            }
+            if (intval($current[$i]) > intval($test[$i])) {
+                return false;
+            }
+            if (intval($current[$i]) < intval($test[$i])) {
+                return true;
+            }
+        }
+        return false;
     }
     private function renamed_option(string $old, string $new)
     {

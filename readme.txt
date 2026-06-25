@@ -4,8 +4,8 @@ Contributors: odathp, radius314, pjaudiomv, klgrimley, jbraswell, otrok7, alanb2
 Tags: meeting list, bmlt, narcotics anonymous, na
 Requires PHP: 8.1
 Requires at least: 6.2
-Tested up to: 6.9
-Stable tag: 2.9.15
+Tested up to: 7.0
+Stable tag: 2.10.0
 
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -54,6 +54,12 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 - Read here for more information: https://github.com/bmlt-enabled/bread/blob/main/contribute.md
 
 == Changelog ==
+
+= 2.10.0 =
+* [bread_button] shortcode added that can generate PDFs even when the hosting provider has blocked access to the BMLT server.
+* PDF Core Fonts (Helvertica, New Times Roman and Courier) may be selected
+* Extension points added to allow for custom fonts
+* A selection of Google Fonts can be downloaded by administrator in the new "Custom Fonts" tab,
 
 = 2.9.15 =
 * More commas cleaned up.

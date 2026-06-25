@@ -2,6 +2,18 @@
 if (! defined('ABSPATH')) {
     exit;
 }
+function echo_font_options(string $base_font, Bread $bread)
+{
+    $fonts = $bread->getActiveFonts();
+    $infos = $bread->getAvailableFonts();
+    foreach ($fonts as $font_key) {
+        if (!isset($infos[$font_key])) {
+            continue;
+        }
+        $font_info = $infos[$font_key];
+        echo '<option value="' . esc_attr($font_key) . '" ' . ($base_font == $font_key ? 'selected="selected"' : '') . '>' . esc_html($font_info['name']) . '</option>';
+    }
+}
 function Bread_layout_setup_page_render(Bread_AdminDisplay $breadAdmin)
 {
     $bread = $breadAdmin->getBreadInstance();
@@ -152,10 +164,7 @@ function Bread_layout_setup_page_render(Bread_AdminDisplay $breadAdmin)
                         <input class="mlg" name="base_font" value="0" type="hidden">
                         <label for="base_font"><?php esc_html_e('Base Font: ', 'bread') ?></label>
                         <select id="base_font" name="base_font">
-                            <option value="dejavusanscondensed" <?php echo $bread->getOption('base_font') == 'dejavusanscondensed' ? "selected=\"selected\"" : "" ?>><?php esc_html_e('DejaVu Sans Condensed', 'bread') ?></option>
-                            <option value="courier" <?php echo $bread->getOption('base_font') == 'courier' ? "selected=\"selected\"" : "" ?>><?php esc_html_e('Courier', 'bread') ?></option>
-                            <option value="times" <?php echo $bread->getOption('base_font') == 'times' ? "selected=\"selected\"" : "" ?>><?php esc_html_e('Times', 'bread') ?></option>
-                            <option value="arial" <?php echo $bread->getOption('base_font') == 'arial' ? "selected=\"selected\"" : "" ?>><?php esc_html_e('Arial', 'bread') ?></option>
+                            <?php echo_font_options($bread->getOption('base_font'), $bread); ?>
                         </select>
                         <input class="mlg" name="colorspace" value="0" type="hidden">
                         <label for="colorspace"><?php esc_html_e('Color space: ', 'bread') ?></label>

@@ -53,8 +53,8 @@ if (! defined('ABSPATH')) {
         <p><?php echo wp_kses_post(__('Visit <a target="_blank" href="https://doihavethebmlt.org/">Do I have the BMLT?</a> to find your BMLT server', 'bread')) ?><br/>
             <label for="wizard_root_server"><?php esc_html_e('BMLT Server URL: ', 'bread') ?></label>
             <input class="bmlt-input" id="wizard_root_server" type="text" name="wizard_root_server"
-                            onKeypress="breadWizard.root_server_keypress(event)" onChange="breadWizard.root_server_changed()" />
-            <button type="button" onClick="breadWizard.test_root_server()"><?php esc_html_e('Test Server Connection', 'bread') ?></button>
+                            onKeypress="BreadWizard.root_server_keypress(event)" onChange="BreadWizard.root_server_changed()" />
+            <button type="button" onClick="BreadWizard.test_root_server()"><?php esc_html_e('Test Server Connection', 'bread') ?></button>
             <span id="wizard_testnow_message" style="display:none;">
               <?php esc_html_e('Test that this is valid root server URL before continuing', 'bread') ?>
             </span>
@@ -150,19 +150,19 @@ if (! defined('ABSPATH')) {
           <div id="wizard-before-create">
             <p><label for="wizard-setting-name"><?php esc_html_e('Enter a custom name for this configuration: ', 'bread') ?></label>
             <input type="text" placeholder="Use default value" id="wizard-setting-name" name="wizard-setting-name"/></p>
-            <button type="button" class="btn btn-primary" onClick="breadWizard.ajax_submit()"><?php esc_html_e('Create Meeting List', 'bread') ?></button>
+            <button type="button" class="btn btn-primary" onClick="BreadWizard.ajax_submit()"><?php esc_html_e('Create Meeting List', 'bread') ?></button>
           </div>
           <div id="wizard-after-create">
             <p class="valid-feedback dashicons-before dashicons-yes-alt"><?php esc_html_e('Congratulations! The meeting list configuration has been created!', 'bread') ?></p>
             <p><?php esc_html_e('The first thing you probably want to do is have a look at the meeting list:', 'bread') ?></p>
-            <button type="button" class="btn btn-primary" onClick="breadWizard.generate_meeting_list()"><?php esc_html_e('Generate Meeting List', 'bread') ?></button>
+            <button type="button" class="btn btn-primary" onClick="BreadWizard.generate_meeting_list()"><?php esc_html_e('Generate Meeting List', 'bread') ?></button>
             <p>
               <?php esc_html_e('To add a link to the meeting list on your website, use the following link.', 'bread') ?>
             </p><div id="wizard-show-link"></div>
-            <p><?php esc_html_e('If you want to try a different layout: ', 'bread') ?><button type="button" class="btn btn-primary" onClick="breadWizard.redo_layout()"><?php esc_html_e('Go Back', 'bread') ?></button>
+            <p><?php esc_html_e('If you want to try a different layout: ', 'bread') ?><button type="button" class="btn btn-primary" onClick="BreadWizard.redo_layout()"><?php esc_html_e('Go Back', 'bread') ?></button>
             </p><div id="wizard-show-link"></div>
             <p><?php esc_html_e('You probably want to add some content to the first page or the custom content:', 'bread') ?></p>
-            <button type="button" class="btn btn-primary" onClick="breadWizard.finish()"><?php esc_html_e('Open customizer', 'bread') ?></button>
+            <button type="button" class="btn btn-primary" onClick="BreadWizard.finish()"><?php esc_html_e('Open customizer', 'bread') ?></button>
           </div>
         </div>
     </div>
