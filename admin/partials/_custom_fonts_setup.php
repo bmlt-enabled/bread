@@ -41,7 +41,7 @@ class Bread_Custom_Fonts_Table extends WP_List_Table
                 $array = explode(',', $stack);
                 return $array[count($array)-1];
             case 'scripts':
-                return implode(',', $font['scripts']);
+                return implode(', ', $font['scripts']);
             default:
                 if (!isset($font[$column])) {
                     return '';
@@ -77,7 +77,7 @@ class Bread_Custom_Fonts_Table extends WP_List_Table
         }
         if (isset($_GET['letterform']) && $_GET['letterform'] != '*') {
             $this->items = array_filter($this->items, function ($font) {
-                return stt_starts_with($font['letterform'], $_GET['letterform']);
+                return str_starts_with($font['letterform'], $_GET['letterform']);
             });
         }
         foreach ($this->items as $slug => &$info) {
