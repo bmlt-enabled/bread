@@ -458,11 +458,16 @@ class Bread_Public
     {
         $defaultConfig = (new ConfigVariables())->getDefaults();
         $defaultFontsConfig = (new FontVariables())->getDefaults();
-        return apply_filters("Bread_Mpdf_Init_Options",
-                array_merge($options,
-                    ['default_font' => $this->options['base_font'],
+        return apply_filters(
+            "Bread_Mpdf_Init_Options",
+            array_merge(
+                $options,
+                ['default_font' => $this->options['base_font'],
                     'fontDir' => $defaultConfig['fontDir'],
-                    'fontdata' => $defaultFontsConfig ['fontdata'],]));
+                'fontdata' => $defaultFontsConfig ['fontdata'],
+                    ]
+            )
+        );
     }
     private function reorder_booklet_pages()
     {
