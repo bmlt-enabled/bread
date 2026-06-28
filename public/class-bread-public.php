@@ -454,6 +454,16 @@ class Bread_Public
         $tplId = $this->mpdf->importPage($pagecount);
         $this->mpdf->SetPageTemplate($tplId);
     }
+    private function addFontOptions(array $options): array
+    {
+        $defaultConfig = (new ConfigVariables())->getDefaults();
+        $defaultFontsConfig = (new FontVariables())->getDefaults();
+        return apply_filters("Bread_Mpdf_Init_Options",
+                array_merge($options,
+                    ['default_font' => $this->options['base_font'],
+                    'fontDir' => $defaultConfig['fontDir'],
+                    'fontdata' => $defaultFontsConfig ['fontdata'],]));
+    }
     private function reorder_booklet_pages()
     {
         if ($this->options['page_fold'] == 'half') {
@@ -471,6 +481,7 @@ class Bread_Public
                 'orientation' => 'L',
                 'restrictColorSpace' => $this->options['colorspace'],
             ];
+            $mpdfOptions = $this->addFontOptions($mpdfOptions);
             $ps = $this->options['page_size'];
             if ($ps == 'ledger') {
                 $mpdfOptions['format'] = 'tabloid';
@@ -479,7 +490,6 @@ class Bread_Public
             } else {
                 $mpdfOptions['format'] = $ps . '-L';
             }
-            $mpdfOptions = apply_filters("Bread_Mpdf_Init_Options", $mpdfOptions, $this->options);
             $mpdftmp = new mPDF($mpdfOptions);
             $this->mpdf->shrink_tables_to_fit = 1;
             $ow = $mpdftmp->h;
@@ -503,7 +513,6 @@ class Bread_Public
         } else if ($this->options['page_fold'] == 'full' && $this->options['booklet_pages']) {
             $FilePath = $this->bread->temp_dir() . DIRECTORY_SEPARATOR . $this->get_FilePath('_full');
             $this->mpdf->Output($FilePath, 'F');
-            $defaultConfig = (new ConfigVariables())->getDefaults();
             $mpdfOptions = [
                 'mode' => MPDF_MODE,
                 'tempDir' => $this->bread->temp_dir(),
@@ -516,10 +525,8 @@ class Bread_Public
                 'orientation' => $this->options['page_orientation'],
                 'restrictColorSpace' => $this->options['colorspace'],
                 'format' => $this->options['page_size'] . "-" . $this->options['page_orientation'],
-                'default_font' => $this->options['base_font'],
-                'fontDir' => $defaultConfig['fontDir'],  // Set these, so that life is easier to add custom fonts in filters.
             ];
-            $mpdfOptions = apply_filters("Bread_Mpdf_Init_Options", $mpdfOptions, $this->options);
+            $mpdfOptions = $this->addFontOptions($mpdfOptions);
             $mpdftmp = new mPDF($mpdfOptions);
             $this->mpdf->shrink_tables_to_fit = 1;
             $np = $mpdftmp->SetSourceFile($FilePath);
@@ -539,6 +546,7 @@ class Bread_Public
         } else if ($this->options['page_fold'] == 'pocket') {
             $FilePath = $this->bread->temp_dir() . DIRECTORY_SEPARATOR . $this->get_FilePath('_pocket');
             $this->mpdf->Output($FilePath, 'F');
+            $defaultConfig = (new ConfigVariables())->getDefaults();
             $mpdfOptions = [
                 'mode' => MPDF_MODE,
                 'tempDir' => $this->bread->temp_dir(),
@@ -552,6 +560,7 @@ class Bread_Public
                 'orientation' => 'L',
                 'restrictColorSpace' => $this->options['colorspace'],
             ];
+            $mpdfOptions = $this->addFontOptions($mpdfOptions);
             $orientation = $this->options['page_size'] == 'ledger' ? 'P' : 'L';
             $mpdftmp = new mPDF($mpdfOptions);
             $this->mpdf->shrink_tables_to_fit = 1;
@@ -572,6 +581,7 @@ class Bread_Public
         } else if ($this->options['page_fold'] == 'flyer') {
             $FilePath = $this->bread->temp_dir() . DIRECTORY_SEPARATOR . $this->get_FilePath('_flyer');
             $this->mpdf->Output($FilePath, 'F');
+            $defaultConfig = (new ConfigVariables())->getDefaults();
             $mpdfOptions = [
                 'mode' => MPDF_MODE,
                 'tempDir' => $this->bread->temp_dir(),
@@ -585,6 +595,7 @@ class Bread_Public
                 'orientation' => 'L',
                 'restrictColorSpace' => $this->options['colorspace'],
             ];
+            $mpdfOptions = $this->addFontOptions($mpdfOptions);
             $mpdftmp = new mPDF($mpdfOptions);
             $this->mpdf->shrink_tables_to_fit = 1;
             $np = $mpdftmp->SetSourceFile($FilePath);
