@@ -103,6 +103,8 @@ function Bread_bmlt_server_setup_page_render(Bread_AdminDisplay $breadAdmin)
                 <div class="inside">
                     <?php $meeting_list_url = home_url() . '/?current-meeting-list=' . $bread->getRequestedSetting() ?>
                     <p><a target="_blank" href='<?php echo esc_url($meeting_list_url) ?>'><?php echo esc_url($meeting_list_url); ?></a></p>
+                    <p>If users are experiencing network problems when generating the meeting list, perhaps due to firewalls between hosting providers, please try using the shortcode</p>
+                    <code>[bread_button label="Generate PDF" current_meeting_list=<?php echo esc_attr($bread->getRequestedSetting());?>]</code>
                 </div>
             </div>
             <div id="currentmeetinglistauthordiv" class="postbox">

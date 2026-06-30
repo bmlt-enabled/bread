@@ -811,7 +811,7 @@ class Bread
         $this->renamed_option('asm_custom_query', 'additional_list_custom_query');
         $this->renamed_option('asm_template_content', 'additional_list_template_content');
         if ($this->versionLessThan('2.8')) {
-            if (($this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full') && trim($this->options['last_page_content']) !== '') {
+            if (($this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full') && isset($this->options['last_page_content']) && trim($this->options['last_page_content']) !== '') {
                 $this->options['custom_section_content'] = $this->options['last_page_content'];
                 $this->options['custom_section_font_size'] = $this->options['last_page_font_size'];
                 $this->options['custom_section_line_height'] = $this->options['last_page_line_height'];

@@ -9,12 +9,13 @@ final class BreadFormatsManagerTest extends TestCase
 {
     private function getFormats($formats): array
     {
-        $json = (new WP_Filesystem_Direct(null))->get_contents('tests/formats/' . $formats . ".json");
+        $json = file_get_contents('tests/formats/' . $formats . ".json");
         return json_decode($json, true)['formats'];
     }
     private function getFormatMgr($usedFormat, $lang, $bmlt)
     {
-        return new Bread_FormatsManager($this->getFormats($usedFormat), $lang, $bmlt);
+        $x = $this->getFormats($usedFormat);
+        return new Bread_FormatsManager($x, $lang, $bmlt);
     }
     public function testGetFormatsUsed()
     {

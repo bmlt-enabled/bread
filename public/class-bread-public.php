@@ -312,7 +312,7 @@ class Bread_Public
                 $transient_key = $this->bread->get_TransientKey($this->bread->getRequestedSetting());
                 set_transient($transient_key, $content, intval($this->options['cache_time']) * HOUR_IN_SECONDS);
             }
-            $FilePath = apply_filters("Bread_Download_Name", $this->get_FilePath(), $this->options['service_bodies'][0], $this->bread->getSettingName($this->bread->getRequestedSetting()));
+            $FilePath = apply_filters("Bread_Download_Name", $this->get_FilePath(), $this->options['service_bodies'][0]??'custom-query', $this->bread->getSettingName($this->bread->getRequestedSetting()));
             $this->mpdf->Output($FilePath, 'I');
         }
         foreach ($import_streams as $FilePath => $stream) {

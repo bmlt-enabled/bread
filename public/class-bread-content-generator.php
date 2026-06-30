@@ -122,7 +122,7 @@ class Bread_ContentGenerator
             '<p>[page_break]</p>'           =>  '<pagebreak />',
             '[page_break]'                  =>  '<pagebreak />',
             '<!--nextpage-->'               =>  '<pagebreak />',
-            "[area]"                        =>  strtoupper($this->options['service_bodies'][0]),
+            "[area]"                        =>  (count($this->options['service_bodies']) > 0) ? explode(',', strtoupper($this->options['service_bodies'][0]))[0] : 'Not Used',
             '<div>[new_column]</div>'       =>  '<columnbreak />',
             '<p>[new_column]</p>'           =>  '<columnbreak />',
             '[new_column]'                  =>  '<columnbreak />',
