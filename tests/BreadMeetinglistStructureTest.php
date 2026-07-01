@@ -8,22 +8,23 @@ final class BreadMeetinglistStructureTest extends TestCase
 {
     private function getConfiguration(string $config): array
     {
-        $json = (new WP_Filesystem_Direct(null))->get_contents('tests/configurations/' . $config . ".json");
+        $json = file_get_contents('tests/configurations/' . $config . ".json");
         return json_decode($json, true);
     }
     private function getMeetings(string $service_body): array
     {
-        $json = (new WP_Filesystem_Direct(null))->get_contents('tests/serviceBodies/' . $service_body . ".json");
+        $json = file_get_contents('tests/serviceBodies/' . $service_body . ".json");
         return json_decode($json, true);
     }
     private function getFormats($formats)
     {
-        $json = (new WP_Filesystem_Direct(null))->get_contents('tests/formats/' . $formats . ".json");
+        $json = file_get_contents('tests/formats/' . $formats . ".json");
         return json_decode($json, true);
     }
     private function getFormatMgr($usedFormat, $lang, $bread)
     {
-        return new Bread_FormatsManager($this->getFormats($usedFormat), $lang, $bread->bmlt());
+        $x = $this->getFormats($usedFormat);
+        return new Bread_FormatsManager($x, $lang, $bread->bmlt());
     }
     private function enhanceMeetings(&$meetings, Bread $bread, $formatMgr)
     {
