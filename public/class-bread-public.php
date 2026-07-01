@@ -319,6 +319,7 @@ class Bread_Public
             wp_delete_file($FilePath);
         }
         $this->bread->removeTempDir();
+        die;
     }
     private function construct_page_type_settings(): array
     {

@@ -5,7 +5,7 @@ Tags: meeting list, bmlt, narcotics anonymous, na
 Requires PHP: 8.1
 Requires at least: 6.2
 Tested up to: 7.0
-Stable tag: 2.10.2
+Stable tag: 2.10.3
 
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -54,6 +54,10 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 - Read here for more information: https://github.com/bmlt-enabled/bread/blob/main/contribute.md
 
 == Changelog ==
+
+= 2.10.3 =
+* Fixes to tests
+* Die cleanly.
 
 = 2.10.2 =
 * Eliminate array-out-of-bounds warning when custom-query used.
