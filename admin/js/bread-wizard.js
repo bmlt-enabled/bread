@@ -161,7 +161,7 @@ jQuery(document).ready(function($){
                 return carry;
             }, []);
             $('#wizard_language').html(options.join(''));
-            if (!hasVirtualMeetings) {
+            if (!BreadWizard.hasVirtualMeetings) {
                 $('#wizard_no_virtual_meetings').prop("checked", true);
                 $('#wizard-virtual-meeting-section').hide();
             }

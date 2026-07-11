@@ -213,11 +213,11 @@ class BreadLoadableFonts
         {
             add_filter("Bread_Mpdf_Init_Options", [$this, 'mpdf_init_options']);
         }
-        public function bread_custom_fonts($fonts)
+        public function bread_custom_fonts(array $fonts): array
         {
               return array_merge($fonts, $this->custom_fonts);
         }
-        private function getUploadDirectory($fontFamily = '', $url = false)
+        private function getUploadDirectory($fontFamily = '', $url = false): string|false
         {
             $uploads = wp_upload_dir();
             if (!empty($uploads['error']) || empty($uploads['basedir'])) {
@@ -254,7 +254,7 @@ class BreadLoadableFonts
             }
             return $ret;
         }
-        private function fontComplete($fontFamily, $fontFiles)
+        private function fontComplete(string $fontFamily, array $fontFiles): bool
         {
             if ($fontFamily === '') {
                 return false;
@@ -354,17 +354,17 @@ class BreadLoadableFonts
             $this->custom_fonts[$fontFamily]['actions'] = $this->calcActions($fontFamily);
             $this->outputSuccess("Font $fontFamily successfully uploaded");
         }
-        private function outputWarning($str)
+        private function outputWarning(string $str)
         {
             wp_redirect(admin_url('admin.php?page=bmlt-enabled-bread&fontAction=warning&message=' . rawurlencode($str) . '&nonce=' . wp_create_nonce('bread_font_action')));
             exit;
         }
-        private function outputSuccess($str)
+        private function outputSuccess(string $str)
         {
             wp_redirect(admin_url('admin.php?page=bmlt-enabled-bread&fontAction=success&message=' . rawurlencode($str) . '&nonce=' . wp_create_nonce('bread_font_action')));
             exit;
         }
-        public function removeFont($fontFamily)
+        public function removeFont(string $fontFamily)
         {
             if (!current_user_can('manage_options')) {
                 $this->outputWarning("You must be an administrator to uninstall fonts");
@@ -376,7 +376,7 @@ class BreadLoadableFonts
             $this->custom_fonts[$fontFamily]['actions'] = $this->calcActions($fontFamily);
             $this->outputSuccess("Font $fontFamily removed.");
         }
-        public function bread_content_style($content_style)
+        public function bread_content_style(string $content_style): string
         {
             foreach ($this->getUploadedFonts() as $font) {
                 $fontInfo = $this->custom_fonts[$font];
@@ -401,7 +401,7 @@ class BreadLoadableFonts
             }
             return $content_style;
         }
-        function calcActions($font)
+        private function calcActions(string $font): array
         {
             if (in_array($font, $this->getUploadedFonts())) {
                 return [
@@ -419,7 +419,7 @@ class BreadLoadableFonts
                 ]];
             }
         }
-        public function mpdf_init_options($options)
+        public function mpdf_init_options(array $options): array
         {
             $fontDirs = $options['fontDir']??[];
             $fontdata = $options['fontdata']??[];

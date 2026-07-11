@@ -148,11 +148,12 @@ class Bread_Public
     {
         $label = $atts['label'] ?? 'Generate PDF';
         $id = $atts['current_meeting_list'] ?? "1";
+        $classes = $atts['class'] ?? '';
         return "<form method='POST' target='_blank' class='bread_button_form'>".
                     "<input type='hidden' name='nonce' value='".wp_create_nonce('bread-button-nonce')."'/>".
                     "<input type='hidden' name='current-meeting-list' value='".$id."'/>".
                     "<input type='hidden' name='preload' id='bread_preload_item'/>".
-                    "<input type='submit' class='bread_button' value='".$label."'/>".
+                    "<input type='submit' class='bread_button" . ($classes ? " " . $classes : "") . "' value='".$label."'/>".
                 "</form>";
     }
     public function bmlt_meeting_list()
