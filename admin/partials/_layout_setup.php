@@ -85,6 +85,7 @@ function Bread_layout_setup_page_render(Bread_AdminDisplay $breadAdmin)
                             <input class="mlg booklet-check" id="full" type="radio" name="page_fold" value="full" <?php echo ($bread->getOption('page_fold') == 'full' ? 'checked' : '') ?>><label for="full"><?php esc_html_e('Full Page', 'bread') ?></label>
                             <br />
                             <input class="mlg booklet" id="booklet_pages" type="checkbox" name="booklet_pages" value="1" <?php echo ($bread->getOption('booklet_pages') == '1' ? 'checked' : '') ?> /><label class="booklet" for="booklet_pages"><?php esc_html_e('Add extra pages for booklet', 'bread') ?></label>
+                            <input class="mlg booklet" id="booklet_columns" type="checkbox" name="booklet_columns" value="2" <?php echo ($bread->getOption('booklet_columns') == '2' ? 'checked' : '') ?> /><label class="booklet" for="booklet_columns"><?php esc_html_e('2 Columns on each page', 'bread') ?></label>
                         </div>
                     </div>
                     <br />
@@ -197,12 +198,8 @@ function Bread_layout_setup_page_render(Bread_AdminDisplay $breadAdmin)
                 <h3 class="hndle"><?php esc_html_e('Password Protection', 'bread') ?><span data-tooltip-content="#pdfpassword-tooltip-content" class="my-tooltip"><span class="tooltipster-icon">(?)</span></span></h3>
                 <div class="inside">
                     <div id="includeprotection" style="border-top: 1px solid #EEE;">
-                        <input name="include_protection" value="0" type="hidden">
                         <input type="checkbox" name="include_protection" value="1" <?php echo ($bread->getOption('include_protection') == '1' ? 'checked' : '') ?>><?php esc_html_e('Enable Protection', 'bread') ?>
-                        <div style="overflow: none; height: 0px;background: transparent;" data-description="dummyPanel for Chrome auto-fill issue">
-                            <input type="text" style="height:0;width:0; background: transparent; color: transparent;border: none;" data-description="dummyUsername">
-                            <input type="password" style="height:0;width:0;background: transparent; color: transparent;border: none;" data-description="dummyPassword">
-                        </div>
+                        <br/>
                         <label for="protection_password"><?php esc_html_e('Password: ', 'bread') ?></label>
                         <input class="protection_pass" id="protection_password" type="password" name="protection_password" value="<?php echo esc_attr($bread->getOptionForDisplay('protection_password', '')); ?>" />
                     </div>

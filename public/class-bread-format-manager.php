@@ -220,7 +220,7 @@ class Bread_FormatsManager
      * @param string $fontSize
      * @return void
      */
-    public function write_formats(string $lang, bool $isAll, string $lineHeight, string $fontSize)
+    public function write_formats(string $lang, bool $isAll, string $lineHeight, string $fontSize, bool $isTwoPerRow = true)
     {
         $formats = $isAll ? $this->getAllFormats($lang) : $this->getFormatsUsed($lang);
         if (empty($formats)) {
@@ -232,12 +232,14 @@ class Bread_FormatsManager
             $data .= "<td style='font-size:" . $fontSize . "pt;line-height:" . $lineHeight . ";padding-left:4px;border:1px solid #555;border-right:0;width:12%;vertical-align:top;'>" . $formats[$count]['key_string'] . "</td>";
             $data .= "<td style='font-size:" . $fontSize . "pt;line-height:" . $lineHeight . ";border: 1px solid #555;border-left:0;width:38%;vertical-align:top;'>" . $formats[$count]['name_string'] . "</td>";
             $count++;
-            if ($count >= count($formats)) {
-                $data .= "<td style='font-size:" . $fontSize . "pt;line-height:" . $lineHeight . ";padding-left:4px;border: 1px solid #555;border-right:0;width:12%;vertical-align:top;'></td>";
-                $data .= "<td style='font-size:" . $fontSize . "pt;line-height:" . $lineHeight . ";border: 1px solid #555;border-left:0;width:38%;vertical-align:top;'></td>";
-            } else {
-                $data .= "<td style='font-size:" . $fontSize . "pt;line-height:" . $lineHeight . ";padding-left:4px;border: 1px solid #555;border-right:0;width:12%;vertical-align:top;'>" . $formats[$count]['key_string'] . "</td>";
-                $data .= "<td style='font-size:" . $fontSize . "pt;line-height:" . $lineHeight . ";border: 1px solid #555;border-left:0;width:38%;vertical-align:top;'>" . $formats[$count]['name_string'] . "</td>";
+            if ($isTwoPerRow) {
+                if ($count >= count($formats)) {
+                    $data .= "<td style='font-size:" . $fontSize . "pt;line-height:" . $lineHeight . ";padding-left:4px;border: 1px solid #555;border-right:0;width:12%;vertical-align:top;'></td>";
+                    $data .= "<td style='font-size:" . $fontSize . "pt;line-height:" . $lineHeight . ";border: 1px solid #555;border-left:0;width:38%;vertical-align:top;'></td>";
+                } else {
+                    $data .= "<td style='font-size:" . $fontSize . "pt;line-height:" . $lineHeight . ";padding-left:4px;border: 1px solid #555;border-right:0;width:12%;vertical-align:top;'>" . $formats[$count]['key_string'] . "</td>";
+                    $data .= "<td style='font-size:" . $fontSize . "pt;line-height:" . $lineHeight . ";border: 1px solid #555;border-left:0;width:38%;vertical-align:top;'>" . $formats[$count]['name_string'] . "</td>";
+                }
             }
             $data .= "</tr>";
         }

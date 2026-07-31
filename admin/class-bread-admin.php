@@ -646,6 +646,11 @@ class Bread_Admin
                 isset($_POST['booklet_pages']) ?
                     boolval($_POST['booklet_pages']) : false
             );
+            $this->bread->setOption(
+                'booklet_columns',
+                isset($_POST['booklet_columns']) ?
+                    intval($_POST['booklet_columns']) : 1
+            );
             $this->bread->setOption('meeting_sort', sanitize_text_field($_POST['meeting_sort']));
             $this->bread->setOption('main_grouping', sanitize_text_field($_POST['main_grouping']));
             $this->bread->setOption('subgrouping', sanitize_text_field($_POST['subgrouping']));
@@ -676,7 +681,12 @@ class Bread_Admin
             $this->bread->setOption('used_format_1', isset($_POST['used_format_1']) ? sanitize_text_field($_POST['used_format_1']) : '');
             $this->bread->setOption('recurse_service_bodies', isset($_POST['recurse_service_bodies']) ? 1 : 0);
             $this->bread->setOption('extra_meetings_enabled', isset($_POST['extra_meetings_enabled']) ? intval($_POST['extra_meetings_enabled']) : 0);
-            $this->bread->setOption('include_protection', boolval($_POST['include_protection']));
+            $this->bread->setOption('include_protection', boolval($_POST['include_protection'] ?? false));
+            if ($_POST['include_protection'] ?? false) {
+                $this->bread->setOption('protection_password', sanitize_text_field($_POST['protection_password']));
+            } else {
+                $this->bread->setOption('protection_password', '');
+            }
             $this->bread->setOption('weekday_language', sanitize_text_field($_POST['weekday_language']));
             $this->bread->setOption('additional_list_language', sanitize_text_field($_POST['additional_list_language']));
             $this->bread->setOption('weekday_start', sanitize_text_field($_POST['weekday_start']));
@@ -701,7 +711,6 @@ class Bread_Admin
             $this->bread->setOption('base_font', sanitize_text_field($_POST['base_font']));
             $this->bread->setOption('colorspace', sanitize_text_field($_POST['colorspace']));
             $this->bread->setOption('wheelchair_size', sanitize_text_field($_POST['wheelchair_size']));
-            $this->bread->setOption('protection_password', sanitize_text_field($_POST['protection_password']));
             $this->bread->setOption('time_clock', sanitize_text_field($_POST['time_clock']));
             $this->bread->setOption('time_option', intval($_POST['time_option']));
             $this->bread->setOption('remove_space', boolval($_POST['remove_space']));

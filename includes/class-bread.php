@@ -696,6 +696,7 @@ class Bread
         $this->fillUnsetOption('page_fold', 'quad');
         $this->fillUnsetOption('meeting_sort', 'day');
         $this->fillUnsetStringOption('booklet_pages', false);
+        $this->fillUnsetOption('booklet_columns', 1);
         $this->fillUnsetStringOption('borough_suffix', 'Borough');
         $this->fillUnsetStringOption('county_suffix', 'County');
         $this->fillUnsetStringOption('neighborhood_suffix', 'Neighborhood');
@@ -721,6 +722,11 @@ class Bread
         $this->fillUnsetOption('include_additional_list', '0');
         $this->fillUnsetOption('additional_list_format_key', '');
         $this->fillUnsetOption('additional_list_sort_order', 'name');
+        if ($this->options['include_protection']) {
+            $this->fillUnsetStringOption('protection_password', '');
+        } else {
+            $this->options['protection_password'] = '';
+        }
         $this->fillUnsetStringOption('protection_password', '');
         $this->fillUnsetStringOption('custom_query', '');
         $this->fillUnsetStringOption('additional_list_custom_query', '');
