@@ -578,7 +578,7 @@ class Bread_Admin
             if (!$this->current_user_can_modify()) {
                 return;
             }
-            if ($this->bread->getRequestedSetting() == 1) {
+            if ($this->bread->getRequestedSetting() === 1) {
                 return;
             }
             $this->bread->deleteSetting($this->bread->getRequestedSetting());
@@ -610,14 +610,14 @@ class Bread_Admin
             $this->bread->setOption('front_page_line_height', $_POST['front_page_line_height']);
             $this->bread->setOption('front_page_font_size', floatval($_POST['front_page_font_size']));
             $this->bread->setOption('content_font_size', floatval($_POST['content_font_size']));
-            $this->bread->setOption('suppress_heading', floatval($_POST['suppress_heading']));
+            $this->bread->setOption('suppress_heading', isset($_POST['suppress_heading']));
             $this->bread->setOption('header_font_size', floatval($_POST['header_font_size']));
             $this->bread->setOption('header_text_color', sanitize_hex_color($_POST['header_text_color']));
             $this->bread->setOption('header_background_color', sanitize_hex_color($_POST['header_background_color']));
-            $this->bread->setOption('header_uppercase', intval($_POST['header_uppercase']));
-            $this->bread->setOption('header_bold', intval($_POST['header_bold']));
+            $this->bread->setOption('header_uppercase', isset($_POST['header_uppercase']));
+            $this->bread->setOption('header_bold', isset($_POST['header_bold']));
             $this->bread->setOption('sub_header_shown', sanitize_text_field($_POST['sub_header_shown']));
-            $this->bread->setOption('cont_header_shown', intval($_POST['cont_header_shown']));
+            $this->bread->setOption('cont_header_shown', isset($_POST['cont_header_shown']));
             $this->bread->setOption(
                 'column_gap',
                 isset($_POST['column_gap']) ?
@@ -641,16 +641,8 @@ class Bread_Admin
             $this->bread->setOption('page_size', sanitize_text_field($_POST['page_size']));
             $this->bread->setOption('page_orientation', sanitize_text_field($_POST['page_orientation']));
             $this->bread->setOption('page_fold', sanitize_text_field($_POST['page_fold']));
-            $this->bread->setOption(
-                'booklet_pages',
-                isset($_POST['booklet_pages']) ?
-                    boolval($_POST['booklet_pages']) : false
-            );
-            $this->bread->setOption(
-                'booklet_columns',
-                isset($_POST['booklet_columns']) ?
-                    intval($_POST['booklet_columns']) : 1
-            );
+            $this->bread->setOption('booklet_pages', isset($_POST['booklet_pages']));
+            $this->bread->setOption('booklet_columns', $_POST['booklet_columns'] ? intval($_POST['booklet_columns']) : 1);
             $this->bread->setOption('meeting_sort', sanitize_text_field($_POST['meeting_sort']));
             $this->bread->setOption('main_grouping', sanitize_text_field($_POST['main_grouping']));
             $this->bread->setOption('subgrouping', sanitize_text_field($_POST['subgrouping']));
@@ -660,11 +652,7 @@ class Bread_Admin
             $this->bread->setOption('city_suffix', sanitize_text_field($_POST['city_suffix']));
             $this->bread->setOption('meeting_template_content', wp_kses_post($_POST['meeting_template_content']));
             $this->bread->setOption('additional_list_template_content', wp_kses_post($_POST['additional_list_template_content']));
-            $this->bread->setOption(
-                'column_line',
-                isset($_POST['column_line']) ?
-                    boolval($_POST['column_line']) : 0
-            );
+            $this->bread->setOption('column_line', isset($_POST['column_line']));
             $this->bread->setOption(
                 'col_color',
                 isset($_POST['col_color']) ?
@@ -679,10 +667,10 @@ class Bread_Admin
                     floatval($_POST['pagenumbering_font_size']) : '9'
             );
             $this->bread->setOption('used_format_1', isset($_POST['used_format_1']) ? sanitize_text_field($_POST['used_format_1']) : '');
-            $this->bread->setOption('recurse_service_bodies', isset($_POST['recurse_service_bodies']) ? 1 : 0);
-            $this->bread->setOption('extra_meetings_enabled', isset($_POST['extra_meetings_enabled']) ? intval($_POST['extra_meetings_enabled']) : 0);
-            $this->bread->setOption('include_protection', boolval($_POST['include_protection'] ?? false));
-            if ($_POST['include_protection'] ?? false) {
+            $this->bread->setOption('recurse_service_bodies', isset($_POST['recurse_service_bodies']));
+            $this->bread->setOption('extra_meetings_enabled', isset($_POST['extra_meetings_enabled']));
+            $this->bread->setOption('include_protection', isset($_POST['include_protection']));
+            if ($this->bread->getOption('include_protection')) {
                 $this->bread->setOption('protection_password', sanitize_text_field($_POST['protection_password']));
             } else {
                 $this->bread->setOption('protection_password', '');
@@ -705,7 +693,7 @@ class Bread_Admin
                 isset($_POST['nonmeeting_footer']) ?
                     sanitize_text_field($_POST['nonmeeting_footer']) : ''
             );
-            $this->bread->setOption('include_additional_list', boolval($_POST['include_additional_list']));
+            $this->bread->setOption('include_additional_list', isset($_POST['include_additional_list']));
             $this->bread->setOption('additional_list_format_key', sanitize_text_field($_POST['additional_list_format_key']));
             $this->bread->setOption('additional_list_sort_order', sanitize_text_field($_POST['additional_list_sort_order']));
             $this->bread->setOption('base_font', sanitize_text_field($_POST['base_font']));
@@ -721,7 +709,7 @@ class Bread_Admin
             $this->bread->setOption('custom_query', sanitize_text_field($_POST['custom_query']));
             $this->bread->setOption('additional_list_custom_query', sanitize_text_field($_POST['additional_list_custom_query']));
             $this->bread->setOption('user_agent', isset($_POST['user_agent']) ? sanitize_text_field($_POST['user_agent']) : 'None');
-            $this->bread->setOption('sslverify', isset($_POST['sslverify']) ? '1' : '0');
+            $this->bread->setOption('sslverify', isset($_POST['sslverify']));
             $this->bread->setOption('extra_meetings', array());
             if (isset($_POST['extra_meetings'])) {
                 foreach ($_POST['extra_meetings'] as $extra) {

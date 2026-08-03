@@ -190,17 +190,16 @@ class Bread_ContentGenerator
         if ($this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full') {
             $this->write_front_page();
             if ($this->options['booklet_columns'] > 1) {
-                $this->mpdf->SetColumns(intval($this->options['booklet_columns']), '', $this->options['column_gap']);
+                $this->mpdf->SetColumns($this->options['booklet_columns'], '', $this->options['column_gap']);
             }
         }
-        $this->mpdf->WriteHTML('td{font-size: ' . $this->options['content_font_size'] . "pt;line-height:" . $this->options['content_line_height'] . ';background-color:#ffffff00;}', 1);
+        $this->mpdf->WriteHTML('td{font-size: ' . $this->options['content_font_size'] . "pt;line-height:" . $this->options['content_line_height'] . ';}', 1);
         $this->mpdf->SetDefaultBodyCSS('font-size', $this->options['content_font_size'] . 'pt');
         $this->mpdf->SetDefaultBodyCSS('line-height', $this->options['content_line_height']);
         $lang = $this->options['weekday_language'];
         if ($lang == 'fa') {
             $this->mpdf->SetDefaultBodyCSS('direction', 'rtl');
         }
-        $this->mpdf->SetDefaultBodyCSS('background-color', '#ffffff00');
         if ($this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full') {
             $this->WriteHTML('<sethtmlpagefooter name="Meeting1Footer" page="ALL" />');
         }
@@ -208,7 +207,7 @@ class Bread_ContentGenerator
         foreach ($this->result_meetings as &$value) {
             $value = $this->meetingEnhancer->enhance_meeting($value, $lang, $this->formatsManager);
         }
-        $meetingslistStructure = new Bread_Meetingslist_Structure($this->bread, $this->result_meetings, $lang, $this->options['include_additional_list'] == 0 ? -1 : 0);
+        $meetingslistStructure = new Bread_Meetingslist_Structure($this->bread, $this->result_meetings, $lang, $this->options['include_additional_list'] ? 0 : -1);
         $this->writeMeetings($this->options['meeting_template_content'], $meetingslistStructure);
 
         if ($this->options['page_fold'] !== 'half' && $this->options['page_fold'] !== 'full') {
@@ -340,7 +339,7 @@ class Bread_ContentGenerator
         $this->mpdf->SetDefaultBodyCSS('font-size', $this->options['custom_section_font_size'] . 'pt');
         $this->mpdf->SetDefaultBodyCSS('background-color', '#ffffff00');
         $data = $this->standard_shortcode_replacement('custom_section');
-        $this->mpdf->WriteHTML('td{font-size: ' . $this->options['custom_section_font_size'] . "pt;line-height:" . $this->options['custom_section_line_height'] . ';}', 1);
+        //$this->mpdf->WriteHTML('td{font-size: ' . $this->options['custom_section_font_size'] . "pt;line-height:" . $this->options['custom_section_line_height'] . ';}', 1);
         $this->writeHTMLwithAdditionalMeetinglist($data);
     }
     /**

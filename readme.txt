@@ -58,6 +58,8 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 = 2.10.5 =
 * Booklets can have 2 columns per page.
 * Formats table can have single format per row.
+* Fix problem where column separator lines were not printing.
+* Checkboxes consistently represented by booleans.
 
 = 2.10.4 =
 * Fix wizard crashing (#253)

@@ -86,13 +86,13 @@ class Bread_Custom_Fonts_Table extends WP_List_Table
         if (isset($_GET['view']) && $_GET['view'] != 'all') {
             $this->items = array_filter($this->items, function ($font) {
                 $bool = in_array($font['slug'], $this->active);
-                return ($_GET['view'] == 'active') ? $bool : !$bool;
+                return ($_GET['view'] === 'active') ? $bool : !$bool;
             });
         }
     }
     private function selected($a, $b)
     {
-        return ($a == $b) ? 'selected' : '';
+        return ($a === $b) ? 'selected' : '';
     }
     private function getAllScripts(): array
     {

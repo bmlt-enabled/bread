@@ -155,7 +155,7 @@ class Bread_Meetingslist_Structure
     {
         $this->bread = $bread;
         $this->options = $bread->getOptions();
-        $this->suppress_heading = $this->options['suppress_heading'] == 1;
+        $this->suppress_heading = $this->options['suppress_heading'];
 
         $meeting_sort = $this->options['meeting_sort'];
         if ($include_additional_list > 0) {
@@ -180,14 +180,13 @@ class Bread_Meetingslist_Structure
         $header_style .= "line-height:" . $this->options['content_line_height'] . ";";
         $header_style .= "text-align:center;padding-top:2px;padding-bottom:3px;";
 
-        if ($this->options['header_uppercase'] == 1) {
+        if ($this->options['header_uppercase']) {
             $header_style .= 'text-transform: uppercase;';
         }
-        if ($this->options['header_bold'] == 0) {
-            $header_style .= 'font-weight: normal;';
-        }
-        if ($this->options['header_bold'] == 1) {
+        if ($this->options['header_bold']) {
             $header_style .= 'font-weight: bold;';
+        } else {
+            $header_style .= 'font-weight: normal;';
         }
         $this->header_style = $header_style;
         $this->cont = '(' . $bread->getTranslateTable()[$lang]['CONT'] . ')';
@@ -263,7 +262,7 @@ class Bread_Meetingslist_Structure
         $levels = $this->getHeaderLevels();
         $headerMeetings = array();
         foreach ($result_meetings as &$value) {
-            $additional_list_test = $this->additional_list_test($value, $include_additional_list == 1);
+            $additional_list_test = $this->additional_list_test($value, $include_additional_list === 1);
             if ((($include_additional_list < 0 && $additional_list_test) ||
                 ($include_additional_list > 0 && !$additional_list_test))) {
                 continue;

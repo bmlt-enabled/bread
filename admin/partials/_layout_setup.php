@@ -11,7 +11,7 @@ function echo_font_options(string $base_font, Bread $bread)
             continue;
         }
         $font_info = $infos[$font_key];
-        echo '<option value="' . esc_attr($font_key) . '" ' . ($base_font == $font_key ? 'selected="selected"' : '') . '>' . esc_html($font_info['name']) . '</option>';
+        echo '<option value="' . esc_attr($font_key) . '" ' . ($base_font === $font_key ? 'selected="selected"' : '') . '>' . esc_html($font_info['name']) . '</option>';
     }
 }
 function Bread_layout_setup_page_render(Bread_AdminDisplay $breadAdmin)
@@ -72,32 +72,32 @@ function Bread_layout_setup_page_render(Bread_AdminDisplay $breadAdmin)
                     <input name="bread_version" value=<?php echo esc_html(BREAD_VERSION); ?> type="hidden">
                     <div style="display:flex;">
                         <div style="border:solid;flex:1;margin-right:10px;padding:2px 6px 6px 6px;line-height:1.5;"><?php esc_html_e('Single Page', 'bread') ?><br />
-                            <input class="mlg single-page-check" id="flyer" type="radio" name="page_fold" value="flyer" <?php echo ($bread->getOption('page_fold') == 'flyer' ? 'checked' : '') ?>><label for="flyer"><?php esc_html_e('Flyer', 'bread') ?>&nbsp;&nbsp;&nbsp;</label>
-                            <input class="mlg single-page-check" id="tri" type="radio" name="page_fold" value="tri" <?php echo ($bread->getOption('page_fold') == 'tri' ? 'checked' : '') ?>><label for="tri"><?php esc_html_e('Tri-Fold', 'bread') ?>&nbsp;&nbsp;&nbsp;</label>
-                            <input class="mlg single-page-check" id="quad" type="radio" name="page_fold" value="quad" <?php echo ($bread->getOption('page_fold') == 'quad' ? 'checked' : '') ?>><label for="quad"><?php esc_html_e('Quad-Fold', 'bread') ?>&nbsp;&nbsp;&nbsp;</label>
-                            <input class="mlg single-page-check" id="pocket" type="radio" name="page_fold" value="pocket" <?php echo ($bread->getOption('page_fold') == 'pocket' ? 'checked' : '') ?>><label for="pocket"><?php esc_html_e('Pocket', 'bread') ?>&nbsp;&nbsp;&nbsp;</label>
+                            <input class="mlg single-page-check" id="flyer" type="radio" name="page_fold" value="flyer" <?php echo ($bread->getOption('page_fold') === 'flyer' ? 'checked' : '') ?>><label for="flyer"><?php esc_html_e('Flyer', 'bread') ?>&nbsp;&nbsp;&nbsp;</label>
+                            <input class="mlg single-page-check" id="tri" type="radio" name="page_fold" value="tri" <?php echo ($bread->getOption('page_fold') === 'tri' ? 'checked' : '') ?>><label for="tri"><?php esc_html_e('Tri-Fold', 'bread') ?>&nbsp;&nbsp;&nbsp;</label>
+                            <input class="mlg single-page-check" id="quad" type="radio" name="page_fold" value="quad" <?php echo ($bread->getOption('page_fold') === 'quad' ? 'checked' : '') ?>><label for="quad"><?php esc_html_e('Quad-Fold', 'bread') ?>&nbsp;&nbsp;&nbsp;</label>
+                            <input class="mlg single-page-check" id="pocket" type="radio" name="page_fold" value="pocket" <?php echo ($bread->getOption('page_fold') === 'pocket' ? 'checked' : '') ?>><label for="pocket"><?php esc_html_e('Pocket', 'bread') ?>&nbsp;&nbsp;&nbsp;</label>
                             <br />
-                            <input class="mlg single-page" id="portrait" type="radio" name="page_orientation" value="P" <?php echo ($bread->getOption('page_orientation') == 'P' ? 'checked' : '') ?>><label class="single-page" for="portrait"><?php esc_html_e('Portrait', 'bread') ?>&nbsp;&nbsp;&nbsp;</label>
-                            <input class="mlg single-page" id="landscape" type="radio" name="page_orientation" value="L" <?php echo ($bread->getOption('page_orientation') == 'L' ? 'checked' : '') ?>><label class="single-page" for="landscape"><?php esc_html_e('Landscape', 'bread') ?></label>
+                            <input class="mlg single-page" id="portrait" type="radio" name="page_orientation" value="P" <?php echo ($bread->getOption('page_orientation') === 'P' ? 'checked' : '') ?>><label class="single-page" for="portrait"><?php esc_html_e('Portrait', 'bread') ?>&nbsp;&nbsp;&nbsp;</label>
+                            <input class="mlg single-page" id="landscape" type="radio" name="page_orientation" value="L" <?php echo ($bread->getOption('page_orientation') === 'L' ? 'checked' : '') ?>><label class="single-page" for="landscape"><?php esc_html_e('Landscape', 'bread') ?></label>
                         </div>
                         <div style="border:solid;flex:1;padding:2px 6px 6px 6px;line-height:1.5;"><?php esc_html_e('Booklets', 'bread') ?><br />
-                            <input class="mlg booklet-check" id="half" type="radio" name="page_fold" value="half" <?php echo ($bread->getOption('page_fold') == 'half' ? 'checked' : '') ?>><label for="half"><?php esc_html_e('Half-Fold', 'bread') ?>&nbsp;&nbsp;&nbsp;</label>
-                            <input class="mlg booklet-check" id="full" type="radio" name="page_fold" value="full" <?php echo ($bread->getOption('page_fold') == 'full' ? 'checked' : '') ?>><label for="full"><?php esc_html_e('Full Page', 'bread') ?></label>
+                            <input class="mlg booklet-check" id="half" type="radio" name="page_fold" value="half" <?php echo ($bread->getOption('page_fold') === 'half' ? 'checked' : '') ?>><label for="half"><?php esc_html_e('Half-Fold', 'bread') ?>&nbsp;&nbsp;&nbsp;</label>
+                            <input class="mlg booklet-check" id="full" type="radio" name="page_fold" value="full" <?php echo ($bread->getOption('page_fold') === 'full' ? 'checked' : '') ?>><label for="full"><?php esc_html_e('Full Page', 'bread') ?></label>
                             <br />
-                            <input class="mlg booklet" id="booklet_pages" type="checkbox" name="booklet_pages" value="1" <?php echo ($bread->getOption('booklet_pages') == '1' ? 'checked' : '') ?> /><label class="booklet" for="booklet_pages"><?php esc_html_e('Add extra pages for booklet', 'bread') ?></label>
-                            <input class="mlg booklet" id="booklet_columns" type="checkbox" name="booklet_columns" value="2" <?php echo ($bread->getOption('booklet_columns') == '2' ? 'checked' : '') ?> /><label class="booklet" for="booklet_columns"><?php esc_html_e('2 Columns on each page', 'bread') ?></label>
+                            <input class="mlg booklet" id="booklet_pages" type="checkbox" name="booklet_pages" value="1" <?php echo ($bread->getOption('booklet_pages') ? 'checked' : '') ?> /><label class="booklet" for="booklet_pages"><?php esc_html_e('Add extra pages for booklet', 'bread') ?></label>
+                            <input class="mlg booklet" id="booklet_columns" type="checkbox" name="booklet_columns" value="2" <?php echo ($bread->getOption('booklet_columns') === 2 ? 'checked' : '') ?> /><label class="booklet" for="booklet_columns"><?php esc_html_e('2 Columns on each page', 'bread') ?></label>
                         </div>
                     </div>
                     <br />
                     <div>
                         <?php esc_html_e('Page Size:', 'bread') ?><br />
-                        <input class="mlg booklet" id="5inch" type="radio" name="page_size" value="5inch" <?php echo ($bread->getOption('page_size') == '5inch' ? 'checked' : '') ?>><label for="5inch" class="booklet"><?php esc_html_e('5 inch', 'bread') ?>&nbsp;&nbsp;&nbsp;</label>
-                        <input class="mlg" id="letter" type="radio" name="page_size" value="letter" <?php echo ($bread->getOption('page_size') == 'letter' ? 'checked' : '') ?>><label for="letter"><?php esc_html_e('Letter', 'bread') ?>&nbsp;&nbsp;&nbsp;</label>
-                        <input class="mlg" id="legal" type="radio" name="page_size" value="legal" <?php echo ($bread->getOption('page_size') == 'legal' ? 'checked' : '') ?>><label for="legal"><?php esc_html_e('Legal', 'bread') ?>&nbsp;&nbsp;&nbsp;</label>
-                        <input class="mlg" id="ledger" type="radio" name="page_size" value="ledger" <?php echo ($bread->getOption('page_size') == 'ledger' ? 'checked' : '') ?>><label for="ledger"><?php esc_html_e('Ledger', 'bread') ?>&nbsp;&nbsp;&nbsp;</label>
-                        <input class="mlg" id="A4" type="radio" name="page_size" value="A4" <?php echo ($bread->getOption('page_size') == 'A4' ? 'checked' : '') ?>><label for="A4"><?php esc_html_e('A4', 'bread') ?>&nbsp;&nbsp;&nbsp;</label>
-                        <input class="mlg booklet" id="A5" type="radio" name="page_size" value="A5" <?php echo ($bread->getOption('page_size') == 'A5' ? 'checked' : '') ?>><label for="A5" class="booklet"><?php esc_html_e('A5', 'bread') ?>&nbsp;&nbsp;&nbsp;</label>
-                        <input class="mlg booklet A6" id="A6" type="radio" name="page_size" value="A6" <?php echo ($bread->getOption('page_size') == 'A6' ? 'checked' : '') ?>><label for="A6" class="booklet A6"><?php esc_html_e('A6', 'bread') ?>&nbsp;&nbsp;&nbsp;</label>
+                        <input class="mlg booklet" id="5inch" type="radio" name="page_size" value="5inch" <?php echo ($bread->getOption('page_size') === '5inch' ? 'checked' : '') ?>><label for="5inch" class="booklet"><?php esc_html_e('5 inch', 'bread') ?>&nbsp;&nbsp;&nbsp;</label>
+                        <input class="mlg" id="letter" type="radio" name="page_size" value="letter" <?php echo ($bread->getOption('page_size') === 'letter' ? 'checked' : '') ?>><label for="letter"><?php esc_html_e('Letter', 'bread') ?>&nbsp;&nbsp;&nbsp;</label>
+                        <input class="mlg" id="legal" type="radio" name="page_size" value="legal" <?php echo ($bread->getOption('page_size') === 'legal' ? 'checked' : '') ?>><label for="legal"><?php esc_html_e('Legal', 'bread') ?>&nbsp;&nbsp;&nbsp;</label>
+                        <input class="mlg" id="ledger" type="radio" name="page_size" value="ledger" <?php echo ($bread->getOption('page_size') === 'ledger' ? 'checked' : '') ?>><label for="ledger"><?php esc_html_e('Ledger', 'bread') ?>&nbsp;&nbsp;&nbsp;</label>
+                        <input class="mlg" id="A4" type="radio" name="page_size" value="A4" <?php echo ($bread->getOption('page_size') === 'A4' ? 'checked' : '') ?>><label for="A4"><?php esc_html_e('A4', 'bread') ?>&nbsp;&nbsp;&nbsp;</label>
+                        <input class="mlg booklet" id="A5" type="radio" name="page_size" value="A5" <?php echo ($bread->getOption('page_size') === 'A5' ? 'checked' : '') ?>><label for="A5" class="booklet"><?php esc_html_e('A5', 'bread') ?>&nbsp;&nbsp;&nbsp;</label>
+                        <input class="mlg booklet A6" id="A6" type="radio" name="page_size" value="A6" <?php echo ($bread->getOption('page_size') === 'A6' ? 'checked' : '') ?>><label for="A6" class="booklet A6"><?php esc_html_e('A6', 'bread') ?>&nbsp;&nbsp;&nbsp;</label>
                         <div id="marginsdiv" style="border-top: 1px solid #EEE;">
                             <?php esc_html_e('Page Margin Top: ', 'bread') ?><input min="0" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="margin_top" name="margin_top" value="<?php echo esc_attr($bread->getOptionForDisplay('margin_top', '3')); ?>" />&nbsp;&nbsp;&nbsp;
                             <?php esc_html_e('Bottom: ', 'bread') ?><input min="0" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="margin_bottom" name="margin_bottom" value="<?php echo esc_attr($bread->getOptionForDisplay('margin_bottom', '3')); ?>" />&nbsp;&nbsp;&nbsp;
@@ -148,8 +148,7 @@ function Bread_layout_setup_page_render(Bread_AdminDisplay $breadAdmin)
                         <?php esc_html_e('Column Gap Width: ', 'bread') ?><input min="1" max="20" step="1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="column_gap" name="column_gap" value="<?php echo esc_attr($bread->getOptionForDisplay('column_gap', '5')); ?>" />
                     </div>
                     <div id="columnseparatordiv" style="border-top: 1px solid #EEE;" class="single-page">
-                        <input class="mlg" name="column_line" value="0" type="hidden">
-                        <?php esc_html_e('Separator: ', 'bread') ?><input type="checkbox" name="column_line" value="1" <?php echo ($bread->getOption('column_line') == '1' ? 'checked' : '') ?> /></td>
+                        <?php esc_html_e('Separator: ', 'bread') ?><input type="checkbox" name="column_line" value="1" <?php echo ($bread->getOption('column_line') ? 'checked' : '') ?> /></td>
                         <label for="col_color"><?php esc_html_e('Color:', 'bread') ?></label> <input style="display: inline-block !important; width: 70px; margin-right: 5px;" type='color' class="bmlt-color" id="col_color" name="col_color" value="<?php echo esc_html($bread->getOptionForDisplay('col_color', '#bfbfbf')); ?>" />
                     </div>
                 </div>
@@ -170,10 +169,10 @@ function Bread_layout_setup_page_render(Bread_AdminDisplay $breadAdmin)
                         <input class="mlg" name="colorspace" value="0" type="hidden">
                         <label for="colorspace"><?php esc_html_e('Color space: ', 'bread') ?></label>
                         <select id="colorspace" name="colorspace">
-                            <option value="0" <?php echo $bread->getOption('colorspace') == '0' ? "selected=\"selected\"" : "" ?>><?php esc_html_e('Unrestricted', 'bread') ?></option>
-                            <option value="1" <?php echo $bread->getOption('colorspace') == '1' ? "selected=\"selected\"" : "" ?>><?php esc_html_e('Greyscale', 'bread') ?></option>
-                            <option value="2" <?php echo $bread->getOption('colorspace') == '2' ? "selected=\"selected\"" : "" ?>><?php esc_html_e('RGB', 'bread') ?></option>
-                            <option value="3" <?php echo $bread->getOption('colorspace') == '3' ? "selected=\"selected\"" : "" ?>><?php esc_html_e('CMYK', 'bread') ?></option>
+                            <option value="0" <?php echo $bread->getOption('colorspace') === '0' ? "selected=\"selected\"" : "" ?>><?php esc_html_e('Unrestricted', 'bread') ?></option>
+                            <option value="1" <?php echo $bread->getOption('colorspace') === '1' ? "selected=\"selected\"" : "" ?>><?php esc_html_e('Greyscale', 'bread') ?></option>
+                            <option value="2" <?php echo $bread->getOption('colorspace') === '2' ? "selected=\"selected\"" : "" ?>><?php esc_html_e('RGB', 'bread') ?></option>
+                            <option value="3" <?php echo $bread->getOption('colorspace') === '3' ? "selected=\"selected\"" : "" ?>><?php esc_html_e('CMYK', 'bread') ?></option>
                         </select>
                     </div>
                 </div>
@@ -198,7 +197,7 @@ function Bread_layout_setup_page_render(Bread_AdminDisplay $breadAdmin)
                 <h3 class="hndle"><?php esc_html_e('Password Protection', 'bread') ?><span data-tooltip-content="#pdfpassword-tooltip-content" class="my-tooltip"><span class="tooltipster-icon">(?)</span></span></h3>
                 <div class="inside">
                     <div id="includeprotection" style="border-top: 1px solid #EEE;">
-                        <input type="checkbox" name="include_protection" value="1" <?php echo ($bread->getOption('include_protection') == '1' ? 'checked' : '') ?>><?php esc_html_e('Enable Protection', 'bread') ?>
+                        <input type="checkbox" name="include_protection" value="1" <?php echo ($bread->getOption('include_protection') ? 'checked' : '') ?>><?php esc_html_e('Enable Protection', 'bread') ?>
                         <br/>
                         <label for="protection_password"><?php esc_html_e('Password: ', 'bread') ?></label>
                         <input class="protection_pass" id="protection_password" type="password" name="protection_password" value="<?php echo esc_attr($bread->getOptionForDisplay('protection_password', '')); ?>" />
