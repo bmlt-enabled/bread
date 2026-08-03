@@ -242,7 +242,7 @@ class Bread_Public
         $header_stylesheet = (new WP_Filesystem_Direct(null))->get_contents(plugin_dir_path(__FILE__) . 'css/mpdfstyletables.css');
         $this->mpdf->WriteHTML($header_stylesheet, 1); // The parameter 1 tells that this is css/style only and no body/html/text
         $this->mpdf->SetDefaultBodyCSS('line-height', $this->options['content_line_height']);
-        if ($this->options['column_line'] && ($this->options['page_fold'] === 'tri' || $this->options['page_fold'] === 'quad') ) {
+        if ($this->options['column_line'] && ($this->options['page_fold'] === 'tri' || $this->options['page_fold'] === 'quad')) {
             $this->drawLinesSeperatingColumns($mpdf_init_options['format'], $default_font);
         }
         $result = $this->bread->bmlt()->doMainQuery();
