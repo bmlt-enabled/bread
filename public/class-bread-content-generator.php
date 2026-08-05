@@ -189,15 +189,17 @@ class Bread_ContentGenerator
         $this->mpdf->SetColumns($num_columns, '', $this->options['column_gap']);
         if ($this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full') {
             $this->write_front_page();
+            if ($this->options['booklet_columns'] > 1) {
+                $this->mpdf->SetColumns($this->options['booklet_columns'], '', $this->options['column_gap']);
+            }
         }
-        $this->mpdf->WriteHTML('td{font-size: ' . $this->options['content_font_size'] . "pt;line-height:" . $this->options['content_line_height'] . ';background-color:#ffffff00;}', 1);
+        $this->mpdf->WriteHTML('td{font-size: ' . $this->options['content_font_size'] . "pt;line-height:" . $this->options['content_line_height'] . ';}', 1);
         $this->mpdf->SetDefaultBodyCSS('font-size', $this->options['content_font_size'] . 'pt');
         $this->mpdf->SetDefaultBodyCSS('line-height', $this->options['content_line_height']);
         $lang = $this->options['weekday_language'];
         if ($lang == 'fa') {
             $this->mpdf->SetDefaultBodyCSS('direction', 'rtl');
         }
-        $this->mpdf->SetDefaultBodyCSS('background-color', '#ffffff00');
         if ($this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full') {
             $this->WriteHTML('<sethtmlpagefooter name="Meeting1Footer" page="ALL" />');
         }
@@ -205,7 +207,7 @@ class Bread_ContentGenerator
         foreach ($this->result_meetings as &$value) {
             $value = $this->meetingEnhancer->enhance_meeting($value, $lang, $this->formatsManager);
         }
-        $meetingslistStructure = new Bread_Meetingslist_Structure($this->bread, $this->result_meetings, $lang, $this->options['include_additional_list'] == 0 ? -1 : 0);
+        $meetingslistStructure = new Bread_Meetingslist_Structure($this->bread, $this->result_meetings, $lang, $this->options['include_additional_list'] ? 0 : -1);
         $this->writeMeetings($this->options['meeting_template_content'], $meetingslistStructure);
 
         if ($this->options['page_fold'] !== 'half' && $this->options['page_fold'] !== 'full') {
@@ -337,7 +339,7 @@ class Bread_ContentGenerator
         $this->mpdf->SetDefaultBodyCSS('font-size', $this->options['custom_section_font_size'] . 'pt');
         $this->mpdf->SetDefaultBodyCSS('background-color', '#ffffff00');
         $data = $this->standard_shortcode_replacement('custom_section');
-        $this->mpdf->WriteHTML('td{font-size: ' . $this->options['custom_section_font_size'] . "pt;line-height:" . $this->options['custom_section_line_height'] . ';}', 1);
+        //$this->mpdf->WriteHTML('td{font-size: ' . $this->options['custom_section_font_size'] . "pt;line-height:" . $this->options['custom_section_line_height'] . ';}', 1);
         $this->writeHTMLwithAdditionalMeetinglist($data);
     }
     /**
@@ -364,9 +366,6 @@ class Bread_ContentGenerator
     private function writeMeetings(string $template, Bread_Meetingslist_Structure $meetingslistStructure): void
     {
         $template = wpautop(stripslashes($template));
-        // TODO: figure out why this is necessary
-        //$template = preg_replace('/[[:^print:]]/', ' ', $template);
-
         $template = str_replace("&nbsp;", " ", $template);
         $analysedTemplate = $this->analyseTemplate($template);
 
@@ -411,7 +410,11 @@ class Bread_ContentGenerator
     private function writeBreak(Mpdf $mpdf)
     {
         if ($this->options['page_fold'] === 'half' || $this->options['page_fold'] === 'full') {
-            $mpdf->WriteHTML("<pagebreak>");
+            if ($this->options['booklet_columns'] > 1) {
+                $mpdf->WriteHTML("<columnbreak />");
+            } else {
+                $mpdf->WriteHTML("<pagebreak />");
+            }
         } else {
             $mpdf->WriteHTML("<columnbreak />");
         }
@@ -535,14 +538,16 @@ class Bread_ContentGenerator
     {
         $lang = $this->options['weekday_language'];
         $this->shortcode_formats('[format_codes_used_basic]', false, $lang, false, $page_name, $data);
+        $this->shortcode_formats('[format_codes_used_basic_large]', false, $lang, false, $page_name, $data, true);
         $this->shortcode_formats('[format_codes_used_detailed]', true, $lang, false, $page_name, $data);
         $this->shortcode_formats('[format_codes_used_basic_es]', false, 'es', true, $page_name, $data);
         $this->shortcode_formats('[format_codes_used_detailed_es]', true, 'es', true, $page_name, $data);
         $this->shortcode_formats('[format_codes_used_basic_fr]', false, 'fr', true, $page_name, $data);
         $this->shortcode_formats('[format_codes_all_basic]', false, $lang, true, $page_name, $data);
+        $this->shortcode_formats('[format_codes_all_basic_large]', false, $lang, true, $page_name, $data, true);
         $this->shortcode_formats('[format_codes_all_detailed]', true, $lang, true, $page_name, $data);
     }
-    private function shortcode_formats($shortcode, $detailed, $lang, $isAll, $page, &$str)
+    private function shortcode_formats($shortcode, $detailed, $lang, $isAll, $page, &$str, $large = false)
     {
         $pos = strpos($str, $shortcode);
         if ($pos == false) {
@@ -552,7 +557,7 @@ class Bread_ContentGenerator
         if ($detailed) {
             $value = $this->formatsManager->write_detailed_formats($lang, $isAll, $this->options[$page . '_line_height'], $this->options[$page . '_font_size'] . "pt");
         } else {
-            $value = $this->formatsManager->write_formats($lang, $isAll, $this->options[$page . '_line_height'], $this->options[$page . '_font_size'] . "pt");
+            $value = $this->formatsManager->write_formats($lang, $isAll, $this->options[$page . '_line_height'], $this->options[$page . '_font_size'] . "pt", !$large);
         }
         $str = substr($str, 0, $pos) . $value . substr($str, $pos + strlen($shortcode));
     }

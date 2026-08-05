@@ -18,8 +18,7 @@ function Bread_meetings_setup_page_render(Bread_AdminDisplay $breadAdmin)
                 <h3 class="hndle"><?php esc_html_e('Meeting Group [Column] Header', 'bread') ?><span data-tooltip-content="#columnheader-tooltip-content" class="my-tooltip"><span class="tooltipster-icon">(?)</span></span></h3>
                 <div class="inside">
                     <div>
-                        <input name="suppress_heading" value="0" type="hidden">
-                        <label for="suppress_heading"><?php esc_html_e('Suppress Heading: ', 'bread') ?></label><input type="checkbox" name="suppress_heading" id="suppress_heading" value="1" <?php echo ($bread->getOption('suppress_heading') == '1' ? 'checked' : '') ?>>
+                        <label for="suppress_heading"><?php esc_html_e('Suppress Heading: ', 'bread') ?></label><input type="checkbox" name="suppress_heading" id="suppress_heading" value="1" <?php echo ($bread->getOption('suppress_heading') ? 'checked' : '') ?>>
                         <table id="header_options_div">
                             <tr>
                                 <td style="padding-right: 10px;"><?php esc_html_e('Font Size: ', 'bread') ?><input min="4" max="18" step=".1" size="3" maxlength="3" type="number" class="bmlt-input-field" style="display:inline;" id="header_font_size" name="header_font_size" value="<?php echo esc_attr($bread->getOption('header_font_size')); ?>" /></td>
@@ -34,14 +33,11 @@ function Bread_meetings_setup_page_render(Bread_AdminDisplay $breadAdmin)
                                     </div>
                                 </td>
                                 <td style="padding-right: 10px;">
-                                    <input name="header_uppercase" value="0" type="hidden">
-                                <td><label for="header_uppercase"><?php esc_html_e('Uppercase: ', 'bread') ?></label><input type="checkbox" name="header_uppercase" value="1" <?php echo ($bread->getOption('header_uppercase') == '1' ? 'checked' : '') ?>></td>
+                                <td><label for="header_uppercase"><?php esc_html_e('Uppercase: ', 'bread') ?></label><input type="checkbox" name="header_uppercase" value="1" <?php echo ($bread->getOption('header_uppercase') ? 'checked' : '') ?>></td>
                                 <td style="padding-right: 10px;">
-                                    <input name="header_bold" value="0" type="hidden">
-                                <td><label for="header_bold"><?php esc_html_e('Bold: ', 'bread') ?></label><input type="checkbox" name="header_bold" value="1" <?php echo ($bread->getOption('header_bold') == '1' ? 'checked' : '') ?>></td>
+                                <td><label for="header_bold"><?php esc_html_e('Bold: ', 'bread') ?></label><input type="checkbox" name="header_bold" value="1" <?php echo ($bread->getOption('header_bold') ? 'checked' : '') ?>></td>
                                 <td style="padding-right: 10px;">
-                                    <input name="cont_header_shown" value="0" type="hidden">
-                                <td><label for="cont_header_shown"><?php esc_html_e('Display (Cont) Header: ', 'bread') ?></label><input type="checkbox" name="cont_header_shown" value="1" <?php echo ($bread->getOption('cont_header_shown') == '1' ? 'checked' : '') ?>></td>
+                                <td><label for="cont_header_shown"><?php esc_html_e('Display (Cont) Header: ', 'bread') ?></label><input type="checkbox" name="cont_header_shown" value="1" <?php echo ($bread->getOption('cont_header_shown') ? 'checked' : '') ?>></td>
                             </tr>
                         </table>
                     </div>
@@ -229,8 +225,7 @@ function Bread_meetings_setup_page_render(Bread_AdminDisplay $breadAdmin)
                                 <div><input class="mlg" id="option1" type="radio" name="time_option" value="1" <?php echo ($bread->getOption('time_option') == '1' || $bread->getOption('time_option') == '' ? 'checked' : '') ?>><label for="option1"></label></div>
                             </td>
                             <td style="padding-right: 30px;">
-                                <?php $checked = $bread->getOption('remove_space') == '0' || $bread->getOption('remove_space') == '' ? 'checked' : ''; ?>
-                                <div><input class="mlg recalcTimeLabel" id="two" type="radio" name="remove_space" value="0" <?php echo esc_attr($checked); ?>><label for="two"><?php esc_html_e('Add White Space', 'bread') ?></label></div>
+                                <div><input class="mlg recalcTimeLabel" id="two" type="radio" name="remove_space" value="0" <?php echo !$bread->getOption('remove_space') ? 'checked' : ''; ?>><label for="two"><?php esc_html_e('Add White Space', 'bread') ?></label></div>
                             </td>
                         </tr>
                         <tr>
@@ -241,7 +236,7 @@ function Bread_meetings_setup_page_render(Bread_AdminDisplay $breadAdmin)
                                 <div><input class="mlg" id="option2" type="radio" name="time_option" value="2" <?php echo ($bread->getOption('time_option') == '2' ? 'checked' : '') ?>><label for="option2"></label></div>
                             </td>
                             <td style="padding-right: 30px;">
-                                <div><input class="mlg recalcTimeLabel" id="four" type="radio" name="remove_space" value="1" <?php echo ($bread->getOption('remove_space') == '1') ? 'checked' : ''; ?>><label for="four"><?php esc_html_e('Remove White Space', 'bread') ?></label></div>
+                                <div><input class="mlg recalcTimeLabel" id="four" type="radio" name="remove_space" value="1" <?php echo $bread->getOption('remove_space') ? 'checked' : ''; ?>><label for="four"><?php esc_html_e('Remove White Space', 'bread') ?></label></div>
                             </td>
                         </tr>
                         </tr>
@@ -320,8 +315,7 @@ function Bread_meetings_setup_page_render(Bread_AdminDisplay $breadAdmin)
                         <label for="additional_list_custom_query"><?php esc_html_e('Custom Query: ', 'bread') ?></label>
                         <input type="text" id="additional_list_custom_query" name="additional_list_custom_query" size="100" value="<?php echo esc_attr($bread->getOption('additional_list_custom_query')) ?>" />
                     </p>
-                    <input name="include_additional_list" value="0" type="hidden">
-                    <p><input type="checkbox" name="include_additional_list" value="1" <?php echo ($bread->getOption('include_additional_list') == '1' ? 'checked' : '') ?>><?php esc_html_e('Include meetings with this format in the main list', 'bread') ?></p>
+                    <p><input type="checkbox" name="include_additional_list" value="1" <?php echo ($bread->getOption('include_additional_list') ? 'checked' : '') ?>><?php esc_html_e('Include meetings with this format in the main list', 'bread') ?></p>
                     <?php esc_html_e('If you wish to define different contents for the additional list, use this template.', 'bread') ?>
                     <div style="margin-top:0px; margin-bottom:20px; max-width:100%; width:100%;">
                         <?php

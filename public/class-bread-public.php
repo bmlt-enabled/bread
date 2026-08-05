@@ -213,11 +213,11 @@ class Bread_Public
         require_once __DIR__ . '/class-bread-format-manager.php';
         $default_font = $this->options['base_font'];
         $mpdf_init_options = $this->construct_init_options($default_font);
-        if (isset($this->options['packTabledata']) && $this->options['packTabledata']) {
+        if ($this->options['packTabledata']) {
             $mpdf_init_options['packTabledata'] = true;
         }
         $this->mpdf = @new mPDF($mpdf_init_options);
-        if (isset($this->options['logging']) && $this->options['logging']) {
+        if ($this->options['logging']) {
             $logger = new Logger('bread-log');
             $site = '';
             if (is_multisite()) {
@@ -228,7 +228,7 @@ class Bread_Public
             $this->mpdf->showImageErrors = true;
             $this->mpdf->setLogger($logger);
         }
-        if (isset($this->options['simpleTables']) && $this->options['simpleTables']) {
+        if ($this->options['simpleTables']) {
             $this->mpdf->simpleTables = true;
         }
         $this->mpdf->setAutoBottomMargin = 'pad';
@@ -242,10 +242,7 @@ class Bread_Public
         $header_stylesheet = (new WP_Filesystem_Direct(null))->get_contents(plugin_dir_path(__FILE__) . 'css/mpdfstyletables.css');
         $this->mpdf->WriteHTML($header_stylesheet, 1); // The parameter 1 tells that this is css/style only and no body/html/text
         $this->mpdf->SetDefaultBodyCSS('line-height', $this->options['content_line_height']);
-        $this->mpdf->SetDefaultBodyCSS('background-color', '#ffffff00');
-        if ($this->options['column_line'] == 1
-            && ($this->options['page_fold'] == 'tri' || $this->options['page_fold'] == 'quad')
-        ) {
+        if ($this->options['column_line'] && ($this->options['page_fold'] === 'tri' || $this->options['page_fold'] === 'quad')) {
             $this->drawLinesSeperatingColumns($mpdf_init_options['format'], $default_font);
         }
         $result = $this->bread->bmlt()->doMainQuery();
@@ -298,7 +295,7 @@ class Bread_Public
         $generator->generate($num_columns);
         $this->mpdf->SetDisplayMode('fullpage', 'two');
         $this->reorder_booklet_pages();
-        if ($this->options['include_protection'] == 1) {
+        if ($this->options['include_protection']) {
             // 'copy','print','modify','annot-forms','fill-forms','extract','assemble','print-highres'
             $this->mpdf->SetProtection(array('copy', 'print', 'print-highres'), '', $this->options['protection_password']);
         }
@@ -453,7 +450,7 @@ class Bread_Public
         $FilePath = $this->bread->temp_dir() . DIRECTORY_SEPARATOR . $this->get_FilePath('_column');
         $mpdf_column->Output($FilePath, 'F');
         $pagecount = $this->mpdf->SetSourceFile($FilePath);
-        $tplId = $this->mpdf->importPage($pagecount);
+        $tplId = $this->mpdf->ImportPage($pagecount);
         $this->mpdf->SetPageTemplate($tplId);
     }
     private function addFontOptions(array $options): array
@@ -579,7 +576,6 @@ class Bread_Public
             $tplIdx = $mpdftmp->importPage(1);
             $mpdftmp->UseTemplate($tplIdx, 0, 0);
             $mpdftmp->UseTemplate($tplIdx, 0, $fh);
-            $sep = $this->columnSeparators($oh);
             $mpdftmp->AddPage($orientation);
             $tplIdx = $mpdftmp->ImportPage(2);
             $mpdftmp->UseTemplate($tplIdx, 0, 0);
@@ -661,7 +657,7 @@ class Bread_Public
     }
     private function columnSeparators($oh)
     {
-        if ($this->options['column_line'] == 1) {
+        if ($this->options['column_line']) {
             return '<body style="background:none;">
             <table style="background: none;width: 100%; height:' . $oh . 'mm border-collapse: collapse;">
                 <tbody>

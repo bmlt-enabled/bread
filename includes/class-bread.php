@@ -627,7 +627,7 @@ class Bread
     }
     private function fillUnsetOption($option, $default)
     {
-        if (!isset($this->options[$option]) || strlen(trim($this->options[$option])) == 0) {
+        if (!isset($this->options[$option]) || (is_string($this->options[$option]) && strlen(trim($this->options[$option])) === 0)) {
             $this->options[$option] = $default;
         }
     }
@@ -675,13 +675,13 @@ class Bread
         if (floatval($this->options['pageheader_fontsize']) < 4) {
             $this->options['pageheader_fontsize'] = 6;
         }
-        $this->fillUnsetOption('suppress_heading', 0);
+        $this->fillUnsetOption('suppress_heading', false);
         $this->fillUnsetOption('header_text_color', '#ffffff');
         $this->fillUnsetOption('header_background_color', '#000000');
         $this->fillUnsetOption('pageheader_textcolor', '#000000');
         $this->fillUnsetOption('pageheader_backgroundcolor', '#ffffff');
-        $this->fillUnsetOption('header_uppercase', '0');
-        $this->fillUnsetOption('header_bold', '1');
+        $this->fillUnsetOption('header_uppercase', false);
+        $this->fillUnsetOption('header_bold', true);
         $this->fillUnsetOption('sub_header_shown', 'none');
         $this->fillUnsetOption('margin_top', 3);
         $this->fillUnsetOption('margin_bottom', 3);
@@ -696,13 +696,14 @@ class Bread
         $this->fillUnsetOption('page_fold', 'quad');
         $this->fillUnsetOption('meeting_sort', 'day');
         $this->fillUnsetStringOption('booklet_pages', false);
+        $this->fillUnsetOption('booklet_columns', 1);
         $this->fillUnsetStringOption('borough_suffix', 'Borough');
         $this->fillUnsetStringOption('county_suffix', 'County');
         $this->fillUnsetStringOption('neighborhood_suffix', 'Neighborhood');
         $this->fillUnsetStringOption('city_suffix', 'City');
         $this->fillUnsetStringOption('meeting_template_content', '');
         $this->fillUnsetStringOption('additional_list_template_content', '');
-        $this->fillUnsetOption('column_line', 0);
+        $this->fillUnsetOption('column_line', false);
         $this->fillUnsetOption('col_color', '#bfbfbf');
         $this->fillUnsetStringOption('custom_section_content', '');
         $this->fillUnsetOption('custom_section_line_height', '1');
@@ -712,28 +713,33 @@ class Bread
         $this->fillUnsetOption('base_font', 'dejavusanscondensed');
         $this->fillUnsetOption('colorspace', 0);
         $this->fillUnsetArrayOption('service_bodies', []);
-        $this->fillUnsetOption('recurse_service_bodies', 1);
-        $this->fillUnsetOption('extra_meetings_enabled', 0);
-        $this->fillUnsetOption('include_protection', 0);
+        $this->fillUnsetOption('recurse_service_bodies', true);
+        $this->fillUnsetOption('extra_meetings_enabled', false);
+        $this->fillUnsetOption('include_protection', false);
         $this->fillUnsetOption('weekday_language', 'en');
         $this->fillUnsetStringOption('additional_list_language', '');  // same as main language
         $this->fillUnsetOption('weekday_start', '1');
-        $this->fillUnsetOption('include_additional_list', '0');
+        $this->fillUnsetOption('include_additional_list', false);
         $this->fillUnsetOption('additional_list_format_key', '');
         $this->fillUnsetOption('additional_list_sort_order', 'name');
+        if ($this->options['include_protection']) {
+            $this->fillUnsetStringOption('protection_password', '');
+        } else {
+            $this->options['protection_password'] = '';
+        }
         $this->fillUnsetStringOption('protection_password', '');
         $this->fillUnsetStringOption('custom_query', '');
         $this->fillUnsetStringOption('additional_list_custom_query', '');
         $this->fillUnsetStringOption('user_agent', 'Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0) +bread');
-        $this->fillUnsetOption('sslverify', '0');
+        $this->fillUnsetOption('sslverify', false);
         $this->fillUnsetOption('cache_time', 0);
         $this->fillUnsetOption('wheelchair_size', "20px");
         $this->fillUnsetArrayOption('extra_meetings', []);
         if (!isset($this->options['extra_meetings'])) {
             if (count($this->options['extra_meetings']) > 0) {
-                $this->options['extra_meetings_enabled'] = 1;
+                $this->options['extra_meetings_enabled'] = true;
             } else {
-                $this->options['extra_meetings_enabled'] = 0;
+                $this->options['extra_meetings_enabled'] = false;
             }
         }
         $this->fillUnsetArrayOption('authors', []);
@@ -779,20 +785,6 @@ class Bread
                 $this->options['root_server'] = 'http://' . $this->options['root_server'];
             }
         }
-        if (!isset($this->options['cont_header_shown'])
-            && isset($this->options['page_height_fix'])
-        ) {
-            $fix = floatval($this->options['page_height_fix']);
-            // say, the height of 2 lines
-            $x = floatval($this->options['content_font_size']) *
-                floatval($this->options['content_line_height']) * 2.0 * 0.35; // pt to mm
-            if ($fix < $x) {
-                $this->options['cont_header_shown'] = true;
-            } else {
-                $this->options['cont_header_shown'] = false;
-            }
-            unset($this->options['page_height_fix']);
-        }
         if ($this->options['weekday_language'] == 'both') {
             $this->options['weekday_language'] = "en_es";
         }
@@ -810,6 +802,18 @@ class Bread
         $this->renamed_option('asm_language', 'additional_list_language');
         $this->renamed_option('asm_custom_query', 'additional_list_custom_query');
         $this->renamed_option('asm_template_content', 'additional_list_template_content');
+
+        $this->boolify_option('recurse_service_bodies');
+        $this->boolify_option('extra_meetings_enabled');
+        $this->boolify_option('include_protection');
+        $this->boolify_option('include_additional_list');
+        $this->boolify_option('column_line');
+        $this->boolify_option('sslverify');
+        $this->boolify_option('suppress_heading');
+        $this->boolify_option('header_uppercase');
+        $this->boolify_option('header_bold');
+        $this->boolify_option('cont_header_shown');
+
         if ($this->versionLessThan('2.8')) {
             if (($this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full') && isset($this->options['last_page_content']) && trim($this->options['last_page_content']) !== '') {
                 $this->options['custom_section_content'] = $this->options['last_page_content'];
@@ -877,6 +881,10 @@ class Bread
                 unset($this->options[$old]);
             }
         }
+    }
+    private function boolify_option(string $option)
+    {
+        $this->options[$option] = boolval($this->options[$option]);
     }
     /**
      * Stores the current settings in the Wordpress Options DB.

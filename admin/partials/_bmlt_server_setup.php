@@ -54,7 +54,7 @@ function Bread_bmlt_server_setup_page_render(Bread_AdminDisplay $breadAdmin)
                         </select>
                     </p>
                     <div>
-                        <input type="checkbox" name="recurse_service_bodies" id="recurse_service_bodies" value="1" <?php echo ($bread->getOption('recurse_service_bodies') == 1 ? 'checked' : '') ?> /> <?php esc_html_e('Recurse Service Bodies', 'bread') ?>
+                        <input type="checkbox" name="recurse_service_bodies" id="recurse_service_bodies" value="1" <?php echo ($bread->getOption('recurse_service_bodies') ? 'checked' : '') ?> /> <?php esc_html_e('Recurse Service Bodies', 'bread') ?>
                     </div>
                 </div>
             </div>
@@ -93,7 +93,7 @@ function Bread_bmlt_server_setup_page_render(Bread_AdminDisplay $breadAdmin)
                         </select>
                         <p id="extra_meetings_hint"><?php esc_html_e('Hint: Type a group name, weekday or area to narrow down your choices.', 'bread') ?></p>
                     <div>
-                        <input type="checkbox" id="extra_meetings_enabled" name="extra_meetings_enabled" value="1" <?php echo (!$bread->emptyOption('extra_meetings_enabled') && $bread->getOption('extra_meetings_enabled') == 1 ? 'checked' : '') ?> /><?php esc_html_e('Extra Meetings Enabled', 'bread') ?>
+                        <input type="checkbox" id="extra_meetings_enabled" name="extra_meetings_enabled" value="1" <?php echo ($bread->getOption('extra_meetings_enabled') ? 'checked' : '') ?> /><?php esc_html_e('Extra Meetings Enabled', 'bread') ?>
                     </div>
                 </div>
 

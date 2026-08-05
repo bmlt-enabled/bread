@@ -40,14 +40,13 @@ final class BreadMeetinglistStructureTest extends TestCase
         $header_style .= "font-size:" . $options['header_font_size'] . "pt;";
         $header_style .= "line-height:" . $options['content_line_height'] . ";";
         $header_style .= "text-align:center;padding-top:2px;padding-bottom:3px;";
-        if ($options['header_uppercase'] == 1) {
+        if ($options['header_uppercase']) {
             $header_style .= 'text-transform: uppercase;';
         }
-        if ($options['header_bold'] == 0) {
-            $header_style .= 'font-weight: normal;';
-        }
-        if ($options['header_bold'] == 1) {
+        if ($options['header_bold']) {
             $header_style .= 'font-weight: bold;';
+        } else {
+            $header_style .= 'font-weight: normal;';
         }
         return $header_style;
     }

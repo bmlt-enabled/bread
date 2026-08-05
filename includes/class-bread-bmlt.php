@@ -52,7 +52,7 @@ class Bread_Bmlt
                 'User-Agent' => $this->bread->getOption('user_agent')
             );
         }
-        if ($this->bread->getOption('sslverify') == '1') {
+        if ($this->bread->getOption('sslverify')) {
             $args['sslverify'] = false;
         }
         return wp_remote_get($url, $args);
@@ -229,7 +229,7 @@ class Bread_Bmlt
         // only the name of the service body.  So we cache the value so it only
         // needs to be called once.
         if (!$this->default_query) {
-            $this->default_query = ($this->bread->getOption('recurse_service_bodies') == 1) ? '&recursive=1' : '';
+            $this->default_query = ($this->bread->getOption('recurse_service_bodies')) ? '&recursive=1' : '';
             for ($i=0; $i<count($this->bread->getOption('service_bodies')); $i++) {
                 $area_data = explode(',', $this->bread->getOption('service_bodies')[$i]);
                 $service_body_id = $this->bread->arraySafeGet($area_data, 1);
