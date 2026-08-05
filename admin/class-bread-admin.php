@@ -701,7 +701,7 @@ class Bread_Admin
             $this->bread->setOption('wheelchair_size', sanitize_text_field($_POST['wheelchair_size']));
             $this->bread->setOption('time_clock', sanitize_text_field($_POST['time_clock']));
             $this->bread->setOption('time_option', intval($_POST['time_option']));
-            $this->bread->setOption('remove_space', boolval($_POST['remove_space']));
+            $this->bread->setOption('remove_space', boolval($_POST['remove_space']));  // It's a radio button, not a checkbox, so we can't just check isset
             $this->bread->setOption('content_line_height', floatval($_POST['content_line_height']));
             $this->bread->setOption('root_server', sanitize_url($_POST['root_server']));
             $this->bread->setOption('service_bodies', isset($_POST['service_bodies']) ? array_map('sanitize_text_field', $_POST['service_bodies']) : array());

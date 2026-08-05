@@ -28,7 +28,7 @@ class Bread_Meeting_Enhancer
             $meeting_value['duration_m'] = $minutes;
             $meeting_value['duration_h'] = rtrim(rtrim(number_format($minutes / 60, 2), 0), '.');
             $space = ' ';
-            if ($this->options['remove_space'] == 1) {
+            if ($this->options['remove_space']) {
                 $space = '';
             }
             if ($this->options['time_clock'] == null || $this->options['time_clock'] == '12' || $this->options['time_option'] == '') {
