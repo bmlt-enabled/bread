@@ -748,6 +748,10 @@ class Bread
         $this->fillUnsetStringOption('nonmeeting_footer', $my_footer);
         $this->fillUnsetStringOption('meeting1_footer', $this->options['nonmeeting_footer']);
         $this->fillUnsetStringOption('meeting2_footer', $this->options['nonmeeting_footer']);
+
+        $this->fillUnsetOption('packTabledata', false);
+        $this->fillUnsetOption('logging', false);
+        $this->fillUnsetOption('simpleTables', false);
     }
     /**
      * Does the work of upgrading from earlier versions.

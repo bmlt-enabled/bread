@@ -1,5 +1,5 @@
 table.aligncenter {
-    margin-left: auto; 
+    margin-left: auto;
     margin-right: auto;
 }
 h2 {
@@ -25,7 +25,6 @@ body {
     /*font-family: arialnarrow;*/
     font-size: 7pt;
     background-color: #ffffff00;
-    background: transparent;
 }
 .front-page-header {
     /*font-family: arialnarrow;*/
@@ -52,7 +51,7 @@ table {
     border-collapse: collapse;
     /*font-family: arialnarrow;*/
     /* font-size: 7pt; */
-    
+
     margin-bottom: 0pt;
     margin-top: 0pt;
 }

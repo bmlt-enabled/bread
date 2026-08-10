@@ -642,7 +642,7 @@ class Bread_Admin
             $this->bread->setOption('page_orientation', sanitize_text_field($_POST['page_orientation']));
             $this->bread->setOption('page_fold', sanitize_text_field($_POST['page_fold']));
             $this->bread->setOption('booklet_pages', isset($_POST['booklet_pages']));
-            $this->bread->setOption('booklet_columns', $_POST['booklet_columns'] ? intval($_POST['booklet_columns']) : 1);
+            $this->bread->setOption('booklet_columns', isset($_POST['booklet_columns']) ? intval($_POST['booklet_columns']) : 1);
             $this->bread->setOption('meeting_sort', sanitize_text_field($_POST['meeting_sort']));
             $this->bread->setOption('main_grouping', sanitize_text_field($_POST['main_grouping']));
             $this->bread->setOption('subgrouping', sanitize_text_field($_POST['subgrouping']));
