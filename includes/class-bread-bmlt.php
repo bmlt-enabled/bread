@@ -10,15 +10,15 @@ class Bread_Bmlt
     private Bread $bread;
     private ?array $preloaded = null;
 
-    function __construct($bread)
+    function __construct(Bread $bread)
     {
         $this->bread = $bread;
     }
-    public function preload($results)
+    public function preload(array|null $results)
     {
         $this->preloaded = $results;
     }
-    private function get_configured_root_server_request($url, $raw = false)
+    private function get_configured_root_server_request(string $url, bool $raw = false): WP_Error | array
     {
         $results = $this->get($this->bread->getOption('root_server') . "/$url");
         if ($raw) {
@@ -134,7 +134,7 @@ class Bread_Bmlt
         }
         return $this->get_configured_root_server_request($this->generateExtraMeetingQuery());
     }
-    public function generateAdditionalListQuery($json = 'json')
+    public function generateAdditionalListQuery($json = 'json'): ?string
     {
         if (!empty($this->options['additional_list_custom_query'])) {
             $sort_order = $this->bread->getOption('additional_list_sort_order');
@@ -198,6 +198,15 @@ class Bread_Bmlt
 
         return json_decode(wp_remote_retrieve_body($results), true);
     }
+    public function get_nonstandard_fieldkeys(): array
+    {
+        $ret = array();
+        $ext_fields = apply_filters("Bread_Enrich_Meeting_Data", array(), array());
+        foreach ($ext_fields as $key => $value) {
+            $ret[] = array("key" => $key, "description" => $key);
+        }
+        return $ret;
+    }
     /**
      * Convenient front end to array_multisort.  Sorts the array in place.
      *
@@ -238,7 +247,7 @@ class Bread_Bmlt
         }
         return $this->default_query;
     }
-    public function parse_field($text)
+    public function parse_field(string $text): string
     {
         if ($text != '') {
             $exploded = explode("#@-@#", $text);
