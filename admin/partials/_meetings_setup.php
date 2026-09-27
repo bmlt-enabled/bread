@@ -105,6 +105,16 @@ function Bread_meetings_setup_page_render(Bread_AdminDisplay $breadAdmin)
                                 <option <?php echo ($bread->getOption('main_grouping') == 'location_sub_province' ? 'selected' : '') ?> value="location_sub_province"><?php esc_html_e('County', 'bread') ?></option>
                                 <option <?php echo ($bread->getOption('main_grouping') == 'location_city_subsection' ? 'selected' : '') ?> value="location_city_subsection"><?php esc_html_e('Borough', 'bread') ?></option>
                                 <option <?php echo ($bread->getOption('main_grouping') == 'location_province' ? 'selected' : '') ?> value="location_province"><?php esc_html_e('State', 'bread') ?></option>
+                                <?php
+                                $fks = $bread->bmlt()->get_nonstandard_fieldkeys();
+                                foreach ($fks as $fk) {
+                                    $selected = '';
+                                    if ($fk['key'] == $bread->getOption('main_grouping')) {
+                                        $selected = 'selected';
+                                    }
+                                    echo '<option value="' . esc_attr($fk['key']) . '" ' . esc_attr($selected) . '>' . esc_html($fk['description']) . '</option>';
+                                }
+                                ?>
                             </select>
                             <label for="subgrouping"><?php esc_html_e('Sub-Grouping: ', 'bread') ?></label>
                             <select id="subgrouping" name="subgrouping">
