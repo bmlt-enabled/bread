@@ -7,7 +7,7 @@ class Bread_Meeting_Enhancer
     private Bread $bread;
     private array $options;
     private array $areas;
-    function __construct($bread, $areas)
+    function __construct(Bread $bread, array $areas)
     {
         $this->bread = $bread;
         $this->options = $bread->getOptions();
@@ -18,9 +18,11 @@ class Bread_Meeting_Enhancer
      *
      * @param array $meeting_value the raw meeting values, as returned from the BMLT root server.
      * @param string $lang The language used when generating format descriptions, etc.
-     * @return void
+     * @param Bread_FormatsManager $formatsManager The formats manager, used to look up format information.
+     * @param boolean $formatStartTime Whether to format the start time and duration fields.
+     * @return array the enhanced meeting values.
      */
-    public function enhance_meeting(&$meeting_value, $lang, $formatsManager, $formatStartTime = true)
+    public function enhance_meeting(&$meeting_value, string $lang, Bread_FormatsManager $formatsManager, bool $formatStartTime = true): array
     {
         if ($formatStartTime) {
             $duration = explode(':', $meeting_value['duration_time']);
@@ -92,7 +94,7 @@ class Bread_Meeting_Enhancer
         // Extensions.
         return apply_filters("Bread_Enrich_Meeting_Data", $meeting_value, $formatsManager->getHashedFormats($lang));
     }
-    private function noon($time)
+    private function noon(string $time): string
     {
         if ($time == '12:00PM' || $time == '12:00 PM') {
             return 'NOON';
@@ -111,7 +113,7 @@ class Bread_Meeting_Enhancer
         return '';
     }
 
-    private function toPersianNum($number)
+    private function toPersianNum(string $number): string
     {
         $number = str_replace("1", "۱", $number);
         $number = str_replace("2", "۲", $number);

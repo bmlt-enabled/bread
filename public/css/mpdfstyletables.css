@@ -49,6 +49,7 @@ div {
 }
 table {
     border-collapse: collapse;
+    overflow: wrap;
     /*font-family: arialnarrow;*/
     /* font-size: 7pt; */
 

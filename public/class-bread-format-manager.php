@@ -102,12 +102,12 @@ class Bread_FormatsManager
         return $this->allFormats[$lang];
     }
     /**
-     * ULookup the format having a particular field having a particular value. Null if none found.
+     * Lookup the format having a particular field having a particular value. Null if none found.
      *
      * @param string $lang the language of the formats being searched.
      * @param string $field
      * @param string $id
-     * @return array|null
+     * @return array|null: the format having the specified field value, or null if none found.
      */
     private function getFormatFromField(string $lang, string $field, string $id): array|null
     {
@@ -128,7 +128,7 @@ class Bread_FormatsManager
      * @param array $formats
      * @param string $id
      * @param string $field
-     * @return array|null
+     * @return array|null the format having the specified field value, or null if none found.
      */
     private function searchField(array $formats, string $id, string $field): array|null
     {
@@ -195,9 +195,9 @@ class Bread_FormatsManager
      * @param boolean $isAll All formats or only used.
      * @param string $lineHeight
      * @param string $fontSize
-     * @return void
+     * @return string
      */
-    public function write_detailed_formats(string $lang, bool $isAll, string $lineHeight, string $fontSize)
+    public function write_detailed_formats(string $lang, bool $isAll, string $lineHeight, string $fontSize): string
     {
         $formats = $isAll ? $this->allFormats[$lang] : $this->getFormatsUsed($lang);
         if (empty($formats)) {
@@ -218,9 +218,9 @@ class Bread_FormatsManager
      * @param boolean $isAll All formats or only used.
      * @param string $lineHeight
      * @param string $fontSize
-     * @return void
+     * @return string the HTML table of formats.
      */
-    public function write_formats(string $lang, bool $isAll, string $lineHeight, string $fontSize, bool $isTwoPerRow = true)
+    public function write_formats(string $lang, bool $isAll, string $lineHeight, string $fontSize, bool $isTwoPerRow = true): string
     {
         $formats = $isAll ? $this->getAllFormats($lang) : $this->getFormatsUsed($lang);
         if (empty($formats)) {
@@ -246,7 +246,7 @@ class Bread_FormatsManager
         $data .= "</table>";
         return $data;
     }
-    public function getWheelchairFormat($lang)
+    public function getWheelchairFormat(string $lang): array
     {
         if (is_array($this->wheelchairFormat) && empty($this->wheelchairFormat)) {
             $this->wheelchairFormat = $this->getFormatFromField($lang, 'world_id', 'WCHR');
