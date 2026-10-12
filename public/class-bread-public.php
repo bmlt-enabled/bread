@@ -403,7 +403,7 @@ class Bread_Public
 
         return $mpdf_init_options;
     }
-    private function drawLinesSeperatingColumns($format, $default_font)
+    private function drawLinesSeperatingColumns(string $format, string $default_font)
     {
         $html = '<body style="background-color:#fff;">';
         if ($this->options['page_fold'] == 'tri') {
@@ -600,7 +600,7 @@ class Bread_Public
             ];
             $mpdfOptions = $this->addFontOptions($mpdfOptions);
             $mpdftmp = new mPDF($mpdfOptions);
-            $this->mpdf->shrink_tables_to_fit = 1;
+            $mpdftmp->shrink_tables_to_fit = 1.01;
             $np = $mpdftmp->SetSourceFile($FilePath);
             $ow = $mpdftmp->w;
             $oh = $mpdftmp->h;

@@ -458,9 +458,9 @@ class Bread_ContentGenerator
      * @param array $meeting_value The meeting data.
      * @param string $template
      * @param array $analysedTemplate
-     * @return void
+     * @return string
      */
-    private function write_single_meeting(array $meeting_value, string $template, array $analysedTemplate)
+    private function write_single_meeting(array $meeting_value, string $template, array $analysedTemplate): string
     {
         $data = $template;
         $namedValues = array();
