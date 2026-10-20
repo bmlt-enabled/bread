@@ -133,14 +133,9 @@ class Bread_ContentGenerator
             "[month]"                       => strtoupper(gmdate("F")),
             "[day]"                         => strtoupper(gmdate("j")),
             "[year]"                        => strtoupper(gmdate("Y")),
-            "[service_body]"                => (count($this->options['service_bodies']) > 0) ? explode(',', strtoupper($this->options['service_bodies'][0]))[0] : 'Not Used',
-            "[service_body_1]"              => (count($this->options['service_bodies']) > 0) ?explode(',', strtoupper($this->options['service_bodies'][0]))[0] : 'Not Used',
-            "[service_body_2]"              => (count($this->options['service_bodies']) > 1) ? explode(',', strtoupper($this->options['service_bodies'][1]))[0] : 'Not Used',
-            "[service_body_3]"              => (count($this->options['service_bodies']) > 2) ? explode(',', strtoupper($this->options['service_bodies'][2]))[0] : 'Not Used',
-            "[service_body_4]"              => (count($this->options['service_bodies']) > 3) ? explode(',', strtoupper($this->options['service_bodies'][3]))[0] : 'Not Used',
-            "[service_body_5]"              => (count($this->options['service_bodies']) > 4) ? explode(',', strtoupper($this->options['service_bodies'][4]))[0] : 'Not Used',
 
         );
+        $this->addServiceBodyShortcodes();
         $this->shortcodes = apply_filters("Bread_Section_Shortcodes", $this->shortcodes, $this->bread->bmlt()->get_areas(), $formatsManager->getFormatsUsed());
         if ($this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full') {
             @$this->mpdf->DefHTMLFooterByName('MyFooter', '<div style="text-align:center;font-size:' . $this->options['pagenumbering_font_size'] . 'pt;font-style: italic;">' . $this->options['nonmeeting_footer'] . '</div>');
@@ -175,6 +170,33 @@ class Bread_ContentGenerator
             'line_breakline_break'  => '<br />',
             'line_break'    => '<br />',
         );
+    }
+    /**
+     * Adds [service_body_N] (upper case), [service_body_N_name], [service_body_N_description] and [service_body_N_helpline].
+     */
+    private function addServiceBodyShortcodes(): void
+    {
+        for ($i = 0; $i < 5; $i++) {
+            $name = 'Not Used';
+            $description = 'Not Used';
+            $helpline = 'Not Used';
+            if (isset($this->options['service_bodies'][$i])) {
+                $area_data = explode(',', $this->options['service_bodies'][$i]);
+                $name = $area_data[0];
+                $service_body = isset($area_data[1]) ? $this->bread->bmlt()->get_service_body($area_data[1]) : null;
+                $description = $service_body['description'] ?? '';
+                $helpline = $service_body['helpline'] ?? '';
+            }
+            $n = $i + 1;
+            $this->shortcodes["[service_body_$n]"] = $name == 'Not Used' ? $name : mb_strtoupper($name, 'UTF-8');
+            $this->shortcodes["[service_body_{$n}_name]"] = $name;
+            $this->shortcodes["[service_body_{$n}_description]"] = $description;
+            $this->shortcodes["[service_body_{$n}_helpline]"] = $helpline;
+        }
+        $this->shortcodes['[service_body]'] = $this->shortcodes['[service_body_1]'];
+        $this->shortcodes['[service_body_name]'] = $this->shortcodes['[service_body_1_name]'];
+        $this->shortcodes['[service_body_description]'] = $this->shortcodes['[service_body_1_description]'];
+        $this->shortcodes['[service_body_helpline]'] = $this->shortcodes['[service_body_1_helpline]'];
     }
     /**
      * Generates the contents of the meeting list.

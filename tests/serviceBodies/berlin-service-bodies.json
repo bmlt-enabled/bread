@@ -1,0 +1,102 @@
+[
+    {
+        "id": "1",
+        "parent_id": "0",
+        "name": "Deutschsprachige Region",
+        "description": "Zuständig für: Deutschland, Österreich",
+        "type": "RS",
+        "url": "http://www.narcotics-anonymous.de",
+        "helpline": "",
+        "world_id": "RG240"
+    },
+    {
+        "id": "3",
+        "parent_id": "1",
+        "name": "Gebiet Berlin",
+        "description": "Zuständig für: Berlin und Umland",
+        "type": "AS",
+        "url": "http://www.na-berlin.de",
+        "helpline": "+49 30 12345678",
+        "world_id": "AR24004"
+    },
+    {
+        "id": "4",
+        "parent_id": "1",
+        "name": "Gebiet Nord",
+        "description": "Zuständig für: Schleswig-Holstein, Hamburg, Bremen, Niedersachsen",
+        "type": "AS",
+        "url": "http://www.na-nord.de/",
+        "helpline": "",
+        "world_id": "AR24005"
+    },
+    {
+        "id": "5",
+        "parent_id": "1",
+        "name": "Gebiet West",
+        "description": "Zuständig für: Nordrhein-Westfalen",
+        "type": "AS",
+        "url": "http://www.na-west.de",
+        "helpline": "",
+        "world_id": "AR24009"
+    },
+    {
+        "id": "6",
+        "parent_id": "1",
+        "name": "Gebiet Mitte",
+        "description": "Zuständig für: Hessen, Rheinland-Pfalz",
+        "type": "AS",
+        "url": "https://narcotics-anonymous.de/mitte",
+        "helpline": "",
+        "world_id": "AR24010"
+    },
+    {
+        "id": "7",
+        "parent_id": "1",
+        "name": "Gebiet Süd",
+        "description": "Zuständig für: Stuttgart, Bayern, Österreich",
+        "type": "AS",
+        "url": "https://narcotics-anonymous.de/sued",
+        "helpline": "0800 4453362",
+        "world_id": "AR24020"
+    },
+    {
+        "id": "8",
+        "parent_id": "1",
+        "name": "Gebiet Südwest",
+        "description": "Zuständig für: Baden-Württemberg, Saarland, Rheinland-Pfalz",
+        "type": "AS",
+        "url": "https://narcotics-anonymous.de/suedwest",
+        "helpline": "",
+        "world_id": "AR24025"
+    },
+    {
+        "id": "10",
+        "parent_id": "1",
+        "name": "Gebiet Österreich",
+        "description": "Zuständig für: Österreich",
+        "type": "AS",
+        "url": "http://www.narcotics-anonymous.at",
+        "helpline": "",
+        "world_id": "AR24002"
+    },
+    {
+        "id": "11",
+        "parent_id": "1",
+        "name": "Gebiet Ost",
+        "description": "Zuständig für: Brandenburg, Mecklenburg-Vorpommern, Sachsen, Sachsen-Anhalt, Thüringen",
+        "type": "AS",
+        "url": "http://www.na-ost.de",
+        "helpline": "",
+        "world_id": "AR24011"
+    },
+    {
+        "id": "12",
+        "parent_id": "1",
+        "name": "Online Gebiet",
+        "description": "",
+        "type": "AS",
+        "url": "https://narcotics-anonymous.de/online-gebiet/",
+        "helpline": "",
+        "world_id": "AR24030"
+    }
+]

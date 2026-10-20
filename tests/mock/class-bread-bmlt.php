@@ -2,6 +2,7 @@
 class Bread_Bmlt
 {
     private array $areas = array();
+    private array $service_bodies = array();
     private string $format_base;
     function __construct($bread)
     {
@@ -17,6 +18,16 @@ class Bread_Bmlt
     public function get_areas()
     {
         return $this->areas;
+    }
+    public function set_service_bodies(array $service_bodies)
+    {
+        foreach ($service_bodies as $service_body) {
+            $this->service_bodies[$service_body['id']] = $service_body;
+        }
+    }
+    public function get_service_body(string $id): ?array
+    {
+        return $this->service_bodies[$id] ?? null;
     }
     public static function parse_field($text)
     {
