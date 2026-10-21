@@ -817,6 +817,9 @@ class Bread
         $this->boolify_option('header_uppercase');
         $this->boolify_option('header_bold');
         $this->boolify_option('cont_header_shown');
+        if ($this->options['weekday_language'] == 'dk') {
+            $this->options['weekday_language'] = 'da';
+        }
 
         if ($this->versionLessThan('2.8')) {
             if (($this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full') && isset($this->options['last_page_content']) && trim($this->options['last_page_content']) !== '') {
