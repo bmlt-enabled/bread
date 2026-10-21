@@ -246,7 +246,7 @@ class Bread_FormatsManager
         $data .= "</table>";
         return $data;
     }
-    public function getWheelchairFormat(string $lang): array
+    public function getWheelchairFormat(string $lang): array | null
     {
         if (is_array($this->wheelchairFormat) && empty($this->wheelchairFormat)) {
             $this->wheelchairFormat = $this->getFormatFromField($lang, 'world_id', 'WCHR');
