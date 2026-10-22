@@ -7,6 +7,7 @@ class Bread_Bmlt
     public $connection_error;
     private $bmlt_server_lang = '';
     private array $unique_areas;
+    private array $service_bodies_by_id = [];
     private Bread $bread;
     private ?array $preloaded = null;
 
@@ -72,6 +73,7 @@ class Bread_Bmlt
         $this->unique_areas = array();
 
         foreach ($result as $value) {
+            $this->service_bodies_by_id[$value['id']] = $value;
             $parent_name = 'Parent ID';
             foreach ($result as $parent) {
                 if ($value['parent_id'] == $parent['id']) {
@@ -85,6 +87,14 @@ class Bread_Bmlt
         }
 
         return $this->unique_areas;
+    }
+    /**
+     * Returns the GetServiceBodies entry for $id, or null.
+     */
+    public function get_service_body(string $id): ?array
+    {
+        $this->get_areas();
+        return $this->service_bodies_by_id[$id] ?? null;
     }
     public function generateMainQuery($json = 'json')
     {
