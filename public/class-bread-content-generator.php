@@ -136,7 +136,7 @@ class Bread_ContentGenerator
 
         );
         $this->addServiceBodyShortcodes();
-        $this->shortcodes = apply_filters("Bread_Section_Shortcodes", $this->shortcodes, $this->bread->bmlt()->get_areas(), $formatsManager->getFormatsUsed());
+        $this->shortcodes = apply_filters("Bread_Section_Shortcodes", $this->shortcodes, $this->bread->bmlt()->get_service_bodies(), $formatsManager->getFormatsUsed());
         if ($this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full') {
             @$this->mpdf->DefHTMLFooterByName('MyFooter', '<div style="text-align:center;font-size:' . $this->options['pagenumbering_font_size'] . 'pt;font-style: italic;">' . $this->options['nonmeeting_footer'] . '</div>');
             @$this->mpdf->DefHTMLFooterByName('_default', '<div style="text-align:center;font-size:' . $this->options['pagenumbering_font_size'] . 'pt;font-style: italic;">' . $this->options['nonmeeting_footer'] . '</div>');
@@ -181,10 +181,9 @@ class Bread_ContentGenerator
             $description = 'Not Used';
             $helpline = 'Not Used';
             if (isset($this->options['service_bodies'][$i])) {
-                $area_data = explode(',', $this->options['service_bodies'][$i]);
-                $name = $area_data[0];
-                $service_body = isset($area_data[1]) ? $this->bread->bmlt()->get_service_body($area_data[1]) : null;
+                $service_body = $this->bread->bmlt()->get_service_body($this->options['service_bodies'][$i]);
                 $description = $service_body['description'] ?? '';
+                $name = $service_body['name'] ?? '';
                 $helpline = $service_body['helpline'] ?? '';
             }
             $n = $i + 1;
@@ -225,7 +224,7 @@ class Bread_ContentGenerator
         if ($this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full') {
             $this->WriteHTML('<sethtmlpagefooter name="Meeting1Footer" page="ALL" />');
         }
-        $this->meetingEnhancer = new Bread_Meeting_Enhancer($this->bread, $this->bread->bmlt()->get_areas());
+        $this->meetingEnhancer = new Bread_Meeting_Enhancer($this->bread);
         foreach ($this->result_meetings as &$value) {
             $value = $this->meetingEnhancer->enhance_meeting($value, $lang, $this->formatsManager);
         }

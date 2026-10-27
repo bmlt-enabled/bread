@@ -1,7 +1,6 @@
 <?php
 class Bread_Bmlt
 {
-    private array $areas = array();
     private array $service_bodies = array();
     private string $format_base;
     function __construct($bread)
@@ -10,14 +9,6 @@ class Bread_Bmlt
     public function setFormatBase($format_base)
     {
         $this->format_base = $format_base;
-    }
-    public function set_areas(array $areas)
-    {
-        $this->areas = $areas;
-    }
-    public function get_areas()
-    {
-        return $this->areas;
     }
     public function set_service_bodies(array $service_bodies)
     {
