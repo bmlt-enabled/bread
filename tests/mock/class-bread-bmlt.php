@@ -20,6 +20,10 @@ class Bread_Bmlt
     {
         return $this->service_bodies[$id] ?? null;
     }
+    public function get_service_bodies(): array
+    {
+        return $this->service_bodies;
+    }
     public static function parse_field($text)
     {
         if ($text != '') {

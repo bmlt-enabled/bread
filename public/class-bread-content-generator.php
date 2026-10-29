@@ -182,9 +182,9 @@ class Bread_ContentGenerator
             $helpline = 'Not Used';
             if (isset($this->options['service_bodies'][$i])) {
                 $service_body = $this->bread->bmlt()->get_service_body($this->options['service_bodies'][$i]);
-                $description = $service_body['description'] ?? '';
-                $name = $service_body['name'] ?? '';
-                $helpline = $service_body['helpline'] ?? '';
+                $description = $service_body['description'] ?? 'Not Found';
+                $name = $service_body['name'] ?? 'Not Found';
+                $helpline = $service_body['helpline'] ?? 'Not Found';
             }
             $n = $i + 1;
             $this->shortcodes["[service_body_$n]"] = $name == 'Not Used' ? $name : mb_strtoupper($name, 'UTF-8');

@@ -234,10 +234,7 @@ class Bread_Bmlt
         // needs to be called once.
         if (!$this->default_query) {
             $this->default_query = ($this->bread->getOption('recurse_service_bodies')) ? '&recursive=1' : '';
-            for ($i=0; $i<count($this->bread->getOption('service_bodies')); $i++) {
-                ;
-                $this->default_query .= '&services[]=' . $this->bread->getOption('service_bodies')[$i];
-            }
+            $this->default_query .= '&services[]=' . implode('&services[]=', $this->bread->getOption('service_bodies'));
         }
         return $this->default_query;
     }

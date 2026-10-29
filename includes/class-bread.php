@@ -866,6 +866,9 @@ class Bread
                 }, $settings['service_bodies']);
             }
         }
+        if ($_GET['service_bodies'] ?? false) {
+            $settings['service_bodies'] = explode(',', $_GET['service_bodies']);
+        }
         $settings['bread_version'] = BREAD_VERSION;
         return $settings;
     }
