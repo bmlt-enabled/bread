@@ -385,7 +385,7 @@ class Bread
     {
         $this->options = $theOptions;
         $this->fillUnsetOptions();
-        $this->upgrade_settings();
+        $this->options = $this->upgrade_settings($this->options);
     }
     public function getOptionsName()
     {
@@ -756,116 +756,128 @@ class Bread
     /**
      * Does the work of upgrading from earlier versions.
     */
-    private function upgrade_settings(): void
+    public function upgrade_settings(array$settings): array
     {
-        $this->options['base_font'] = $this->options['base_font'] == "freesans" ? "dejavusanscondensed" : $this->options['base_font'];
-        if (!isset($this->options['bread_version'])) {
-            if (!($this->options['meeting_sort'] === 'weekday_area'
-                || $this->options['meeting_sort'] === 'weekday_city'
-                || $this->options['meeting_sort'] === 'weekday_county'
-                || $this->options['meeting_sort'] === 'day')) {
-                $this->options['weekday_language'] = 'en';
+        $settings['base_font'] = $settings['base_font'] == "freesans" ? "dejavusanscondensed" : $settings['base_font'];
+        if (!isset($settings['bread_version'])) {
+            if (!($settings['meeting_sort'] === 'weekday_area'
+                || $settings['meeting_sort'] === 'weekday_city'
+                || $settings['meeting_sort'] === 'weekday_county'
+                || $settings['meeting_sort'] === 'day')) {
+                $settings['weekday_language'] = 'en';
             }
-            if ($this->options['page_fold'] == 'half') {
-                if ($this->options['page_size'] == 'A5') {
-                    $this->options['page_size'] = 'A4';
+            if ($settings['page_fold'] == 'half') {
+                if ($settings['page_size'] == 'A5') {
+                    $settings['page_size'] = 'A4';
                 }
-                $this->options['page_orientation'] = 'L';
+                $settings['page_orientation'] = 'L';
             }
-            if ($this->options['page_fold'] == 'tri') {
-                $this->options['page_orientation'] = 'L';
+            if ($settings['page_fold'] == 'tri') {
+                $settings['page_orientation'] = 'L';
             }
-            if (substr($this->options['meeting_sort'], 0, 8) == 'weekday_') {
-                $this->options['sub_header_shown'] = 'display';
+            if (substr($settings['meeting_sort'], 0, 8) == 'weekday_') {
+                $settings['sub_header_shown'] = 'display';
             }
-            if (isset($this->options['pageheader_text'])) {
-                $this->options['pageheader_content'] = $this->options['pageheader_text'];
-                unset($this->options['pageheader_text']);
+            if (isset($settings['pageheader_text'])) {
+                $settings['pageheader_content'] = $settings['pageheader_text'];
+                unset($settings['pageheader_text']);
             }
-            if (substr($this->options['root_server'], -1) == '/') {
-                $this->options['root_server'] = substr($this->options['root_server'], 0, strlen($this->options['root_server']) - 1);
+            if (substr($settings['root_server'], -1) == '/') {
+                $settings['root_server'] = substr($settings['root_server'], 0, strlen($settings['root_server']) - 1);
             }
-            if (substr($this->options['root_server'], 0, 4) !== 'http') {
-                $this->options['root_server'] = 'http://' . $this->options['root_server'];
+            if (substr($settings['root_server'], 0, 4) !== 'http') {
+                $settings['root_server'] = 'http://' . $settings['root_server'];
             }
         }
-        if ($this->options['weekday_language'] == 'both') {
-            $this->options['weekday_language'] = "en_es";
+        if ($settings['weekday_language'] == 'both') {
+            $settings['weekday_language'] = "en_es";
         }
-        if ($this->options['weekday_language'] == 'both_po') {
-            $this->options['weekday_language'] = "en_po";
+        if ($settings['weekday_language'] == 'both_po') {
+            $settings['weekday_language'] = "en_po";
         }
-        if ($this->options['sub_header_shown'] == '0') {
-            $this->options['sub_header_shown'] = 'none';
+        if ($settings['sub_header_shown'] == '0') {
+            $settings['sub_header_shown'] = 'none';
         }
-        if ($this->options['sub_header_shown'] == '1') {
-            $this->options['sub_header_shown'] = 'display';
+        if ($settings['sub_header_shown'] == '1') {
+            $settings['sub_header_shown'] = 'display';
         }
-        $this->renamed_option('asm_format_key', 'additional_list_format_key');
-        $this->renamed_option('asm_sort_order', 'additional_list_sort_order');
-        $this->renamed_option('asm_language', 'additional_list_language');
-        $this->renamed_option('asm_custom_query', 'additional_list_custom_query');
-        $this->renamed_option('asm_template_content', 'additional_list_template_content');
+        $this->renamed_option('asm_format_key', 'additional_list_format_key', $settings);
+        $this->renamed_option('asm_sort_order', 'additional_list_sort_order', $settings);
+        $this->renamed_option('asm_language', 'additional_list_language', $settings);
+        $this->renamed_option('asm_custom_query', 'additional_list_custom_query', $settings);
+        $this->renamed_option('asm_template_content', 'additional_list_template_content', $settings);
 
-        $this->boolify_option('recurse_service_bodies');
-        $this->boolify_option('extra_meetings_enabled');
-        $this->boolify_option('include_protection');
-        $this->boolify_option('include_additional_list');
-        $this->boolify_option('column_line');
-        $this->boolify_option('sslverify');
-        $this->boolify_option('suppress_heading');
-        $this->boolify_option('header_uppercase');
-        $this->boolify_option('header_bold');
-        $this->boolify_option('cont_header_shown');
-        if ($this->options['weekday_language'] == 'dk') {
-            $this->options['weekday_language'] = 'da';
+        $this->boolify_option('recurse_service_bodies', $settings);
+        $this->boolify_option('extra_meetings_enabled', $settings);
+        $this->boolify_option('include_protection', $settings);
+        $this->boolify_option('include_additional_list', $settings);
+        $this->boolify_option('column_line', $settings);
+        $this->boolify_option('sslverify', $settings);
+        $this->boolify_option('suppress_heading', $settings);
+        $this->boolify_option('header_uppercase', $settings);
+        $this->boolify_option('header_bold', $settings);
+        $this->boolify_option('cont_header_shown', $settings);
+        if ($settings['weekday_language'] == 'dk') {
+            $settings['weekday_language'] = 'da';
         }
 
-        if ($this->versionLessThan('2.8')) {
-            if (($this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full') && isset($this->options['last_page_content']) && trim($this->options['last_page_content']) !== '') {
-                $this->options['custom_section_content'] = $this->options['last_page_content'];
-                $this->options['custom_section_font_size'] = $this->options['last_page_font_size'];
-                $this->options['custom_section_line_height'] = $this->options['last_page_line_height'];
-                unset($this->options['last_page_content']);
-                unset($this->options['last_page_line_height']);
-                unset($this->options['last_page_font_size']);
+        if ($this->versionLessThan('2.8', $settings)) {
+            if (($settings['page_fold'] == 'half' || $settings['page_fold'] == 'full') && isset($settings['last_page_content']) && trim($settings['last_page_content']) !== '') {
+                $settings['custom_section_content'] = $settings['last_page_content'];
+                $settings['custom_section_font_size'] = $settings['last_page_font_size'];
+                $settings['custom_section_line_height'] = $settings['last_page_line_height'];
+                unset($settings['last_page_content']);
+                unset($settings['last_page_line_height']);
+                unset($settings['last_page_font_size']);
             }
         }
-        if ($this->versionLessThan('2.10')) {
-            $this->options['service_bodies'] = [];
-            if (!empty($this->options['service_body_1']) && $this->options['service_body_1'] != 'Not Used') {
-                $this->options['service_bodies'][] = $this->options['service_body_1'];
+        if ($this->versionLessThan('2.10', $settings)) {
+            $settings['service_bodies'] = [];
+            if (!empty($settings['service_body_1']) && $settings['service_body_1'] != 'Not Used') {
+                $settings['service_bodies'][] = $settings['service_body_1'];
             }
-            if (!empty($this->options['service_body_2']) && $this->options['service_body_2'] != 'Not Used') {
-                $this->options['service_bodies'][] = $this->options['service_body_2'];
+            if (!empty($settings['service_body_2']) && $settings['service_body_2'] != 'Not Used') {
+                $settings['service_bodies'][] = $settings['service_body_2'];
             }
-            if (!empty($this->options['service_body_3']) && $this->options['service_body_3'] != 'Not Used') {
-                $this->options['service_bodies'][] = $this->options['service_body_3'];
+            if (!empty($settings['service_body_3']) && $settings['service_body_3'] != 'Not Used') {
+                $settings['service_bodies'][] = $settings['service_body_3'];
             }
-            if (!empty($this->options['service_body_4']) && $this->options['service_body_4'] != 'Not Used') {
-                $this->options['service_bodies'][] = $this->options['service_body_4'];
+            if (!empty($settings['service_body_4']) && $settings['service_body_4'] != 'Not Used') {
+                $settings['service_bodies'][] = $settings['service_body_4'];
             }
-            if (!empty($this->options['service_body_5']) && $this->options['service_body_5'] != 'Not Used') {
-                $this->options['service_bodies'][] = $this->options['service_body_5'];
+            if (!empty($settings['service_body_5']) && $settings['service_body_5'] != 'Not Used') {
+                $settings['service_bodies'][] = $settings['service_body_5'];
             }
-            unset($this->options['service_body_1']);
-            unset($this->options['service_body_2']);
-            unset($this->options['service_body_3']);
-            unset($this->options['service_body_4']);
-            unset($this->options['service_body_5']);
+            unset($settings['service_body_1']);
+            unset($settings['service_body_2']);
+            unset($settings['service_body_3']);
+            unset($settings['service_body_4']);
+            unset($settings['service_body_5']);
 
-            if ($this->options['base_font'] == 'arial') {
-                $this->options['base_font'] = 'dejabusanscondensed';
+            if ($settings['base_font'] == 'arial') {
+                $settings['base_font'] = 'dejabusanscondensed';
             }
         }
-        $this->options['bread_version'] = BREAD_VERSION;
+        if ($this->versionLessThan('2.11', $settings)) {
+            if (!empty($settings['service_bodies'])) {
+                $settings['service_bodies'] = array_map(function ($sb) {
+                    $area_data = explode(',', $sb);
+                    return $this->arraySafeGet($area_data, 1);
+                }, $settings['service_bodies']);
+            }
+        }
+        if ($_GET['service_bodies'] ?? false) {
+            $settings['service_bodies'] = explode(',', $_GET['service_bodies']);
+        }
+        $settings['bread_version'] = BREAD_VERSION;
+        return $settings;
     }
-    private function versionLessThan($version): bool
+    private function versionLessThan($version, $settings): bool
     {
-        if (empty($this->options['bread_version'])) {
+        if (empty($settings['bread_version'])) {
             return true;
         }
-        $current = explode('.', $this->options['bread_version']);
+        $current = explode('.', $settings['bread_version']);
         $test = explode('.', $version);
         for ($i=0; $i<count($current); $i++) {
             if ($i >= count($test)) {
@@ -880,18 +892,18 @@ class Bread
         }
         return false;
     }
-    private function renamed_option(string $old, string $new)
+    private function renamed_option(string $old, string $new, array $settings): void
     {
-        if (!empty($this->options[$old])) {
-            if (empty($this->options[$new])) {
-                $this->options[$new] = $this->options[$old];
-                unset($this->options[$old]);
+        if (!empty($settings[$old])) {
+            if (empty($settings[$new])) {
+                $settings[$new] = $settings[$old];
+                unset($settings[$old]);
             }
         }
     }
-    private function boolify_option(string $option)
+    private function boolify_option(string $option, $settings): void
     {
-        $this->options[$option] = boolval($this->options[$option]);
+        $settings[$option] = boolval($settings[$option]);
     }
     /**
      * Stores the current settings in the Wordpress Options DB.
