@@ -55,6 +55,13 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 
 == Changelog ==
 
+= 2.11.0 =
+* Added shortcodes for service body description and URL
+* Refactor how service bodies are stored
+* Set service body in query string
+* Update DeepCopy for PHP 8.5 Compatibility
+* Clean up temp directory after every PDF generation.
+
 = 2.10.9 =
 * Danish is "da" not "dk"
 

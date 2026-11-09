@@ -153,7 +153,10 @@ class Bread
         $path = '';
         do {
             $path = sprintf('%s%s%s%s', $dir, DIRECTORY_SEPARATOR, 'bread', wp_rand(100000));
-        } while (!$filesystem->mkdir($path, 0777) && $attempts++ < 100);
+        } while (!$filesystem->mkdir($path, 0755) && $attempts++ < 100);
+        if ($attempts >= 100) {
+            return false;
+        }
         return $path;
     }
     private static function brute_force_cleanup($filesystem, $dir)
@@ -203,7 +206,7 @@ class Bread
     }
     public function removeTempDir()
     {
-        if (!isset($this->options['logging'])) {
+        if (!empty($this->tmp_dir)) {
             Bread::rrmdir(new WP_Filesystem_Direct(null), $this->temp_dir());
         }
     }
