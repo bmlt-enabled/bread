@@ -59,6 +59,7 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 * Added shortcodes for service body description and URL
 * Refactor how service bodies are stored
 * Set service body in query string
+* Added format_names shortcode to list format names instead of codes for each meeting
 * Update DeepCopy for PHP 8.5 Compatibility
 * Clean up temp directory after every PDF generation.
 

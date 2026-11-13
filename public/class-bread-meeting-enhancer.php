@@ -89,6 +89,12 @@ class Bread_Meeting_Enhancer
                 $meeting_value['wheelchair'] = '<img src="' . plugin_dir_url(__FILE__) . 'css/wheelchair.png" width="' . $this->options['wheelchair_size'] . '" height="' . $this->options['wheelchair_size'] . '">';
             }
         }
+        $meeting_value['format_names'] = '';
+        $sep = '';
+        foreach (explode(',', $meeting_value['formats']) as $key) {
+            $meeting_value['format_names'] .= $sep . $formatsManager->getFormatByKey($this->options['weekday_language'], $key)['name_string'];
+            $sep = ', ';
+        }
         // Extensions.
         return apply_filters("Bread_Enrich_Meeting_Data", $meeting_value, $formatsManager->getHashedFormats($lang));
     }
