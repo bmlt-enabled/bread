@@ -511,7 +511,7 @@ class Bread_Admin
         while (0 === strpos(bin2hex($encode_options), 'efbbbf')) {
             $encode_options = substr($encode_options, 3);
         }
-        $settings = json_decode($encode_options, true);
+        $settings = $this->bread->upgrade_settings(json_decode($encode_options, true));
         $ncols = substr_count($settings['meeting_template_content'], '<td');
         $id = $this->bread->loadAllSettings([]);
         $id = $this->bread->isInitialSetting() ? 1 : ((is_numeric($_POST['wizard_setting_id'])) ? intval($_POST['wizard_setting_id']) : $this->bread->getMaxSetting() + 1);

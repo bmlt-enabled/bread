@@ -52,11 +52,13 @@ final class BreadContentGeneratorTest extends TestCase
     {
         $this->doTest(
             'berlin-booklet',
-            ['service_bodies' => [
-                'Gebiet Süd,7,1,Deutschsprachige Region',
-                'Gebiet Österreich,10,1,Deutschsprachige Region',
-                'Online Gebiet,12,1,Deutschsprachige Region',
-            ]],
+            [
+                'service_bodies' => [
+                    'Gebiet Süd,7,1,Deutschsprachige Region',
+                    'Gebiet Österreich,10,1,Deutschsprachige Region',
+                    'Online Gebiet,12,1,Deutschsprachige Region',
+                ]
+            ],
             'berlin-service-bodies',
             [
                 '[service_body_1]' => 'GEBIET SÜD',
@@ -79,13 +81,15 @@ final class BreadContentGeneratorTest extends TestCase
     {
         $this->doTest(
             'berlin-booklet',
-            ['service_bodies' => ['Gebiet Gelöscht,99,1,Deutschsprachige Region']],
+            [
+                'service_bodies' => ['Deleted,122334,1,Deutschsprachige Region'],
+            ],
             'berlin-service-bodies',
             [
-                '[service_body_1]' => 'GEBIET GELÖSCHT',
-                '[service_body_1_name]' => 'Gebiet Gelöscht',
-                '[service_body_1_description]' => '',
-                '[service_body_1_helpline]' => '',
+                '[service_body_1]' => 'NOT FOUND',
+                '[service_body_1_name]' => 'Not Found',
+                '[service_body_1_description]' => 'Not Found',
+                '[service_body_1_helpline]' => 'Not Found',
             ]
         );
     }

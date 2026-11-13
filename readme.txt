@@ -5,7 +5,7 @@ Tags: meeting list, bmlt, narcotics anonymous, na
 Requires PHP: 8.1
 Requires at least: 6.2
 Tested up to: 7.1
-Stable tag: 2.10.9
+Stable tag: 2.11.0
 
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -54,6 +54,14 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 - Read here for more information: https://github.com/bmlt-enabled/bread/blob/main/contribute.md
 
 == Changelog ==
+
+= 2.11.0 =
+* Added shortcodes for service body description and URL
+* Refactor how service bodies are stored
+* Set service body in query string
+* Added format_names shortcode to list format names instead of codes for each meeting
+* Update DeepCopy for PHP 8.5 Compatibility
+* Clean up temp directory after every PDF generation.
 
 = 2.10.9 =
 * Danish is "da" not "dk"
