@@ -185,17 +185,20 @@ class Bread_ContentGenerator
                 $description = $service_body['description'] ?? 'Not Found';
                 $name = $service_body['name'] ?? 'Not Found';
                 $helpline = $service_body['helpline'] ?? 'Not Found';
+                $url = $service_body['url'] ?? 'Not Found';
             }
             $n = $i + 1;
             $this->shortcodes["[service_body_$n]"] = $name == 'Not Used' ? $name : mb_strtoupper($name, 'UTF-8');
             $this->shortcodes["[service_body_{$n}_name]"] = $name;
             $this->shortcodes["[service_body_{$n}_description]"] = $description;
             $this->shortcodes["[service_body_{$n}_helpline]"] = $helpline;
+            $this->shortcodes["[service_body_{$n}_url]"] = $url;
         }
         $this->shortcodes['[service_body]'] = $this->shortcodes['[service_body_1]'];
         $this->shortcodes['[service_body_name]'] = $this->shortcodes['[service_body_1_name]'];
         $this->shortcodes['[service_body_description]'] = $this->shortcodes['[service_body_1_description]'];
         $this->shortcodes['[service_body_helpline]'] = $this->shortcodes['[service_body_1_helpline]'];
+        $this->shortcodes['[service_body_url]'] = $this->shortcodes['[service_body_1_url]'];
     }
     /**
      * Generates the contents of the meeting list.
@@ -275,6 +278,15 @@ class Bread_ContentGenerator
         $data = str_replace("[date]", strtoupper(gmdate("F Y")), $data);
         if ($this->target_timezone) {
             $data = str_replace('[timezone]', $this->target_timezone->getName(), $data);
+        }
+        $qr_pos = strpos($data, "[QRCode");
+        if ($qr_pos) {
+            $qr_end = strpos($data, ']', $qr_pos);
+            $data = substr($data, 0, $qr_pos) .
+                '<barcode type="QR" disableborder="1" ' .
+                substr($data, $qr_pos + 8, $qr_end - $qr_pos - 8) .
+                '/>' .
+                substr($data, $qr_end + 1);
         }
         return $data;
     }

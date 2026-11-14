@@ -56,7 +56,8 @@ Follow all these steps, keep in mind that once you start using bread, it's not g
 == Changelog ==
 
 = 2.11.0 =
-* Added shortcodes for service body description and URL
+* Added shortcodes for service body description, helpline and URL
+* Service body infos can be encoded into QR codes
 * Refactor how service bodies are stored
 * Set service body in query string
 * Added format_names shortcode to list format names instead of codes for each meeting
