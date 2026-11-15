@@ -18,7 +18,7 @@ function Bread_bmlt_server_setup_page_render(Bread_AdminDisplay $breadAdmin)
 <script type="text/javascript">
     window.bread_admin = {};
     window.bread_admin.root_server = '<?php echo esc_js($bread->getOption('root_server')); ?>';
-    window.bread_admin.service_bodies_selected = <?php echo json_encode($bread->getOption('service_bodies')); ?>.map(x => x.split(',')[1]);
+    window.bread_admin.service_bodies_selected = <?php echo json_encode($bread->getOption('service_bodies')); ?>;
     window.bread_admin.extra_meetings = <?php echo json_encode($bread->getOption('extra_meetings')); ?>;
     window.bread_admin.used_format = '<?php echo esc_js($bread->getOption('used_format_1')); ?>';
     window.bread_admin.additional_list_format_key = '<?php echo esc_js($bread->getOption('additional_list_format_key')); ?>';

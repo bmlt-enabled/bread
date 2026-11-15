@@ -91,8 +91,7 @@ jQuery(document).ready(function($){
         BreadWizard.write_service_body_with_childern = function(options, sb, parents, my_parent, level) {
             let prefix = '';
             for (i=0; i<level; i++) prefix += '-';
-            const sbVal = [sb.name,sb.id,sb.parent_id, my_parent].join(',');
-            options.push('<option value="'+sbVal+'">'+prefix+sb.name+'</option>');
+            options.push('<option value="'+sb.id+'">'+prefix+sb.name+'</option>');
             found = parents.find((p) => p.id == sb.id);
             if (typeof found !== 'undefined')
                 found.children.forEach((child) =>
@@ -178,7 +177,7 @@ jQuery(document).ready(function($){
                     break;
                 case 2:
                     const services = $('#wizard_service_bodies').val().reduce((carry,item) => {
-                        carry += '&services[]='+item.split(',')[1];
+                        carry += '&services[]='+item;
                         return carry;
                     }, '&recursive=1');
                     const formats = (Number($('#wizard_format_filter').val()) > 0) ? '&formats='+$('#wizard_format_filter').val() : '';

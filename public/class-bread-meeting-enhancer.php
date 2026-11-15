@@ -6,12 +6,10 @@ class Bread_Meeting_Enhancer
 {
     private Bread $bread;
     private array $options;
-    private array $areas;
-    function __construct(Bread $bread, array $areas)
+    function __construct(Bread $bread)
     {
         $this->bread = $bread;
         $this->options = $bread->getOptions();
-        $this->areas = $areas;
     }
     /**
      * Enhance the meeting fields (in place) with calculated values.
@@ -79,9 +77,9 @@ class Bread_Meeting_Enhancer
         }
         $meeting_value['day_abbr'] = $this->bread->getday($meeting_value['weekday_tinyint'], true, $lang);
         $meeting_value['day'] = $this->bread->getday($meeting_value['weekday_tinyint'], false, $lang);
-        $area_name = $this->get_area_name($meeting_value);
-        $meeting_value['area_name'] = $area_name;
-        $meeting_value['area_i'] = substr($area_name, 0, 1);
+        $service_body = $this->bread->bmlt()->get_service_body($meeting_value['service_body_bigint']);
+        $meeting_value['area_name'] = $service_body['name'] ?? '';
+        $meeting_value['area_i'] = $meeting_value['service_body_bigint'];
 
         $meeting_value['wheelchair'] = '';
         $wheelchair_format = $formatsManager->getWheelchairFormat($this->options['weekday_language']);
@@ -90,6 +88,12 @@ class Bread_Meeting_Enhancer
             if (in_array($wheelchair_format['id'], $fmts)) {
                 $meeting_value['wheelchair'] = '<img src="' . plugin_dir_url(__FILE__) . 'css/wheelchair.png" width="' . $this->options['wheelchair_size'] . '" height="' . $this->options['wheelchair_size'] . '">';
             }
+        }
+        $meeting_value['format_names'] = '';
+        $sep = '';
+        foreach (explode(',', $meeting_value['formats']) as $key) {
+            $meeting_value['format_names'] .= $sep . $formatsManager->getFormatByKey($this->options['weekday_language'], $key)['name_string'];
+            $sep = ', ';
         }
         // Extensions.
         return apply_filters("Bread_Enrich_Meeting_Data", $meeting_value, $formatsManager->getHashedFormats($lang));
@@ -100,17 +104,6 @@ class Bread_Meeting_Enhancer
             return 'NOON';
         }
         return $time;
-    }
-    private function get_area_name(array $meeting_value): string
-    {
-        foreach ($this->areas as $unique_area) {
-            $area_data = explode(',', $unique_area);
-            $area_id = $this->bread->arraySafeGet($area_data, 1);
-            if ($area_id === $meeting_value['service_body_bigint']) {
-                return $this->bread->arraySafeGet($area_data);
-            }
-        }
-        return '';
     }
 
     private function toPersianNum(string $number): string

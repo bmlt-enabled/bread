@@ -6,7 +6,6 @@ class Bread_Bmlt
 {
     public $connection_error;
     private $bmlt_server_lang = '';
-    private array $unique_areas;
     private array $service_bodies_by_id = [];
     private Bread $bread;
     private ?array $preloaded = null;
@@ -58,42 +57,28 @@ class Bread_Bmlt
         }
         return wp_remote_get($url, $args);
     }
-    /**
-     * Generates a list of service bodies to be used in the admin UI's drop downs.
-     *
-     * @return array the service bodies.
-     */
-    public function get_areas()
+    private function load_service_bodies()
     {
-        if (!empty($this->unique_areas)) {
-            return $this->unique_areas;
-        }
-        $result = ($this->preloaded !== null) ? $this->preloaded['serviceBodies']
-            : $this->get_configured_root_server_request("client_interface/json/?switcher=GetServiceBodies");
-        $this->unique_areas = array();
+        if (empty($this->service_bodies_by_id)) {
+            $result = ($this->preloaded !== null) ? $this->preloaded['serviceBodies']
+                : $this->get_configured_root_server_request("client_interface/json/?switcher=GetServiceBodies");
 
-        foreach ($result as $value) {
-            $this->service_bodies_by_id[$value['id']] = $value;
-            $parent_name = 'Parent ID';
-            foreach ($result as $parent) {
-                if ($value['parent_id'] == $parent['id']) {
-                    $parent_name = $parent['name'];
-                }
+            foreach ($result as $value) {
+                $this->service_bodies_by_id[$value['id']] = $value;
             }
-            if ($value['parent_id'] == '') {
-                $value['parent_id'] = '0';
-            }
-            $this->unique_areas[] = $value['name'] . ',' . $value['id'] . ',' . $value['parent_id'] . ',' . $parent_name;
         }
-
-        return $this->unique_areas;
+    }
+    public function get_service_bodies(): array
+    {
+        $this->load_service_bodies();
+        return $this->service_bodies_by_id ?? [];
     }
     /**
      * Returns the GetServiceBodies entry for $id, or null.
      */
     public function get_service_body(string $id): ?array
     {
-        $this->get_areas();
+        $this->load_service_bodies();
         return $this->service_bodies_by_id[$id] ?? null;
     }
     public function generateMainQuery($json = 'json')
@@ -249,11 +234,7 @@ class Bread_Bmlt
         // needs to be called once.
         if (!$this->default_query) {
             $this->default_query = ($this->bread->getOption('recurse_service_bodies')) ? '&recursive=1' : '';
-            for ($i=0; $i<count($this->bread->getOption('service_bodies')); $i++) {
-                $area_data = explode(',', $this->bread->getOption('service_bodies')[$i]);
-                $service_body_id = $this->bread->arraySafeGet($area_data, 1);
-                $this->default_query .= '&services[]=' . $service_body_id;
-            }
+            $this->default_query .= '&services[]=' . implode('&services[]=', $this->bread->getOption('service_bodies'));
         }
         return $this->default_query;
     }

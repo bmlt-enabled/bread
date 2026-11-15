@@ -380,10 +380,9 @@
 	) {
 		let prefix = "";
 		for (i = 0; i < level; i++) prefix += "-";
-		const sbVal = [sb.name, sb.id, sb.parent_id, my_parent].join(",");
 		const option =
 			'<option value="' +
-			sbVal +
+			sb.id +
 			'" ' +
 			(bread_admin.service_bodies_selected.includes(sb.id)
 				? "selected"

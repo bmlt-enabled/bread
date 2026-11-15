@@ -350,15 +350,11 @@ class Bread_Meetingslist_Structure
         $name = $this->options[$names['name']];
         $name_alt = (!empty($names['name_alt'])) && !empty($this->options[$names['name_alt']]) ? $this->options[$names['name_alt']] : '';
         if ($name == 'service_body_bigint') {
-            foreach ($this->bread->bmlt()->get_areas() as $unique_area) {
-                $area_data = explode(',', $unique_area);
-                $area_name = Bread::arraySafeGet($area_data);
-                $area_id = Bread::arraySafeGet($area_data, 1);
-                if ($area_id === $value['service_body_bigint']) {
-                    return $area_name;
-                }
+            $service_body = $this->bread->bmlt()->get_service_body($value['service_body_bigint']);
+            if (empty($service_body)) {
+                return 'Area not found';
             }
-            return 'Area not found';
+            return $service_body['name'] ?? 'Area not found';
         } elseif ($name == 'day') {
             $off = intval($this->options['weekday_start']);
             $day = intval($value['weekday_tinyint']);

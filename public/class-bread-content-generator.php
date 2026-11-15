@@ -136,7 +136,7 @@ class Bread_ContentGenerator
 
         );
         $this->addServiceBodyShortcodes();
-        $this->shortcodes = apply_filters("Bread_Section_Shortcodes", $this->shortcodes, $this->bread->bmlt()->get_areas(), $formatsManager->getFormatsUsed());
+        $this->shortcodes = apply_filters("Bread_Section_Shortcodes", $this->shortcodes, $this->bread->bmlt()->get_service_bodies(), $formatsManager->getFormatsUsed());
         if ($this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full') {
             @$this->mpdf->DefHTMLFooterByName('MyFooter', '<div style="text-align:center;font-size:' . $this->options['pagenumbering_font_size'] . 'pt;font-style: italic;">' . $this->options['nonmeeting_footer'] . '</div>');
             @$this->mpdf->DefHTMLFooterByName('_default', '<div style="text-align:center;font-size:' . $this->options['pagenumbering_font_size'] . 'pt;font-style: italic;">' . $this->options['nonmeeting_footer'] . '</div>');
@@ -181,22 +181,24 @@ class Bread_ContentGenerator
             $description = 'Not Used';
             $helpline = 'Not Used';
             if (isset($this->options['service_bodies'][$i])) {
-                $area_data = explode(',', $this->options['service_bodies'][$i]);
-                $name = $area_data[0];
-                $service_body = isset($area_data[1]) ? $this->bread->bmlt()->get_service_body($area_data[1]) : null;
-                $description = $service_body['description'] ?? '';
-                $helpline = $service_body['helpline'] ?? '';
+                $service_body = $this->bread->bmlt()->get_service_body($this->options['service_bodies'][$i]);
+                $description = $service_body['description'] ?? 'Not Found';
+                $name = $service_body['name'] ?? 'Not Found';
+                $helpline = $service_body['helpline'] ?? 'Not Found';
+                $url = $service_body['url'] ?? 'Not Found';
             }
             $n = $i + 1;
             $this->shortcodes["[service_body_$n]"] = $name == 'Not Used' ? $name : mb_strtoupper($name, 'UTF-8');
             $this->shortcodes["[service_body_{$n}_name]"] = $name;
             $this->shortcodes["[service_body_{$n}_description]"] = $description;
             $this->shortcodes["[service_body_{$n}_helpline]"] = $helpline;
+            $this->shortcodes["[service_body_{$n}_url]"] = $url;
         }
         $this->shortcodes['[service_body]'] = $this->shortcodes['[service_body_1]'];
         $this->shortcodes['[service_body_name]'] = $this->shortcodes['[service_body_1_name]'];
         $this->shortcodes['[service_body_description]'] = $this->shortcodes['[service_body_1_description]'];
         $this->shortcodes['[service_body_helpline]'] = $this->shortcodes['[service_body_1_helpline]'];
+        $this->shortcodes['[service_body_url]'] = $this->shortcodes['[service_body_1_url]'];
     }
     /**
      * Generates the contents of the meeting list.
@@ -225,7 +227,7 @@ class Bread_ContentGenerator
         if ($this->options['page_fold'] == 'half' || $this->options['page_fold'] == 'full') {
             $this->WriteHTML('<sethtmlpagefooter name="Meeting1Footer" page="ALL" />');
         }
-        $this->meetingEnhancer = new Bread_Meeting_Enhancer($this->bread, $this->bread->bmlt()->get_areas());
+        $this->meetingEnhancer = new Bread_Meeting_Enhancer($this->bread);
         foreach ($this->result_meetings as &$value) {
             $value = $this->meetingEnhancer->enhance_meeting($value, $lang, $this->formatsManager);
         }
@@ -276,6 +278,15 @@ class Bread_ContentGenerator
         $data = str_replace("[date]", strtoupper(gmdate("F Y")), $data);
         if ($this->target_timezone) {
             $data = str_replace('[timezone]', $this->target_timezone->getName(), $data);
+        }
+        $qr_pos = strpos($data, "[QRCode");
+        if ($qr_pos) {
+            $qr_end = strpos($data, ']', $qr_pos);
+            $data = substr($data, 0, $qr_pos) .
+                '<barcode type="QR" disableborder="1" ' .
+                substr($data, $qr_pos + 8, $qr_end - $qr_pos - 8) .
+                '/>' .
+                substr($data, $qr_end + 1);
         }
         return $data;
     }

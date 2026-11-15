@@ -11,6 +11,25 @@ class Bread
             require_once '../../../wp-includes/class-wp-error.php';
         }
         $this->load_translations();
+        if ($this->versionLessThan('2.11', $options)) {
+            if (empty($options['service_bodies'])) {
+                for ($i = 1; $i <= 5; $i++) {
+                    if (isset($options['service_body_' . $i])) {
+                        $area_data = explode(',', $options['service_body_' . $i]);
+                        $options['service_bodies'][] = $area_data[1];
+                    }
+                    $options['service_bodies'][$i] = $options['service_body_' . $i];
+                }
+            } else {
+                for ($i = 1; $i <= 5; $i++) {
+                    $parts = explode(',', $options['service_bodies'][$i - 1] ?? '');
+                    if (count($parts) > 1) {
+                        $options['service_bodies'][$i - 1] = $parts[1];
+                    }
+                }
+            }
+        }
+        $settings['bread_version'] = "2.11.0";
         $this->options = $options;
         $this->bmlt1 = new Bread_Bmlt($this);
     }
@@ -45,5 +64,25 @@ class Bread
             $key = "WKDYS";
         }
         return $this->translate[$language][$key][$day];
+    }
+    private function versionLessThan($version, $settings): bool
+    {
+        if (empty($settings['bread_version'])) {
+            return true;
+        }
+        $current = explode('.', $settings['bread_version']);
+        $test = explode('.', $version);
+        for ($i=0; $i<count($current); $i++) {
+            if ($i >= count($test)) {
+                return false;
+            }
+            if (intval($current[$i]) > intval($test[$i])) {
+                return false;
+            }
+            if (intval($current[$i]) < intval($test[$i])) {
+                return true;
+            }
+        }
+        return false;
     }
 }
