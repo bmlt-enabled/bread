@@ -29,7 +29,7 @@ class Bread
                 }
             }
         }
-        $settings['bread_version'] = "2.11.0";
+        $settings['bread_version'] = "2.11.1";
         $this->options = $options;
         $this->bmlt1 = new Bread_Bmlt($this);
     }
